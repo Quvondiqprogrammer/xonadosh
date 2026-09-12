@@ -15,7 +15,7 @@ if (hasReleaseKeystore) {
 }
 
 android {
-    namespace = "uz.xonadosh.app"
+    namespace = "com.zargo.customer"
     compileSdk = 37
     ndkVersion = flutter.ndkVersion
 
@@ -25,10 +25,9 @@ android {
     }
 
     defaultConfig {
-        // Matches iOS bundle uz.xonadosh.app. Previous leftover ID was
-        // com.zargo.customer — do not reuse that for Play if a listing
-        // was never published under it.
-        applicationId = "uz.xonadosh.app"
+        // Play Store published app is com.zargo.customer — must keep for updates.
+        // iOS bundle remains uz.xonadosh.app.
+        applicationId = "com.zargo.customer"
         minSdk = maxOf(21, flutter.minSdkVersion)
         targetSdk = flutter.targetSdkVersion
         versionCode = flutter.versionCode

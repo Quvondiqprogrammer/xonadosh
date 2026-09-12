@@ -1,4 +1,4 @@
-package uz.xonadosh.app
+package com.zargo.customer
 
 import io.flutter.embedding.android.FlutterActivity
 
