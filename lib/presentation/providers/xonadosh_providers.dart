@@ -1,10 +1,17 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import 'package:xonadosh/data/api/block_store.dart';
+import 'package:xonadosh/data/api/onboarding_store.dart';
 import 'package:xonadosh/data/models/xonadosh_models.dart';
 import 'package:xonadosh/presentation/providers/app_providers.dart';
 
 export 'app_providers.dart';
+
+final xonadoshShellTabIndexProvider = StateProvider<int>((ref) => 0);
+
+final onboardingStoreProvider = Provider<OnboardingStore>((ref) {
+  return OnboardingStore();
+});
 
 final xonadoshSelectedUniProvider =
     StateProvider<XonadoshUniversity?>((ref) => null);
@@ -34,6 +41,13 @@ final xonadoshUniversitiesProvider =
     FutureProvider.autoDispose<List<XonadoshUniversity>>((ref) async {
   final city = ref.watch(xonadoshCityProvider);
   return ref.watch(xonadoshRepositoryProvider).getUniversities(city: city);
+});
+
+/// Matching OTM picker is independent of housing city so a housing
+/// region filter cannot silently shrink roommate options.
+final xonadoshAllUniversitiesProvider =
+    FutureProvider.autoDispose<List<XonadoshUniversity>>((ref) async {
+  return ref.watch(xonadoshRepositoryProvider).getUniversities();
 });
 
 final blockStoreProvider = Provider<BlockStore>((ref) => BlockStore());

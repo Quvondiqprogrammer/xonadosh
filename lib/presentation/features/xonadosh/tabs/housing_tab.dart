@@ -9,6 +9,10 @@ import 'package:xonadosh/data/api/bookmark_store.dart';
 import 'package:xonadosh/data/models/xonadosh_models.dart';
 import 'package:xonadosh/l10n/l10n_ext.dart';
 import 'package:xonadosh/presentation/common/contact_actions.dart';
+import 'package:xonadosh/presentation/common/empty_state.dart';
+import 'package:xonadosh/presentation/common/report_content_dialog.dart';
+import 'package:xonadosh/presentation/features/xonadosh/widgets/listing_card.dart';
+import 'package:xonadosh/presentation/features/xonadosh/widgets/onboarding_welcome.dart';
 import 'package:xonadosh/presentation/providers/xonadosh_providers.dart';
 import 'package:xonadosh/presentation/router/app_routes.dart';
 import '../data/xonadosh_locations.dart';
@@ -22,6 +26,7 @@ class XonadoshHousingTab extends ConsumerStatefulWidget {
 
 class _XonadoshHousingTabState extends ConsumerState<XonadoshHousingTab> {
   final _searchController = TextEditingController();
+  final _searchFocus = FocusNode();
   final _bookmarkStore = BookmarkStore();
   final Set<int> _bookmarkedIds = {};
   Timer? _searchDebounce;
@@ -46,6 +51,7 @@ class _XonadoshHousingTabState extends ConsumerState<XonadoshHousingTab> {
   void dispose() {
     _searchDebounce?.cancel();
     _searchController.dispose();
+    _searchFocus.dispose();
     super.dispose();
   }
 
@@ -125,6 +131,7 @@ class _XonadoshHousingTabState extends ConsumerState<XonadoshHousingTab> {
                             ),
                             child: TextField(
                               controller: _searchController,
+                              focusNode: _searchFocus,
                               onChanged: (v) {
                                 setState(() {});
                                 _searchDebounce?.cancel();
@@ -173,7 +180,7 @@ class _XonadoshHousingTabState extends ConsumerState<XonadoshHousingTab> {
                             IconButton.filledTonal(
                               onPressed: () => _openFilterSheet(context),
                               icon: const Icon(Icons.tune_rounded, size: 20),
-                              tooltip: 'Filtrlar',
+                              tooltip: l10n.xonadoshSearchFiltersTitle,
                               style: IconButton.styleFrom(
                                 backgroundColor: activeFilterCount > 0
                                     ? XonaDoshColors.emerald.withValues(alpha: 0.15)
@@ -232,7 +239,14 @@ class _XonadoshHousingTabState extends ConsumerState<XonadoshHousingTab> {
 
                     const SizedBox(height: 12),
 
-                    // Category Pill Tabs (Barchasi, Ijara, Sherik, Sotuv, Qidiruv)
+                    XonadoshJobsHero(
+                      onFindRoom: () => _searchFocus.requestFocus(),
+                      onFindRoommate: () =>
+                          ref.read(xonadoshShellTabIndexProvider.notifier).state = 1,
+                    ),
+
+                    const SizedBox(height: 12),
+
                     SingleChildScrollView(
                       scrollDirection: Axis.horizontal,
                       physics: const BouncingScrollPhysics(),
@@ -240,13 +254,18 @@ class _XonadoshHousingTabState extends ConsumerState<XonadoshHousingTab> {
                         children: [
                           _buildTypeChip('all', l10n.commonAll, Icons.apps_rounded, selectedType),
                           const SizedBox(width: 6),
-                          _buildTypeChip('rent', 'Ijara', Icons.home_rounded, selectedType),
+                          _buildTypeChip('rent', l10n.xonadoshTypeRent, Icons.home_rounded, selectedType),
                           const SizedBox(width: 6),
-                          _buildTypeChip('roommate_wanted', 'Sheriklik', Icons.people_rounded, selectedType),
+                          _buildTypeChip(
+                            'roommate_wanted',
+                            l10n.xonadoshTypeRoommate,
+                            Icons.people_rounded,
+                            selectedType,
+                          ),
                           const SizedBox(width: 6),
-                          _buildTypeChip('sell', 'Sotuv', Icons.local_offer_rounded, selectedType),
+                          _buildTypeChip('sell', l10n.xonadoshTypeSell, Icons.local_offer_rounded, selectedType),
                           const SizedBox(width: 6),
-                          _buildTypeChip('buy', 'Qidiruv', Icons.search_rounded, selectedType),
+                          _buildTypeChip('buy', l10n.xonadoshTypeBuy, Icons.search_rounded, selectedType),
                         ],
                       ),
                     ),
@@ -340,38 +359,22 @@ class _XonadoshHousingTabState extends ConsumerState<XonadoshHousingTab> {
               ),
               data: (listings) {
                 if (listings.isEmpty) {
+                  final filtered = activeFilterCount > 0 ||
+                      selectedType != 'all' ||
+                      _searchController.text.trim().isNotEmpty;
                   return SliverFillRemaining(
-                    child: Center(
-                      child: Padding(
-                        padding: const EdgeInsets.all(32),
-                        child: Column(
-                          mainAxisAlignment: MainAxisAlignment.center,
-                          children: [
-                            Container(
-                              padding: const EdgeInsets.all(20),
-                              decoration: BoxDecoration(
-                                color: XonaDoshColors.emerald.withValues(alpha: 0.1),
-                                shape: BoxShape.circle,
-                              ),
-                              child: const Icon(Icons.home_work_outlined, size: 52, color: XonaDoshColors.emerald),
-                            ),
-                            const SizedBox(height: 16),
-                            Text(
-                              l10n.xonadoshNoListingsTitle,
-                              style: const TextStyle(fontWeight: FontWeight.w800, fontSize: 17),
-                              textAlign: TextAlign.center,
-                            ),
-                            const SizedBox(height: 6),
-                            Text(
-                              l10n.xonadoshNoListingsSubtitle,
-                              style: TextStyle(
-                                color: isDark ? const Color(0xFF94A3B8) : const Color(0xFF64748B),
-                                fontSize: 13,
-                              ),
-                              textAlign: TextAlign.center,
-                            ),
-                            const SizedBox(height: 20),
-                            ElevatedButton.icon(
+                    child: EmptyState(
+                      icon: Icons.home_work_outlined,
+                      accentColor: XonaDoshColors.emerald,
+                      title: filtered ? l10n.xonadoshNoListingsTitle : l10n.xonadoshEmptyMarketTitle,
+                      subtitle: filtered ? l10n.xonadoshNoListingsSubtitle : l10n.xonadoshEmptyMarketBody,
+                      action: FilledButton.icon(
+                        onPressed: () => context.push(AppRoutes.xonadoshCreateListing),
+                        icon: const Icon(Icons.add_home_rounded, size: 18),
+                        label: Text(l10n.xonadoshPostListing),
+                      ),
+                      secondaryAction: filtered
+                          ? TextButton.icon(
                               onPressed: () {
                                 _searchController.clear();
                                 ref.read(xonadoshSearchQueryProvider.notifier).state = null;
@@ -383,12 +386,10 @@ class _XonadoshHousingTabState extends ConsumerState<XonadoshHousingTab> {
                                 ref.read(xonadoshMinPriceProvider.notifier).state = null;
                                 ref.read(xonadoshMaxPriceProvider.notifier).state = null;
                               },
-                              icon: const Icon(Icons.refresh_rounded, size: 18),
+                              icon: const Icon(Icons.filter_alt_off_rounded, size: 18),
                               label: Text(l10n.xonadoshViewAllListings),
-                            ),
-                          ],
-                        ),
-                      ),
+                            )
+                          : null,
                     ),
                   );
                 }
@@ -399,7 +400,31 @@ class _XonadoshHousingTabState extends ConsumerState<XonadoshHousingTab> {
                     delegate: SliverChildBuilderDelegate(
                       (context, index) {
                         final item = listings[index];
-                        return _buildListingCard(context, item, isDark);
+                        return XonadoshListingCard(
+                          item: item,
+                          bookmarked: _bookmarkedIds.contains(item.id),
+                          onTap: () => context.push('${AppRoutes.shell}/listing/${item.id}'),
+                          onBookmark: () async {
+                            final next = await _bookmarkStore.toggle(item.id);
+                            if (!mounted) return;
+                            setState(() {
+                              _bookmarkedIds
+                                ..clear()
+                                ..addAll(next);
+                            });
+                          },
+                          onReport: () => showReportContentDialog(
+                            context,
+                            ref,
+                            targetType: ReportTargetType.listing,
+                            targetId: '${item.id}',
+                            subjectLabel: l10n.reportContentSubjectListing(item.title),
+                          ),
+                          onCall: () => ContactActions.callPhone(context, item.phoneNumber),
+                          onTelegram: item.telegramHandle != null && item.telegramHandle!.isNotEmpty
+                              ? () => ContactActions.openTelegram(context, item.telegramHandle)
+                              : null,
+                        );
                       },
                       childCount: listings.length,
                     ),
@@ -500,278 +525,6 @@ class _XonadoshHousingTabState extends ConsumerState<XonadoshHousingTab> {
     );
   }
 
-  Widget _buildListingCard(BuildContext context, XonadoshListing item, bool isDark) {
-    final l10n = context.l10n;
-    final photo = item.photos.isNotEmpty ? item.photos.first : null;
-    final currSymbol = XonadoshLocationData.currencySymbols[item.currency] ?? item.currency;
-
-    final periodLabel = item.pricePeriod == 'month'
-        ? l10n.xonadoshPeriodMonth
-        : (item.pricePeriod == 'day'
-            ? l10n.xonadoshPeriodDay
-            : (item.pricePeriod == 'year' ? l10n.xonadoshPeriodYear : l10n.xonadoshPeriodTotal));
-
-    return Container(
-      margin: const EdgeInsets.only(bottom: 14),
-      decoration: BoxDecoration(
-        color: isDark ? const Color(0xFF1E293B) : Colors.white,
-        borderRadius: BorderRadius.circular(14),
-        border: Border.all(
-          color: isDark ? const Color(0xFF334155) : const Color(0xFFE2E8F0),
-          width: 1,
-        ),
-        boxShadow: [
-          BoxShadow(
-            color: Colors.black.withValues(alpha: isDark ? 0.15 : 0.03),
-            blurRadius: 8,
-            offset: const Offset(0, 2),
-          ),
-        ],
-      ),
-      child: InkWell(
-        borderRadius: BorderRadius.circular(14),
-        onTap: () {
-          context.push('${AppRoutes.shell}/listing/${item.id}');
-        },
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            // Image with clean subtle badges
-            Stack(
-              children: [
-                ClipRRect(
-                  borderRadius: const BorderRadius.vertical(top: Radius.circular(14)),
-                  child: photo != null
-                      ? Image.network(
-                          photo,
-                          height: 180,
-                          width: double.infinity,
-                          fit: BoxFit.cover,
-                          errorBuilder: (_, _, _) => _buildPlaceholder(),
-                        )
-                      : _buildPlaceholder(),
-                ),
-
-                // Top Left: Clean Type Badge
-                Positioned(
-                  top: 10,
-                  left: 10,
-                  child: Container(
-                    padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
-                    decoration: BoxDecoration(
-                      color: _getTypeColor(item.type),
-                      borderRadius: BorderRadius.circular(6),
-                    ),
-                    child: Text(
-                      _getTypeLabel(item.type, l10n),
-                      style: const TextStyle(
-                        color: Colors.white,
-                        fontSize: 11,
-                        fontWeight: FontWeight.w700,
-                      ),
-                    ),
-                  ),
-                ),
-
-                // Top Right: Bookmark Button
-                Positioned(
-                  top: 10,
-                  right: 10,
-                  child: GestureDetector(
-                    onTap: () async {
-                      final next = await _bookmarkStore.toggle(item.id);
-                      if (!mounted) return;
-                      setState(() {
-                        _bookmarkedIds
-                          ..clear()
-                          ..addAll(next);
-                      });
-                    },
-                    child: Container(
-                      padding: const EdgeInsets.all(7),
-                      decoration: BoxDecoration(
-                        color: Colors.black.withValues(alpha: 0.5),
-                        shape: BoxShape.circle,
-                      ),
-                      child: Icon(
-                        _bookmarkedIds.contains(item.id)
-                            ? Icons.favorite_rounded
-                            : Icons.favorite_border_rounded,
-                        color: _bookmarkedIds.contains(item.id)
-                            ? const Color(0xFFF43F5E)
-                            : Colors.white,
-                        size: 16,
-                      ),
-                    ),
-                  ),
-                ),
-              ],
-            ),
-
-            // Card Body: Clean hierarchy, fast to scan
-            Padding(
-              padding: const EdgeInsets.all(12),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  // Row: Price & Quick Action buttons
-                  Row(
-                    crossAxisAlignment: CrossAxisAlignment.center,
-                    children: [
-                      Expanded(
-                        child: Row(
-                          crossAxisAlignment: CrossAxisAlignment.baseline,
-                          textBaseline: TextBaseline.alphabetic,
-                          children: [
-                            Text(
-                              '${_formatMoney(item.price)} $currSymbol',
-                              style: const TextStyle(
-                                color: XonaDoshColors.emeraldDark,
-                                fontWeight: FontWeight.w900,
-                                fontSize: 17,
-                                letterSpacing: -0.3,
-                              ),
-                            ),
-                            const SizedBox(width: 4),
-                            Text(
-                              '/ $periodLabel',
-                              style: TextStyle(
-                                fontSize: 12,
-                                color: isDark ? const Color(0xFF94A3B8) : const Color(0xFF64748B),
-                                fontWeight: FontWeight.w500,
-                              ),
-                            ),
-                          ],
-                        ),
-                      ),
-                      // Quick call & telegram action icons
-                      IconButton.filledTonal(
-                        onPressed: () => ContactActions.callPhone(context, item.phoneNumber),
-                        icon: const Icon(Icons.call_rounded, size: 16),
-                        tooltip: 'Qo‘ng‘iroq',
-                        visualDensity: VisualDensity.compact,
-                        style: IconButton.styleFrom(
-                          padding: const EdgeInsets.all(8),
-                          backgroundColor: XonaDoshColors.emerald.withValues(alpha: 0.12),
-                          foregroundColor: XonaDoshColors.emeraldDark,
-                        ),
-                      ),
-                      if (item.telegramHandle != null && item.telegramHandle!.isNotEmpty) ...[
-                        const SizedBox(width: 6),
-                        IconButton.filledTonal(
-                          onPressed: () => ContactActions.openTelegram(context, item.telegramHandle),
-                          icon: const Icon(Icons.send_rounded, size: 15),
-                          tooltip: 'Telegram',
-                          visualDensity: VisualDensity.compact,
-                          style: IconButton.styleFrom(
-                            padding: const EdgeInsets.all(8),
-                            backgroundColor: const Color(0xFF0284C7).withValues(alpha: 0.12),
-                            foregroundColor: const Color(0xFF0284C7),
-                          ),
-                        ),
-                      ],
-                    ],
-                  ),
-                  const SizedBox(height: 4),
-
-                  // Title
-                  Text(
-                    item.title,
-                    maxLines: 1,
-                    overflow: TextOverflow.ellipsis,
-                    style: const TextStyle(
-                      fontWeight: FontWeight.w700,
-                      fontSize: 14,
-                    ),
-                  ),
-                  const SizedBox(height: 4),
-
-                  // District & Specs line
-                  Row(
-                    children: [
-                      Expanded(
-                        child: Text(
-                          '${item.district.isNotEmpty ? item.district : item.city} · ${item.roomsCount} xona · ${item.areaSqm.toStringAsFixed(0)} m² · ${item.floor}/${item.totalFloors}-qavat',
-                          maxLines: 1,
-                          overflow: TextOverflow.ellipsis,
-                          style: TextStyle(
-                            color: isDark ? const Color(0xFF94A3B8) : const Color(0xFF64748B),
-                            fontSize: 12,
-                          ),
-                        ),
-                      ),
-                      if (item.nearestUniversityShort != null) ...[
-                        const SizedBox(width: 6),
-                        Container(
-                          padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 2),
-                          decoration: BoxDecoration(
-                            color: isDark ? const Color(0xFF0F172A) : const Color(0xFFF1F5F9),
-                            borderRadius: BorderRadius.circular(6),
-                          ),
-                          child: Text(
-                            '🎓 ${item.nearestUniversityShort}',
-                            style: TextStyle(
-                              fontSize: 11,
-                              fontWeight: FontWeight.w600,
-                              color: isDark ? const Color(0xFFCBD5E1) : const Color(0xFF475569),
-                            ),
-                          ),
-                        ),
-                      ],
-                    ],
-                  ),
-                ],
-              ),
-            ),
-          ],
-        ),
-      ),
-    );
-  }
-
-  Widget _buildPlaceholder() {
-    return Container(
-      height: 185,
-      color: const Color(0xFFE2E8F0),
-      child: const Center(
-        child: Icon(Icons.apartment_rounded, size: 48, color: Color(0xFF94A3B8)),
-      ),
-    );
-  }
-
-  Color _getTypeColor(String type) {
-    switch (type) {
-      case 'roommate_wanted':
-        return XonaDoshColors.accentPurple;
-      case 'sell':
-        return XonaDoshColors.amber;
-      case 'buy':
-        return const Color(0xFF0284C7);
-      default:
-        return XonaDoshColors.emerald;
-    }
-  }
-
-  String _getTypeLabel(String type, dynamic l10n) {
-    switch (type) {
-      case 'roommate_wanted':
-        return l10n.xonadoshNeedRoommate;
-      case 'sell':
-        return l10n.xonadoshForSale;
-      case 'buy':
-        return l10n.xonadoshSearchTag;
-      default:
-        return l10n.xonadoshRentHouse;
-    }
-  }
-
-  String _formatMoney(double amount) {
-    return amount.toStringAsFixed(0).replaceAllMapped(
-          RegExp(r'(\d{1,3})(?=(\d{3})+(?!\d))'),
-          (Match m) => '${m[1]} ',
-        );
-  }
-
   void _openFilterSheet(BuildContext context) {
     showModalBottomSheet(
       context: context,
@@ -833,9 +586,9 @@ class _FilterBottomSheetState extends ConsumerState<_FilterBottomSheet> {
               child: Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
-                  const Text(
-                    'Qidiruv filtrlari',
-                    style: TextStyle(fontSize: 18, fontWeight: FontWeight.w800),
+                  Text(
+                    l10n.xonadoshSearchFiltersTitle,
+                    style: const TextStyle(fontSize: 18, fontWeight: FontWeight.w800),
                   ),
                   TextButton(
                     onPressed: () {
@@ -862,7 +615,7 @@ class _FilterBottomSheetState extends ConsumerState<_FilterBottomSheet> {
                 padding: const EdgeInsets.all(20),
                 children: [
                   // 1. Region / Viloyat
-                  const Text('📍 Viloyat / Shahar', style: TextStyle(fontWeight: FontWeight.w800, fontSize: 14)),
+                  Text('📍 ${l10n.xonadoshRegionCity}', style: const TextStyle(fontWeight: FontWeight.w800, fontSize: 14)),
                   const SizedBox(height: 8),
                   SingleChildScrollView(
                     scrollDirection: Axis.horizontal,
@@ -898,7 +651,7 @@ class _FilterBottomSheetState extends ConsumerState<_FilterBottomSheet> {
                   // 2. Districts (if region chosen)
                   if (currentRegion != null) ...[
                     const SizedBox(height: 16),
-                    const Text('🏙️ Tuman / Hudud', style: TextStyle(fontWeight: FontWeight.w800, fontSize: 14)),
+                    Text('🏙️ ${l10n.xonadoshDistrictArea}', style: const TextStyle(fontWeight: FontWeight.w800, fontSize: 14)),
                     const SizedBox(height: 8),
                     SingleChildScrollView(
                       scrollDirection: Axis.horizontal,
@@ -930,7 +683,7 @@ class _FilterBottomSheetState extends ConsumerState<_FilterBottomSheet> {
                   const SizedBox(height: 16),
 
                   // 3. Universitet
-                  const Text('🎓 Yaqin Universitet / Institut', style: TextStyle(fontWeight: FontWeight.w800, fontSize: 14)),
+                  Text('🎓 ${l10n.xonadoshNearUniversity}', style: const TextStyle(fontWeight: FontWeight.w800, fontSize: 14)),
                   const SizedBox(height: 8),
                   unisAsync.when(
                     loading: () => const SizedBox(height: 36, child: Center(child: CircularProgressIndicator(strokeWidth: 2))),
@@ -967,14 +720,14 @@ class _FilterBottomSheetState extends ConsumerState<_FilterBottomSheet> {
                   const SizedBox(height: 16),
 
                   // 4. Byudjet / Narx oralig'i
-                  const Text('💰 Oylik byudjet (so‘m)', style: TextStyle(fontWeight: FontWeight.w800, fontSize: 14)),
+                  Text('💰 ${l10n.xonadoshBudgetFilterLabel}', style: const TextStyle(fontWeight: FontWeight.w800, fontSize: 14)),
                   const SizedBox(height: 8),
                   Wrap(
                     spacing: 8,
                     runSpacing: 8,
                     children: [
                       ChoiceChip(
-                        label: const Text('Istalgan narx'),
+                        label: Text(l10n.xonadoshAnyPrice),
                         selected: ref.watch(xonadoshMinPriceProvider) == null && ref.watch(xonadoshMaxPriceProvider) == null,
                         onSelected: (_) {
                           ref.read(xonadoshMinPriceProvider.notifier).state = null;
@@ -1019,7 +772,7 @@ class _FilterBottomSheetState extends ConsumerState<_FilterBottomSheet> {
                   const SizedBox(height: 16),
 
                   // 5. Jins / Kimlar uchun
-                  const Text('👥 Kimlar uchun', style: TextStyle(fontWeight: FontWeight.w800, fontSize: 14)),
+                  Text('👥 ${l10n.xonadoshWhoFor}', style: const TextStyle(fontWeight: FontWeight.w800, fontSize: 14)),
                   const SizedBox(height: 8),
                   Row(
                     children: [
@@ -1055,7 +808,7 @@ class _FilterBottomSheetState extends ConsumerState<_FilterBottomSheet> {
                 width: double.infinity,
                 child: FilledButton(
                   onPressed: () => Navigator.of(context).pop(),
-                  child: const Text('Natijalarni ko‘rish', style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold)),
+                  child: Text(l10n.xonadoshSeeResults, style: const TextStyle(fontSize: 16, fontWeight: FontWeight.bold)),
                 ),
               ),
             ),

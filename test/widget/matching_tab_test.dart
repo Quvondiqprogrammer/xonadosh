@@ -67,6 +67,10 @@ void main() {
 
     expect(find.text('Jasur Saidov'), findsOneWidget);
     expect(find.text('92%'), findsOneWidget);
+    expect(find.text('Why this match'), findsWidgets);
+    expect(find.text('🎓 Bir xil OTM'), findsOneWidget);
+    expect(find.text('Who are you looking for?'), findsOneWidget);
+    expect(find.text('University'), findsOneWidget);
     expect(find.byIcon(Icons.call_rounded), findsWidgets);
     expect(find.byIcon(Icons.send_rounded), findsWidgets);
   });

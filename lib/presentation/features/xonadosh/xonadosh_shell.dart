@@ -8,6 +8,7 @@ import 'package:go_router/go_router.dart';
 import 'package:xonadosh/config/theme.dart';
 import 'package:xonadosh/l10n/l10n_ext.dart';
 import 'package:xonadosh/presentation/common/xonadosh_logo.dart';
+import 'package:xonadosh/presentation/features/xonadosh/widgets/onboarding_welcome.dart';
 import 'package:xonadosh/presentation/providers/xonadosh_providers.dart';
 import 'package:xonadosh/presentation/router/app_routes.dart';
 
@@ -24,13 +25,37 @@ class XonadoshShell extends ConsumerStatefulWidget {
 }
 
 class _XonadoshShellState extends ConsumerState<XonadoshShell> {
-  int _currentIndex = 0;
-
   static const _tabs = <Widget>[
     XonadoshHousingTab(),
     XonadoshMatchingTab(),
     XonadoshColivingTab(),
   ];
+
+  bool _onboardingPrompted = false;
+
+  @override
+  void initState() {
+    super.initState();
+    WidgetsBinding.instance.addPostFrameCallback((_) => _maybeShowOnboarding());
+  }
+
+  Future<void> _maybeShowOnboarding() async {
+    if (_onboardingPrompted || !mounted) return;
+    _onboardingPrompted = true;
+    final seen = await ref.read(onboardingStoreProvider).isSeen();
+    if (!mounted || seen) return;
+    await showModalBottomSheet<void>(
+      context: context,
+      isScrollControlled: true,
+      showDragHandle: false,
+      builder: (ctx) => XonadoshOnboardingSheet(
+        onDone: () {
+          Navigator.of(ctx).pop();
+        },
+      ),
+    );
+    await ref.read(onboardingStoreProvider).markSeen();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -38,6 +63,7 @@ class _XonadoshShellState extends ConsumerState<XonadoshShell> {
     final isDark = theme.brightness == Brightness.dark;
     final l10n = context.l10n;
     final myProfile = ref.watch(xonadoshMyProfileProvider).valueOrNull;
+    final currentIndex = ref.watch(xonadoshShellTabIndexProvider).clamp(0, 2);
 
     return Scaffold(
       extendBody: true,
@@ -59,7 +85,6 @@ class _XonadoshShellState extends ConsumerState<XonadoshShell> {
           ],
         ),
         actions: [
-          // Profile avatar
           IconButton(
             tooltip: l10n.commonEdit,
             onPressed: () => context.push('${AppRoutes.shell}/profile-edit'),
@@ -92,15 +117,15 @@ class _XonadoshShellState extends ConsumerState<XonadoshShell> {
       body: SafeArea(
         bottom: false,
         child: IndexedStack(
-          index: _currentIndex,
+          index: currentIndex,
           children: _tabs,
         ),
       ),
-      bottomNavigationBar: _buildFloatingDock(context, isDark, l10n),
+      bottomNavigationBar: _buildFloatingDock(context, isDark, l10n, currentIndex),
     );
   }
 
-  Widget _buildFloatingDock(BuildContext context, bool isDark, dynamic l10n) {
+  Widget _buildFloatingDock(BuildContext context, bool isDark, dynamic l10n, int currentIndex) {
     return SafeArea(
       top: false,
       child: Padding(
@@ -126,7 +151,7 @@ class _XonadoshShellState extends ConsumerState<XonadoshShell> {
                 ],
               ),
               child: NavigationBar(
-                selectedIndex: _currentIndex,
+                selectedIndex: currentIndex,
                 height: 60,
                 elevation: 0,
                 backgroundColor: Colors.transparent,
@@ -135,7 +160,7 @@ class _XonadoshShellState extends ConsumerState<XonadoshShell> {
                   if (!kIsWeb) {
                     HapticFeedback.selectionClick();
                   }
-                  setState(() => _currentIndex = idx);
+                  ref.read(xonadoshShellTabIndexProvider.notifier).state = idx;
                 },
                 destinations: [
                   NavigationDestination(

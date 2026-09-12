@@ -320,7 +320,7 @@ class AppLocalizationsEn extends AppLocalizations {
       'Duty roster, menu & grocery calculation';
 
   @override
-  String get xonadoshColivingTab => 'Daily & Groceries';
+  String get xonadoshColivingTab => 'Together';
 
   @override
   String get xonadoshContactMethods => 'Contact details';
@@ -490,7 +490,7 @@ class AppLocalizationsEn extends AppLocalizations {
   String get xonadoshFillAllRequired => 'Please fill all required fields!';
 
   @override
-  String get xonadoshFillProfile => 'Fill / Update Roommate Profile';
+  String get xonadoshFillProfile => 'Complete your profile';
 
   @override
   String get xonadoshFillRequiredFieldsSnack =>
@@ -500,7 +500,7 @@ class AppLocalizationsEn extends AppLocalizations {
   String get xonadoshFillSurveyWindow => 'Fill survey (Separate window)';
 
   @override
-  String get xonadoshFindRoommate => 'Find Roommate';
+  String get xonadoshFindRoommate => 'Find a roommate';
 
   @override
   String get xonadoshFloor => 'Floor';
@@ -623,7 +623,7 @@ class AppLocalizationsEn extends AppLocalizations {
   String get xonadoshHousingSubtitle => 'Housing, rent and university distance';
 
   @override
-  String get xonadoshHousingTab => 'Housing & Rent';
+  String get xonadoshHousingTab => 'Rooms';
 
   @override
   String get xonadoshIngredientAmount => 'Amount';
@@ -716,7 +716,7 @@ class AppLocalizationsEn extends AppLocalizations {
   String get xonadoshMatchingSubtitle => 'AI compatibility & personality match';
 
   @override
-  String get xonadoshMatchingTab => 'Find Roommate';
+  String get xonadoshMatchingTab => 'Roommates';
 
   @override
   String get xonadoshMaxBudget => 'Max budget';
@@ -776,14 +776,14 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get xonadoshNoListingsSubtitle =>
-      'Try selecting another province or district.';
+      'Clear filters or post a listing yourself.';
 
   @override
-  String get xonadoshNoListingsTitle => 'No listings found in this area';
+  String get xonadoshNoListingsTitle => 'No rooms match these filters';
 
   @override
   String get xonadoshNoMatchesBody =>
-      'Complete your profile or try different filters.';
+      'Complete your profile — sleep, cleanliness, budget — or change filters.';
 
   @override
   String get xonadoshNoMatchesTitle => 'No matching roommates yet';
@@ -1172,7 +1172,7 @@ class AppLocalizationsEn extends AppLocalizations {
   String get xonadoshWeeklyGrocerySummary => '1-week groceries (3 meals/day):';
 
   @override
-  String get tagline => 'Housing, roommate matching and coliving for students';
+  String get tagline => 'Student housing, roommate matching, and shared living';
 
   @override
   String get login => 'Log in';
@@ -1190,7 +1190,7 @@ class AppLocalizationsEn extends AppLocalizations {
   String get loginTitle => 'Welcome to XonaDosh';
 
   @override
-  String get loginSubtitle => 'Find a room and a roommate';
+  String get loginSubtitle => 'Find a room. Find a roommate. Live together.';
 
   @override
   String get registerUsername => 'Username';
@@ -1239,13 +1239,15 @@ class AppLocalizationsEn extends AppLocalizations {
   String get emptyStateTitle => 'Nothing here yet';
 
   @override
-  String get emptyStateSubtitle => 'Pull to refresh or change filters';
+  String get emptyStateSubtitle =>
+      'Post a listing or complete your profile to get started.';
 
   @override
-  String get errorGeneric => 'Something went wrong';
+  String get errorGeneric => 'Something went wrong. Try again.';
 
   @override
-  String get errorNetwork => 'Network error. Check your connection.';
+  String get errorNetwork =>
+      'No internet. Check your connection and try again.';
 
   @override
   String get commonLogout => 'Log out';
@@ -1402,4 +1404,128 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get xonadoshListingDeleted => 'Listing deleted';
+
+  @override
+  String get xonadoshFindRoom => 'Find a room';
+
+  @override
+  String get xonadoshOnboardingTitle => 'What XonaDosh does';
+
+  @override
+  String get xonadoshOnboardingSubtitle =>
+      'Three simple jobs — instead of messy OLX and Telegram groups.';
+
+  @override
+  String get xonadoshJobHousingTitle => 'Find a room';
+
+  @override
+  String get xonadoshJobHousingBody =>
+      'Student rentals near universities. See price, area, and metro.';
+
+  @override
+  String get xonadoshJobMatchTitle => 'Find a roommate';
+
+  @override
+  String get xonadoshJobMatchBody =>
+      'Match on sleep, cleanliness, and budget — not just a phone number.';
+
+  @override
+  String get xonadoshJobColivingTitle => 'Live together';
+
+  @override
+  String get xonadoshJobColivingBody =>
+      'Chores, groceries, and bills — useful after you have a roommate.';
+
+  @override
+  String get xonadoshOnboardingStart => 'Let’s start';
+
+  @override
+  String get xonadoshEmptyMarketTitle => 'No listings yet';
+
+  @override
+  String get xonadoshEmptyMarketBody =>
+      'Be the first. Post a room or a roommate request — no Telegram group needed.';
+
+  @override
+  String get xonadoshEmptyMatchesNeedProfile =>
+      'Fill in your university, budget, and habits so we can show who fits.';
+
+  @override
+  String get xonadoshEmptyMatchesFiltered =>
+      'These filters hid everyone. Change university or gender, or clear them.';
+
+  @override
+  String get xonadoshColivingUnlockTitle => 'Together tools';
+
+  @override
+  String get xonadoshColivingUnlockTip =>
+      'Chores and groceries are here. Most useful after you have a room or roommate — still open to explore.';
+
+  @override
+  String get xonadoshWhyMatch => 'Why this match';
+
+  @override
+  String get xonadoshMatchFiltersLabel => 'Who are you looking for?';
+
+  @override
+  String get xonadoshUniversityFilter => 'University';
+
+  @override
+  String xonadoshKmAway(String km) {
+    return '$km away';
+  }
+
+  @override
+  String xonadoshNearMetro(String name) {
+    return 'Metro $name';
+  }
+
+  @override
+  String get xonadoshHousingHeroTitle => 'What do you need?';
+
+  @override
+  String get xonadoshFiltersOn => 'Filters on';
+
+  @override
+  String get xonadoshSearchFiltersTitle => 'Search filters';
+
+  @override
+  String get xonadoshSeeResults => 'See results';
+
+  @override
+  String get xonadoshAnyPrice => 'Any price';
+
+  @override
+  String get xonadoshRegionCity => 'Region / city';
+
+  @override
+  String get xonadoshDistrictArea => 'District / area';
+
+  @override
+  String get xonadoshNearUniversity => 'Near university';
+
+  @override
+  String get xonadoshBudgetFilterLabel => 'Monthly budget (UZS)';
+
+  @override
+  String get xonadoshWhoFor => 'Who is it for';
+
+  @override
+  String get xonadoshTypeRent => 'Rent';
+
+  @override
+  String get xonadoshTypeSell => 'Sale';
+
+  @override
+  String get xonadoshTypeBuy => 'Looking';
+
+  @override
+  String get xonadoshMatchStudyMusic =>
+      'Study vibe matches (music / headphones)';
+
+  @override
+  String get xonadoshCallShort => 'Call';
+
+  @override
+  String get xonadoshMoreDetails => 'Details';
 }

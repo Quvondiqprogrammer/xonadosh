@@ -2,7 +2,9 @@ import 'package:flutter/material.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
+import 'package:xonadosh/data/api/onboarding_store.dart';
 import 'package:xonadosh/data/models/xonadosh_models.dart';
 import 'package:xonadosh/l10n/app_localizations.dart';
 import 'package:xonadosh/presentation/auth/login_screen.dart';
@@ -48,6 +50,12 @@ final _emptyOverrides = <Override>[
 ];
 
 void main() {
+  TestWidgetsFlutterBinding.ensureInitialized();
+
+  setUp(() {
+    SharedPreferences.setMockInitialValues({OnboardingStore.key: true});
+  });
+
   testWidgets('login screen pumps', (tester) async {
     await tester.pumpWidget(_wrap(const LoginScreen()));
     await tester.pump();
@@ -67,5 +75,9 @@ void main() {
     expect(find.byType(XonadoshShell), findsOneWidget);
     expect(find.byType(NavigationBar), findsOneWidget);
     expect(find.byIcon(Icons.settings_outlined), findsOneWidget);
+    expect(find.text('Rooms'), findsWidgets);
+    expect(find.text('Roommates'), findsOneWidget);
+    expect(find.text('Together'), findsOneWidget);
+    expect(find.text('Together tools'), findsOneWidget);
   });
 }
