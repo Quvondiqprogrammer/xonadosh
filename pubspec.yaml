@@ -1,0 +1,53 @@
+name: xonadosh
+description: Talabalar uchun uy-joy, xonadosh moslash va birga yashash.
+publish_to: "none"
+version: 12.8.6+69253
+
+environment:
+  sdk: ^3.12.2
+
+dependencies:
+  flutter:
+    sdk: flutter
+  flutter_localizations:
+    sdk: flutter
+  cupertino_icons: ^1.0.8
+  flutter_riverpod: ^2.6.1
+  go_router: ^17.5.0
+  dio: ^5.11.0
+  flutter_secure_storage: ^11.0.0
+  shared_preferences: ^2.5.5
+  flutter_map: ^8.3.2
+  latlong2: ^0.10.1
+  geolocator: ^14.0.3
+  image_picker: ^1.2.3
+  url_launcher: ^6.3.2
+  share_plus: ^13.3.0
+  intl: any
+
+dev_dependencies:
+  flutter_test:
+    sdk: flutter
+  integration_test:
+    sdk: flutter
+  flutter_lints: ^6.0.0
+  flutter_launcher_icons: ^0.14.4
+
+flutter_launcher_icons:
+  android: true
+  ios: true
+  image_path: assets/brand/xonadosh_icon.png
+  adaptive_icon_background: "#FFFFFF"
+  adaptive_icon_foreground: assets/brand/xonadosh_icon.png
+  remove_alpha_ios: true
+  min_sdk_android: 21
+  web:
+    generate: true
+    image_path: assets/brand/xonadosh_icon.png
+    background_color: "#ECFDF5"
+    theme_color: "#059669"
+flutter:
+  uses-material-design: true
+  generate: true
+  assets:
+    - assets/brand/

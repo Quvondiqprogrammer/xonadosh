@@ -1,0 +1,1114 @@
+{
+  "@@locale": "ru",
+  "@commonShare": {
+    "description": "Share button"
+  },
+  "@nikohErrorWithDetail": {
+    "placeholders": {
+      "detail": {
+        "type": "String"
+      }
+    }
+  },
+  "@thousandShort": {
+    "description": "Thousand short suffix"
+  },
+  "@xonadosh1PersonDay": {
+    "description": "Per person per day"
+  },
+  "@xonadosh1PersonWeek": {
+    "description": "Per person per week"
+  },
+  "@xonadosh1WeekGroceries": {
+    "description": "1 week groceries label"
+  },
+  "@xonadosh21Meals7Days": {
+    "description": "21 meals 7 days"
+  },
+  "@xonadosh7DayPlan": {
+    "description": "7-day meal plan title"
+  },
+  "@xonadosh7DaySchedule": {
+    "description": "7-day schedule label"
+  },
+  "@xonadoshAboutSelfHint": {
+    "description": "About self hint"
+  },
+  "@xonadoshActiveStatus": {
+    "description": "Active profile status"
+  },
+  "@xonadoshAdd": {
+    "description": "Add button"
+  },
+  "@xonadoshAddBtn": {
+    "description": "Add button"
+  },
+  "@xonadoshAddMeal": {
+    "description": "Add meal button"
+  },
+  "@xonadoshAddNewRecipeBtn": {
+    "description": "Add new recipe button"
+  },
+  "@xonadoshAddToWeeklyMenu": {
+    "description": "Add to weekly menu button"
+  },
+  "@xonadoshAddressHint": {
+    "description": "Address hint"
+  },
+  "@xonadoshAddressReq": {
+    "description": "Address required label"
+  },
+  "@xonadoshAge": {
+    "description": "Age label"
+  },
+  "@xonadoshAiMatchingBadge": {
+    "description": "AI Matching badge"
+  },
+  "@xonadoshAllBought": {
+    "description": "All items bought toggle"
+  },
+  "@xonadoshAreaSqM": {
+    "description": "Area in square meters label"
+  },
+  "@xonadoshAssignChoreBtn": {
+    "description": "Assign chore button"
+  },
+  "@xonadoshAssignedSnack": {
+    "placeholders": {
+      "title": {
+        "type": "String"
+      },
+      "name": {
+        "type": "String"
+      }
+    }
+  },
+  "@xonadoshBackToListSelection": {
+    "description": "Return to list selection"
+  },
+  "@xonadoshBackToTashkentCenter": {
+    "description": "Back to Tashkent center button"
+  },
+  "@xonadoshBazaarRealPricesFootnote": {
+    "description": "Bazaar real prices footnote"
+  },
+  "@xonadoshBreadCalcTitle": {
+    "description": "Bread calculation title"
+  },
+  "@xonadoshBudgetFriendly": {
+    "description": "Budget friendly price level"
+  },
+  "@xonadoshBudgetPrefix": {
+    "description": "Budget label in xonadosh"
+  },
+  "@xonadoshCall": {
+    "description": "Call button"
+  },
+  "@xonadoshCallBtn": {
+    "description": "Call button label"
+  },
+  "@xonadoshCaloriesKcal": {
+    "description": "Calories label"
+  },
+  "@xonadoshCategoryLabel": {
+    "description": "Category label"
+  },
+  "@xonadoshCleanliness": {
+    "description": "Cleanliness"
+  },
+  "@xonadoshClearFilter": {
+    "description": "Clear filter link"
+  },
+  "@xonadoshColivingDuty": {
+    "description": "Duty tab"
+  },
+  "@xonadoshColivingGroceries": {
+    "description": "Coliving groceries tab"
+  },
+  "@xonadoshColivingMenu": {
+    "description": "Coliving menu tab"
+  },
+  "@xonadoshContactMethods": {
+    "description": "Contact methods title"
+  },
+  "@xonadoshCooking": {
+    "description": "Cooking"
+  },
+  "@xonadoshCookingStepsHint": {
+    "description": "Cooking steps hint"
+  },
+  "@xonadoshCookingStepsLabel": {
+    "description": "Cooking steps label"
+  },
+  "@xonadoshCourseLevel": {
+    "description": "Course level label"
+  },
+  "@xonadoshCourseYear": {
+    "description": "University course year"
+  },
+  "@xonadoshCourseYearSuffix": {
+    "placeholders": {
+      "year": {
+        "type": "int"
+      }
+    }
+  },
+  "@xonadoshCreateListingTitle": {
+    "description": "Create listing screen title"
+  },
+  "@xonadoshCurrency": {
+    "description": "Currency label"
+  },
+  "@xonadoshDailyMealsSchedule": {
+    "description": "Daily meals schedule title"
+  },
+  "@xonadoshDayFriday": {
+    "description": "Friday"
+  },
+  "@xonadoshDayMonday": {
+    "description": "Monday"
+  },
+  "@xonadoshDaySaturday": {
+    "description": "Saturday"
+  },
+  "@xonadoshDaySunday": {
+    "description": "Sunday"
+  },
+  "@xonadoshDayThursday": {
+    "description": "Thursday"
+  },
+  "@xonadoshDayTuesday": {
+    "description": "Tuesday"
+  },
+  "@xonadoshDayWednesday": {
+    "description": "Wednesday"
+  },
+  "@xonadoshDeleteProfileBtn": {
+    "description": "Delete profile button"
+  },
+  "@xonadoshDeleteProfileTitle": {
+    "description": "Delete profile title"
+  },
+  "@xonadoshDeleteSurvey": {
+    "description": "Delete survey button"
+  },
+  "@xonadoshDetailedDesc": {
+    "description": "Detailed description label"
+  },
+  "@xonadoshDetailedDescHint": {
+    "description": "Detailed description hint"
+  },
+  "@xonadoshDistrictExampleHint": {
+    "description": "District example hint"
+  },
+  "@xonadoshDutyDay": {
+    "description": "Duty day dropdown label"
+  },
+  "@xonadoshDutyPersonInCharge": {
+    "description": "Person in charge label"
+  },
+  "@xonadoshDutyRosterTab": {
+    "description": "Duty roster tab"
+  },
+  "@xonadoshDutyTaskName": {
+    "description": "Task name label"
+  },
+  "@xonadoshDutyTaskNameHint": {
+    "description": "Task name hint"
+  },
+  "@xonadoshEdit": {
+    "description": "Edit button in xonadosh"
+  },
+  "@xonadoshEnterDistrictName": {
+    "description": "District name input label"
+  },
+  "@xonadoshErrGeneric": {
+    "description": "Generic error message in xonadosh"
+  },
+  "@xonadoshExitBtn": {
+    "description": "Exit button"
+  },
+  "@xonadoshFaculty": {
+    "description": "Faculty label"
+  },
+  "@xonadoshFacultyField": {
+    "description": "Faculty label"
+  },
+  "@xonadoshFacultyHint": {
+    "description": "Faculty hint"
+  },
+  "@xonadoshFamily": {
+    "description": "Family badge"
+  },
+  "@xonadoshFareMonthly": {
+    "placeholders": {
+      "fare": {
+        "type": "String"
+      },
+      "cur": {
+        "type": "String"
+      },
+      "monthly": {
+        "type": "String"
+      }
+    }
+  },
+  "@xonadoshFillAllRequired": {
+    "description": "Fill all required fields warning"
+  },
+  "@xonadoshFillRequiredFieldsSnack": {
+    "description": "Fill required fields snackbar"
+  },
+  "@xonadoshFillSurveyWindow": {
+    "description": "Button to fill roommate survey"
+  },
+  "@xonadoshFloor": {
+    "description": "Floor label"
+  },
+  "@xonadoshFloorShort": {
+    "description": "Floor short"
+  },
+  "@xonadoshForBoys": {
+    "description": "For boys filter tag"
+  },
+  "@xonadoshForGirls": {
+    "description": "For girls filter tag"
+  },
+  "@xonadoshForSale": {
+    "description": "For sale filter tag"
+  },
+  "@xonadoshFullNameHint": {
+    "description": "Full name hint"
+  },
+  "@xonadoshFullNameReq": {
+    "description": "Full name required label"
+  },
+  "@xonadoshFullNameRequired": {
+    "description": "Full name required"
+  },
+  "@xonadoshGender": {
+    "description": "Gender label"
+  },
+  "@xonadoshGroceryListCount": {
+    "description": "Grocery list title with count"
+  },
+  "@xonadoshGroceryTab": {
+    "description": "Grocery shopping tab"
+  },
+  "@xonadoshHabitAverageClean": {
+    "description": "Average clean habit"
+  },
+  "@xonadoshHabitEarlyBird": {
+    "description": "Early bird habit"
+  },
+  "@xonadoshHabitFlexible": {
+    "description": "Flexible schedule habit"
+  },
+  "@xonadoshHabitGroupStudy": {
+    "description": "Group study habit"
+  },
+  "@xonadoshHabitNightOwl": {
+    "description": "Night owl habit"
+  },
+  "@xonadoshHabitNoSmoking": {
+    "description": "No smoking habit"
+  },
+  "@xonadoshHabitSilentStudy": {
+    "description": "Silent study habit"
+  },
+  "@xonadoshHabitSmoker": {
+    "description": "Smoking habit"
+  },
+  "@xonadoshHabitStrictClean": {
+    "description": "Strict clean habit"
+  },
+  "@xonadoshHabitsAndRoutine": {
+    "description": "Habits and routine title"
+  },
+  "@xonadoshIngredientAmount": {
+    "description": "Ingredient amount hint"
+  },
+  "@xonadoshIngredientCountLine": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      },
+      "names": {
+        "type": "String"
+      }
+    }
+  },
+  "@xonadoshIngredientName": {
+    "description": "Ingredient name hint"
+  },
+  "@xonadoshLifestyle": {
+    "description": "Lifestyle title"
+  },
+  "@xonadoshListingCreatedSuccess": {
+    "description": "Listing created success snackbar"
+  },
+  "@xonadoshListingNotFound": {
+    "description": "Listing not found message"
+  },
+  "@xonadoshListingTitleHint": {
+    "description": "Listing title hint"
+  },
+  "@xonadoshListingTitleReq": {
+    "description": "Listing title required label"
+  },
+  "@xonadoshLookingForRoommateHint": {
+    "description": "Looking for roommate hint"
+  },
+  "@xonadoshMapHomesAndUnis": {
+    "description": "Map screen title"
+  },
+  "@xonadoshMasterDegree": {
+    "description": "Master degree level"
+  },
+  "@xonadoshMatchBudgetExact": {
+    "description": "Match reason budget exact"
+  },
+  "@xonadoshMatchCleanMod": {
+    "description": "Match reason clean moderate"
+  },
+  "@xonadoshMatchCleanStrict": {
+    "description": "Match reason clean strict"
+  },
+  "@xonadoshMatchLabel": {
+    "description": "Match score label"
+  },
+  "@xonadoshMatchNoSmoking": {
+    "description": "Match reason no smoking"
+  },
+  "@xonadoshMatchSameUni": {
+    "description": "Match reason same university"
+  },
+  "@xonadoshMatchSleepEarly": {
+    "description": "Match reason sleep early"
+  },
+  "@xonadoshMatchSleepFlex": {
+    "description": "Match reason sleep flex"
+  },
+  "@xonadoshMatchSleepNight": {
+    "description": "Match reason sleep night"
+  },
+  "@xonadoshMatchStudyGroup": {
+    "description": "Match reason study group"
+  },
+  "@xonadoshMatchStudySilent": {
+    "description": "Match reason study silent"
+  },
+  "@xonadoshMaxBudget": {
+    "description": "Max budget label"
+  },
+  "@xonadoshMealPickedSnack": {
+    "placeholders": {
+      "day": {
+        "type": "String"
+      },
+      "name": {
+        "type": "String"
+      }
+    }
+  },
+  "@xonadoshMediumBudget": {
+    "description": "Medium price level"
+  },
+  "@xonadoshMenuTab": {
+    "description": "Meal menu tab"
+  },
+  "@xonadoshMinBudget": {
+    "description": "Min budget label"
+  },
+  "@xonadoshMonthlyBudget": {
+    "description": "Monthly budget title"
+  },
+  "@xonadoshNearUniHeader": {
+    "description": "Near university housing header"
+  },
+  "@xonadoshNearbyUniOptional": {
+    "description": "Nearby university dropdown title"
+  },
+  "@xonadoshNewDuty": {
+    "description": "New duty dialog title"
+  },
+  "@xonadoshNewRecipe": {
+    "description": "New recipe button"
+  },
+  "@xonadoshNoDutyToday": {
+    "description": "No duty today message"
+  },
+  "@xonadoshNoListingsSubtitle": {
+    "description": "No listings subtitle"
+  },
+  "@xonadoshNoListingsTitle": {
+    "description": "No listings title"
+  },
+  "@xonadoshNoRecipeFound": {
+    "description": "No recipe found text"
+  },
+  "@xonadoshOtherDistrictCustom": {
+    "description": "Manual district input option"
+  },
+  "@xonadoshPaymentPeriod": {
+    "description": "Payment period label"
+  },
+  "@xonadoshPeopleCount": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "@xonadoshPerMonth": {
+    "description": "Per month"
+  },
+  "@xonadoshPerPerson": {
+    "description": "Per person"
+  },
+  "@xonadoshPersonalData": {
+    "description": "Personal data section title"
+  },
+  "@xonadoshPhoneReq": {
+    "description": "Phone number required label"
+  },
+  "@xonadoshPhoneRequired": {
+    "description": "Phone number required label"
+  },
+  "@xonadoshPhotoUrlOptional": {
+    "description": "Photo URL input hint"
+  },
+  "@xonadoshPickMealSubtitle": {
+    "placeholders": {
+      "meal": {
+        "type": "String"
+      }
+    }
+  },
+  "@xonadoshPickMealTitle": {
+    "placeholders": {
+      "day": {
+        "type": "String"
+      }
+    }
+  },
+  "@xonadoshPrepTimeMinutes": {
+    "description": "Preparation time label"
+  },
+  "@xonadoshPriceLevelLabel": {
+    "description": "Price level label"
+  },
+  "@xonadoshPriceReq": {
+    "description": "Price required label"
+  },
+  "@xonadoshPriceRequired": {
+    "description": "Price required label"
+  },
+  "@xonadoshRecipeCatalogCount": {
+    "description": "Recipe catalog count"
+  },
+  "@xonadoshRecipeNameHint": {
+    "description": "Dish name hint"
+  },
+  "@xonadoshRecipeNameReq": {
+    "description": "Dish name required label"
+  },
+  "@xonadoshRecommendedTitle": {
+    "description": "Recommended roommates section title"
+  },
+  "@xonadoshRegionHeader": {
+    "description": "Region filter header"
+  },
+  "@xonadoshRoommatesCountLabel": {
+    "description": "Roommates count label"
+  },
+  "@xonadoshRoomsCount": {
+    "description": "Rooms count label"
+  },
+  "@xonadoshRoomsShort": {
+    "description": "Rooms short"
+  },
+  "@xonadoshSearchNearThisUni": {
+    "description": "Search near this university button"
+  },
+  "@xonadoshSearchPlaceholder": {
+    "description": "Search placeholder"
+  },
+  "@xonadoshSearchRecipeHint": {
+    "description": "Search recipe hint"
+  },
+  "@xonadoshSearchTag": {
+    "description": "Search tag"
+  },
+  "@xonadoshSeekingRent": {
+    "description": "Seeking rent status"
+  },
+  "@xonadoshSelectDistrictReq": {
+    "description": "District required label"
+  },
+  "@xonadoshSelectRegionReq": {
+    "description": "Region required label"
+  },
+  "@xonadoshShareListing": {
+    "placeholders": {
+      "title": {
+        "type": "String"
+      },
+      "price": {
+        "type": "String"
+      },
+      "currency": {
+        "type": "String"
+      },
+      "district": {
+        "type": "String"
+      },
+      "address": {
+        "type": "String"
+      },
+      "phone": {
+        "type": "String"
+      }
+    }
+  },
+  "@xonadoshSleepSchedule": {
+    "description": "Sleep schedule"
+  },
+  "@xonadoshSmoking": {
+    "description": "Smoking"
+  },
+  "@xonadoshStayBtn": {
+    "description": "Stay in form button"
+  },
+  "@xonadoshStep1Subtitle": {
+    "description": "Step 1 subtitle"
+  },
+  "@xonadoshStep1Title": {
+    "description": "Step 1 listing title"
+  },
+  "@xonadoshStep2Subtitle": {
+    "description": "Step 2 subtitle"
+  },
+  "@xonadoshStep2Title": {
+    "description": "Step 2 listing title"
+  },
+  "@xonadoshStep3Subtitle": {
+    "description": "Step 3 subtitle"
+  },
+  "@xonadoshStep3Title": {
+    "description": "Step 3 title"
+  },
+  "@xonadoshStep4Subtitle": {
+    "description": "Step 4 subtitle"
+  },
+  "@xonadoshStep4Title": {
+    "description": "Step 4 title"
+  },
+  "@xonadoshStep5Subtitle": {
+    "description": "Step 5 subtitle"
+  },
+  "@xonadoshStep5Title": {
+    "description": "Step 5 title"
+  },
+  "@xonadoshStep6Subtitle": {
+    "description": "Step 6 subtitle"
+  },
+  "@xonadoshStep6Title": {
+    "description": "Step 6 title"
+  },
+  "@xonadoshStep7Subtitle": {
+    "description": "Step 7 subtitle"
+  },
+  "@xonadoshStep7Title": {
+    "description": "Step 7 title"
+  },
+  "@xonadoshStudyEnvironment": {
+    "description": "Study environment"
+  },
+  "@xonadoshSurveyReadyPercent": {
+    "placeholders": {
+      "pct": {
+        "type": "int"
+      }
+    }
+  },
+  "@xonadoshSwapMeal": {
+    "description": "Swap meal action"
+  },
+  "@xonadoshTargetAudience": {
+    "description": "Target audience label"
+  },
+  "@xonadoshTaskWithDay": {
+    "placeholders": {
+      "title": {
+        "type": "String"
+      },
+      "day": {
+        "type": "String"
+      }
+    }
+  },
+  "@xonadoshTelegram": {
+    "description": "Telegram label"
+  },
+  "@xonadoshTelegramChat": {
+    "description": "Write on Telegram button"
+  },
+  "@xonadoshToday": {
+    "description": "Today label"
+  },
+  "@xonadoshTotalFloors": {
+    "description": "Total floors label"
+  },
+  "@xonadoshUniNone": {
+    "description": "No university selected option"
+  },
+  "@xonadoshUniPlace": {
+    "description": "University place title"
+  },
+  "@xonadoshWantToExitTitle": {
+    "description": "Exit confirmation title"
+  },
+  "@xonadoshWeeklyDutySchedule": {
+    "description": "Weekly duty roster title"
+  },
+  "@xonadoshWeeklyGrocerySummary": {
+    "description": "Weekly grocery summary"
+  },
+  "appName": "XonaDosh",
+  "commonAdd": "Добавить",
+  "commonAll": "Все",
+  "commonBack": "Назад",
+  "commonCancel": "Отмена",
+  "commonClear": "Очистить",
+  "commonClose": "Закрыть",
+  "commonConfirm": "Подтвердить",
+  "commonDelete": "Удалить",
+  "commonEdit": "Редактировать",
+  "commonErrorOccurred": "Произошла ошибка",
+  "commonNext": "Далее",
+  "commonNo": "Нет",
+  "commonOk": "OK",
+  "commonRetry": "Повторить",
+  "commonSave": "Сохранить",
+  "commonSelect": "Выбрать",
+  "commonShare": "Поделиться",
+  "commonYes": "Да",
+  "currencyUzsSuffix": "сум",
+  "dashboardServiceXonadosh": "XonaDosh",
+  "inbarakaCallSeller": "Позвонить",
+  "inbarakaViewOnMap": "Карта",
+  "loginButton": "Войти",
+  "loginNoAccount": "Нет аккаунта? Зарегистрируйтесь",
+  "loginPassword": "Пароль",
+  "loginUsername": "Логин или телефон",
+  "nikohErrorWithDetail": "Ошибка: {detail}",
+  "registerButton": "Зарегистрироваться",
+  "registerFullName": "ФИО",
+  "registerTitle": "Создать аккаунт",
+  "settingsLogout": "Выйти",
+  "thousandShort": "тыс",
+  "xonadosh1PersonDay": "1 ЧЕЛ / ДЕНЬ (3 приема)",
+  "xonadosh1PersonWeek": "1 ЧЕЛ / НЕДЕЛЯ",
+  "xonadosh1WeekGroceries": "Покупки на 1 неделю (3 раза/день):",
+  "xonadosh21Meals7Days": "21 прием • 7 дней",
+  "xonadosh7DayPlan": "Расписание на 7 дней (21 прием)",
+  "xonadosh7DaySchedule": "7-дневное расписание (21 прием)",
+  "xonadoshAboutSelf": "О себе:",
+  "xonadoshAboutSelfHint": "О ваших интересах, характере, свободном времени...",
+  "xonadoshActiveStatus": "Активен",
+  "xonadoshAdd": "Добавить",
+  "xonadoshAddBtn": "Добавить",
+  "xonadoshAddCustomMeal": "Добавить своё блюдо",
+  "xonadoshAddMeal": "+ Добавить блюдо",
+  "xonadoshAddMealSubtitle": "Введите рецепт и продукты",
+  "xonadoshAddMealTitle": "Добавить блюдо",
+  "xonadoshAddNewRecipe": "Добавить новый рецепт",
+  "xonadoshAddNewRecipeBtn": "Добавьте собственное блюдо",
+  "xonadoshAddToWeeklyMenu": "Добавить в недельное меню",
+  "xonadoshAddressHint": "Улица, номер дома, остановка или ориентир",
+  "xonadoshAddressReq": "Ориентир / Точный адрес *",
+  "xonadoshAge": "Возраст",
+  "xonadoshAiMatchBasis": "Основы совместимости AI:",
+  "xonadoshAiMatchingBadge": "AI Совместимость",
+  "xonadoshAll": "Все",
+  "xonadoshAllBought": "Все куплено",
+  "xonadoshAllDistricts": "Все районы",
+  "xonadoshAllRegions": "Все регионы",
+  "xonadoshAllUniversities": "Все ВУЗы",
+  "xonadoshAmenitiesTitle": "Удобства",
+  "xonadoshAreaShort": "Площадь",
+  "xonadoshAreaSqM": "Площадь (м²)",
+  "xonadoshAssignChoreBtn": "Назначить",
+  "xonadoshAssignDutyTitle": "Назначить дежурного",
+  "xonadoshAssignedSnack": "«{name}» назначен на {title}",
+  "xonadoshAudienceAll": "Для всех",
+  "xonadoshAudienceBoys": "Парням / студентам",
+  "xonadoshAudienceFamily": "Для семьи",
+  "xonadoshAudienceGirls": "Девушкам / студенткам",
+  "xonadoshBackToListSelection": "Вернуться к выбору из списка",
+  "xonadoshBackToTashkentCenter": "Вернуться в центр Ташкента",
+  "xonadoshBazaarRealPricesFootnote": "Рассчитано на основе 100% реальных цен рынков Чорсу и Куйлюк",
+  "xonadoshBoys": "Парни",
+  "xonadoshBoysOnly": "Только парням",
+  "xonadoshBreadAndTea": "Хлеб и чай",
+  "xonadoshBreadCalcTitle": "🍞 Еженедельный расчет хлеба",
+  "xonadoshBreakfast": "Завтрак",
+  "xonadoshBudgetFriendly": "Эконом 🟢",
+  "xonadoshBudgetHint": "Диапазон аренды, который вы готовы платить",
+  "xonadoshBudgetPrefix": "Бюджет:",
+  "xonadoshBudgetRangeLabel": "Диапазон бюджета",
+  "xonadoshBus": "Автобус",
+  "xonadoshCalcFailed": "Расчёт не выполнен",
+  "xonadoshCall": "Позвонить",
+  "xonadoshCallBtn": "Позвонить",
+  "xonadoshCaloriesKcal": "Калории (ккал)",
+  "xonadoshCatFry": "Жареное",
+  "xonadoshCatNational": "Национальное",
+  "xonadoshCatQuick": "Быстрое",
+  "xonadoshCatSoup": "Суп",
+  "xonadoshCatStudent": "Студенческое",
+  "xonadoshCategoryLabel": "Категория",
+  "xonadoshCleanliness": "Чистота и порядок:",
+  "xonadoshClearFilter": "Сбросить фильтр",
+  "xonadoshClearFilters": "Сбросить все фильтры",
+  "xonadoshColivingDuty": "Дежурство",
+  "xonadoshColivingGroceries": "Покупки",
+  "xonadoshColivingMenu": "Меню",
+  "xonadoshColivingSubtitle": "Дежурства, меню и расчет покупок",
+  "xonadoshColivingTab": "Быт и Покупки",
+  "xonadoshContactMethods": "Способы связи",
+  "xonadoshCooking": "Приготовление еды:",
+  "xonadoshCookingStepsHint": "В какой последовательности обжаривать или варить ингредиенты...",
+  "xonadoshCookingStepsLabel": "Краткая инструкция по приготовлению",
+  "xonadoshCourseLevel": "Курс / Уровень:",
+  "xonadoshCourseYear": "курс",
+  "xonadoshCourseYearSuffix": "{year} курс",
+  "xonadoshCreateListingTitle": "Разместить новое объявление",
+  "xonadoshCurrency": "Валюта",
+  "xonadoshDailyExpensePerPerson": "Расход на 1 чел. в день: ~16 000–18 000 сум (3-разовое + хлеб + чай)",
+  "xonadoshDailyMealsSchedule": "Ежедневное 3-разовое меню",
+  "xonadoshDayFriday": "Пятница",
+  "xonadoshDayMonday": "Понедельник",
+  "xonadoshDaySaturday": "Суббота",
+  "xonadoshDaySunday": "Воскресенье",
+  "xonadoshDayThursday": "Четверг",
+  "xonadoshDayTuesday": "Вторник",
+  "xonadoshDayWednesday": "Среда",
+  "xonadoshDefaultInstructions": "Очистите продукты и готовьте на среднем огне.",
+  "xonadoshDeleteProfileBtn": "Удалить",
+  "xonadoshDeleteProfileTitle": "Удалить анкету",
+  "xonadoshDeleteSearchStop": "Удалить анкету (остановить поиск)",
+  "xonadoshDeleteSurvey": "Удалить анкету",
+  "xonadoshDescriptionTitle": "Описание",
+  "xonadoshDetailedDesc": "Подробное описание",
+  "xonadoshDetailedDescHint": "Условия квартиры, правила, близость к метро/транспорту и требования...",
+  "xonadoshDinner": "Ужин",
+  "xonadoshDistrictExampleHint": "Например: Центр Ургута, махалля Шодлик",
+  "xonadoshDistrictShort": "Район",
+  "xonadoshDutyDay": "День",
+  "xonadoshDutyPersonInCharge": "Имя ответственного сожителя",
+  "xonadoshDutyRosterTab": "Дежурства",
+  "xonadoshDutySchedule": "График дежурств на неделю",
+  "xonadoshDutyTaskName": "Название задачи",
+  "xonadoshDutyTaskNameHint": "Например: Уборка дома",
+  "xonadoshEdit": "Редактировать",
+  "xonadoshEnterAddress": "Введите адрес",
+  "xonadoshEnterDistrictName": "Введите название района / города *",
+  "xonadoshEnterMealName": "Введите название блюда",
+  "xonadoshEnterPhone": "Введите телефон",
+  "xonadoshEnterPrice": "Введите цену",
+  "xonadoshEnterTitle": "Введите заголовок",
+  "xonadoshErrGeneric": "Произошла ошибка: {error}",
+  "xonadoshEstimatedTimeMinutes": "минут",
+  "xonadoshExitBtn": "Выйти",
+  "xonadoshFaculty": "Факультет / Направление",
+  "xonadoshFacultyField": "Факультет / Направление",
+  "xonadoshFacultyHint": "Например: Программная инженерия",
+  "xonadoshFamily": "Семья",
+  "xonadoshFareMonthly": "{fare} {cur} ({monthly}/мес.)",
+  "xonadoshFestive": "Праздничное",
+  "xonadoshFillAllRequired": "Пожалуйста, заполните все обязательные поля!",
+  "xonadoshFillProfile": "Заполнить / обновить анкету",
+  "xonadoshFillRequiredFieldsSnack": "Пожалуйста, заполните все обязательные поля!",
+  "xonadoshFillSurveyWindow": "Заполнить анкету (Отдельное окно)",
+  "xonadoshFindRoommate": "Поиск Соседа",
+  "xonadoshFloor": "Этаж",
+  "xonadoshFloorShort": "этаж",
+  "xonadoshForBoys": "Парням",
+  "xonadoshForGirls": "Девушкам",
+  "xonadoshForRent": "🏠 Аренда",
+  "xonadoshForSale": "💰 Продажа",
+  "xonadoshFree": "Бесплатно",
+  "xonadoshFullNameHint": "Например: Сардор Алиев",
+  "xonadoshFullNameReq": "Ваше имя и фамилия *",
+  "xonadoshFullNameRequired": "Имя и фамилия *",
+  "xonadoshGender": "Пол",
+  "xonadoshGirl": "Девушка",
+  "xonadoshGirls": "Девушки",
+  "xonadoshGirlsOnly": "Только девушкам",
+  "xonadoshGlobalUzbekistan": "Мир и Узбекистан",
+  "xonadoshGraduateWorker": "Выпускник / Работающий",
+  "xonadoshGroceryList": "Список покупок",
+  "xonadoshGroceryListCount": "Список покупок ({count} товаров):",
+  "xonadoshGroceryTab": "Покупки",
+  "xonadoshGuy": "Парень",
+  "xonadoshHabitAverageClean": "Умеренно",
+  "xonadoshHabitBalconySmoke": "Только на балконе",
+  "xonadoshHabitCookRotates": "По очереди",
+  "xonadoshHabitCookSelf": "Каждый для себя",
+  "xonadoshHabitEarlyBird": "Ранний подъем",
+  "xonadoshHabitEatOut": "Чаще вне дома",
+  "xonadoshHabitFlexible": "Гибкий график",
+  "xonadoshHabitGroupStudy": "В группе",
+  "xonadoshHabitIDontSmoke": "Не курю",
+  "xonadoshHabitMusicStudy": "Наушники / музыка",
+  "xonadoshHabitNightOwl": "Ночная сова",
+  "xonadoshHabitNoSmoking": "Не курит",
+  "xonadoshHabitRelaxedClean": "Свободно",
+  "xonadoshHabitSilentStudy": "В тишине",
+  "xonadoshHabitSmoker": "Курит",
+  "xonadoshHabitStrictClean": "Очень чистоплотный",
+  "xonadoshHabitsAiHint": "ИИ подбирает соседей по этим привычкам",
+  "xonadoshHabitsAndRoutine": "Привычки и распорядок:",
+  "xonadoshHousingSubtitle": "Жилье, аренда и расстояние до вуза",
+  "xonadoshHousingTab": "Жилье и Аренда",
+  "xonadoshIngredientAmount": "Количество",
+  "xonadoshIngredientCountLine": "{count} продуктов: {names}",
+  "xonadoshIngredientName": "Название",
+  "xonadoshIngredientsPerPerson": "Продукты (на 1 человека)",
+  "xonadoshLifestyle": "Образ жизни и распорядок",
+  "xonadoshListingCreatedSuccess": "Ваше объявление успешно размещено!",
+  "xonadoshListingNotFound": "Объявление не найдено",
+  "xonadoshListingTitleHint": "Например: Уютная 2-комнатная квартира в центре",
+  "xonadoshListingTitleReq": "Заголовок объявления *",
+  "xonadoshLookingFor": "Какого соседа ищет:",
+  "xonadoshLookingForRoommateHint": "Например: Аккуратные, учащиеся в ТАТУ, желательно из IT-сферы...",
+  "xonadoshLunch": "Обед",
+  "xonadoshMapHomesAndUnis": "Жилье и ВУЗы на карте",
+  "xonadoshMasterDegree": "Магистр",
+  "xonadoshMatchBudgetExact": "Бюджет аренды полностью совпадает",
+  "xonadoshMatchCleanMod": "Требования к чистоте совпадают (Умеренно)",
+  "xonadoshMatchCleanStrict": "Требования к чистоте совпадают (Очень чистоплотный)",
+  "xonadoshMatchLabel": "Совместимость",
+  "xonadoshMatchNoSmoking": "Без вредных привычек (Не курит)",
+  "xonadoshMatchSameUni": "Студент того же вуза ({uni})",
+  "xonadoshMatchSleepEarly": "Режим сна 100% совпадает (Ранний подъем)",
+  "xonadoshMatchSleepFlex": "Режим сна 100% совпадает (Гибкий)",
+  "xonadoshMatchSleepNight": "Режим сна 100% совпадает (Ночная сова)",
+  "xonadoshMatchStudyGroup": "Атмосфера для учебы совпадает (В группе)",
+  "xonadoshMatchStudySilent": "Атмосфера для учебы совпадает (В тишине)",
+  "xonadoshMatchingSubtitle": "ИИ совместимость и анализ характера",
+  "xonadoshMatchingTab": "Поиск Соседа",
+  "xonadoshMaxBudget": "Максимальный бюджет",
+  "xonadoshMeSelf": "Я",
+  "xonadoshMealNameReq": "Название *",
+  "xonadoshMealPickedSnack": "Для {day} выбрано «{name}»",
+  "xonadoshMediumBudget": "Средний 🟡",
+  "xonadoshMenu": "Меню",
+  "xonadoshMenuTab": "Меню",
+  "xonadoshMetro": "Метро",
+  "xonadoshMinBudget": "Минимальный бюджет",
+  "xonadoshMonth": "мес",
+  "xonadoshMonthlyBudget": "Месячный бюджет на аренду",
+  "xonadoshNearUniHeader": "Ближайшее жилье к вашему вузу:",
+  "xonadoshNearbyStop": "Ближайшая остановка",
+  "xonadoshNearbyUniOptional": "Ближайший университет (ВУЗ) - Необязательно",
+  "xonadoshNeedRoommate": "👥 Нужен сосед",
+  "xonadoshNewDuty": "Новое дежурство",
+  "xonadoshNewRecipe": "Добавить новый",
+  "xonadoshNoDutyToday": "Сегодня дежурств нет ✅",
+  "xonadoshNoListingsSubtitle": "Попробуйте выбрать другую область или район.",
+  "xonadoshNoListingsTitle": "В этом регионе объявлений не найдено",
+  "xonadoshNoMatchesBody": "Заполните анкету или измените фильтры.",
+  "xonadoshNoMatchesTitle": "Подходящих соседей пока нет",
+  "xonadoshNoRecipeFound": "Такое блюдо не найдено",
+  "xonadoshOtherDistrictCustom": "✍️ Другой район / город (введу сам)...",
+  "xonadoshOtherDistrictWrite": "Другой район / город",
+  "xonadoshPaymentPeriod": "Период оплаты",
+  "xonadoshPeopleCount": "{count} чел.",
+  "xonadoshPerMonth": "в месяц",
+  "xonadoshPerPerson": "с чел.",
+  "xonadoshPeriodDay": "день",
+  "xonadoshPeriodMonth": "мес",
+  "xonadoshPeriodTotal": "всего",
+  "xonadoshPeriodYear": "год",
+  "xonadoshPersonalData": "Личные данные",
+  "xonadoshPersonalDataHint": "Основные данные, чтобы соседи узнали вас лучше",
+  "xonadoshPhoneReq": "Номер телефона *",
+  "xonadoshPhoneRequired": "Номер телефона *",
+  "xonadoshPhotoUrlOptional": "URL фото (необязательно)",
+  "xonadoshPickMealSubtitle": "Замените блюдо на {meal}",
+  "xonadoshPickMealTitle": "Выбор блюда: {day}",
+  "xonadoshPostListing": "Подать объявление",
+  "xonadoshPrepOrder": "Порядок приготовления",
+  "xonadoshPrepTimeMinutes": "Время приготовления (мин)",
+  "xonadoshPriceLevelLabel": "Уровень цен",
+  "xonadoshPriceRange": "Цена",
+  "xonadoshPriceReq": "Цена *",
+  "xonadoshPriceRequired": "Цена *",
+  "xonadoshProfileDeleted": "Ваша анкета успешно удалена",
+  "xonadoshProfileSaved": "Анкета успешно сохранена",
+  "xonadoshPublicTransit": "Общественный транспорт",
+  "xonadoshPublishListing": "Опубликовать объявление",
+  "xonadoshQuickPick": "Быстрый выбор",
+  "xonadoshRecipeCatalog": "Каталог Рецептов",
+  "xonadoshRecipeCatalogCount": "Каталог рецептов ({count})",
+  "xonadoshRecipeNameHint": "Например: Лаваш с яйцом, Жареная картошка...",
+  "xonadoshRecipeNameReq": "Название блюда *",
+  "xonadoshRecommendBadge": "Совет",
+  "xonadoshRecommendedTitle": "Рекомендованные соседи",
+  "xonadoshRegionHeader": "Регион / Область:",
+  "xonadoshRentBudget": "Бюджет на аренду в месяц",
+  "xonadoshRentHouse": "🏠 Аренда",
+  "xonadoshRoommatesCountLabel": "Количество соседей:",
+  "xonadoshRoomsCount": "Количество комнат",
+  "xonadoshRoomsShort": "комн.",
+  "xonadoshSaveAndAddMenu": "Сохранить и добавить в меню",
+  "xonadoshSaveAndFind": "Сохранить и найти соседей",
+  "xonadoshSaveChanges": "Сохранить изменения",
+  "xonadoshSaving": "Сохранение...",
+  "xonadoshSearchNearThisUni": "Искать рядом с этим ВУЗом",
+  "xonadoshSearchPlaceholder": "Поиск: регион, город, район, вуз...",
+  "xonadoshSearchRecipeHint": "Поиск по названию блюда или ингредиенту...",
+  "xonadoshSearchTag": "🔍 Поиск",
+  "xonadoshSeekingRent": "Ищу аренду",
+  "xonadoshSelectDestUni": "Выберите вуз назначения",
+  "xonadoshSelectDistrictReq": "Район / Город *",
+  "xonadoshSelectRegionReq": "Область / Регион *",
+  "xonadoshSelectUniversity": "Выберите университет",
+  "xonadoshSelected": "Выбрано",
+  "xonadoshServingsRange": "4–6 человек",
+  "xonadoshShareListing": "🏠 {title}\n💰 {price} {currency}\n📍 {district}, {address}\n📞 {phone}",
+  "xonadoshSleepEarlyHours": "Жаворонок (06:00–23:00)",
+  "xonadoshSleepNightHours": "Сова (после 01:00)",
+  "xonadoshSleepSchedule": "Режим сна:",
+  "xonadoshSmoking": "Курение / Сигареты:",
+  "xonadoshStayBtn": "Продолжить (Остаться)",
+  "xonadoshStep1Subtitle": "Выберите тип вашего объявления",
+  "xonadoshStep1Title": "1. Тип объявления и цель",
+  "xonadoshStep2Subtitle": "Регионы Узбекистана или международный город",
+  "xonadoshStep2Title": "2. Местоположение и адрес",
+  "xonadoshStep3Subtitle": "Цена, валюта и период оплаты",
+  "xonadoshStep3Title": "3. Заголовок и цена",
+  "xonadoshStep4Subtitle": "Комнаты, этаж и для кого предназначено",
+  "xonadoshStep4Title": "4. Параметры и аудитория",
+  "xonadoshStep5Subtitle": "Выберите из рекомендуемых качественных фото или загрузите свои",
+  "xonadoshStep5Title": "5. Фотографии жилья",
+  "xonadoshStep6Subtitle": "Отметьте все имеющиеся условия",
+  "xonadoshStep6Title": "6. Удобства и оснащение",
+  "xonadoshStep7Subtitle": "Телефон и Telegram для связи",
+  "xonadoshStep7Title": "7. Контакты и описание",
+  "xonadoshStudentYear": "курс",
+  "xonadoshStudyEnvironment": "Обстановка для учебы:",
+  "xonadoshSurveyEditTitle": "Редактировать анкету",
+  "xonadoshSurveyNewHint": "После сохранения ИИ отберёт соседей по бюджету, вузу и привычкам.",
+  "xonadoshSurveyReadyPercent": "{pct}% готово",
+  "xonadoshSurveySavedHint": "После сохранения данные сразу обновятся в списке соседей.",
+  "xonadoshSurveyStatus": "Статус анкеты",
+  "xonadoshSurveyStepHabits": "Привычки",
+  "xonadoshSurveyStepPersonal": "Личное",
+  "xonadoshSurveyStepReqs": "Запросы",
+  "xonadoshSurveyStepUni": "ВУЗ",
+  "xonadoshSurveySubtitle": "Найдите студентов, подходящих по характеру, вузу, бюджету и привычкам — с помощью ИИ.",
+  "xonadoshSurveyTitle": "Анкета соседа",
+  "xonadoshSwapMeal": "Заменить",
+  "xonadoshTargetAudience": "Для кого предназначено:",
+  "xonadoshTaskWithDay": "Задача: {title} ({day})",
+  "xonadoshTelegram": "Telegram",
+  "xonadoshTelegramChat": "Написать в Telegram",
+  "xonadoshTelegramShort": "TG",
+  "xonadoshToday": "Сегодня",
+  "xonadoshTooltip": "Сонадош — поиск жилья и соседей",
+  "xonadoshTotal": "всего",
+  "xonadoshTotalFloors": "Всего этажей",
+  "xonadoshTotalWeeklyBreadCost": "Еженедельный расход на хлеб",
+  "xonadoshTransportAnalysis": "Анализ транспорта",
+  "xonadoshTypeForRent": "Аренда",
+  "xonadoshTypeForSale": "Продажа",
+  "xonadoshTypeLookingRent": "Ищу аренду",
+  "xonadoshTypeRentHome": "Аренда (жильё)",
+  "xonadoshTypeRoommate": "Сосед",
+  "xonadoshTypeRoommateNeeded": "Ищу соседа",
+  "xonadoshUniFallback": "ВУЗ",
+  "xonadoshUniNone": "Не привязано к ВУЗу / Не выбрано",
+  "xonadoshUniNotLinked": "Не привязано к вузу",
+  "xonadoshUniOptionalLabel": "Ближайший вуз (необязательно)",
+  "xonadoshUniPlace": "Место учебы (ВУЗ)",
+  "xonadoshViewAllListings": "Смотреть все объявления",
+  "xonadoshWantToExitTitle": "Хотите выйти?",
+  "xonadoshWeeklyBreadCalc": "🍞 Еженедельный расчет хлеба",
+  "xonadoshWeeklyDutySchedule": "Еженедельный график дежурств",
+  "xonadoshWeeklyGrocerySummary": "Покупки на 1 неделю (3 раза/день):",
+  "tagline": "Жильё, подбор соседа и совместное проживание для студентов",
+  "login": "Войти",
+  "register": "Регистрация",
+  "settings": "Настройки",
+  "accountDelete": "Удалить аккаунт",
+  "loginTitle": "Добро пожаловать в XonaDosh",
+  "loginSubtitle": "Найдите жильё и соседа",
+  "registerUsername": "Логин",
+  "registerPhone": "Телефон",
+  "registerPassword": "Пароль (мин. 8)",
+  "registerHaveAccount": "Есть аккаунт? Войти",
+  "settingsLanguage": "Язык",
+  "settingsTheme": "Тема",
+  "settingsThemeLight": "Светлая",
+  "settingsThemeDark": "Тёмная",
+  "settingsThemeSystem": "Системная",
+  "settingsPrivacy": "Политика конфиденциальности",
+  "settingsTerms": "Условия использования",
+  "accountDeleteTitle": "Удалить аккаунт?",
+  "accountDeleteBody": "Аккаунт и данные будут удалены навсегда.",
+  "accountDeleteConfirm": "Удалить навсегда",
+  "emptyStateTitle": "Пока пусто",
+  "emptyStateSubtitle": "Обновите или измените фильтры",
+  "errorGeneric": "Что-то пошло не так",
+  "errorNetwork": "Ошибка сети. Проверьте соединение.",
+  "commonLogout": "Выйти",
+  "commonLoading": "Загрузка…",
+  "xonadoshContactOptions": "Связь",
+  "xonadoshCopyPhone": "Скопировать номер",
+  "xonadoshPhoneCopied": "Номер скопирован",
+  "xonadoshCopiedToClipboard": "Скопировано в буфер",
+  "xonadoshWhatsApp": "WhatsApp",
+  "xonadoshWebCallHint": "На компьютере скопируйте номер или откройте WhatsApp / Telegram.",
+  "xonadoshOpenLinkFailed": "Не удалось открыть ссылку",
+  "xonadoshPickFromGallery": "Из галереи",
+  "xonadoshTakePhoto": "Сделать фото",
+  "xonadoshUploadingPhoto": "Загрузка фото…",
+  "xonadoshPhotoUploadFailed": "Не удалось загрузить фото",
+  "xonadoshUseMyLocation": "Моё местоположение",
+  "xonadoshLocationDenied": "Нет доступа к геолокации",
+  "xonadoshLocationFailed": "Не удалось определить местоположение",
+  "reportContentTitle": "Пожаловаться на контент",
+  "reportContentBody": "Опишите, почему этот контент нужно проверить. Модерация рассмотрит жалобу в течение 24 часов.",
+  "reportContentSubjectListing": "Объявление: {title}",
+  "@reportContentSubjectListing": {
+    "placeholders": {
+      "title": {"type": "String"}
+    }
+  },
+  "reportContentSubjectProfile": "Анкета: {name}",
+  "@reportContentSubjectProfile": {
+    "placeholders": {
+      "name": {"type": "String"}
+    }
+  },
+  "reportReasonSpam": "Спам или фейковое объявление",
+  "reportReasonInappropriate": "Неуместный или оскорбительный контент",
+  "reportReasonHarassment": "Домогательства или оскорбления",
+  "reportReasonScam": "Мошенничество или обман",
+  "reportReasonOther": "Другое",
+  "reportDetailsHint": "Дополнительные детали (необязательно)",
+  "reportSubmit": "Отправить жалобу",
+  "reportSubmitted": "Жалоба принята. Спасибо.",
+  "reportLoginRequired": "Войдите, чтобы пожаловаться",
+  "reportAction": "Пожаловаться",
+  "blockUser": "Заблокировать",
+  "unblockUser": "Разблокировать",
+  "blockUserTitle": "Заблокировать пользователя?",
+  "blockUserBody": "Его объявления и анкета больше не будут видны. Разблокировать можно позже в Настройках.",
+  "userBlocked": "Пользователь заблокирован. Контент скрыт.",
+  "userUnblocked": "Пользователь разблокирован."
+}

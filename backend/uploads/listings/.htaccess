@@ -1,0 +1,4 @@
+# Deny PHP execution
+<FilesMatch "\.php$">
+  Require all denied
+</FilesMatch>

@@ -1,0 +1,1177 @@
+{
+  "@@locale": "uz",
+  "@appName": {
+    "description": "Label or text for app name in UI"
+  },
+  "@commonAdd": {
+    "description": "Label or text for common add in UI"
+  },
+  "@commonCancel": {
+    "description": "Label or text for common cancel in UI"
+  },
+  "@commonClear": {
+    "description": "Label or text for common clear in UI"
+  },
+  "@commonClose": {
+    "description": "Label or text for common close in UI"
+  },
+  "@commonConfirm": {
+    "description": "Label or text for common confirm in UI"
+  },
+  "@commonDelete": {
+    "description": "Label or text for common delete in UI"
+  },
+  "@commonEdit": {
+    "description": "Label or text for common edit in UI"
+  },
+  "@commonNext": {
+    "description": "Label or text for common next in UI"
+  },
+  "@commonOk": {
+    "description": "Label or text for common ok in UI"
+  },
+  "@commonRetry": {
+    "description": "Label or text for common retry in UI"
+  },
+  "@commonSave": {
+    "description": "Label or text for common save in UI"
+  },
+  "@commonSelect": {
+    "description": "Label or text for common select in UI"
+  },
+  "@commonShare": {
+    "description": "Share button"
+  },
+  "@loginButton": {
+    "description": "Button label for login button"
+  },
+  "@loginNoAccount": {
+    "description": "Label or text for login no account in UI"
+  },
+  "@loginPassword": {
+    "description": "Label or text for login password in UI"
+  },
+  "@loginUsername": {
+    "description": "Label or text for login username in UI"
+  },
+  "@nikohErrorWithDetail": {
+    "placeholders": {
+      "detail": {
+        "type": "String"
+      }
+    }
+  },
+  "@registerButton": {
+    "description": "Button label for register button"
+  },
+  "@registerFullName": {
+    "description": "Label or text for register full name in UI"
+  },
+  "@registerTitle": {
+    "description": "Title text for register title"
+  },
+  "@settingsLogout": {
+    "description": "Label or text for settings logout in UI"
+  },
+  "@thousandShort": {
+    "description": "Thousand short suffix"
+  },
+  "@xonadosh1PersonDay": {
+    "description": "Per person per day"
+  },
+  "@xonadosh1PersonWeek": {
+    "description": "Per person per week"
+  },
+  "@xonadosh1WeekGroceries": {
+    "description": "1 week groceries label"
+  },
+  "@xonadosh21Meals7Days": {
+    "description": "21 meals 7 days"
+  },
+  "@xonadosh7DayPlan": {
+    "description": "7-day meal plan title"
+  },
+  "@xonadosh7DaySchedule": {
+    "description": "7-day schedule label"
+  },
+  "@xonadoshAboutSelfHint": {
+    "description": "About self hint"
+  },
+  "@xonadoshActiveStatus": {
+    "description": "Active profile status"
+  },
+  "@xonadoshAdd": {
+    "description": "Add button"
+  },
+  "@xonadoshAddBtn": {
+    "description": "Add button"
+  },
+  "@xonadoshAddMeal": {
+    "description": "Add meal button"
+  },
+  "@xonadoshAddNewRecipeBtn": {
+    "description": "Add new recipe button"
+  },
+  "@xonadoshAddToWeeklyMenu": {
+    "description": "Add to weekly menu button"
+  },
+  "@xonadoshAddressHint": {
+    "description": "Address hint"
+  },
+  "@xonadoshAddressReq": {
+    "description": "Address required label"
+  },
+  "@xonadoshAge": {
+    "description": "Age label"
+  },
+  "@xonadoshAiMatchingBadge": {
+    "description": "AI Matching badge"
+  },
+  "@xonadoshAllBought": {
+    "description": "All items bought toggle"
+  },
+  "@xonadoshAreaSqM": {
+    "description": "Area in square meters label"
+  },
+  "@xonadoshAssignChoreBtn": {
+    "description": "Assign chore button"
+  },
+  "@xonadoshAssignedSnack": {
+    "placeholders": {
+      "title": {
+        "type": "String"
+      },
+      "name": {
+        "type": "String"
+      }
+    }
+  },
+  "@xonadoshBackToListSelection": {
+    "description": "Return to list selection"
+  },
+  "@xonadoshBackToTashkentCenter": {
+    "description": "Back to Tashkent center button"
+  },
+  "@xonadoshBazaarRealPricesFootnote": {
+    "description": "Bazaar real prices footnote"
+  },
+  "@xonadoshBreadCalcTitle": {
+    "description": "Bread calculation title"
+  },
+  "@xonadoshBudgetFriendly": {
+    "description": "Budget friendly price level"
+  },
+  "@xonadoshBudgetPrefix": {
+    "description": "Budget label in xonadosh"
+  },
+  "@xonadoshCall": {
+    "description": "Call button"
+  },
+  "@xonadoshCallBtn": {
+    "description": "Call button label"
+  },
+  "@xonadoshCaloriesKcal": {
+    "description": "Calories label"
+  },
+  "@xonadoshCategoryLabel": {
+    "description": "Category label"
+  },
+  "@xonadoshCleanliness": {
+    "description": "Cleanliness"
+  },
+  "@xonadoshClearFilter": {
+    "description": "Clear filter link"
+  },
+  "@xonadoshColivingDuty": {
+    "description": "Duty tab"
+  },
+  "@xonadoshColivingGroceries": {
+    "description": "Coliving groceries tab"
+  },
+  "@xonadoshColivingMenu": {
+    "description": "Coliving menu tab"
+  },
+  "@xonadoshContactMethods": {
+    "description": "Contact methods title"
+  },
+  "@xonadoshCooking": {
+    "description": "Cooking"
+  },
+  "@xonadoshCookingStepsHint": {
+    "description": "Cooking steps hint"
+  },
+  "@xonadoshCookingStepsLabel": {
+    "description": "Cooking steps label"
+  },
+  "@xonadoshCourseLevel": {
+    "description": "Course level label"
+  },
+  "@xonadoshCourseYear": {
+    "description": "University course year"
+  },
+  "@xonadoshCourseYearSuffix": {
+    "placeholders": {
+      "year": {
+        "type": "int"
+      }
+    }
+  },
+  "@xonadoshCreateListingTitle": {
+    "description": "Create listing screen title"
+  },
+  "@xonadoshCurrency": {
+    "description": "Currency label"
+  },
+  "@xonadoshDailyMealsSchedule": {
+    "description": "Daily meals schedule title"
+  },
+  "@xonadoshDayFriday": {
+    "description": "Friday"
+  },
+  "@xonadoshDayMonday": {
+    "description": "Monday"
+  },
+  "@xonadoshDaySaturday": {
+    "description": "Saturday"
+  },
+  "@xonadoshDaySunday": {
+    "description": "Sunday"
+  },
+  "@xonadoshDayThursday": {
+    "description": "Thursday"
+  },
+  "@xonadoshDayTuesday": {
+    "description": "Tuesday"
+  },
+  "@xonadoshDayWednesday": {
+    "description": "Wednesday"
+  },
+  "@xonadoshDeleteProfileBtn": {
+    "description": "Delete profile button"
+  },
+  "@xonadoshDeleteProfileTitle": {
+    "description": "Delete profile title"
+  },
+  "@xonadoshDeleteSurvey": {
+    "description": "Delete survey button"
+  },
+  "@xonadoshDetailedDesc": {
+    "description": "Detailed description label"
+  },
+  "@xonadoshDetailedDescHint": {
+    "description": "Detailed description hint"
+  },
+  "@xonadoshDistrictExampleHint": {
+    "description": "District example hint"
+  },
+  "@xonadoshDutyDay": {
+    "description": "Duty day dropdown label"
+  },
+  "@xonadoshDutyPersonInCharge": {
+    "description": "Person in charge label"
+  },
+  "@xonadoshDutyRosterTab": {
+    "description": "Duty roster tab"
+  },
+  "@xonadoshDutyTaskName": {
+    "description": "Task name label"
+  },
+  "@xonadoshDutyTaskNameHint": {
+    "description": "Task name hint"
+  },
+  "@xonadoshEdit": {
+    "description": "Edit button in xonadosh"
+  },
+  "@xonadoshEnterDistrictName": {
+    "description": "District name input label"
+  },
+  "@xonadoshErrGeneric": {
+    "description": "Generic error message in xonadosh"
+  },
+  "@xonadoshExitBtn": {
+    "description": "Exit button"
+  },
+  "@xonadoshFaculty": {
+    "description": "Faculty label"
+  },
+  "@xonadoshFacultyField": {
+    "description": "Faculty label"
+  },
+  "@xonadoshFacultyHint": {
+    "description": "Faculty hint"
+  },
+  "@xonadoshFamily": {
+    "description": "Family badge"
+  },
+  "@xonadoshFareMonthly": {
+    "placeholders": {
+      "fare": {
+        "type": "String"
+      },
+      "cur": {
+        "type": "String"
+      },
+      "monthly": {
+        "type": "String"
+      }
+    }
+  },
+  "@xonadoshFillAllRequired": {
+    "description": "Fill all required fields warning"
+  },
+  "@xonadoshFillRequiredFieldsSnack": {
+    "description": "Fill required fields snackbar"
+  },
+  "@xonadoshFillSurveyWindow": {
+    "description": "Button to fill roommate survey"
+  },
+  "@xonadoshFloor": {
+    "description": "Floor label"
+  },
+  "@xonadoshFloorShort": {
+    "description": "Floor short"
+  },
+  "@xonadoshForBoys": {
+    "description": "For boys filter tag"
+  },
+  "@xonadoshForGirls": {
+    "description": "For girls filter tag"
+  },
+  "@xonadoshForSale": {
+    "description": "For sale filter tag"
+  },
+  "@xonadoshFullNameHint": {
+    "description": "Full name hint"
+  },
+  "@xonadoshFullNameReq": {
+    "description": "Full name required label"
+  },
+  "@xonadoshFullNameRequired": {
+    "description": "Full name required"
+  },
+  "@xonadoshGender": {
+    "description": "Gender label"
+  },
+  "@xonadoshGroceryListCount": {
+    "description": "Grocery list title with count"
+  },
+  "@xonadoshGroceryTab": {
+    "description": "Grocery shopping tab"
+  },
+  "@xonadoshHabitAverageClean": {
+    "description": "Average clean habit"
+  },
+  "@xonadoshHabitEarlyBird": {
+    "description": "Early bird habit"
+  },
+  "@xonadoshHabitFlexible": {
+    "description": "Flexible schedule habit"
+  },
+  "@xonadoshHabitGroupStudy": {
+    "description": "Group study habit"
+  },
+  "@xonadoshHabitNightOwl": {
+    "description": "Night owl habit"
+  },
+  "@xonadoshHabitNoSmoking": {
+    "description": "No smoking habit"
+  },
+  "@xonadoshHabitSilentStudy": {
+    "description": "Silent study habit"
+  },
+  "@xonadoshHabitSmoker": {
+    "description": "Smoking habit"
+  },
+  "@xonadoshHabitStrictClean": {
+    "description": "Strict clean habit"
+  },
+  "@xonadoshHabitsAndRoutine": {
+    "description": "Habits and routine title"
+  },
+  "@xonadoshIngredientAmount": {
+    "description": "Ingredient amount hint"
+  },
+  "@xonadoshIngredientCountLine": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      },
+      "names": {
+        "type": "String"
+      }
+    }
+  },
+  "@xonadoshIngredientName": {
+    "description": "Ingredient name hint"
+  },
+  "@xonadoshLifestyle": {
+    "description": "Lifestyle title"
+  },
+  "@xonadoshListingCreatedSuccess": {
+    "description": "Listing created success snackbar"
+  },
+  "@xonadoshListingNotFound": {
+    "description": "Listing not found message"
+  },
+  "@xonadoshListingTitleHint": {
+    "description": "Listing title hint"
+  },
+  "@xonadoshListingTitleReq": {
+    "description": "Listing title required label"
+  },
+  "@xonadoshLookingForRoommateHint": {
+    "description": "Looking for roommate hint"
+  },
+  "@xonadoshMapHomesAndUnis": {
+    "description": "Map screen title"
+  },
+  "@xonadoshMasterDegree": {
+    "description": "Master degree level"
+  },
+  "@xonadoshMatchBudgetExact": {
+    "description": "Match reason budget exact"
+  },
+  "@xonadoshMatchCleanMod": {
+    "description": "Match reason clean moderate"
+  },
+  "@xonadoshMatchCleanStrict": {
+    "description": "Match reason clean strict"
+  },
+  "@xonadoshMatchLabel": {
+    "description": "Match score label"
+  },
+  "@xonadoshMatchNoSmoking": {
+    "description": "Match reason no smoking"
+  },
+  "@xonadoshMatchSameUni": {
+    "description": "Match reason same university"
+  },
+  "@xonadoshMatchSleepEarly": {
+    "description": "Match reason sleep early"
+  },
+  "@xonadoshMatchSleepFlex": {
+    "description": "Match reason sleep flex"
+  },
+  "@xonadoshMatchSleepNight": {
+    "description": "Match reason sleep night"
+  },
+  "@xonadoshMatchStudyGroup": {
+    "description": "Match reason study group"
+  },
+  "@xonadoshMatchStudySilent": {
+    "description": "Match reason study silent"
+  },
+  "@xonadoshMaxBudget": {
+    "description": "Max budget label"
+  },
+  "@xonadoshMealPickedSnack": {
+    "placeholders": {
+      "day": {
+        "type": "String"
+      },
+      "name": {
+        "type": "String"
+      }
+    }
+  },
+  "@xonadoshMediumBudget": {
+    "description": "Medium price level"
+  },
+  "@xonadoshMenuTab": {
+    "description": "Meal menu tab"
+  },
+  "@xonadoshMinBudget": {
+    "description": "Min budget label"
+  },
+  "@xonadoshMonthlyBudget": {
+    "description": "Monthly budget title"
+  },
+  "@xonadoshNearUniHeader": {
+    "description": "Near university housing header"
+  },
+  "@xonadoshNearbyUniOptional": {
+    "description": "Nearby university dropdown title"
+  },
+  "@xonadoshNewDuty": {
+    "description": "New duty dialog title"
+  },
+  "@xonadoshNewRecipe": {
+    "description": "New recipe button"
+  },
+  "@xonadoshNoDutyToday": {
+    "description": "No duty today message"
+  },
+  "@xonadoshNoListingsSubtitle": {
+    "description": "No listings subtitle"
+  },
+  "@xonadoshNoListingsTitle": {
+    "description": "No listings title"
+  },
+  "@xonadoshNoRecipeFound": {
+    "description": "No recipe found text"
+  },
+  "@xonadoshOtherDistrictCustom": {
+    "description": "Manual district input option"
+  },
+  "@xonadoshPaymentPeriod": {
+    "description": "Payment period label"
+  },
+  "@xonadoshPeopleCount": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "@xonadoshPerMonth": {
+    "description": "Per month"
+  },
+  "@xonadoshPerPerson": {
+    "description": "Per person"
+  },
+  "@xonadoshPersonalData": {
+    "description": "Personal data section title"
+  },
+  "@xonadoshPhoneReq": {
+    "description": "Phone number required label"
+  },
+  "@xonadoshPhoneRequired": {
+    "description": "Phone number required label"
+  },
+  "@xonadoshPhotoUrlOptional": {
+    "description": "Photo URL input hint"
+  },
+  "@xonadoshPickMealSubtitle": {
+    "placeholders": {
+      "meal": {
+        "type": "String"
+      }
+    }
+  },
+  "@xonadoshPickMealTitle": {
+    "placeholders": {
+      "day": {
+        "type": "String"
+      }
+    }
+  },
+  "@xonadoshPrepTimeMinutes": {
+    "description": "Preparation time label"
+  },
+  "@xonadoshPriceLevelLabel": {
+    "description": "Price level label"
+  },
+  "@xonadoshPriceReq": {
+    "description": "Price required label"
+  },
+  "@xonadoshPriceRequired": {
+    "description": "Price required label"
+  },
+  "@xonadoshRecipeCatalogCount": {
+    "description": "Recipe catalog count"
+  },
+  "@xonadoshRecipeNameHint": {
+    "description": "Dish name hint"
+  },
+  "@xonadoshRecipeNameReq": {
+    "description": "Dish name required label"
+  },
+  "@xonadoshRecommendedTitle": {
+    "description": "Recommended roommates section title"
+  },
+  "@xonadoshRegionHeader": {
+    "description": "Region filter header"
+  },
+  "@xonadoshRoommatesCountLabel": {
+    "description": "Roommates count label"
+  },
+  "@xonadoshRoomsCount": {
+    "description": "Rooms count label"
+  },
+  "@xonadoshRoomsShort": {
+    "description": "Rooms short"
+  },
+  "@xonadoshSearchNearThisUni": {
+    "description": "Search near this university button"
+  },
+  "@xonadoshSearchPlaceholder": {
+    "description": "Search placeholder"
+  },
+  "@xonadoshSearchRecipeHint": {
+    "description": "Search recipe hint"
+  },
+  "@xonadoshSearchTag": {
+    "description": "Search tag"
+  },
+  "@xonadoshSeekingRent": {
+    "description": "Seeking rent status"
+  },
+  "@xonadoshSelectDistrictReq": {
+    "description": "District required label"
+  },
+  "@xonadoshSelectRegionReq": {
+    "description": "Region required label"
+  },
+  "@xonadoshShareListing": {
+    "placeholders": {
+      "title": {
+        "type": "String"
+      },
+      "price": {
+        "type": "String"
+      },
+      "currency": {
+        "type": "String"
+      },
+      "district": {
+        "type": "String"
+      },
+      "address": {
+        "type": "String"
+      },
+      "phone": {
+        "type": "String"
+      }
+    }
+  },
+  "@xonadoshSleepSchedule": {
+    "description": "Sleep schedule"
+  },
+  "@xonadoshSmoking": {
+    "description": "Smoking"
+  },
+  "@xonadoshStayBtn": {
+    "description": "Stay in form button"
+  },
+  "@xonadoshStep1Subtitle": {
+    "description": "Step 1 subtitle"
+  },
+  "@xonadoshStep1Title": {
+    "description": "Step 1 listing title"
+  },
+  "@xonadoshStep2Subtitle": {
+    "description": "Step 2 subtitle"
+  },
+  "@xonadoshStep2Title": {
+    "description": "Step 2 listing title"
+  },
+  "@xonadoshStep3Subtitle": {
+    "description": "Step 3 subtitle"
+  },
+  "@xonadoshStep3Title": {
+    "description": "Step 3 title"
+  },
+  "@xonadoshStep4Subtitle": {
+    "description": "Step 4 subtitle"
+  },
+  "@xonadoshStep4Title": {
+    "description": "Step 4 title"
+  },
+  "@xonadoshStep5Subtitle": {
+    "description": "Step 5 subtitle"
+  },
+  "@xonadoshStep5Title": {
+    "description": "Step 5 title"
+  },
+  "@xonadoshStep6Subtitle": {
+    "description": "Step 6 subtitle"
+  },
+  "@xonadoshStep6Title": {
+    "description": "Step 6 title"
+  },
+  "@xonadoshStep7Subtitle": {
+    "description": "Step 7 subtitle"
+  },
+  "@xonadoshStep7Title": {
+    "description": "Step 7 title"
+  },
+  "@xonadoshStudyEnvironment": {
+    "description": "Study environment"
+  },
+  "@xonadoshSurveyReadyPercent": {
+    "placeholders": {
+      "pct": {
+        "type": "int"
+      }
+    }
+  },
+  "@xonadoshSwapMeal": {
+    "description": "Swap meal action"
+  },
+  "@xonadoshTargetAudience": {
+    "description": "Target audience label"
+  },
+  "@xonadoshTaskWithDay": {
+    "placeholders": {
+      "title": {
+        "type": "String"
+      },
+      "day": {
+        "type": "String"
+      }
+    }
+  },
+  "@xonadoshTelegram": {
+    "description": "Telegram label"
+  },
+  "@xonadoshTelegramChat": {
+    "description": "Write on Telegram button"
+  },
+  "@xonadoshToday": {
+    "description": "Today label"
+  },
+  "@xonadoshTotalFloors": {
+    "description": "Total floors label"
+  },
+  "@xonadoshUniNone": {
+    "description": "No university selected option"
+  },
+  "@xonadoshUniPlace": {
+    "description": "University place title"
+  },
+  "@xonadoshWantToExitTitle": {
+    "description": "Exit confirmation title"
+  },
+  "@xonadoshWeeklyDutySchedule": {
+    "description": "Weekly duty roster title"
+  },
+  "@xonadoshWeeklyGrocerySummary": {
+    "description": "Weekly grocery summary"
+  },
+  "appName": "XonaDosh",
+  "commonAdd": "Qo'shish",
+  "commonAll": "Barchasi",
+  "commonBack": "Orqaga",
+  "commonCancel": "Bekor qilish",
+  "commonClear": "Tozalash",
+  "commonClose": "Yopish",
+  "commonConfirm": "Tasdiqlash",
+  "commonDelete": "O‘chirish",
+  "commonEdit": "Tahrirlash",
+  "commonErrorOccurred": "Xatolik yuz berdi",
+  "commonNext": "Keyingi",
+  "commonNo": "Yo‘q",
+  "commonOk": "OK",
+  "commonRetry": "Qayta urinish",
+  "commonSave": "Saqlash",
+  "commonSelect": "Tanlash",
+  "commonShare": "Ulashish",
+  "commonYes": "Ha",
+  "currencyUzsSuffix": "so'm",
+  "dashboardServiceXonadosh": "XonaDosh",
+  "inbarakaCallSeller": "Qo‘ng‘iroq qilish",
+  "inbarakaViewOnMap": "Xarita",
+  "loginButton": "Kirish",
+  "loginNoAccount": "Hisob yo‘qmi? Ro‘yxatdan o‘ting",
+  "loginPassword": "Parol",
+  "loginUsername": "Login yoki telefon",
+  "nikohErrorWithDetail": "Xato: {detail}",
+  "registerButton": "Ro‘yxatdan o‘tish",
+  "registerFullName": "To‘liq ism",
+  "registerTitle": "Hisob yaratish",
+  "settingsLogout": "Chiqish",
+  "thousandShort": "ming",
+  "xonadosh1PersonDay": "1 KISHI / KUN (3 mahal)",
+  "xonadosh1PersonWeek": "1 KISHI / HAFTA",
+  "xonadosh1WeekGroceries": "1 haftalik bozorlik (3 mahal/kun):",
+  "xonadosh21Meals7Days": "21 mahal • 7 kun",
+  "xonadosh7DayPlan": "7 Kunlik Jadval (21 mahal)",
+  "xonadosh7DaySchedule": "7 Kunlik Jadval (21 mahal)",
+  "xonadoshAboutSelf": "O‘zi haqida:",
+  "xonadoshAboutSelfHint": "Qiziqishlaringiz, xarakteringiz, bo‘sh vaqtingiz haqida...",
+  "xonadoshActiveStatus": "Faol",
+  "xonadoshAdd": "Qo‘shish",
+  "xonadoshAddBtn": "Qo‘shish",
+  "xonadoshAddCustomMeal": "O‘z qo‘lingiz bilan taom qo‘shish",
+  "xonadoshAddMeal": "+ Taom qo'shish",
+  "xonadoshAddMealSubtitle": "O‘z retseptingiz va masalliqlarini kiriting",
+  "xonadoshAddMealTitle": "Yangi taom qo‘shish",
+  "xonadoshAddNewRecipe": "Yangi retsept qo‘shish",
+  "xonadoshAddNewRecipeBtn": "O‘zingiz yangi taom qo‘shing",
+  "xonadoshAddToWeeklyMenu": "Haftalik menyuga qo‘shish",
+  "xonadoshAddressHint": "Ko‘cha, uy raqami, bekat yoki mashhur mo‘ljal",
+  "xonadoshAddressReq": "Mo‘ljal / Aniq manzil *",
+  "xonadoshAge": "Yoshi",
+  "xonadoshAiMatchBasis": "AI Moslik Asoslari:",
+  "xonadoshAiMatchingBadge": "AI Moslik",
+  "xonadoshAll": "Barchasi",
+  "xonadoshAllBought": "Barchasi olindi",
+  "xonadoshAllDistricts": "Barcha tumanlar",
+  "xonadoshAllRegions": "Barcha hududlar",
+  "xonadoshAllUniversities": "Barcha OTMlar",
+  "xonadoshAmenitiesTitle": "Qulayliklar va jihozlar",
+  "xonadoshAreaShort": "Maydon",
+  "xonadoshAreaSqM": "Maydon (m²)",
+  "xonadoshAssignChoreBtn": "Biriktirish",
+  "xonadoshAssignDutyTitle": "Navbatchi tayinlash",
+  "xonadoshAssignedSnack": "{title} uchun “{name}” navbatchi qilindi",
+  "xonadoshAudienceAll": "Barchaga",
+  "xonadoshAudienceBoys": "Yigitlarga / talabalarga",
+  "xonadoshAudienceFamily": "Oila uchun",
+  "xonadoshAudienceGirls": "Qizlarga / talabalarga",
+  "xonadoshBackToListSelection": "Ro‘yxatdan tanlashga qaytish",
+  "xonadoshBackToTashkentCenter": "Toshkent markaziga qaytish",
+  "xonadoshBazaarRealPricesFootnote": "Chorsu va Qo'yliq dehqon bozorlarining 100% real narxlari asosida hisoblangan",
+  "xonadoshBoys": "Yigitlar",
+  "xonadoshBoysOnly": "Faqat yigitlarga",
+  "xonadoshBreadAndTea": "Non va choy",
+  "xonadoshBreadCalcTitle": "🍞 Haftalik Non Hisob-Kitobi",
+  "xonadoshBreakfast": "Nonushta",
+  "xonadoshBudgetFriendly": "Tejamkor 🟢",
+  "xonadoshBudgetHint": "Xonadoshlik uchun to‘lashga tayyor summa oralig‘i",
+  "xonadoshBudgetPrefix": "Byudjeti:",
+  "xonadoshBudgetRangeLabel": "Byudjet oralig‘i",
+  "xonadoshBus": "Avtobus",
+  "xonadoshCalcFailed": "Hisob-kitob qilinmadi",
+  "xonadoshCall": "Qo‘ng‘iroq",
+  "xonadoshCallBtn": "Qo‘ng‘iroq qilish",
+  "xonadoshCaloriesKcal": "Kaloriya (kkal)",
+  "xonadoshCatFry": "Qovurma",
+  "xonadoshCatNational": "Milliy taom",
+  "xonadoshCatQuick": "Tezkor taom",
+  "xonadoshCatSoup": "Suyuq taom",
+  "xonadoshCatStudent": "Talaba taomi",
+  "xonadoshCategoryLabel": "Kategoriya",
+  "xonadoshCleanliness": "Tozalik va Tartib:",
+  "xonadoshClearFilter": "Filtrni tozalash",
+  "xonadoshClearFilters": "Barcha filtrlarni tozalash",
+  "xonadoshColivingDuty": "Navbatchilik",
+  "xonadoshColivingGroceries": "Bozorlik",
+  "xonadoshColivingMenu": "Menyu",
+  "xonadoshColivingSubtitle": "Navbatchilik, menyu & bozorlik hisobi",
+  "xonadoshColivingTab": "Kundalik & Bozorlik",
+  "xonadoshContactMethods": "Aloqa vositalari",
+  "xonadoshCooking": "Ovqat tayyorlash:",
+  "xonadoshCookingStepsHint": "Masalliqlar qanday ketma-ketlikda qovuriladi yoki qaynatiladi...",
+  "xonadoshCookingStepsLabel": "Tayyorlash bo‘yicha qisqa ko‘rsatma",
+  "xonadoshCourseLevel": "Kurs / Bosqich:",
+  "xonadoshCourseYear": "kurs",
+  "xonadoshCourseYearSuffix": "{year}-kurs",
+  "xonadoshCreateListingTitle": "Yangi E‘lon Joylashtirish",
+  "xonadoshCurrency": "Valyuta",
+  "xonadoshDailyExpensePerPerson": "1 kishi uchun kunlik xarajat: ~16 000–18 000 so'm (3 mahal + non + choy)",
+  "xonadoshDailyMealsSchedule": "Har Kun 3 Mahal Ovqat Jadvali",
+  "xonadoshDayFriday": "Juma",
+  "xonadoshDayMonday": "Dushanba",
+  "xonadoshDaySaturday": "Shanba",
+  "xonadoshDaySunday": "Yakshanba",
+  "xonadoshDayThursday": "Payshanba",
+  "xonadoshDayTuesday": "Seshanba",
+  "xonadoshDayWednesday": "Chorshanba",
+  "xonadoshDefaultInstructions": "Masalliqlarni tozalab, o‘rtacha olovda pishiriladi.",
+  "xonadoshDeleteProfileBtn": "O‘chirish",
+  "xonadoshDeleteProfileTitle": "Anketani o‘chirish",
+  "xonadoshDeleteSearchStop": "Anketani o‘chirish (qidiruvni to‘xtatish)",
+  "xonadoshDeleteSurvey": "Anketani o‘chirish",
+  "xonadoshDescriptionTitle": "Tavsif",
+  "xonadoshDetailedDesc": "Batafsil tavsif",
+  "xonadoshDetailedDescHint": "Kvartira sharoitlari, qoidalari, yaqin metro/transport va talablar...",
+  "xonadoshDinner": "Kechki ovqat",
+  "xonadoshDistrictExampleHint": "Masalan: Urgut markazi, Shodlik MFY",
+  "xonadoshDistrictShort": "Tuman",
+  "xonadoshDutyDay": "Kun",
+  "xonadoshDutyPersonInCharge": "Mas'ul xonadosh ismi",
+  "xonadoshDutyRosterTab": "Navbatchilik",
+  "xonadoshDutySchedule": "Haftalik Navbatchilik Jadvali",
+  "xonadoshDutyTaskName": "Vazifa nomi",
+  "xonadoshDutyTaskNameHint": "Masalan: Uy tozalash",
+  "xonadoshEdit": "Tahrirlash",
+  "xonadoshEnterAddress": "Manzilni kiriting",
+  "xonadoshEnterDistrictName": "Tuman / Shahar nomini kiriting *",
+  "xonadoshEnterMealName": "Taom nomini kiriting",
+  "xonadoshEnterPhone": "Telefon kiriting",
+  "xonadoshEnterPrice": "Narx kiriting",
+  "xonadoshEnterTitle": "Sarlavhani kiriting",
+  "xonadoshErrGeneric": "Xatolik yuz berdi: {error}",
+  "xonadoshEstimatedTimeMinutes": "daqiqa",
+  "xonadoshExitBtn": "Chiqish",
+  "xonadoshFaculty": "Fakultet / Yo‘nalish",
+  "xonadoshFacultyField": "Fakultet / Yo‘nalish",
+  "xonadoshFacultyHint": "Masalan: Dasturiy injiniring",
+  "xonadoshFamily": "Oila",
+  "xonadoshFareMonthly": "{fare} {cur} (oyiga {monthly})",
+  "xonadoshFestive": "Bayramona",
+  "xonadoshFillAllRequired": "Iltimos, barcha majburiy maydonlarni to‘ldiring!",
+  "xonadoshFillProfile": "Anketani to‘ldirish / yangilash",
+  "xonadoshFillRequiredFieldsSnack": "Iltimos, barcha majburiy maydonlarni to‘ldiring!",
+  "xonadoshFillSurveyWindow": "Anketani to‘ldirish (Alohida oyna)",
+  "xonadoshFindRoommate": "Xonadosh Topish",
+  "xonadoshFloor": "Qavat",
+  "xonadoshFloorShort": "qavat",
+  "xonadoshForBoys": "Yigitlarga",
+  "xonadoshForGirls": "Qizlarga",
+  "xonadoshForRent": "🏠 Ijara",
+  "xonadoshForSale": "💰 Sotiladi",
+  "xonadoshFree": "Bepul",
+  "xonadoshFullNameHint": "Masalan: Sardor Aliyev",
+  "xonadoshFullNameReq": "Ism va Familiyangiz *",
+  "xonadoshFullNameRequired": "Ism va Familiyangiz *",
+  "xonadoshGender": "Jinsi",
+  "xonadoshGirl": "Qiz",
+  "xonadoshGirls": "Qizlar",
+  "xonadoshGirlsOnly": "Faqat qizlarga",
+  "xonadoshGlobalUzbekistan": "Global va O‘zbekiston",
+  "xonadoshGraduateWorker": "Bitiruvchi / Ishchi",
+  "xonadoshGroceryList": "Bozorlik Ro‘yxati",
+  "xonadoshGroceryListCount": "Bozorlik Ro'yxati ({count} ta mahsulot):",
+  "xonadoshGroceryTab": "Bozorlik",
+  "xonadoshGuy": "Yigit",
+  "xonadoshHabitAverageClean": "O'rtacha",
+  "xonadoshHabitBalconySmoke": "Faqat balkonda",
+  "xonadoshHabitCookRotates": "Navbatma-navbat",
+  "xonadoshHabitCookSelf": "Har kim o‘zi uchun",
+  "xonadoshHabitEarlyBird": "Erta turuvchi",
+  "xonadoshHabitEatOut": "Ko‘proq tashqarida",
+  "xonadoshHabitFlexible": "Erkin",
+  "xonadoshHabitGroupStudy": "Guruh",
+  "xonadoshHabitIDontSmoke": "Chekmayman",
+  "xonadoshHabitMusicStudy": "Quloqchin / musiqa",
+  "xonadoshHabitNightOwl": "Tungi",
+  "xonadoshHabitNoSmoking": "Chekmaydi",
+  "xonadoshHabitRelaxedClean": "Erkin",
+  "xonadoshHabitSilentStudy": "Sokin dars",
+  "xonadoshHabitSmoker": "Chekadi",
+  "xonadoshHabitStrictClean": "Juda tartibli",
+  "xonadoshHabitsAiHint": "AI ushbu odatlar orqali mos xonadoshlarni aniqlaydi",
+  "xonadoshHabitsAndRoutine": "Odatlar va Tartib:",
+  "xonadoshHousingSubtitle": "Uy-joy, ijara va OTM masofasi",
+  "xonadoshHousingTab": "Uy & Ijara",
+  "xonadoshIngredientAmount": "Miqdor",
+  "xonadoshIngredientCountLine": "{count} xil masalliq: {names}",
+  "xonadoshIngredientName": "Nomi",
+  "xonadoshIngredientsPerPerson": "Masalliqlar (1 kishi hisobiga)",
+  "xonadoshLifestyle": "Hayot tarzi va Tartib",
+  "xonadoshListingCreatedSuccess": "E‘loningiz muvaffaqiyatli joylashtirildi!",
+  "xonadoshListingNotFound": "E‘lon topilmadi",
+  "xonadoshListingTitleHint": "Masalan: Markazda shinam 2 xonali kvartira",
+  "xonadoshListingTitleReq": "E‘lon sarlavhasi *",
+  "xonadoshLookingFor": "Qanday xonadosh qidiryapti:",
+  "xonadoshLookingForRoommateHint": "Masalan: Tartibli, TATUda o‘qiydigan, IT sohasidagi yigitlar bo‘lsa yaxshi...",
+  "xonadoshLunch": "Tushlik",
+  "xonadoshMapHomesAndUnis": "Xaritada Uylar & OTMlar",
+  "xonadoshMasterDegree": "Magistr",
+  "xonadoshMatchBudgetExact": "Ijara byudjeti to'liq mos keladi",
+  "xonadoshMatchCleanMod": "Tozalik va tartib talabi bir xil (O'rtacha)",
+  "xonadoshMatchCleanStrict": "Tozalik va tartib talabi bir xil (Yuqori tozalik)",
+  "xonadoshMatchLabel": "Moslik",
+  "xonadoshMatchNoSmoking": "Zararli odatlardan xoli (Chekmaydi)",
+  "xonadoshMatchSameUni": "Bitta OTM talabasi ({uni})",
+  "xonadoshMatchSleepEarly": "Uyqu tartibi 100% mos (Erta turuvchilar)",
+  "xonadoshMatchSleepFlex": "Uyqu tartibi 100% mos (Moslashuvchan)",
+  "xonadoshMatchSleepNight": "Uyqu tartibi 100% mos (Tungi ijodkorlar)",
+  "xonadoshMatchStudyGroup": "Dars qilish atmosferasi mos (Birga muhokama qilish)",
+  "xonadoshMatchStudySilent": "Dars qilish atmosferasi mos (Sokin va tinch muhit)",
+  "xonadoshMatchingSubtitle": "AI moslik & Harakter tahlili",
+  "xonadoshMatchingTab": "Xonadosh Topish",
+  "xonadoshMaxBudget": "Maksimal byudjet",
+  "xonadoshMeSelf": "Men",
+  "xonadoshMealNameReq": "Taom nomi *",
+  "xonadoshMealPickedSnack": "{day} uchun “{name}” tanlandi",
+  "xonadoshMediumBudget": "O‘rtacha 🟡",
+  "xonadoshMenu": "Menyu",
+  "xonadoshMenuTab": "Menyu",
+  "xonadoshMetro": "Metro",
+  "xonadoshMinBudget": "Minimal byudjet",
+  "xonadoshMonth": "oy",
+  "xonadoshMonthlyBudget": "Oylik Ijara Byudjeti",
+  "xonadoshNearUniHeader": "O'qish joyingizga (OTM) eng yaqin uylar:",
+  "xonadoshNearbyStop": "Yaqin bekat",
+  "xonadoshNearbyUniOptional": "Yaqin Universitet (OTM) - Ixtiyoriy",
+  "xonadoshNeedRoommate": "👥 Xonadosh kerak",
+  "xonadoshNewDuty": "Yangi Navbatchilik",
+  "xonadoshNewRecipe": "Yangi kiritish",
+  "xonadoshNoDutyToday": "Bugun alohida navbatchilik yo'q ✅",
+  "xonadoshNoListingsSubtitle": "Boshqa viloyat yoki tumanni tanlab ko'ring.",
+  "xonadoshNoListingsTitle": "Ushbu hududda e'lonlar topilmadi",
+  "xonadoshNoMatchesBody": "Anketangizni to‘ldiring yoki filtrlarni o‘zgartirib ko‘ring.",
+  "xonadoshNoMatchesTitle": "Hozircha mos xonadoshlar topilmadi",
+  "xonadoshNoRecipeFound": "Bunday taom topilmadi",
+  "xonadoshOtherDistrictCustom": "✍️ Boshqa tuman / shahar (o‘zim yozaman)...",
+  "xonadoshOtherDistrictWrite": "Boshqa tuman / shahar",
+  "xonadoshPaymentPeriod": "To‘lov davri",
+  "xonadoshPeopleCount": "{count} kishi",
+  "xonadoshPerMonth": "oyiga",
+  "xonadoshPerPerson": "kishi",
+  "xonadoshPeriodDay": "kun",
+  "xonadoshPeriodMonth": "oy",
+  "xonadoshPeriodTotal": "jami",
+  "xonadoshPeriodYear": "yil",
+  "xonadoshPersonalData": "Shaxsiy ma‘lumotlar",
+  "xonadoshPersonalDataHint": "Xonadoshlar sizni yaxshiroq tanishi uchun asosiy ma’lumotlar",
+  "xonadoshPhoneReq": "Telefon raqam *",
+  "xonadoshPhoneRequired": "Telefon raqam *",
+  "xonadoshPhotoUrlOptional": "Rasm URL (ixtiyoriy)",
+  "xonadoshPickMealSubtitle": "{meal} uchun taomni almashtiring",
+  "xonadoshPickMealTitle": "Taom tanlash: {day}",
+  "xonadoshPostListing": "E‘lon berish",
+  "xonadoshPrepOrder": "Tayyorlash tartibi",
+  "xonadoshPrepTimeMinutes": "Tayyorlash vaqti (min)",
+  "xonadoshPriceLevelLabel": "Narx darajasi",
+  "xonadoshPriceRange": "Narx",
+  "xonadoshPriceReq": "Narxi *",
+  "xonadoshPriceRequired": "Narxi *",
+  "xonadoshProfileDeleted": "Anketangiz muvaffaqiyatli o‘chirildi",
+  "xonadoshProfileSaved": "Anketa muvaffaqiyatli saqlandi",
+  "xonadoshPublicTransit": "Jamoat transporti",
+  "xonadoshPublishListing": "E‘lonni joylashtirish",
+  "xonadoshQuickPick": "Tezkor tanlash",
+  "xonadoshRecipeCatalog": "Retseptlar Katalogi",
+  "xonadoshRecipeCatalogCount": "Retseptlar Katalogi ({count} ta)",
+  "xonadoshRecipeNameHint": "Masalan: Tuxumli lavash, Qovurilgan kartoshka...",
+  "xonadoshRecipeNameReq": "Taom nomi *",
+  "xonadoshRecommendBadge": "Tavsiya",
+  "xonadoshRecommendedTitle": "Tavsiya etilgan xonadoshlar",
+  "xonadoshRegionHeader": "Hudud / Viloyat:",
+  "xonadoshRentBudget": "Oylik Ijara Byudjeti",
+  "xonadoshRentHouse": "🏠 Ijara",
+  "xonadoshRoommatesCountLabel": "Xonadoshlar soni:",
+  "xonadoshRoomsCount": "Xonalar soni",
+  "xonadoshRoomsShort": "xona",
+  "xonadoshSaveAndAddMenu": "Saqlash va menyuga qo‘shish",
+  "xonadoshSaveAndFind": "Saqlash va xonadosh topish",
+  "xonadoshSaveChanges": "O‘zgarishlarni saqlash",
+  "xonadoshSaving": "Saqlanmoqda...",
+  "xonadoshSearchNearThisUni": "Ushbu OTM yaqinidan izlash",
+  "xonadoshSearchPlaceholder": "Viloyat, shahar, tuman, OTM qidiruvi...",
+  "xonadoshSearchRecipeHint": "Taom nomi yoki masalliq qidirish...",
+  "xonadoshSearchTag": "🔍 Qidiruv",
+  "xonadoshSeekingRent": "Ijara izlayapman",
+  "xonadoshSelectDestUni": "Mo‘ljal OTMni tanlang",
+  "xonadoshSelectDistrictReq": "Tuman / Shahar *",
+  "xonadoshSelectRegionReq": "Viloyat / Hudud *",
+  "xonadoshSelectUniversity": "Universitetni tanlang",
+  "xonadoshSelected": "Tanlangan",
+  "xonadoshServingsRange": "4–6 kishi",
+  "xonadoshShareListing": "🏠 {title}\n💰 {price} {currency}\n📍 {district}, {address}\n📞 {phone}",
+  "xonadoshSleepEarlyHours": "Erta uyg‘onuvchi (06:00–23:00)",
+  "xonadoshSleepNightHours": "Tungi boyqush (01:00+)",
+  "xonadoshSleepSchedule": "Uyqu rejimi:",
+  "xonadoshSmoking": "Chekish / Sigaret:",
+  "xonadoshStayBtn": "Davom etish (Qolish)",
+  "xonadoshStep1Subtitle": "E‘loningiz turini tanlang",
+  "xonadoshStep1Title": "1. E‘lon turi va Maqsadi",
+  "xonadoshStep2Subtitle": "O‘zbekiston viloyatlari yoki Xalqaro shahar",
+  "xonadoshStep2Title": "2. Joylashuv & Manzil",
+  "xonadoshStep3Subtitle": "Narx, valyuta va to‘lov davri",
+  "xonadoshStep3Title": "3. Sarlavha & Narx",
+  "xonadoshStep4Subtitle": "Xonalar, qavat va kimlar uchun mo‘ljallangan",
+  "xonadoshStep4Title": "4. Xususiyatlar & Auditoriya",
+  "xonadoshStep5Subtitle": "Tavsiya etilgan sifatli rasmlardan tanlang yoki o‘zingiznikini kiriting",
+  "xonadoshStep5Title": "5. Uy suratlari",
+  "xonadoshStep6Subtitle": "Mavjud bo‘lgan barcha sharoitlarni belgilang",
+  "xonadoshStep6Title": "6. Qulayliklar & Jihozlar",
+  "xonadoshStep7Subtitle": "Bog‘lanish uchun telefon va Telegram",
+  "xonadoshStep7Title": "7. Aloqa & Tavsif",
+  "xonadoshStudentYear": "kurs",
+  "xonadoshStudyEnvironment": "Dars tayyorlash muhiti:",
+  "xonadoshSurveyEditTitle": "Anketani tahrirlash",
+  "xonadoshSurveyNewHint": "Anketa saqlangach, AI byudjet, OTM va odatlaringizga mos xonadoshlarni saralaydi.",
+  "xonadoshSurveyReadyPercent": "{pct}% tayyor",
+  "xonadoshSurveySavedHint": "Saqlagach, ma’lumotlaringiz xonadoshlar ro‘yxatida darhol yangilanadi.",
+  "xonadoshSurveyStatus": "Anketa holati",
+  "xonadoshSurveyStepHabits": "Odatlar",
+  "xonadoshSurveyStepPersonal": "Shaxsiy",
+  "xonadoshSurveyStepReqs": "Talablar",
+  "xonadoshSurveyStepUni": "OTM",
+  "xonadoshSurveySubtitle": "Xarakteringiz, OTMingiz, byudjetingiz va odatlaringizga mos talabalarni AI orqali toping.",
+  "xonadoshSurveyTitle": "Xonadoshlik anketasi",
+  "xonadoshSwapMeal": "Almashtirish",
+  "xonadoshTargetAudience": "Kim uchun mo‘ljallangan:",
+  "xonadoshTaskWithDay": "Vazifa: {title} ({day})",
+  "xonadoshTelegram": "Telegram",
+  "xonadoshTelegramChat": "Telegramda yozish",
+  "xonadoshTelegramShort": "TG",
+  "xonadoshToday": "Bugun",
+  "xonadoshTooltip": "Xonadosh — uy va xonadosh topish",
+  "xonadoshTotal": "jami",
+  "xonadoshTotalFloors": "Umumiy qavatlar",
+  "xonadoshTotalWeeklyBreadCost": "Haftalik Non Xarajati",
+  "xonadoshTransportAnalysis": "Transport tahlili",
+  "xonadoshTypeForRent": "Ijara",
+  "xonadoshTypeForSale": "Sotiladi",
+  "xonadoshTypeLookingRent": "Ijara izlayapman",
+  "xonadoshTypeRentHome": "Ijara (Uy)",
+  "xonadoshTypeRoommate": "Xonadosh",
+  "xonadoshTypeRoommateNeeded": "Xonadosh kerak",
+  "xonadoshUniFallback": "OTM",
+  "xonadoshUniNone": "OTMga bog‘liq emas / Tanlanmagan",
+  "xonadoshUniNotLinked": "OTMga bog‘liq emas",
+  "xonadoshUniOptionalLabel": "Yaqin universitet (ixtiyoriy)",
+  "xonadoshUniPlace": "O‘qish joyingiz (OTM)",
+  "xonadoshViewAllListings": "Barcha e‘lonlarni ko‘rish",
+  "xonadoshWantToExitTitle": "Chiqmoqchimisiz?",
+  "xonadoshWeeklyBreadCalc": "🍞 Haftalik Non Hisob-Kitobi",
+  "xonadoshWeeklyDutySchedule": "Haftalik Navbatchilik Jadvali",
+  "xonadoshWeeklyGrocerySummary": "1 haftalik bozorlik (3 mahal/kun):",
+  "tagline": "Talabalar uchun uy-joy, xonadosh va birga yashash",
+  "login": "Kirish",
+  "register": "Ro‘yxatdan o‘tish",
+  "settings": "Sozlamalar",
+  "accountDelete": "Hisobni o‘chirish",
+  "loginTitle": "XonaDoshga xush kelibsiz",
+  "loginSubtitle": "Uy va xonadosh toping",
+  "registerUsername": "Login",
+  "registerPhone": "Telefon",
+  "registerPassword": "Parol (kamida 8)",
+  "registerHaveAccount": "Hisobingiz bormi? Kirish",
+  "settingsLanguage": "Til",
+  "settingsTheme": "Mavzu",
+  "settingsThemeLight": "Yorug‘",
+  "settingsThemeDark": "Qorong‘u",
+  "settingsThemeSystem": "Tizim",
+  "settingsPrivacy": "Maxfiylik siyosati",
+  "settingsTerms": "Foydalanish shartlari",
+  "accountDeleteTitle": "Hisobni o‘chirasizmi?",
+  "accountDeleteBody": "Hisob va ma’lumotlar butunlay o‘chiriladi.",
+  "accountDeleteConfirm": "Butunlay o‘chirish",
+  "emptyStateTitle": "Hali hech narsa yo‘q",
+  "emptyStateSubtitle": "Yangilang yoki filtrlarni o‘zgartiring",
+  "errorGeneric": "Xatolik yuz berdi",
+  "errorNetwork": "Tarmoq xatosi. Internetni tekshiring.",
+  "commonLogout": "Chiqish",
+  "commonLoading": "Yuklanmoqda…",
+  "xonadoshContactOptions": "Aloqa",
+  "xonadoshCopyPhone": "Raqamni nusxalash",
+  "xonadoshPhoneCopied": "Telefon raqam nusxalandi",
+  "xonadoshCopiedToClipboard": "Buferga nusxalandi",
+  "xonadoshWhatsApp": "WhatsApp",
+  "xonadoshWebCallHint": "Kompyuterda raqamni nusxalang yoki WhatsApp / Telegram orqali yozing.",
+  "xonadoshOpenLinkFailed": "Havolani ochib bo‘lmadi",
+  "xonadoshPickFromGallery": "Galereyadan",
+  "xonadoshTakePhoto": "Suratga olish",
+  "xonadoshUploadingPhoto": "Rasm yuklanmoqda…",
+  "xonadoshPhotoUploadFailed": "Rasm yuklanmadi",
+  "xonadoshUseMyLocation": "Mening joylashuvim",
+  "xonadoshLocationDenied": "Joylashuv ruxsati berilmadi",
+  "xonadoshLocationFailed": "Joylashuvni aniqlab bo‘lmadi",
+  "reportContentTitle": "Kontentni shikoyat qilish",
+  "reportContentBody": "Nima uchun bu kontent ko‘rib chiqilishi kerakligini yozing. Moderatsiya jamoasi 24 soat ichida tekshiradi.",
+  "reportContentSubjectListing": "E'lon: {title}",
+  "@reportContentSubjectListing": {
+    "placeholders": {
+      "title": {"type": "String"}
+    }
+  },
+  "reportContentSubjectProfile": "Anketa: {name}",
+  "@reportContentSubjectProfile": {
+    "placeholders": {
+      "name": {"type": "String"}
+    }
+  },
+  "reportReasonSpam": "Spam yoki soxta e'lon",
+  "reportReasonInappropriate": "Nomaqbul yoki haqoratli kontent",
+  "reportReasonHarassment": "Tahqir yoki zo‘ravonlik",
+  "reportReasonScam": "Firibgarlik yoki aldash",
+  "reportReasonOther": "Boshqa",
+  "reportDetailsHint": "Qo‘shimcha tafsilot (ixtiyoriy)",
+  "reportSubmit": "Shikoyat yuborish",
+  "reportSubmitted": "Shikoyat qabul qilindi. Rahmat.",
+  "reportLoginRequired": "Shikoyat yuborish uchun tizimga kiring",
+  "reportAction": "Shikoyat",
+  "blockUser": "Foydalanuvchini bloklash",
+  "unblockUser": "Blokdan chiqarish",
+  "blockUserTitle": "Bu foydalanuvchini bloklaysizmi?",
+  "blockUserBody": "Uning e’lonlari va anketasi endi ko‘rinmaydi. Keyinroq Sozlamalardan blokdan chiqarishingiz mumkin.",
+  "userBlocked": "Foydalanuvchi bloklandi. Kontenti yashirildi.",
+  "userUnblocked": "Foydalanuvchi blokdan chiqarildi."
+}

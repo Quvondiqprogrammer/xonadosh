@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html lang="uz">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+  <link rel="icon" type="image/png" href="/assets/brand/xonadosh_icon.png" />
+  <link rel="apple-touch-icon" href="/assets/brand/xonadosh_icon.png" />
+  <meta name="theme-color" content="#059669" />
+  <title>XonaDosh Web</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@500;700;800&family=Source+Sans+3:wght@400;600;700&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY=" crossorigin="" />
+  <link rel="stylesheet" href="/app/css/app.css" />
+</head>
+<body>
+  <div id="authRoot" class="hidden"></div>
+
+  <div id="appRoot" class="app hidden">
+    <header class="topbar" id="topbar">
+      <img class="brand-badge" src="/assets/brand/xonadosh_icon.png" width="36" height="36" alt="XonaDosh" />
+      <div class="grow">
+        <h1>XonaDosh</h1>
+        <p class="sub" id="topSubtitle"></p>
+      </div>
+      <button type="button" class="icon-btn" id="btnSettings" aria-label="Settings" title="Settings">
+        <svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="2">
+          <circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.7 1.7 0 0 0 .3 1.8l.1.1a2 2 0 1 1-2.8 2.8l-.1-.1a1.7 1.7 0 0 0-1.8-.3 1.7 1.7 0 0 0-1 1.5V21a2 2 0 1 1-4 0v-.1a1.7 1.7 0 0 0-1-1.5 1.7 1.7 0 0 0-1.8.3l-.1.1a2 2 0 1 1-2.8-2.8l.1-.1a1.7 1.7 0 0 0 .3-1.8 1.7 1.7 0 0 0-1.5-1H3a2 2 0 1 1 0-4h.1a1.7 1.7 0 0 0 1.5-1 1.7 1.7 0 0 0-.3-1.8l-.1-.1a2 2 0 1 1 2.8-2.8l.1.1a1.7 1.7 0 0 0 1.8.3H9a1.7 1.7 0 0 0 1-1.5V3a2 2 0 1 1 4 0v.1a1.7 1.7 0 0 0 1 1.5 1.7 1.7 0 0 0 1.8-.3l.1-.1a2 2 0 1 1 2.8 2.8l-.1.1a1.7 1.7 0 0 0-.3 1.8V9c.3.6.9 1 1.5 1H21a2 2 0 1 1 0 4h-.1a1.7 1.7 0 0 0-1.5 1z"/>
+        </svg>
+      </button>
+    </header>
+
+    <main class="view" id="main"></main>
+
+    <nav class="bottom-nav" id="bottomNav" aria-label="Main">
+      <button type="button" data-tab="housing" id="navHousing">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 10.5 12 3l9 7.5V21a1 1 0 0 1-1 1h-5v-7H9v7H4a1 1 0 0 1-1-1v-10.5z"/></svg>
+        <span data-i18n="housing">Uy-joy</span>
+      </button>
+      <button type="button" data-tab="matching" id="navMatching">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M16 11a4 4 0 1 0-8 0"/><path d="M4 21v-1a6 6 0 0 1 6-6h4a6 6 0 0 1 6 6v1"/><path d="M19 8v4M17 10h4"/></svg>
+        <span data-i18n="matching">Moslash</span>
+      </button>
+      <button type="button" data-tab="coliving" id="navColiving">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M8 21V10a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v11"/><path d="M4 21V8l8-5 8 5v13"/><path d="M10 13h4"/></svg>
+        <span data-i18n="coliving">Birga yashash</span>
+      </button>
+    </nav>
+  </div>
+
+  <div id="modalRoot"></div>
+  <div id="toastRoot"></div>
+
+  <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js" integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo=" crossorigin=""></script>
+  <script src="/app/js/api.js"></script>
+  <script src="/app/js/i18n.js"></script>
+  <script src="/app/js/locations.js"></script>
+  <script src="/app/js/app.js"></script>
+</body>
+</html>

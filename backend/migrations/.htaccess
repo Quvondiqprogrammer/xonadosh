@@ -1,0 +1,2 @@
+# Block direct browsing; allow keyed migration script
+Options -Indexes
