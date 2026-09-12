@@ -78,6 +78,9 @@ void main() {
     expect(find.text('Rooms'), findsWidgets);
     expect(find.text('Roommates'), findsOneWidget);
     expect(find.text('Together'), findsOneWidget);
+
+    await tester.tap(find.text('Together'));
+    await tester.pump();
     expect(find.text('Together tools'), findsOneWidget);
   });
 }

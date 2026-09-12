@@ -67,8 +67,10 @@ void main() {
       candidate: other,
       me: me,
       l10n: AppLocalizationsEn(),
+      limit: 6,
     );
     expect(reasons, isNotEmpty);
     expect(reasons.join(' '), contains('university'));
+    expect(reasons.join(' '), contains('Sleep'));
   });
 }
