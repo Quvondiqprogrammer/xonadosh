@@ -2662,6 +2662,84 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'User unblocked.'**
   String get userUnblocked;
+
+  /// No description provided for @settingsSectionApp.
+  ///
+  /// In en, this message translates to:
+  /// **'App settings'**
+  String get settingsSectionApp;
+
+  /// No description provided for @settingsSectionLegal.
+  ///
+  /// In en, this message translates to:
+  /// **'Legal & about'**
+  String get settingsSectionLegal;
+
+  /// No description provided for @settingsSectionAccount.
+  ///
+  /// In en, this message translates to:
+  /// **'Account'**
+  String get settingsSectionAccount;
+
+  /// No description provided for @settingsBlockedEmpty.
+  ///
+  /// In en, this message translates to:
+  /// **'No blocked users'**
+  String get settingsBlockedEmpty;
+
+  /// No description provided for @xonadoshFinanceTab.
+  ///
+  /// In en, this message translates to:
+  /// **'Finances'**
+  String get xonadoshFinanceTab;
+
+  /// No description provided for @xonadoshPollsTab.
+  ///
+  /// In en, this message translates to:
+  /// **'Polls'**
+  String get xonadoshPollsTab;
+
+  /// No description provided for @xonadoshKarmaTab.
+  ///
+  /// In en, this message translates to:
+  /// **'Karma'**
+  String get xonadoshKarmaTab;
+
+  /// No description provided for @accountDeletePasswordRequired.
+  ///
+  /// In en, this message translates to:
+  /// **'Enter your password to delete the account.'**
+  String get accountDeletePasswordRequired;
+
+  /// No description provided for @registerUsernameInvalid.
+  ///
+  /// In en, this message translates to:
+  /// **'Username: 3+ letters, numbers, _ or .'**
+  String get registerUsernameInvalid;
+
+  /// No description provided for @registerPhoneInvalid.
+  ///
+  /// In en, this message translates to:
+  /// **'Enter a valid phone number'**
+  String get registerPhoneInvalid;
+
+  /// No description provided for @xonadoshDeleteListing.
+  ///
+  /// In en, this message translates to:
+  /// **'Delete listing'**
+  String get xonadoshDeleteListing;
+
+  /// No description provided for @xonadoshDeleteListingBody.
+  ///
+  /// In en, this message translates to:
+  /// **'This listing will be hidden from the feed. You cannot undo this.'**
+  String get xonadoshDeleteListingBody;
+
+  /// No description provided for @xonadoshListingDeleted.
+  ///
+  /// In en, this message translates to:
+  /// **'Listing deleted'**
+  String get xonadoshListingDeleted;
 }
 
 class _AppLocalizationsDelegate

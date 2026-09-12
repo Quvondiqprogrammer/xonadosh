@@ -111,8 +111,13 @@ class _RegisterScreenState extends ConsumerState<RegisterScreen> {
                         labelText: l10n.registerUsername,
                         prefixIcon: const Icon(Icons.person_outline_rounded, color: XonaDoshColors.emerald),
                       ),
-                      validator: (v) =>
-                          (v == null || v.trim().isEmpty) ? l10n.registerUsername : null,
+                      validator: (v) {
+                        final t = v?.trim() ?? '';
+                        if (t.length < 3 || !RegExp(r'^[A-Za-z0-9_.]+$').hasMatch(t)) {
+                          return l10n.registerUsernameInvalid;
+                        }
+                        return null;
+                      },
                     ),
                     const SizedBox(height: 12),
                     TextFormField(
@@ -123,8 +128,11 @@ class _RegisterScreenState extends ConsumerState<RegisterScreen> {
                         labelText: l10n.registerPhone,
                         prefixIcon: const Icon(Icons.phone_outlined, color: XonaDoshColors.emerald),
                       ),
-                      validator: (v) =>
-                          (v == null || v.trim().isEmpty) ? l10n.registerPhone : null,
+                      validator: (v) {
+                        final digits = (v ?? '').replaceAll(RegExp(r'\D'), '');
+                        if (digits.length < 9) return l10n.registerPhoneInvalid;
+                        return null;
+                      },
                     ),
                     const SizedBox(height: 12),
                     TextFormField(

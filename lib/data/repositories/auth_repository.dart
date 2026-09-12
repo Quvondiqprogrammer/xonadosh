@@ -57,7 +57,14 @@ class AuthRepository {
   }) async {
     final res = await _api.login(login: login, password: password);
     if (res['ok'] == true) {
-      await _persistAuth(res);
+      final persisted = await _persistAuth(res);
+      if (!persisted) {
+        return {
+          'ok': false,
+          'error': res['error'] ?? 'Login succeeded but session was incomplete',
+          'status': res['status'],
+        };
+      }
     }
     return res;
   }
@@ -75,7 +82,14 @@ class AuthRepository {
       password: password,
     );
     if (res['ok'] == true) {
-      await _persistAuth(res);
+      final persisted = await _persistAuth(res);
+      if (!persisted) {
+        return {
+          'ok': false,
+          'error': res['error'] ?? 'Registration succeeded but session was incomplete',
+          'status': res['status'],
+        };
+      }
     }
     return res;
   }
@@ -105,10 +119,10 @@ class AuthRepository {
     return null;
   }
 
-  Future<void> _persistAuth(Map<String, dynamic> res) async {
+  Future<bool> _persistAuth(Map<String, dynamic> res) async {
     final username = (res['username'] ?? res['user']?['username'] ?? '').toString();
-    final token = (res['token'] ?? '').toString();
-    if (username.isEmpty || token.isEmpty) return;
+    final token = (res['token'] ?? '').toString().trim();
+    if (username.isEmpty || token.isEmpty) return false;
     await _session.saveSession(
       username: username,
       token: token,
@@ -116,5 +130,6 @@ class AuthRepository {
       expiresAt: (res['expires_at'] as num?)?.toInt(),
       user: AuthApiClient.userFromResponse(res),
     );
+    return true;
   }
 }

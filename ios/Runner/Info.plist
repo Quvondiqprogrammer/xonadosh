@@ -76,6 +76,8 @@
 	<string>XonaDosh uses the camera only when you choose to take a photo for a housing listing you are creating. / XonaDosh kamera faqat siz o‘zingiz e’lon uchun rasm olmoqchi bo‘lganingizda so‘raladi.</string>
 	<key>NSPhotoLibraryUsageDescription</key>
 	<string>XonaDosh accesses photos you select so you can attach them to a housing listing. The app does not browse your library in the background. / XonaDosh faqat siz tanlagan rasmlarni e’longa qo‘shish uchun ishlatadi.</string>
+	<key>NSPhotoLibraryAddUsageDescription</key>
+	<string>XonaDosh does not save photos to your library. This key is present only because the photo picker may write a temporary copy of a picture you chose for a housing listing. / XonaDosh kutubxonaga rasm saqlamaydi. Kalit e’lon uchun tanlagan rasmning vaqtinchalik nusxasi uchun.</string>
 	<key>ITSAppUsesNonExemptEncryption</key>
 	<false/>
 </dict>

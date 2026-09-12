@@ -36,3 +36,21 @@ housing, roommate, students, Tashkent, Uzbekistan, coliving, university
 ## Category
 
 Lifestyle / Social
+
+## Version shown to stores
+
+`1.0.1` (build `4`). See [VERSIONING.md](VERSIONING.md).
+
+## Permissions (justifications)
+
+| Platform | Permission | When asked | Why |
+|----------|------------|------------|-----|
+| iOS / Android | Location (When In Use) | Map / “Use my location” on create listing | Nearby housing markers and commute estimate to a university. Never background. |
+| iOS / Android | Camera | Create listing → Take photo | Optional photo for the ad the user is composing. |
+| iOS / Android | Photo library / images | Create listing → From gallery | Attach a user-selected photo to a listing. App does not scan the library. |
+
+No ATT / tracking. Account deletion: Settings → Delete account (password + confirm). UGC: Report + Block on listings and roommate profiles.
+
+## Privacy Nutrition (iOS)
+
+`ios/Runner/PrivacyInfo.xcprivacy` declares collected types used for app functionality only (name, user ID, phone, precise location, photos, other user content). Tracking is `false`.

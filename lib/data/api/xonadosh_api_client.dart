@@ -1,6 +1,7 @@
 import 'package:dio/dio.dart';
 
 import 'api_client.dart';
+import 'api_response.dart';
 
 /// XonaDosh feature API (HTTPS `honadosh.uz`).
 class XonadoshApiClient {
@@ -15,8 +16,11 @@ class XonadoshApiClient {
     Map<String, dynamic>? q,
   ]) async {
     try {
-      final res = await _dio.get<dynamic>(path, queryParameters: q);
-      return _asMap(res.data);
+      final res = await _dio.get<dynamic>(
+        path,
+        queryParameters: q == null ? null : ApiResponse.compactQuery(q),
+      );
+      return ApiResponse.parse(res.data, status: res.statusCode);
     } on DioException catch (e) {
       return _mapError(e);
     } catch (e) {
@@ -27,7 +31,7 @@ class XonadoshApiClient {
   Future<Map<String, dynamic>> _post(String path, {dynamic data}) async {
     try {
       final res = await _dio.post<dynamic>(path, data: data);
-      return _asMap(res.data);
+      return ApiResponse.parse(res.data, status: res.statusCode);
     } on DioException catch (e) {
       return _mapError(e);
     } catch (e) {
@@ -35,18 +39,12 @@ class XonadoshApiClient {
     }
   }
 
-  Map<String, dynamic> _asMap(dynamic data) {
-    if (data is Map<String, dynamic>) return data;
-    if (data is Map) return Map<String, dynamic>.from(data);
-    return {'ok': false, 'error': 'Noto‘g‘ri javob formati'};
-  }
-
   Map<String, dynamic> _mapError(DioException e) {
-    final data = e.response?.data;
-    if (data is Map) {
-      return {'ok': false, 'error': data['error'] ?? e.message};
-    }
-    return {'ok': false, 'error': e.message ?? 'Tarmoq xatosi'};
+    return ApiResponse.parse(
+      e.response?.data,
+      status: e.response?.statusCode,
+      fallbackError: e.message ?? 'Tarmoq xatosi',
+    );
   }
 
   Future<Map<String, dynamic>> getUniversities({String? city, String? query}) =>
@@ -107,7 +105,7 @@ class XonadoshApiClient {
           receiveTimeout: const Duration(seconds: 60),
         ),
       );
-      return _asMap(res.data);
+      return ApiResponse.parse(res.data, status: res.statusCode);
     } on DioException catch (e) {
       return _mapError(e);
     } catch (e) {

@@ -28,12 +28,19 @@ if (!is_array($data)) {
     json_response(['ok' => false, 'error' => 'Invalid JSON'], 400);
 }
 
-$targetType = trim((string) ($data['target_type'] ?? ''));
+$targetType = strtolower(trim((string) ($data['target_type'] ?? '')));
 $targetId = trim((string) ($data['target_id'] ?? ''));
 $reason = trim((string) ($data['reason'] ?? ''));
 
+$allowedTypes = ['listing', 'profile', 'user'];
 if ($targetType === '' || $targetId === '' || $reason === '') {
     json_response(['ok' => false, 'error' => 'target_type, target_id va reason kerak'], 400);
+}
+if (!in_array($targetType, $allowedTypes, true)) {
+    json_response(['ok' => false, 'error' => 'target_type noto‘g‘ri'], 400);
+}
+if (strlen($reason) > 800) {
+    $reason = substr($reason, 0, 800);
 }
 
 $stmt = $pdo->prepare(

@@ -47,3 +47,5 @@ Auth: `Authorization: Bearer <token>` where required.
 | POST | `api/report.php` | content report |
 
 Success responses typically include `"ok": true`. Errors: `"ok": false`, `"error": "..."`.
+
+The Flutter client treats `ok` as true for `true`, `1`, `"true"`, and `"1"`. HTTP status ≥ 400 is always an error even if the body is HTML. Query parameters that are null or blank are omitted.

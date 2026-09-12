@@ -1,10 +1,17 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android">
+    <!-- Network: listings, matching, coliving, auth against https://honadosh.uz/ -->
     <uses-permission android:name="android.permission.INTERNET"/>
+    <!-- When-in-use only: nearby listings on the map + commute estimate to university -->
     <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION"/>
     <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION"/>
+    <!-- Optional: take a photo when creating a housing listing -->
     <uses-permission android:name="android.permission.CAMERA"/>
+    <!-- Optional: attach an existing photo to a housing listing -->
     <uses-permission android:name="android.permission.READ_MEDIA_IMAGES"/>
     <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" android:maxSdkVersion="32"/>
+    <uses-feature android:name="android.hardware.camera" android:required="false"/>
+    <uses-feature android:name="android.hardware.location" android:required="false"/>
+    <uses-feature android:name="android.hardware.location.gps" android:required="false"/>
     <application
         android:label="XonaDosh"
         android:name="${applicationName}"
@@ -48,6 +55,10 @@
         <intent>
             <action android:name="android.intent.action.VIEW"/>
             <data android:scheme="tg"/>
+        </intent>
+        <intent>
+            <action android:name="android.intent.action.VIEW"/>
+            <data android:scheme="https" android:host="t.me"/>
         </intent>
     </queries>
 </manifest>

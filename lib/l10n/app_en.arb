@@ -1173,5 +1173,18 @@
   "blockUserTitle": "Block this user?",
   "blockUserBody": "You will no longer see their listings or roommate profile. You can unblock them later in Settings.",
   "userBlocked": "User blocked. Their content is hidden.",
-  "userUnblocked": "User unblocked."
+  "userUnblocked": "User unblocked.",
+  "settingsSectionApp": "App settings",
+  "settingsSectionLegal": "Legal & about",
+  "settingsSectionAccount": "Account",
+  "settingsBlockedEmpty": "No blocked users",
+  "xonadoshFinanceTab": "Finances",
+  "xonadoshPollsTab": "Polls",
+  "xonadoshKarmaTab": "Karma",
+  "accountDeletePasswordRequired": "Enter your password to delete the account.",
+  "registerUsernameInvalid": "Username: 3+ letters, numbers, _ or .",
+  "registerPhoneInvalid": "Enter a valid phone number",
+  "xonadoshDeleteListing": "Delete listing",
+  "xonadoshDeleteListingBody": "This listing will be hidden from the feed. You cannot undo this.",
+  "xonadoshListingDeleted": "Listing deleted"
 }

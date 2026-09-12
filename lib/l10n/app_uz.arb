@@ -1173,5 +1173,18 @@
   "blockUserTitle": "Bu foydalanuvchini bloklaysizmi?",
   "blockUserBody": "Uning e’lonlari va anketasi endi ko‘rinmaydi. Keyinroq Sozlamalardan blokdan chiqarishingiz mumkin.",
   "userBlocked": "Foydalanuvchi bloklandi. Kontenti yashirildi.",
-  "userUnblocked": "Foydalanuvchi blokdan chiqarildi."
+  "userUnblocked": "Foydalanuvchi blokdan chiqarildi.",
+  "settingsSectionApp": "Ilova sozlamalari",
+  "settingsSectionLegal": "Hujjatlar va ma’lumot",
+  "settingsSectionAccount": "Hisob",
+  "settingsBlockedEmpty": "Bloklangan foydalanuvchilar yo‘q",
+  "xonadoshFinanceTab": "Moliya",
+  "xonadoshPollsTab": "Ovoz berish",
+  "xonadoshKarmaTab": "Reyting",
+  "accountDeletePasswordRequired": "Hisobni o‘chirish uchun parolni kiriting.",
+  "registerUsernameInvalid": "Login: kamida 3 belgi, harf, raqam, _ yoki .",
+  "registerPhoneInvalid": "To‘g‘ri telefon raqam kiriting",
+  "xonadoshDeleteListing": "E’lonni o‘chirish",
+  "xonadoshDeleteListingBody": "E’lon lentadan yashiriladi. Ortga qaytarib bo‘lmaydi.",
+  "xonadoshListingDeleted": "E’lon o‘chirildi"
 }

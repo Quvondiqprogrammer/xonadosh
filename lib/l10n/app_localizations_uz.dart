@@ -1370,4 +1370,46 @@ class AppLocalizationsUz extends AppLocalizations {
 
   @override
   String get userUnblocked => 'Foydalanuvchi blokdan chiqarildi.';
+
+  @override
+  String get settingsSectionApp => 'Ilova sozlamalari';
+
+  @override
+  String get settingsSectionLegal => 'Hujjatlar va ma’lumot';
+
+  @override
+  String get settingsSectionAccount => 'Hisob';
+
+  @override
+  String get settingsBlockedEmpty => 'Bloklangan foydalanuvchilar yo‘q';
+
+  @override
+  String get xonadoshFinanceTab => 'Moliya';
+
+  @override
+  String get xonadoshPollsTab => 'Ovoz berish';
+
+  @override
+  String get xonadoshKarmaTab => 'Reyting';
+
+  @override
+  String get accountDeletePasswordRequired =>
+      'Hisobni o‘chirish uchun parolni kiriting.';
+
+  @override
+  String get registerUsernameInvalid =>
+      'Login: kamida 3 belgi, harf, raqam, _ yoki .';
+
+  @override
+  String get registerPhoneInvalid => 'To‘g‘ri telefon raqam kiriting';
+
+  @override
+  String get xonadoshDeleteListing => 'E’lonni o‘chirish';
+
+  @override
+  String get xonadoshDeleteListingBody =>
+      'E’lon lentadan yashiriladi. Ortga qaytarib bo‘lmaydi.';
+
+  @override
+  String get xonadoshListingDeleted => 'E’lon o‘chirildi';
 }

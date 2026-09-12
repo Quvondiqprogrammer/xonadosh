@@ -15,6 +15,11 @@ final xonadoshGenderFilterProvider = StateProvider<String>((ref) => 'any');
 
 final xonadoshMatchGenderFilterProvider = StateProvider<String>((ref) => 'any');
 
+/// Matching university filter — kept separate from housing so a housing
+/// city/OTM filter does not silently hide roommate matches.
+final xonadoshMatchUniProvider =
+    StateProvider<XonadoshUniversity?>((ref) => null);
+
 final xonadoshSearchQueryProvider = StateProvider<String?>((ref) => null);
 
 final xonadoshCityProvider = StateProvider<String?>((ref) => null);
@@ -93,9 +98,10 @@ final xonadoshMatchingRoommatesProvider =
     FutureProvider.autoDispose<List<XonadoshProfile>>((ref) async {
   final repo = ref.watch(xonadoshRepositoryProvider);
   final session = ref.watch(sessionManagerProvider);
-  final selectedUni = ref.watch(xonadoshSelectedUniProvider);
+  final selectedUni = ref.watch(xonadoshMatchUniProvider);
   final gender = ref.watch(xonadoshMatchGenderFilterProvider);
   final lang = ref.watch(localeProvider).languageCode;
+  final myProfile = await ref.watch(xonadoshMyProfileProvider.future);
 
   final apiGender = switch (gender) {
     'boys' => 'male',
@@ -107,6 +113,13 @@ final xonadoshMatchingRoommatesProvider =
     username: session.userId,
     universityId: selectedUni?.id,
     gender: apiGender,
+    sleepSchedule: myProfile?.sleepSchedule,
+    cleanliness: myProfile?.cleanliness,
+    studyHabit: myProfile?.studyHabit,
+    cookingHabit: myProfile?.cookingHabit,
+    smokingHabit: myProfile?.smokingHabit,
+    budgetMin: myProfile?.budgetMin,
+    budgetMax: myProfile?.budgetMax,
     lang: lang,
   );
   final blocked = await ref.watch(blockedUsernamesProvider.future);

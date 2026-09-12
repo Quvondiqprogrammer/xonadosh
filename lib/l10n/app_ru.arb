@@ -1110,5 +1110,18 @@
   "blockUserTitle": "Заблокировать пользователя?",
   "blockUserBody": "Его объявления и анкета больше не будут видны. Разблокировать можно позже в Настройках.",
   "userBlocked": "Пользователь заблокирован. Контент скрыт.",
-  "userUnblocked": "Пользователь разблокирован."
+  "userUnblocked": "Пользователь разблокирован.",
+  "settingsSectionApp": "Настройки приложения",
+  "settingsSectionLegal": "Документы и информация",
+  "settingsSectionAccount": "Аккаунт",
+  "settingsBlockedEmpty": "Нет заблокированных пользователей",
+  "xonadoshFinanceTab": "Финансы",
+  "xonadoshPollsTab": "Голосование",
+  "xonadoshKarmaTab": "Репутация",
+  "accountDeletePasswordRequired": "Введите пароль, чтобы удалить аккаунт.",
+  "registerUsernameInvalid": "Логин: 3+ буквы, цифры, _ или .",
+  "registerPhoneInvalid": "Введите корректный номер телефона",
+  "xonadoshDeleteListing": "Удалить объявление",
+  "xonadoshDeleteListingBody": "Объявление будет скрыто из ленты. Отменить нельзя.",
+  "xonadoshListingDeleted": "Объявление удалено"
 }
