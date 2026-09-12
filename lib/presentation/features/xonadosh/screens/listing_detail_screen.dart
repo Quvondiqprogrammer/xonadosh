@@ -89,7 +89,20 @@ class _XonadoshListingDetailScreenState
                   ),
                 ),
                 actions: [
-                  if (item.username.trim().isNotEmpty)
+                  if (_isOwnListing(ref, item))
+                    Container(
+                      margin: const EdgeInsets.all(8),
+                      decoration: const BoxDecoration(
+                        color: Colors.black45,
+                        shape: BoxShape.circle,
+                      ),
+                      child: IconButton(
+                        icon: const Icon(Icons.delete_outline_rounded, color: Colors.white, size: 18),
+                        tooltip: context.l10n.xonadoshDeleteListing,
+                        onPressed: () => _confirmDeleteListing(context, ref, item),
+                      ),
+                    )
+                  else if (item.username.trim().isNotEmpty)
                     Container(
                       margin: const EdgeInsets.all(8),
                       decoration: const BoxDecoration(
@@ -855,6 +868,54 @@ class _XonadoshListingDetailScreenState
       height: 28,
       color: Colors.grey.withAlpha(60),
     );
+  }
+
+  bool _isOwnListing(WidgetRef ref, XonadoshListing item) {
+    final me = ref.read(sessionManagerProvider).username?.trim().toLowerCase();
+    final owner = item.username.trim().toLowerCase();
+    return me != null && me.isNotEmpty && owner.isNotEmpty && me == owner;
+  }
+
+  Future<void> _confirmDeleteListing(
+    BuildContext context,
+    WidgetRef ref,
+    XonadoshListing item,
+  ) async {
+    final l10n = context.l10n;
+    final ok = await showDialog<bool>(
+      context: context,
+      builder: (ctx) => AlertDialog(
+        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
+        title: Text(l10n.xonadoshDeleteListing, style: const TextStyle(fontWeight: FontWeight.w800)),
+        content: Text(l10n.xonadoshDeleteListingBody, style: const TextStyle(fontSize: 13, height: 1.4)),
+        actions: [
+          TextButton(onPressed: () => Navigator.pop(ctx, false), child: Text(l10n.commonCancel)),
+          FilledButton(
+            style: FilledButton.styleFrom(backgroundColor: const Color(0xFFEF4444)),
+            onPressed: () => Navigator.pop(ctx, true),
+            child: Text(l10n.commonDelete),
+          ),
+        ],
+      ),
+    );
+    if (ok != true) return;
+    final res = await ref.read(xonadoshRepositoryProvider).deleteListing(item.id);
+    if (!context.mounted) return;
+    if (res['ok'] == true) {
+      ref.invalidate(xonadoshListingsProvider);
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text(l10n.xonadoshListingDeleted)),
+      );
+      if (Navigator.of(context).canPop()) {
+        Navigator.of(context).pop();
+      } else {
+        context.go(AppRoutes.shell);
+      }
+    } else {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text(res['error']?.toString() ?? l10n.errorGeneric)),
+      );
+    }
   }
 
   String _formatMoney(double amount) {

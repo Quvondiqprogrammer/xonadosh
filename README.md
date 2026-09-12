@@ -14,9 +14,10 @@ Talabalar uchun uy-joy, xonadosh moslash va birga yashash.
 
 | Band | Qiymat |
 |------|--------|
-| Android application ID | `com.zargo.customer` |
+| Android application ID | `uz.xonadosh.app` |
 | iOS bundle ID | `uz.xonadosh.app` |
 | Package | `xonadosh` |
+| Version | `1.0.1+4` (see [docs/VERSIONING.md](docs/VERSIONING.md)) |
 | API | `https://honadosh.uz/` |
 | Brand | Emerald `#10B981` / `#059669` |
 
@@ -61,3 +62,4 @@ flutter test
 - [API](docs/API.md)
 - [Migration](docs/MIGRATION.md)
 - [Store metadata](docs/STORE_METADATA.md)
+- [Versioning](docs/VERSIONING.md)

@@ -1363,4 +1363,45 @@ class AppLocalizationsRu extends AppLocalizations {
 
   @override
   String get userUnblocked => 'Пользователь разблокирован.';
+
+  @override
+  String get settingsSectionApp => 'Настройки приложения';
+
+  @override
+  String get settingsSectionLegal => 'Документы и информация';
+
+  @override
+  String get settingsSectionAccount => 'Аккаунт';
+
+  @override
+  String get settingsBlockedEmpty => 'Нет заблокированных пользователей';
+
+  @override
+  String get xonadoshFinanceTab => 'Финансы';
+
+  @override
+  String get xonadoshPollsTab => 'Голосование';
+
+  @override
+  String get xonadoshKarmaTab => 'Репутация';
+
+  @override
+  String get accountDeletePasswordRequired =>
+      'Введите пароль, чтобы удалить аккаунт.';
+
+  @override
+  String get registerUsernameInvalid => 'Логин: 3+ буквы, цифры, _ или .';
+
+  @override
+  String get registerPhoneInvalid => 'Введите корректный номер телефона';
+
+  @override
+  String get xonadoshDeleteListing => 'Удалить объявление';
+
+  @override
+  String get xonadoshDeleteListingBody =>
+      'Объявление будет скрыто из ленты. Отменить нельзя.';
+
+  @override
+  String get xonadoshListingDeleted => 'Объявление удалено';
 }

@@ -1,7 +1,8 @@
 import 'package:dio/dio.dart';
 
-import '../models/user_model.dart';
 import 'api_client.dart';
+import 'api_response.dart';
+import '../models/user_model.dart';
 
 class AuthApiClient {
   AuthApiClient(this._api);
@@ -24,6 +25,7 @@ class AuthApiClient {
         'full_name': fullName,
         'username': username,
         'phone': phone,
+        'phone_number': phone,
         'password': password,
       },
       skipAuth: true,
@@ -34,12 +36,19 @@ class AuthApiClient {
     required String login,
     required String password,
   }) async {
+    // Backend accepts username OR phone on the `username` field; also send
+    // `phone` so either identifier works if the field name changes.
+    final payload = <String, dynamic>{
+      'username': login,
+      'password': password,
+    };
+    if (_looksLikePhone(login)) {
+      payload['phone'] = login;
+      payload['phone_number'] = login;
+    }
     return _post(
       'api/auth_login.php',
-      data: {
-        'username': login,
-        'password': password,
-      },
+      data: payload,
       skipAuth: true,
     );
   }
@@ -73,7 +82,7 @@ class AuthApiClient {
   Future<Map<String, dynamic>> _get(String path) async {
     try {
       final res = await _dio.get<dynamic>(path);
-      return _asMap(res.data, status: res.statusCode);
+      return ApiResponse.parse(res.data, status: res.statusCode);
     } on DioException catch (e) {
       return _err(e);
     } catch (e) {
@@ -92,7 +101,7 @@ class AuthApiClient {
         data: data,
         options: skipAuth ? _skipAuth : null,
       );
-      return _asMap(res.data, status: res.statusCode);
+      return ApiResponse.parse(res.data, status: res.statusCode);
     } on DioException catch (e) {
       return _err(e);
     } catch (e) {
@@ -100,37 +109,17 @@ class AuthApiClient {
     }
   }
 
-  Map<String, dynamic> _asMap(dynamic data, {int? status}) {
-    final Map<String, dynamic> map;
-    if (data is Map<String, dynamic>) {
-      map = Map<String, dynamic>.from(data);
-    } else if (data is Map) {
-      map = Map<String, dynamic>.from(data);
-    } else {
-      map = {'ok': false, 'error': 'Invalid response'};
-    }
-    if (status != null) map['status'] = status;
-    if (status != null && status >= 400) {
-      map['ok'] = false;
-    }
-    return map;
+  Map<String, dynamic> _err(DioException e) {
+    return ApiResponse.parse(
+      e.response?.data,
+      status: e.response?.statusCode,
+      fallbackError: e.message ?? 'Network error',
+    );
   }
 
-  Map<String, dynamic> _err(DioException e) {
-    final data = e.response?.data;
-    final status = e.response?.statusCode;
-    if (data is Map) {
-      return {
-        'ok': false,
-        'error': data['error'] ?? e.message,
-        'status': ?status,
-      };
-    }
-    return {
-      'ok': false,
-      'error': e.message ?? 'Network error',
-      'status': ?status,
-    };
+  static bool _looksLikePhone(String raw) {
+    final digits = raw.replaceAll(RegExp(r'\D'), '');
+    return digits.length >= 9;
   }
 
   static UserModel? userFromResponse(Map<String, dynamic> res) {

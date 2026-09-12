@@ -4,6 +4,7 @@
 
 - [ ] `flutter test test/domain/matching_score_test.dart`
 - [ ] `flutter test test/domain/commute_math_test.dart`
+- [ ] `flutter test test/data/api_response_test.dart`
 - [ ] `flutter test test/widget/shell_smoke_test.dart`
 - [ ] `flutter analyze` (lib + test)
 

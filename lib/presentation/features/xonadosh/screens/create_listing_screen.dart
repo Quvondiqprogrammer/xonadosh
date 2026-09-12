@@ -86,6 +86,14 @@ class _XonadoshCreateListingScreenState
     super.initState();
     _photos.add(XonadoshLocationData.presetPhotos.first['url']!);
     _updateDefaultTitle();
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      if (!mounted) return;
+      final user = ref.read(sessionManagerProvider).user;
+      if (_phoneController.text.trim().isEmpty) {
+        final phone = user?.phoneNumber?.trim() ?? '';
+        if (phone.isNotEmpty) _phoneController.text = phone;
+      }
+    });
   }
 
   @override
@@ -149,6 +157,7 @@ class _XonadoshCreateListingScreenState
         ? _customDistrictController.text.trim()
         : _selectedDistrict;
 
+    final session = ref.read(sessionManagerProvider);
     final data = {
       'title': _titleController.text.trim(),
       'description': _descController.text.trim(),
@@ -159,6 +168,7 @@ class _XonadoshCreateListingScreenState
       'city': _selectedRegion.name,
       'district': finalDistrict,
       'address': _addressController.text.trim(),
+      'owner_name': session.user?.displayName ?? session.username ?? '',
       'phone_number': _phoneController.text.trim(),
       'telegram_handle': _telegramController.text.trim().replaceAll('@', ''),
       'nearest_university_id': _selectedUni?.id,
@@ -266,6 +276,15 @@ class _XonadoshCreateListingScreenState
 
   Future<void> _useMyLocation() async {
     try {
+      final serviceEnabled = await Geolocator.isLocationServiceEnabled();
+      if (!serviceEnabled) {
+        if (mounted) {
+          ScaffoldMessenger.of(context).showSnackBar(
+            SnackBar(content: Text(context.l10n.xonadoshLocationFailed)),
+          );
+        }
+        return;
+      }
       var permission = await Geolocator.checkPermission();
       if (permission == LocationPermission.denied) {
         permission = await Geolocator.requestPermission();

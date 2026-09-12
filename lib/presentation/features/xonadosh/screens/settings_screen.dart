@@ -45,7 +45,7 @@ class SettingsScreen extends ConsumerWidget {
                     style: const TextStyle(fontWeight: FontWeight.w900, fontSize: 18),
                   ),
                   Text(
-                    'Talabalar uy-joy va xonadosh platformasi • v${AppConfig.appVersion}',
+                    '${l10n.tagline} • v${AppConfig.appVersion}',
                     style: TextStyle(
                       fontSize: 12,
                       color: isDark ? const Color(0xFF94A3B8) : const Color(0xFF64748B),
@@ -57,7 +57,7 @@ class SettingsScreen extends ConsumerWidget {
             const SizedBox(height: 20),
 
             // Group 1: Preferences (Language & Theme)
-            _buildSectionHeader('Ilova sozlamalari'),
+            _buildSectionHeader(l10n.settingsSectionApp),
             const SizedBox(height: 8),
             Container(
               padding: const EdgeInsets.all(16),
@@ -129,7 +129,7 @@ class SettingsScreen extends ConsumerWidget {
             const SizedBox(height: 20),
 
             // Group 2: Legal & About
-            _buildSectionHeader('Hujjatlar va Ma’lumot'),
+            _buildSectionHeader(l10n.settingsSectionLegal),
             const SizedBox(height: 8),
             Container(
               decoration: BoxDecoration(
@@ -181,7 +181,7 @@ class SettingsScreen extends ConsumerWidget {
                     if (blocked.isEmpty) {
                       return ListTile(
                         leading: const Icon(Icons.block_rounded, color: Color(0xFF94A3B8)),
-                        title: Text(l10n.emptyStateTitle, style: const TextStyle(fontSize: 14)),
+                        title: Text(l10n.settingsBlockedEmpty, style: const TextStyle(fontSize: 14)),
                       );
                     }
                     return Column(
@@ -217,7 +217,7 @@ class SettingsScreen extends ConsumerWidget {
             const SizedBox(height: 20),
 
             // Group 3: Account Actions
-            _buildSectionHeader('Hisob'),
+            _buildSectionHeader(l10n.settingsSectionAccount),
             const SizedBox(height: 8),
             Container(
               decoration: BoxDecoration(
@@ -284,6 +284,12 @@ class SettingsScreen extends ConsumerWidget {
                           ),
                         );
                         if (ok == true && context.mounted) {
+                          if (passwordCtrl.text.isEmpty) {
+                            ScaffoldMessenger.of(context).showSnackBar(
+                              SnackBar(content: Text(l10n.accountDeletePasswordRequired)),
+                            );
+                            return;
+                          }
                           final res = await ref.read(authRepositoryProvider).deleteAccount(
                                 password: passwordCtrl.text,
                               );

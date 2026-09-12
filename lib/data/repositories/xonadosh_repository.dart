@@ -168,6 +168,9 @@ class XonadoshRepository {
       final prefs = await SharedPreferences.getInstance();
       await prefs.remove(_kProfilePref);
       await prefs.remove(_kDraftPref);
+      await prefs.remove(_kKarmaPref);
+      await prefs.remove(_kPollsPref);
+      await prefs.remove(_kFinancesPref);
     } catch (_) {}
   }
 

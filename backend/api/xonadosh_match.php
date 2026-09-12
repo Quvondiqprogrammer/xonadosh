@@ -197,10 +197,7 @@ $filterGender = $explicitGender;
 if ($filterGender === null && !$wantAnyGender) {
     $filterGender = $myGender;
 }
-if ($filterGender === null && $wantAnyGender) {
-    // Same-gender default when the user has a profile; otherwise show all.
-    $filterGender = isset($my) && $my ? ($my['gender'] ?? null) : null;
-}
+// "any" / empty must return all genders — do not silently default to same-gender.
 
 $sql = "SELECT p.*, u.short_name as uni_short_name 
                       FROM `xonadosh_profiles` p

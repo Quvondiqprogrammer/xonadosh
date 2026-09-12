@@ -51,7 +51,10 @@ final authBootstrapProvider = FutureProvider<bool>((ref) async {
     return await ref
         .read(authRepositoryProvider)
         .hasValidSession()
-        .timeout(const Duration(seconds: 8), onTimeout: () => false);
+        .timeout(
+          const Duration(seconds: 8),
+          onTimeout: () => session.isAuthenticated,
+        );
   } catch (_) {
     return false;
   }

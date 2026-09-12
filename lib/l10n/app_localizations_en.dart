@@ -1361,4 +1361,45 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get userUnblocked => 'User unblocked.';
+
+  @override
+  String get settingsSectionApp => 'App settings';
+
+  @override
+  String get settingsSectionLegal => 'Legal & about';
+
+  @override
+  String get settingsSectionAccount => 'Account';
+
+  @override
+  String get settingsBlockedEmpty => 'No blocked users';
+
+  @override
+  String get xonadoshFinanceTab => 'Finances';
+
+  @override
+  String get xonadoshPollsTab => 'Polls';
+
+  @override
+  String get xonadoshKarmaTab => 'Karma';
+
+  @override
+  String get accountDeletePasswordRequired =>
+      'Enter your password to delete the account.';
+
+  @override
+  String get registerUsernameInvalid => 'Username: 3+ letters, numbers, _ or .';
+
+  @override
+  String get registerPhoneInvalid => 'Enter a valid phone number';
+
+  @override
+  String get xonadoshDeleteListing => 'Delete listing';
+
+  @override
+  String get xonadoshDeleteListingBody =>
+      'This listing will be hidden from the feed. You cannot undo this.';
+
+  @override
+  String get xonadoshListingDeleted => 'Listing deleted';
 }

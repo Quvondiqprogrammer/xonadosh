@@ -24,7 +24,7 @@ class XonadoshMatchingTab extends ConsumerWidget {
     final myProfileAsync = ref.watch(xonadoshMyProfileProvider);
     final matchesAsync = ref.watch(xonadoshMatchingRoommatesProvider);
     final selectedGender = ref.watch(xonadoshMatchGenderFilterProvider);
-    final selectedUni = ref.watch(xonadoshSelectedUniProvider);
+    final selectedUni = ref.watch(xonadoshMatchUniProvider);
 
     return Scaffold(
       body: RefreshIndicator(
@@ -92,7 +92,7 @@ class XonadoshMatchingTab extends ConsumerWidget {
                           label: Text(selectedUni.shortName),
                           selected: true,
                           onDeleted: () {
-                            ref.read(xonadoshSelectedUniProvider.notifier).state = null;
+                            ref.read(xonadoshMatchUniProvider.notifier).state = null;
                           },
                         ),
                       ],
