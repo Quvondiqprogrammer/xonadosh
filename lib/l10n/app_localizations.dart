@@ -709,7 +709,7 @@ abstract class AppLocalizations {
   /// No description provided for @xonadoshColivingTab.
   ///
   /// In en, this message translates to:
-  /// **'Daily & Groceries'**
+  /// **'Together'**
   String get xonadoshColivingTab;
 
   /// Contact methods title
@@ -1027,7 +1027,7 @@ abstract class AppLocalizations {
   /// No description provided for @xonadoshFillProfile.
   ///
   /// In en, this message translates to:
-  /// **'Fill / Update Roommate Profile'**
+  /// **'Complete your profile'**
   String get xonadoshFillProfile;
 
   /// Fill required fields snackbar
@@ -1045,7 +1045,7 @@ abstract class AppLocalizations {
   /// No description provided for @xonadoshFindRoommate.
   ///
   /// In en, this message translates to:
-  /// **'Find Roommate'**
+  /// **'Find a roommate'**
   String get xonadoshFindRoommate;
 
   /// Floor label
@@ -1285,7 +1285,7 @@ abstract class AppLocalizations {
   /// No description provided for @xonadoshHousingTab.
   ///
   /// In en, this message translates to:
-  /// **'Housing & Rent'**
+  /// **'Rooms'**
   String get xonadoshHousingTab;
 
   /// Ingredient amount hint
@@ -1447,7 +1447,7 @@ abstract class AppLocalizations {
   /// No description provided for @xonadoshMatchingTab.
   ///
   /// In en, this message translates to:
-  /// **'Find Roommate'**
+  /// **'Roommates'**
   String get xonadoshMatchingTab;
 
   /// Max budget label
@@ -1561,19 +1561,19 @@ abstract class AppLocalizations {
   /// No listings subtitle
   ///
   /// In en, this message translates to:
-  /// **'Try selecting another province or district.'**
+  /// **'Clear filters or post a listing yourself.'**
   String get xonadoshNoListingsSubtitle;
 
   /// No listings title
   ///
   /// In en, this message translates to:
-  /// **'No listings found in this area'**
+  /// **'No rooms match these filters'**
   String get xonadoshNoListingsTitle;
 
   /// No description provided for @xonadoshNoMatchesBody.
   ///
   /// In en, this message translates to:
-  /// **'Complete your profile or try different filters.'**
+  /// **'Complete your profile — sleep, cleanliness, budget — or change filters.'**
   String get xonadoshNoMatchesBody;
 
   /// No description provided for @xonadoshNoMatchesTitle.
@@ -2300,7 +2300,7 @@ abstract class AppLocalizations {
   /// No description provided for @tagline.
   ///
   /// In en, this message translates to:
-  /// **'Housing, roommate matching and coliving for students'**
+  /// **'Student housing, roommate matching, and shared living'**
   String get tagline;
 
   /// No description provided for @login.
@@ -2336,7 +2336,7 @@ abstract class AppLocalizations {
   /// No description provided for @loginSubtitle.
   ///
   /// In en, this message translates to:
-  /// **'Find a room and a roommate'**
+  /// **'Find a room. Find a roommate. Live together.'**
   String get loginSubtitle;
 
   /// No description provided for @registerUsername.
@@ -2432,19 +2432,19 @@ abstract class AppLocalizations {
   /// No description provided for @emptyStateSubtitle.
   ///
   /// In en, this message translates to:
-  /// **'Pull to refresh or change filters'**
+  /// **'Post a listing or complete your profile to get started.'**
   String get emptyStateSubtitle;
 
   /// No description provided for @errorGeneric.
   ///
   /// In en, this message translates to:
-  /// **'Something went wrong'**
+  /// **'Something went wrong. Try again.'**
   String get errorGeneric;
 
   /// No description provided for @errorNetwork.
   ///
   /// In en, this message translates to:
-  /// **'Network error. Check your connection.'**
+  /// **'No internet. Check your connection and try again.'**
   String get errorNetwork;
 
   /// No description provided for @commonLogout.
@@ -2740,6 +2740,228 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Listing deleted'**
   String get xonadoshListingDeleted;
+
+  /// No description provided for @xonadoshFindRoom.
+  ///
+  /// In en, this message translates to:
+  /// **'Find a room'**
+  String get xonadoshFindRoom;
+
+  /// No description provided for @xonadoshOnboardingTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'What XonaDosh does'**
+  String get xonadoshOnboardingTitle;
+
+  /// No description provided for @xonadoshOnboardingSubtitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Three simple jobs — instead of messy OLX and Telegram groups.'**
+  String get xonadoshOnboardingSubtitle;
+
+  /// No description provided for @xonadoshJobHousingTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Find a room'**
+  String get xonadoshJobHousingTitle;
+
+  /// No description provided for @xonadoshJobHousingBody.
+  ///
+  /// In en, this message translates to:
+  /// **'Student rentals near universities. See price, area, and metro.'**
+  String get xonadoshJobHousingBody;
+
+  /// No description provided for @xonadoshJobMatchTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Find a roommate'**
+  String get xonadoshJobMatchTitle;
+
+  /// No description provided for @xonadoshJobMatchBody.
+  ///
+  /// In en, this message translates to:
+  /// **'Match on sleep, cleanliness, and budget — not just a phone number.'**
+  String get xonadoshJobMatchBody;
+
+  /// No description provided for @xonadoshJobColivingTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Live together'**
+  String get xonadoshJobColivingTitle;
+
+  /// No description provided for @xonadoshJobColivingBody.
+  ///
+  /// In en, this message translates to:
+  /// **'Chores, groceries, and bills — useful after you have a roommate.'**
+  String get xonadoshJobColivingBody;
+
+  /// No description provided for @xonadoshOnboardingStart.
+  ///
+  /// In en, this message translates to:
+  /// **'Let’s start'**
+  String get xonadoshOnboardingStart;
+
+  /// No description provided for @xonadoshEmptyMarketTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'No listings yet'**
+  String get xonadoshEmptyMarketTitle;
+
+  /// No description provided for @xonadoshEmptyMarketBody.
+  ///
+  /// In en, this message translates to:
+  /// **'Be the first. Post a room or a roommate request — no Telegram group needed.'**
+  String get xonadoshEmptyMarketBody;
+
+  /// No description provided for @xonadoshEmptyMatchesNeedProfile.
+  ///
+  /// In en, this message translates to:
+  /// **'Fill in your university, budget, and habits so we can show who fits.'**
+  String get xonadoshEmptyMatchesNeedProfile;
+
+  /// No description provided for @xonadoshEmptyMatchesFiltered.
+  ///
+  /// In en, this message translates to:
+  /// **'These filters hid everyone. Change university or gender, or clear them.'**
+  String get xonadoshEmptyMatchesFiltered;
+
+  /// No description provided for @xonadoshColivingUnlockTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Together tools'**
+  String get xonadoshColivingUnlockTitle;
+
+  /// No description provided for @xonadoshColivingUnlockTip.
+  ///
+  /// In en, this message translates to:
+  /// **'Chores and groceries are here. Most useful after you have a room or roommate — still open to explore.'**
+  String get xonadoshColivingUnlockTip;
+
+  /// No description provided for @xonadoshWhyMatch.
+  ///
+  /// In en, this message translates to:
+  /// **'Why this match'**
+  String get xonadoshWhyMatch;
+
+  /// No description provided for @xonadoshMatchFiltersLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Who are you looking for?'**
+  String get xonadoshMatchFiltersLabel;
+
+  /// No description provided for @xonadoshUniversityFilter.
+  ///
+  /// In en, this message translates to:
+  /// **'University'**
+  String get xonadoshUniversityFilter;
+
+  /// No description provided for @xonadoshKmAway.
+  ///
+  /// In en, this message translates to:
+  /// **'{km} away'**
+  String xonadoshKmAway(String km);
+
+  /// No description provided for @xonadoshNearMetro.
+  ///
+  /// In en, this message translates to:
+  /// **'Metro {name}'**
+  String xonadoshNearMetro(String name);
+
+  /// No description provided for @xonadoshHousingHeroTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'What do you need?'**
+  String get xonadoshHousingHeroTitle;
+
+  /// No description provided for @xonadoshFiltersOn.
+  ///
+  /// In en, this message translates to:
+  /// **'Filters on'**
+  String get xonadoshFiltersOn;
+
+  /// No description provided for @xonadoshSearchFiltersTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Search filters'**
+  String get xonadoshSearchFiltersTitle;
+
+  /// No description provided for @xonadoshSeeResults.
+  ///
+  /// In en, this message translates to:
+  /// **'See results'**
+  String get xonadoshSeeResults;
+
+  /// No description provided for @xonadoshAnyPrice.
+  ///
+  /// In en, this message translates to:
+  /// **'Any price'**
+  String get xonadoshAnyPrice;
+
+  /// No description provided for @xonadoshRegionCity.
+  ///
+  /// In en, this message translates to:
+  /// **'Region / city'**
+  String get xonadoshRegionCity;
+
+  /// No description provided for @xonadoshDistrictArea.
+  ///
+  /// In en, this message translates to:
+  /// **'District / area'**
+  String get xonadoshDistrictArea;
+
+  /// No description provided for @xonadoshNearUniversity.
+  ///
+  /// In en, this message translates to:
+  /// **'Near university'**
+  String get xonadoshNearUniversity;
+
+  /// No description provided for @xonadoshBudgetFilterLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Monthly budget (UZS)'**
+  String get xonadoshBudgetFilterLabel;
+
+  /// No description provided for @xonadoshWhoFor.
+  ///
+  /// In en, this message translates to:
+  /// **'Who is it for'**
+  String get xonadoshWhoFor;
+
+  /// No description provided for @xonadoshTypeRent.
+  ///
+  /// In en, this message translates to:
+  /// **'Rent'**
+  String get xonadoshTypeRent;
+
+  /// No description provided for @xonadoshTypeSell.
+  ///
+  /// In en, this message translates to:
+  /// **'Sale'**
+  String get xonadoshTypeSell;
+
+  /// No description provided for @xonadoshTypeBuy.
+  ///
+  /// In en, this message translates to:
+  /// **'Looking'**
+  String get xonadoshTypeBuy;
+
+  /// No description provided for @xonadoshMatchStudyMusic.
+  ///
+  /// In en, this message translates to:
+  /// **'Study vibe matches (music / headphones)'**
+  String get xonadoshMatchStudyMusic;
+
+  /// No description provided for @xonadoshCallShort.
+  ///
+  /// In en, this message translates to:
+  /// **'Call'**
+  String get xonadoshCallShort;
+
+  /// No description provided for @xonadoshMoreDetails.
+  ///
+  /// In en, this message translates to:
+  /// **'Details'**
+  String get xonadoshMoreDetails;
 }
 
 class _AppLocalizationsDelegate

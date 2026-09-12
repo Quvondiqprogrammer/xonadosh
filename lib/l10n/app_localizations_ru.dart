@@ -318,7 +318,7 @@ class AppLocalizationsRu extends AppLocalizations {
   String get xonadoshColivingSubtitle => 'Дежурства, меню и расчет покупок';
 
   @override
-  String get xonadoshColivingTab => 'Быт и Покупки';
+  String get xonadoshColivingTab => 'Вместе';
 
   @override
   String get xonadoshContactMethods => 'Способы связи';
@@ -489,7 +489,7 @@ class AppLocalizationsRu extends AppLocalizations {
       'Пожалуйста, заполните все обязательные поля!';
 
   @override
-  String get xonadoshFillProfile => 'Заполнить / обновить анкету';
+  String get xonadoshFillProfile => 'Заполнить анкету';
 
   @override
   String get xonadoshFillRequiredFieldsSnack =>
@@ -499,7 +499,7 @@ class AppLocalizationsRu extends AppLocalizations {
   String get xonadoshFillSurveyWindow => 'Заполнить анкету (Отдельное окно)';
 
   @override
-  String get xonadoshFindRoommate => 'Поиск Соседа';
+  String get xonadoshFindRoommate => 'Найти соседа';
 
   @override
   String get xonadoshFloor => 'Этаж';
@@ -621,7 +621,7 @@ class AppLocalizationsRu extends AppLocalizations {
   String get xonadoshHousingSubtitle => 'Жилье, аренда и расстояние до вуза';
 
   @override
-  String get xonadoshHousingTab => 'Жилье и Аренда';
+  String get xonadoshHousingTab => 'Жильё';
 
   @override
   String get xonadoshIngredientAmount => 'Количество';
@@ -715,7 +715,7 @@ class AppLocalizationsRu extends AppLocalizations {
   String get xonadoshMatchingSubtitle => 'ИИ совместимость и анализ характера';
 
   @override
-  String get xonadoshMatchingTab => 'Поиск Соседа';
+  String get xonadoshMatchingTab => 'Сосед';
 
   @override
   String get xonadoshMaxBudget => 'Максимальный бюджет';
@@ -776,13 +776,14 @@ class AppLocalizationsRu extends AppLocalizations {
 
   @override
   String get xonadoshNoListingsSubtitle =>
-      'Попробуйте выбрать другую область или район.';
+      'Сбросьте фильтры или разместите объявление сами.';
 
   @override
-  String get xonadoshNoListingsTitle => 'В этом регионе объявлений не найдено';
+  String get xonadoshNoListingsTitle => 'По этим фильтрам жилья нет';
 
   @override
-  String get xonadoshNoMatchesBody => 'Заполните анкету или измените фильтры.';
+  String get xonadoshNoMatchesBody =>
+      'Заполните анкету — сон, чистота, бюджет — или смените фильтры.';
 
   @override
   String get xonadoshNoMatchesTitle => 'Подходящих соседей пока нет';
@@ -1174,7 +1175,7 @@ class AppLocalizationsRu extends AppLocalizations {
 
   @override
   String get tagline =>
-      'Жильё, подбор соседа и совместное проживание для студентов';
+      'Жильё для студентов, подбор соседа и совместное проживание';
 
   @override
   String get login => 'Войти';
@@ -1192,7 +1193,7 @@ class AppLocalizationsRu extends AppLocalizations {
   String get loginTitle => 'Добро пожаловать в XonaDosh';
 
   @override
-  String get loginSubtitle => 'Найдите жильё и соседа';
+  String get loginSubtitle => 'Найдите комнату. Найдите соседа. Живите вместе.';
 
   @override
   String get registerUsername => 'Логин';
@@ -1240,13 +1241,15 @@ class AppLocalizationsRu extends AppLocalizations {
   String get emptyStateTitle => 'Пока пусто';
 
   @override
-  String get emptyStateSubtitle => 'Обновите или измените фильтры';
+  String get emptyStateSubtitle =>
+      'Разместите объявление или заполните анкету — так проще начать.';
 
   @override
-  String get errorGeneric => 'Что-то пошло не так';
+  String get errorGeneric => 'Что-то пошло не так. Попробуйте ещё раз.';
 
   @override
-  String get errorNetwork => 'Ошибка сети. Проверьте соединение.';
+  String get errorNetwork =>
+      'Нет интернета. Проверьте связь и попробуйте снова.';
 
   @override
   String get commonLogout => 'Выйти';
@@ -1404,4 +1407,128 @@ class AppLocalizationsRu extends AppLocalizations {
 
   @override
   String get xonadoshListingDeleted => 'Объявление удалено';
+
+  @override
+  String get xonadoshFindRoom => 'Найти жильё';
+
+  @override
+  String get xonadoshOnboardingTitle => 'Что делает XonaDosh';
+
+  @override
+  String get xonadoshOnboardingSubtitle =>
+      'Три простые задачи — вместо хаоса OLX и Telegram.';
+
+  @override
+  String get xonadoshJobHousingTitle => 'Найти жильё';
+
+  @override
+  String get xonadoshJobHousingBody =>
+      'Студенческая аренда рядом с вузами. Цена, район и метро.';
+
+  @override
+  String get xonadoshJobMatchTitle => 'Найти соседа';
+
+  @override
+  String get xonadoshJobMatchBody =>
+      'Совпадение по сну, чистоте и бюджету — не только номер телефона.';
+
+  @override
+  String get xonadoshJobColivingTitle => 'Жить вместе';
+
+  @override
+  String get xonadoshJobColivingBody =>
+      'Дежурства, закупки и счета — удобно, когда сосед уже есть.';
+
+  @override
+  String get xonadoshOnboardingStart => 'Начать';
+
+  @override
+  String get xonadoshEmptyMarketTitle => 'Пока нет объявлений';
+
+  @override
+  String get xonadoshEmptyMarketBody =>
+      'Будьте первым. Разместите комнату или поиск соседа — без Telegram-группы.';
+
+  @override
+  String get xonadoshEmptyMatchesNeedProfile =>
+      'Укажите вуз, бюджет и привычки — тогда покажем, кто подходит.';
+
+  @override
+  String get xonadoshEmptyMatchesFiltered =>
+      'Фильтры никого не оставили. Смените вуз или пол, либо сбросьте их.';
+
+  @override
+  String get xonadoshColivingUnlockTitle => 'Вместе';
+
+  @override
+  String get xonadoshColivingUnlockTip =>
+      'Дежурства и закупки здесь. Удобнее после комнаты или соседа — можно смотреть уже сейчас.';
+
+  @override
+  String get xonadoshWhyMatch => 'Почему подходит';
+
+  @override
+  String get xonadoshMatchFiltersLabel => 'Кого вы ищете?';
+
+  @override
+  String get xonadoshUniversityFilter => 'ВУЗ';
+
+  @override
+  String xonadoshKmAway(String km) {
+    return '$km от вуза';
+  }
+
+  @override
+  String xonadoshNearMetro(String name) {
+    return 'Метро $name';
+  }
+
+  @override
+  String get xonadoshHousingHeroTitle => 'Что нужно?';
+
+  @override
+  String get xonadoshFiltersOn => 'Фильтры включены';
+
+  @override
+  String get xonadoshSearchFiltersTitle => 'Фильтры поиска';
+
+  @override
+  String get xonadoshSeeResults => 'Показать результаты';
+
+  @override
+  String get xonadoshAnyPrice => 'Любая цена';
+
+  @override
+  String get xonadoshRegionCity => 'Область / город';
+
+  @override
+  String get xonadoshDistrictArea => 'Район';
+
+  @override
+  String get xonadoshNearUniversity => 'Рядом с вузом';
+
+  @override
+  String get xonadoshBudgetFilterLabel => 'Месячный бюджет (сум)';
+
+  @override
+  String get xonadoshWhoFor => 'Для кого';
+
+  @override
+  String get xonadoshTypeRent => 'Аренда';
+
+  @override
+  String get xonadoshTypeSell => 'Продажа';
+
+  @override
+  String get xonadoshTypeBuy => 'Ищу';
+
+  @override
+  String get xonadoshMatchStudyMusic =>
+      'Атмосфера учёбы совпадает (музыка / наушники)';
+
+  @override
+  String get xonadoshCallShort => 'Звонок';
+
+  @override
+  String get xonadoshMoreDetails => 'Подробнее';
 }

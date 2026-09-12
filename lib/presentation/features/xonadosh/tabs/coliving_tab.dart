@@ -4,6 +4,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:xonadosh/config/theme.dart';
 import 'package:xonadosh/data/models/xonadosh_models.dart';
 import 'package:xonadosh/l10n/l10n_ext.dart';
+import 'package:xonadosh/presentation/features/xonadosh/widgets/onboarding_welcome.dart';
 import 'package:xonadosh/presentation/providers/xonadosh_providers.dart';
 import '../widgets/xonadosh_create_recipe_sheet.dart';
 import '../widgets/xonadosh_recipe_picker_sheet.dart';
@@ -30,7 +31,13 @@ class _XonadoshColivingTabState extends ConsumerState<XonadoshColivingTab> {
     return Scaffold(
       body: Column(
         children: [
-          // Horizontal sub-tab bar
+          Padding(
+            padding: const EdgeInsets.fromLTRB(16, 8, 16, 4),
+            child: XonadoshColivingUnlockTip(
+              onFindRoom: () => ref.read(xonadoshShellTabIndexProvider.notifier).state = 0,
+              onFindRoommate: () => ref.read(xonadoshShellTabIndexProvider.notifier).state = 1,
+            ),
+          ),
           Container(
             width: double.infinity,
             padding: const EdgeInsets.fromLTRB(16, 8, 16, 6),

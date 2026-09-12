@@ -104,6 +104,29 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
                       ),
                       textAlign: TextAlign.center,
                     ),
+                    const SizedBox(height: 14),
+                    Wrap(
+                      alignment: WrapAlignment.center,
+                      spacing: 6,
+                      runSpacing: 6,
+                      children: [
+                        Chip(
+                          avatar: const Icon(Icons.home_outlined, size: 14, color: XonaDoshColors.emerald),
+                          label: Text(l10n.xonadoshJobHousingTitle),
+                          visualDensity: VisualDensity.compact,
+                        ),
+                        Chip(
+                          avatar: const Icon(Icons.group_outlined, size: 14, color: XonaDoshColors.accentPurple),
+                          label: Text(l10n.xonadoshJobMatchTitle),
+                          visualDensity: VisualDensity.compact,
+                        ),
+                        Chip(
+                          avatar: const Icon(Icons.checklist_rounded, size: 14, color: XonaDoshColors.amber),
+                          label: Text(l10n.xonadoshJobColivingTitle),
+                          visualDensity: VisualDensity.compact,
+                        ),
+                      ],
+                    ),
                     const SizedBox(height: 28),
                     TextFormField(
                       controller: _loginCtrl,

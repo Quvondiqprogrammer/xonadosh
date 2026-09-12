@@ -322,7 +322,7 @@ class AppLocalizationsUz extends AppLocalizations {
       'Navbatchilik, menyu & bozorlik hisobi';
 
   @override
-  String get xonadoshColivingTab => 'Kundalik & Bozorlik';
+  String get xonadoshColivingTab => 'Birga';
 
   @override
   String get xonadoshContactMethods => 'Aloqa vositalari';
@@ -494,7 +494,7 @@ class AppLocalizationsUz extends AppLocalizations {
       'Iltimos, barcha majburiy maydonlarni to‘ldiring!';
 
   @override
-  String get xonadoshFillProfile => 'Anketani to‘ldirish / yangilash';
+  String get xonadoshFillProfile => 'Anketani to‘ldirish';
 
   @override
   String get xonadoshFillRequiredFieldsSnack =>
@@ -504,7 +504,7 @@ class AppLocalizationsUz extends AppLocalizations {
   String get xonadoshFillSurveyWindow => 'Anketani to‘ldirish (Alohida oyna)';
 
   @override
-  String get xonadoshFindRoommate => 'Xonadosh Topish';
+  String get xonadoshFindRoommate => 'Sherik topish';
 
   @override
   String get xonadoshFloor => 'Qavat';
@@ -627,7 +627,7 @@ class AppLocalizationsUz extends AppLocalizations {
   String get xonadoshHousingSubtitle => 'Uy-joy, ijara va OTM masofasi';
 
   @override
-  String get xonadoshHousingTab => 'Uy & Ijara';
+  String get xonadoshHousingTab => 'Uy';
 
   @override
   String get xonadoshIngredientAmount => 'Miqdor';
@@ -721,7 +721,7 @@ class AppLocalizationsUz extends AppLocalizations {
   String get xonadoshMatchingSubtitle => 'AI moslik & Harakter tahlili';
 
   @override
-  String get xonadoshMatchingTab => 'Xonadosh Topish';
+  String get xonadoshMatchingTab => 'Xonadosh';
 
   @override
   String get xonadoshMaxBudget => 'Maksimal byudjet';
@@ -782,17 +782,17 @@ class AppLocalizationsUz extends AppLocalizations {
 
   @override
   String get xonadoshNoListingsSubtitle =>
-      'Boshqa viloyat yoki tumanni tanlab ko\'ring.';
+      'Filtrlarni tozalang yoki o‘zingiz e’lon bering.';
 
   @override
-  String get xonadoshNoListingsTitle => 'Ushbu hududda e\'lonlar topilmadi';
+  String get xonadoshNoListingsTitle => 'Bu filtrlar bo‘yicha uy yo‘q';
 
   @override
   String get xonadoshNoMatchesBody =>
-      'Anketangizni to‘ldiring yoki filtrlarni o‘zgartirib ko‘ring.';
+      'Anketani to‘ldiring — uyqu, tozalik, byudjet — yoki filtrlarni o‘zgartiring.';
 
   @override
-  String get xonadoshNoMatchesTitle => 'Hozircha mos xonadoshlar topilmadi';
+  String get xonadoshNoMatchesTitle => 'Hozircha mos sherik yo‘q';
 
   @override
   String get xonadoshNoRecipeFound => 'Bunday taom topilmadi';
@@ -1182,7 +1182,7 @@ class AppLocalizationsUz extends AppLocalizations {
       '1 haftalik bozorlik (3 mahal/kun):';
 
   @override
-  String get tagline => 'Talabalar uchun uy-joy, xonadosh va birga yashash';
+  String get tagline => 'Talabalar uchun uy, mos xonadosh va birga yashash';
 
   @override
   String get login => 'Kirish';
@@ -1200,7 +1200,7 @@ class AppLocalizationsUz extends AppLocalizations {
   String get loginTitle => 'XonaDoshga xush kelibsiz';
 
   @override
-  String get loginSubtitle => 'Uy va xonadosh toping';
+  String get loginSubtitle => 'Uy toping. Mos sherik tanlang. Birga yashang.';
 
   @override
   String get registerUsername => 'Login';
@@ -1248,13 +1248,14 @@ class AppLocalizationsUz extends AppLocalizations {
   String get emptyStateTitle => 'Hali hech narsa yo‘q';
 
   @override
-  String get emptyStateSubtitle => 'Yangilang yoki filtrlarni o‘zgartiring';
+  String get emptyStateSubtitle =>
+      'E’lon bering yoki anketani to‘ldiring — shundan boshlanadi.';
 
   @override
-  String get errorGeneric => 'Xatolik yuz berdi';
+  String get errorGeneric => 'Xatolik bo‘ldi. Qayta urinib ko‘ring.';
 
   @override
-  String get errorNetwork => 'Tarmoq xatosi. Internetni tekshiring.';
+  String get errorNetwork => 'Internet yo‘q. Aloqani tekshirib, qayta urining.';
 
   @override
   String get commonLogout => 'Chiqish';
@@ -1412,4 +1413,127 @@ class AppLocalizationsUz extends AppLocalizations {
 
   @override
   String get xonadoshListingDeleted => 'E’lon o‘chirildi';
+
+  @override
+  String get xonadoshFindRoom => 'Uy topish';
+
+  @override
+  String get xonadoshOnboardingTitle => 'XonaDosh nima qiladi';
+
+  @override
+  String get xonadoshOnboardingSubtitle =>
+      'Uchta oddiy ish — Telegram guruhlari va OLX o‘rniga.';
+
+  @override
+  String get xonadoshJobHousingTitle => 'Uy topish';
+
+  @override
+  String get xonadoshJobHousingBody =>
+      'Universitet yonidagi ijara. Narx, tuman va metro ko‘rinadi.';
+
+  @override
+  String get xonadoshJobMatchTitle => 'Sherik topish';
+
+  @override
+  String get xonadoshJobMatchBody =>
+      'Uyqu, tozalik va byudjetingizga mos xonadosh — faqat telefon emas.';
+
+  @override
+  String get xonadoshJobColivingTitle => 'Birga yashash';
+
+  @override
+  String get xonadoshJobColivingBody =>
+      'Navbatchilik, bozorlik va xarajat — sherik topgach qulay.';
+
+  @override
+  String get xonadoshOnboardingStart => 'Boshlaymiz';
+
+  @override
+  String get xonadoshEmptyMarketTitle => 'Hali e’lon yo‘q';
+
+  @override
+  String get xonadoshEmptyMarketBody =>
+      'Birinchi bo‘ling. Uy yoki sherik e’lonini shu yerda qo‘ying — Telegram guruhisiz.';
+
+  @override
+  String get xonadoshEmptyMatchesNeedProfile =>
+      'OTM, byudjet va odatlaringizni yozing — shunda kim mosligini ko‘rsatamiz.';
+
+  @override
+  String get xonadoshEmptyMatchesFiltered =>
+      'Filtrlar hech kimni qoldirmadi. OTM yoki jinsni o‘zgartiring, yoki tozalang.';
+
+  @override
+  String get xonadoshColivingUnlockTitle => 'Birga yashash';
+
+  @override
+  String get xonadoshColivingUnlockTip =>
+      'Navbatchilik va bozorlik shu yerda. Uy yoki sherik topgach qulay — hozir ham ochiq.';
+
+  @override
+  String get xonadoshWhyMatch => 'Nega mos?';
+
+  @override
+  String get xonadoshMatchFiltersLabel => 'Kimni qidiryapsiz?';
+
+  @override
+  String get xonadoshUniversityFilter => 'OTM';
+
+  @override
+  String xonadoshKmAway(String km) {
+    return '$km uzoqda';
+  }
+
+  @override
+  String xonadoshNearMetro(String name) {
+    return 'Metro $name';
+  }
+
+  @override
+  String get xonadoshHousingHeroTitle => 'Nima kerak?';
+
+  @override
+  String get xonadoshFiltersOn => 'Filtrlar yoqilgan';
+
+  @override
+  String get xonadoshSearchFiltersTitle => 'Qidiruv filtrlari';
+
+  @override
+  String get xonadoshSeeResults => 'Natijalarni ko‘rish';
+
+  @override
+  String get xonadoshAnyPrice => 'Istalgan narx';
+
+  @override
+  String get xonadoshRegionCity => 'Viloyat / shahar';
+
+  @override
+  String get xonadoshDistrictArea => 'Tuman / hudud';
+
+  @override
+  String get xonadoshNearUniversity => 'Yaqin universitet';
+
+  @override
+  String get xonadoshBudgetFilterLabel => 'Oylik byudjet (so‘m)';
+
+  @override
+  String get xonadoshWhoFor => 'Kimlar uchun';
+
+  @override
+  String get xonadoshTypeRent => 'Ijara';
+
+  @override
+  String get xonadoshTypeSell => 'Sotuv';
+
+  @override
+  String get xonadoshTypeBuy => 'Qidiruv';
+
+  @override
+  String get xonadoshMatchStudyMusic => 'Dars muhiti mos (musiqa / quloqchin)';
+
+  @override
+  String get xonadoshCallShort => 'Qo‘ng‘iroq';
+
+  @override
+  String get xonadoshMoreDetails => 'Batafsil';
 }

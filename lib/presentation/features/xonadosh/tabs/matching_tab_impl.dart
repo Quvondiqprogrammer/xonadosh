@@ -7,8 +7,10 @@ import 'package:xonadosh/l10n/app_localizations.dart';
 import 'package:xonadosh/l10n/l10n_ext.dart';
 import 'package:xonadosh/presentation/common/block_user_action.dart';
 import 'package:xonadosh/presentation/common/contact_actions.dart';
+import 'package:xonadosh/presentation/common/empty_state.dart';
 import 'package:xonadosh/presentation/common/report_content_dialog.dart';
 import 'package:go_router/go_router.dart';
+import 'package:xonadosh/presentation/features/xonadosh/widgets/match_reasons.dart';
 import 'package:xonadosh/presentation/providers/xonadosh_providers.dart';
 import 'package:xonadosh/presentation/router/app_routes.dart';
 
@@ -54,50 +56,89 @@ class XonadoshMatchingTab extends ConsumerWidget {
               ),
             ),
 
-            // 2. Filters Row (Gender & University)
             SliverToBoxAdapter(
               child: Padding(
                 padding: const EdgeInsets.fromLTRB(16, 4, 16, 8),
-                child: SingleChildScrollView(
-                  scrollDirection: Axis.horizontal,
-                  physics: const BouncingScrollPhysics(),
-                  child: Row(
-                    children: [
-                      ChoiceChip(
-                        label: Text(l10n.commonAll),
-                        selected: selectedGender == 'any',
-                        onSelected: (_) =>
-                            ref.read(xonadoshMatchGenderFilterProvider.notifier).state = 'any',
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text(
+                      l10n.xonadoshMatchFiltersLabel,
+                      style: const TextStyle(fontWeight: FontWeight.w800, fontSize: 13),
+                    ),
+                    const SizedBox(height: 8),
+                    SingleChildScrollView(
+                      scrollDirection: Axis.horizontal,
+                      physics: const BouncingScrollPhysics(),
+                      child: Row(
+                        children: [
+                          ChoiceChip(
+                            label: Text(l10n.commonAll),
+                            selected: selectedGender == 'any',
+                            onSelected: (_) =>
+                                ref.read(xonadoshMatchGenderFilterProvider.notifier).state = 'any',
+                          ),
+                          const SizedBox(width: 8),
+                          ChoiceChip(
+                            avatar: const Icon(Icons.man_rounded, size: 16),
+                            label: Text(l10n.xonadoshBoys),
+                            selected: selectedGender == 'boys',
+                            onSelected: (_) =>
+                                ref.read(xonadoshMatchGenderFilterProvider.notifier).state = 'boys',
+                          ),
+                          const SizedBox(width: 8),
+                          ChoiceChip(
+                            avatar: const Icon(Icons.woman_rounded, size: 16),
+                            label: Text(l10n.xonadoshGirls),
+                            selected: selectedGender == 'girls',
+                            onSelected: (_) =>
+                                ref.read(xonadoshMatchGenderFilterProvider.notifier).state = 'girls',
+                          ),
+                          const SizedBox(width: 8),
+                          ActionChip(
+                            avatar: const Icon(Icons.school_outlined, size: 16),
+                            label: Text(
+                              selectedUni?.shortName ?? l10n.xonadoshUniversityFilter,
+                            ),
+                            onPressed: () => _openUniPicker(context, ref),
+                          ),
+                          if (selectedUni != null) ...[
+                            const SizedBox(width: 8),
+                            InputChip(
+                              avatar: const Icon(Icons.school_rounded, size: 14),
+                              label: Text(selectedUni.shortName),
+                              selected: true,
+                              onDeleted: () {
+                                ref.read(xonadoshMatchUniProvider.notifier).state = null;
+                              },
+                            ),
+                          ],
+                        ],
                       ),
-                      const SizedBox(width: 8),
-                      ChoiceChip(
-                        avatar: const Icon(Icons.man_rounded, size: 16),
-                        label: Text(l10n.xonadoshBoys),
-                        selected: selectedGender == 'boys',
-                        onSelected: (_) =>
-                            ref.read(xonadoshMatchGenderFilterProvider.notifier).state = 'boys',
+                    ),
+                    if (selectedGender != 'any' || selectedUni != null) ...[
+                      const SizedBox(height: 8),
+                      Row(
+                        children: [
+                          Text(
+                            l10n.xonadoshFiltersOn,
+                            style: TextStyle(
+                              fontSize: 12,
+                              fontWeight: FontWeight.w700,
+                              color: isDark ? const Color(0xFF94A3B8) : const Color(0xFF64748B),
+                            ),
+                          ),
+                          TextButton(
+                            onPressed: () {
+                              ref.read(xonadoshMatchGenderFilterProvider.notifier).state = 'any';
+                              ref.read(xonadoshMatchUniProvider.notifier).state = null;
+                            },
+                            child: Text(l10n.xonadoshClearFilter),
+                          ),
+                        ],
                       ),
-                      const SizedBox(width: 8),
-                      ChoiceChip(
-                        avatar: const Icon(Icons.woman_rounded, size: 16),
-                        label: Text(l10n.xonadoshGirls),
-                        selected: selectedGender == 'girls',
-                        onSelected: (_) =>
-                            ref.read(xonadoshMatchGenderFilterProvider.notifier).state = 'girls',
-                      ),
-                      if (selectedUni != null) ...[
-                        const SizedBox(width: 8),
-                        InputChip(
-                          avatar: const Icon(Icons.school_rounded, size: 14),
-                          label: Text(selectedUni.shortName),
-                          selected: true,
-                          onDeleted: () {
-                            ref.read(xonadoshMatchUniProvider.notifier).state = null;
-                          },
-                        ),
-                      ],
                     ],
-                  ),
+                  ],
                 ),
               ),
             ),
@@ -131,49 +172,38 @@ class XonadoshMatchingTab extends ConsumerWidget {
               ),
               data: (candidates) {
                 if (candidates.isEmpty) {
+                  final myProf = myProfileAsync.valueOrNull;
+                  final profileReady = myProf != null && myProf.fullName.isNotEmpty;
+                  final filtersOn = selectedGender != 'any' || selectedUni != null;
                   return SliverFillRemaining(
-                    child: Center(
-                      child: Padding(
-                        padding: const EdgeInsets.all(32),
-                        child: Column(
-                          mainAxisAlignment: MainAxisAlignment.center,
-                          children: [
-                            Container(
-                              padding: const EdgeInsets.all(18),
-                              decoration: BoxDecoration(
-                                color: XonaDoshColors.primary.withValues(alpha: 0.1),
-                                shape: BoxShape.circle,
-                              ),
-                              child: const Icon(Icons.group_off_rounded, size: 44, color: XonaDoshColors.primary),
-                            ),
-                            const SizedBox(height: 16),
-                            Text(
-                              l10n.xonadoshNoMatchesTitle,
-                              style: const TextStyle(fontWeight: FontWeight.w800, fontSize: 16),
-                              textAlign: TextAlign.center,
-                            ),
-                            const SizedBox(height: 6),
-                            Text(
-                              l10n.xonadoshNoMatchesBody,
-                              style: TextStyle(
-                                color: isDark ? const Color(0xFF94A3B8) : const Color(0xFF64748B),
-                                fontSize: 13,
-                              ),
-                              textAlign: TextAlign.center,
-                            ),
-                            const SizedBox(height: 18),
-                            ElevatedButton.icon(
-                              onPressed: () => _openProfileScreen(context, ref, myProfileAsync.valueOrNull),
-                              icon: const Icon(Icons.edit_note_rounded, size: 18),
-                              label: Text(l10n.xonadoshFillProfile),
-                              style: ElevatedButton.styleFrom(
-                                backgroundColor: XonaDoshColors.primary,
-                                foregroundColor: Colors.white,
-                              ),
-                            ),
-                          ],
-                        ),
+                    child: EmptyState(
+                      icon: Icons.group_off_rounded,
+                      accentColor: XonaDoshColors.primary,
+                      title: l10n.xonadoshNoMatchesTitle,
+                      subtitle: !profileReady
+                          ? l10n.xonadoshEmptyMatchesNeedProfile
+                          : (filtersOn
+                              ? l10n.xonadoshEmptyMatchesFiltered
+                              : l10n.xonadoshNoMatchesBody),
+                      action: FilledButton.icon(
+                        onPressed: () => _openProfileScreen(context, ref, myProf),
+                        icon: const Icon(Icons.edit_note_rounded, size: 18),
+                        label: Text(l10n.xonadoshFillProfile),
                       ),
+                      secondaryAction: filtersOn
+                          ? TextButton(
+                              onPressed: () {
+                                ref.read(xonadoshMatchGenderFilterProvider.notifier).state = 'any';
+                                ref.read(xonadoshMatchUniProvider.notifier).state = null;
+                              },
+                              child: Text(l10n.xonadoshClearFilters),
+                            )
+                          : TextButton.icon(
+                              onPressed: () =>
+                                  ref.read(xonadoshShellTabIndexProvider.notifier).state = 0,
+                              icon: const Icon(Icons.home_outlined, size: 18),
+                              label: Text(l10n.xonadoshFindRoom),
+                            ),
                     ),
                   );
                 }
@@ -201,6 +231,53 @@ class XonadoshMatchingTab extends ConsumerWidget {
           ],
         ),
       ),
+    );
+  }
+
+  Future<void> _openUniPicker(BuildContext context, WidgetRef ref) async {
+    final l10n = context.l10n;
+    var unis = <XonadoshUniversity>[];
+    try {
+      unis = await ref.read(xonadoshAllUniversitiesProvider.future);
+    } catch (_) {}
+    if (!context.mounted) return;
+    await showModalBottomSheet<void>(
+      context: context,
+      showDragHandle: true,
+      builder: (ctx) {
+        final selected = ref.read(xonadoshMatchUniProvider);
+        return SafeArea(
+          child: ListView(
+            padding: const EdgeInsets.fromLTRB(16, 8, 16, 24),
+            children: [
+              Text(
+                l10n.xonadoshUniversityFilter,
+                style: const TextStyle(fontWeight: FontWeight.w800, fontSize: 16),
+              ),
+              const SizedBox(height: 8),
+              ListTile(
+                title: Text(l10n.xonadoshAllUniversities),
+                selected: selected == null,
+                onTap: () {
+                  ref.read(xonadoshMatchUniProvider.notifier).state = null;
+                  Navigator.of(ctx).pop();
+                },
+              ),
+              ...unis.map(
+                (u) => ListTile(
+                  title: Text(u.shortName),
+                  subtitle: Text(u.city),
+                  selected: selected?.id == u.id,
+                  onTap: () {
+                    ref.read(xonadoshMatchUniProvider.notifier).state = u;
+                    Navigator.of(ctx).pop();
+                  },
+                ),
+              ),
+            ],
+          ),
+        );
+      },
     );
   }
 
@@ -235,6 +312,7 @@ class XonadoshMatchingTab extends ConsumerWidget {
   }
 
   Widget _buildCreateProfileBanner(BuildContext context, WidgetRef ref, XonadoshProfile? myProfile) {
+    final l10n = context.l10n;
     final isDark = Theme.of(context).brightness == Brightness.dark;
     return Container(
       padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 12),
@@ -260,12 +338,12 @@ class XonadoshMatchingTab extends ConsumerWidget {
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                const Text(
-                  'Xonadoshlik anketasi',
-                  style: TextStyle(fontWeight: FontWeight.w700, fontSize: 14),
+                Text(
+                  l10n.xonadoshSurveyTitle,
+                  style: const TextStyle(fontWeight: FontWeight.w700, fontSize: 14),
                 ),
                 Text(
-                  'Mos sheriklar topish uchun to‘ldiring',
+                  l10n.xonadoshEmptyMatchesNeedProfile,
                   style: TextStyle(
                     fontSize: 12,
                     color: isDark ? const Color(0xFF94A3B8) : const Color(0xFF64748B),
@@ -281,7 +359,7 @@ class XonadoshMatchingTab extends ConsumerWidget {
               padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
               shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
             ),
-            child: const Text('To‘ldirish', style: TextStyle(fontWeight: FontWeight.w700, fontSize: 12)),
+            child: Text(l10n.xonadoshFillProfile, style: const TextStyle(fontWeight: FontWeight.w700, fontSize: 12)),
           ),
         ],
       ),
@@ -461,9 +539,9 @@ class XonadoshMatchingTab extends ConsumerWidget {
                           ),
                         ),
                         const SizedBox(width: 3),
-                        const Text(
-                          'mos',
-                          style: TextStyle(
+                        Text(
+                          l10n.xonadoshMatchLabel,
+                          style: const TextStyle(
                             color: XonaDoshColors.primaryDark,
                             fontWeight: FontWeight.w600,
                             fontSize: 11,
@@ -477,7 +555,6 @@ class XonadoshMatchingTab extends ConsumerWidget {
 
               const SizedBox(height: 10),
 
-              // Lifestyle traits chips
               Wrap(
                 spacing: 6,
                 runSpacing: 4,
@@ -487,6 +564,25 @@ class XonadoshMatchingTab extends ConsumerWidget {
                   _buildHabitPill(Icons.smoke_free_outlined, _smokeLabel(item.smokingHabit, l10n), isDark),
                 ],
               ),
+              if (visibleMatchReasons(candidate: item, me: myProfile, l10n: l10n).isNotEmpty) ...[
+                const SizedBox(height: 8),
+                Text(
+                  l10n.xonadoshWhyMatch,
+                  style: TextStyle(
+                    fontSize: 11,
+                    fontWeight: FontWeight.w700,
+                    color: isDark ? const Color(0xFF94A3B8) : const Color(0xFF64748B),
+                  ),
+                ),
+                const SizedBox(height: 4),
+                Wrap(
+                  spacing: 6,
+                  runSpacing: 4,
+                  children: visibleMatchReasons(candidate: item, me: myProfile, l10n: l10n)
+                      .map((reason) => _buildHabitPill(Icons.check_rounded, reason, isDark))
+                      .toList(),
+                ),
+              ],
 
               const SizedBox(height: 10),
 
@@ -502,7 +598,7 @@ class XonadoshMatchingTab extends ConsumerWidget {
                     children: [
                       IconButton.filledTonal(
                         onPressed: () => ContactActions.callPhone(context, item.phoneNumber),
-                        tooltip: 'Qo‘ng‘iroq',
+                        tooltip: l10n.xonadoshCallShort,
                         icon: const Icon(Icons.call_rounded, size: 16),
                         style: IconButton.styleFrom(
                           backgroundColor: XonaDoshColors.primary.withValues(alpha: 0.1),
@@ -515,7 +611,7 @@ class XonadoshMatchingTab extends ConsumerWidget {
                         const SizedBox(width: 6),
                         IconButton.filledTonal(
                           onPressed: () => ContactActions.openTelegram(context, item.telegramHandle),
-                          tooltip: 'Telegram',
+                          tooltip: l10n.xonadoshTelegram,
                           icon: const Icon(Icons.send_rounded, size: 14),
                           style: IconButton.styleFrom(
                             backgroundColor: const Color(0xFF0284C7).withValues(alpha: 0.1),
@@ -532,7 +628,7 @@ class XonadoshMatchingTab extends ConsumerWidget {
                           padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 6),
                           shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
                         ),
-                        child: const Text('Batafsil', style: TextStyle(fontWeight: FontWeight.w700, fontSize: 12)),
+                        child: Text(l10n.xonadoshMoreDetails, style: const TextStyle(fontWeight: FontWeight.w700, fontSize: 12)),
                       ),
                     ],
                   ),
@@ -657,7 +753,7 @@ class XonadoshMatchingTab extends ConsumerWidget {
                             borderRadius: BorderRadius.circular(8),
                           ),
                           child: Text(
-                            '$score% mos',
+                            '$score% ${l10n.xonadoshMatchLabel}',
                             style: const TextStyle(
                               color: XonaDoshColors.primaryDark,
                               fontWeight: FontWeight.w800,
@@ -670,7 +766,19 @@ class XonadoshMatchingTab extends ConsumerWidget {
 
                     const SizedBox(height: 16),
 
-                    // O'zi haqida
+                    if (visibleMatchReasons(candidate: item, me: myProfile, l10n: l10n, limit: 5).isNotEmpty) ...[
+                      Text(l10n.xonadoshWhyMatch, style: const TextStyle(fontWeight: FontWeight.w700, fontSize: 13)),
+                      const SizedBox(height: 8),
+                      Wrap(
+                        spacing: 8,
+                        runSpacing: 8,
+                        children: visibleMatchReasons(candidate: item, me: myProfile, l10n: l10n, limit: 5)
+                            .map((reason) => _buildHabitPill(Icons.check_circle_outline, reason, isDark))
+                            .toList(),
+                      ),
+                      const SizedBox(height: 14),
+                    ],
+
                     if (item.aboutMe.isNotEmpty) ...[
                       const Text('Men haqimda', style: TextStyle(fontWeight: FontWeight.w700, fontSize: 13)),
                       const SizedBox(height: 6),
