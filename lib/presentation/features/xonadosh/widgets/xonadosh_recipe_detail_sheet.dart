@@ -50,13 +50,16 @@ class XonadoshRecipeDetailSheet extends StatelessWidget {
               children: [
                 if (recipe.imageUrl != null && recipe.imageUrl!.isNotEmpty)
                   ClipRRect(
-                    borderRadius: const BorderRadius.vertical(top: Radius.circular(20)),
+                    borderRadius: const BorderRadius.vertical(
+                      top: Radius.circular(20),
+                    ),
                     child: Image.network(
                       recipe.imageUrl!,
                       height: 180,
                       width: double.infinity,
                       fit: BoxFit.cover,
-                      errorBuilder: (_, _, _) => _buildPlaceholderBanner(isDark),
+                      errorBuilder: (_, _, _) =>
+                          _buildPlaceholderBanner(isDark),
                     ),
                   )
                 else
@@ -65,14 +68,21 @@ class XonadoshRecipeDetailSheet extends StatelessWidget {
                   top: 12,
                   left: 16,
                   child: Container(
-                    padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 5),
+                    padding: const EdgeInsets.symmetric(
+                      horizontal: 10,
+                      vertical: 5,
+                    ),
                     decoration: BoxDecoration(
                       color: Colors.black.withAlpha(160),
                       borderRadius: BorderRadius.circular(12),
                     ),
                     child: Text(
                       _categoryLabel(context, recipe.category),
-                      style: const TextStyle(color: Colors.white, fontSize: 12, fontWeight: FontWeight.w600),
+                      style: const TextStyle(
+                        color: Colors.white,
+                        fontSize: 12,
+                        fontWeight: FontWeight.w600,
+                      ),
                     ),
                   ),
                 ),
@@ -83,7 +93,11 @@ class XonadoshRecipeDetailSheet extends StatelessWidget {
                     backgroundColor: Colors.black54,
                     radius: 18,
                     child: IconButton(
-                      icon: const Icon(Icons.close_rounded, color: Colors.white, size: 18),
+                      icon: const Icon(
+                        Icons.close_rounded,
+                        color: Colors.white,
+                        size: 18,
+                      ),
                       padding: EdgeInsets.zero,
                       tooltip: context.l10n.commonClose,
                       onPressed: () => Navigator.of(context).pop(),
@@ -114,7 +128,8 @@ class XonadoshRecipeDetailSheet extends StatelessWidget {
                     children: [
                       _StatChip(
                         icon: Icons.timer_outlined,
-                        label: '${recipe.prepTimeMin} ${context.l10n.xonadoshEstimatedTimeMinutes}',
+                        label:
+                            '${recipe.prepTimeMin} ${context.l10n.xonadoshEstimatedTimeMinutes}',
                         color: const Color(0xFF3B82F6),
                       ),
                       _StatChip(
@@ -132,8 +147,8 @@ class XonadoshRecipeDetailSheet extends StatelessWidget {
                         label: recipe.costLevel == 'budget'
                             ? context.l10n.xonadoshBudgetFriendly
                             : (recipe.costLevel == 'medium'
-                                ? context.l10n.xonadoshMediumBudget
-                                : context.l10n.xonadoshFestive),
+                                  ? context.l10n.xonadoshMediumBudget
+                                  : context.l10n.xonadoshFestive),
                         color: XonaDoshColors.primary,
                       ),
                     ],
@@ -153,10 +168,14 @@ class XonadoshRecipeDetailSheet extends StatelessWidget {
                   const SizedBox(height: 10),
                   Container(
                     decoration: BoxDecoration(
-                      color: isDark ? const Color(0xFF1E293B) : const Color(0xFFF1F5F9),
+                      color: isDark
+                          ? const Color(0xFF1E293B)
+                          : const Color(0xFFF1F5F9),
                       borderRadius: BorderRadius.circular(12),
                       border: Border.all(
-                        color: isDark ? const Color(0xFF334155) : const Color(0xFFE2E8F0),
+                        color: isDark
+                            ? const Color(0xFF334155)
+                            : const Color(0xFFE2E8F0),
                       ),
                     ),
                     padding: const EdgeInsets.all(12),
@@ -178,14 +197,19 @@ class XonadoshRecipeDetailSheet extends StatelessWidget {
                               Expanded(
                                 child: Text(
                                   ing.name,
-                                  style: const TextStyle(fontWeight: FontWeight.w500, fontSize: 14),
+                                  style: const TextStyle(
+                                    fontWeight: FontWeight.w500,
+                                    fontSize: 14,
+                                  ),
                                 ),
                               ),
                               Text(
                                 '${ing.qtyPerPerson} ${ing.unit}',
                                 style: TextStyle(
                                   fontWeight: FontWeight.w700,
-                                  color: isDark ? Colors.grey[300] : Colors.grey[800],
+                                  color: isDark
+                                      ? Colors.grey[300]
+                                      : Colors.grey[800],
                                   fontSize: 13,
                                 ),
                               ),
@@ -210,10 +234,14 @@ class XonadoshRecipeDetailSheet extends StatelessWidget {
                     width: double.infinity,
                     padding: const EdgeInsets.all(16),
                     decoration: BoxDecoration(
-                      color: isDark ? const Color(0xFF1E293B).withAlpha(150) : const Color(0xFFF8FAFC),
+                      color: isDark
+                          ? const Color(0xFF1E293B).withAlpha(150)
+                          : const Color(0xFFF8FAFC),
                       borderRadius: BorderRadius.circular(12),
                       border: Border.all(
-                        color: isDark ? const Color(0xFF334155) : const Color(0xFFE2E8F0),
+                        color: isDark
+                            ? const Color(0xFF334155)
+                            : const Color(0xFFE2E8F0),
                       ),
                     ),
                     child: Text(
@@ -276,7 +304,11 @@ class XonadoshRecipeDetailSheet extends StatelessWidget {
       height: 140,
       width: double.infinity,
       color: isDark ? const Color(0xFF1E293B) : const Color(0xFFE2E8F0),
-      child: const Icon(Icons.restaurant_menu_rounded, size: 56, color: XonaDoshColors.primary),
+      child: const Icon(
+        Icons.restaurant_menu_rounded,
+        size: 56,
+        color: XonaDoshColors.primary,
+      ),
     );
   }
 }
@@ -308,7 +340,11 @@ class _StatChip extends StatelessWidget {
           const SizedBox(width: 5),
           Text(
             label,
-            style: TextStyle(color: color, fontSize: 12, fontWeight: FontWeight.w700),
+            style: TextStyle(
+              color: color,
+              fontSize: 12,
+              fontWeight: FontWeight.w700,
+            ),
           ),
         ],
       ),

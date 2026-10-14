@@ -17,7 +17,11 @@ class XonadoshRepository {
     if (res['ok'] == true && res['universities'] is List) {
       final list = res['universities'] as List;
       return list
-          .map((e) => XonadoshUniversity.fromJson(Map<String, dynamic>.from(e as Map)))
+          .map(
+            (e) => XonadoshUniversity.fromJson(
+              Map<String, dynamic>.from(e as Map),
+            ),
+          )
           .toList();
     }
     if (res['ok'] == true) return [];
@@ -35,6 +39,8 @@ class XonadoshRepository {
     double? minPrice,
     double? maxPrice,
     String? query,
+    bool? noBroker,
+    bool? utilitiesIncluded,
     int limit = 30,
     int offset = 0,
   }) async {
@@ -48,6 +54,8 @@ class XonadoshRepository {
       minPrice: minPrice,
       maxPrice: maxPrice,
       query: query,
+      noBroker: noBroker,
+      utilitiesIncluded: utilitiesIncluded,
       limit: limit,
       offset: offset,
     );
@@ -55,7 +63,10 @@ class XonadoshRepository {
     if (res['ok'] == true && res['listings'] is List) {
       final list = res['listings'] as List;
       return list
-          .map((e) => XonadoshListing.fromJson(Map<String, dynamic>.from(e as Map)))
+          .map(
+            (e) =>
+                XonadoshListing.fromJson(Map<String, dynamic>.from(e as Map)),
+          )
           .toList();
     }
     if (res['ok'] == true) return [];
@@ -68,7 +79,9 @@ class XonadoshRepository {
     if (res['ok'] == true && res['listings'] is List) {
       final list = res['listings'] as List;
       if (list.isEmpty) return null;
-      return XonadoshListing.fromJson(Map<String, dynamic>.from(list.first as Map));
+      return XonadoshListing.fromJson(
+        Map<String, dynamic>.from(list.first as Map),
+      );
     }
     throw Exception((res['error'] ?? 'E\'lon topilmadi').toString());
   }
@@ -149,7 +162,10 @@ class XonadoshRepository {
     if (res['ok'] == true && res['matches'] is List) {
       final list = res['matches'] as List;
       return list
-          .map((e) => XonadoshProfile.fromJson(Map<String, dynamic>.from(e as Map)))
+          .map(
+            (e) =>
+                XonadoshProfile.fromJson(Map<String, dynamic>.from(e as Map)),
+          )
           .toList();
     }
     if (res['ok'] == true) return [];
@@ -208,8 +224,12 @@ class XonadoshRepository {
   Future<XonadoshProfile?> _fetchAndCacheRemoteProfile(String username) async {
     try {
       final res = await _api.getProfiles(username: username);
-      if (res['ok'] == true && res['profile'] != null && res['profile'] is Map) {
-        final profile = XonadoshProfile.fromJson(Map<String, dynamic>.from(res['profile'] as Map));
+      if (res['ok'] == true &&
+          res['profile'] != null &&
+          res['profile'] is Map) {
+        final profile = XonadoshProfile.fromJson(
+          Map<String, dynamic>.from(res['profile'] as Map),
+        );
         final prefs = await SharedPreferences.getInstance();
         await prefs.setString(_kProfilePref, jsonEncode(profile.toJson()));
         return profile;
@@ -249,17 +269,26 @@ class XonadoshRepository {
   }
 
   /// 9. Navbatchilik jadvali (Chores)
-  Future<({String todayDay, List<XonadoshChore> todayDuties, List<XonadoshChore> allChores})> getChores({
-    String groupCode = 'home_default',
-  }) async {
+  Future<
+    ({
+      String todayDay,
+      List<XonadoshChore> todayDuties,
+      List<XonadoshChore> allChores,
+    })
+  >
+  getChores({String groupCode = 'home_default'}) async {
     final res = await _api.getChores(groupCode: groupCode);
     if (res['ok'] == true) {
       final todayDay = (res['today_day'] ?? 'dushanba').toString();
       final todayList = (res['today_duties'] as List? ?? [])
-          .map((e) => XonadoshChore.fromJson(Map<String, dynamic>.from(e as Map)))
+          .map(
+            (e) => XonadoshChore.fromJson(Map<String, dynamic>.from(e as Map)),
+          )
           .toList();
       final allList = (res['all_chores'] as List? ?? [])
-          .map((e) => XonadoshChore.fromJson(Map<String, dynamic>.from(e as Map)))
+          .map(
+            (e) => XonadoshChore.fromJson(Map<String, dynamic>.from(e as Map)),
+          )
           .toList();
 
       return (todayDay: todayDay, todayDuties: todayList, allChores: allList);
@@ -298,16 +327,20 @@ class XonadoshRepository {
   }
 
   /// 10. Retseptlar va haftalik menyu
-  Future<({List<XonadoshRecipe> recipes, List<XonadoshMealPlan> mealPlans})> getRecipesAndMealPlan({
-    String groupCode = 'home_default',
-  }) async {
+  Future<({List<XonadoshRecipe> recipes, List<XonadoshMealPlan> mealPlans})>
+  getRecipesAndMealPlan({String groupCode = 'home_default'}) async {
     final res = await _api.getRecipesAndMealPlan(groupCode: groupCode);
     if (res['ok'] == true) {
       final rList = (res['recipes'] as List? ?? [])
-          .map((e) => XonadoshRecipe.fromJson(Map<String, dynamic>.from(e as Map)))
+          .map(
+            (e) => XonadoshRecipe.fromJson(Map<String, dynamic>.from(e as Map)),
+          )
           .toList();
       final pList = (res['weekly_meal_plan'] as List? ?? [])
-          .map((e) => XonadoshMealPlan.fromJson(Map<String, dynamic>.from(e as Map)))
+          .map(
+            (e) =>
+                XonadoshMealPlan.fromJson(Map<String, dynamic>.from(e as Map)),
+          )
           .toList();
 
       return (recipes: rList, mealPlans: pList);
@@ -387,7 +420,8 @@ class XonadoshRepository {
         maxPriceUzs: 1800,
         totalPriceUzs: ((64 * scale).round() * 1600).toDouble(),
         cheapestSource: "Chorsu tuxum qatori / Parrandachilik savdo rastasi",
-        buyingTips: "30 donalik lotok bilan olish tejamkor (lotogi 42 000 so‘m)",
+        buyingTips:
+            "30 donalik lotok bilan olish tejamkor (lotogi 42 000 so‘m)",
         usedForMeals: ['🌅 Nonushta', '🌙 Kechki', '🌤 Tushlik'],
       ),
       XonadoshGroceryItem(
@@ -401,7 +435,8 @@ class XonadoshRepository {
         maxPriceUzs: 19000,
         totalPriceUzs: (3.4 * scale * 14000).roundToDouble(),
         cheapestSource: "Chorsu dehqon bozori (17:00 dan keyin)",
-        buyingTips: "Kechqurun 17:00 dan so‘ng dehqonlar 20–30% arzonlashtirib sotadi",
+        buyingTips:
+            "Kechqurun 17:00 dan so‘ng dehqonlar 20–30% arzonlashtirib sotadi",
         usedForMeals: ['🌅 Nonushta', '🌤 Tushlik', '🌙 Kechki'],
       ),
       XonadoshGroceryItem(
@@ -415,7 +450,8 @@ class XonadoshRepository {
         maxPriceUzs: 22000,
         totalPriceUzs: (1.6 * scale * 19000).roundToDouble(),
         cheapestSource: "Qo‘yliq ulgurji dehqon bozori",
-        buyingTips: "Talabalar palovi va mastavasi uchun eng to‘yimli va tejamkor",
+        buyingTips:
+            "Talabalar palovi va mastavasi uchun eng to‘yimli va tejamkor",
         usedForMeals: ['🌙 Kechki', '🌤 Tushlik'],
       ),
       XonadoshGroceryItem(
@@ -443,7 +479,8 @@ class XonadoshRepository {
         maxPriceUzs: 20000,
         totalPriceUzs: (1.6 * scale * 18000).roundToDouble(),
         cheapestSource: "Qo‘yliq ulgurji baqqollik / Havas aksiyasi",
-        buyingTips: "5 litrlik idishda olinganda 1 litri 16 500 so‘mga to‘g‘ri keladi",
+        buyingTips:
+            "5 litrlik idishda olinganda 1 litri 16 500 so‘mga to‘g‘ri keladi",
         usedForMeals: ['🌅 Nonushta', '🌙 Kechki', '🌤 Tushlik'],
       ),
       XonadoshGroceryItem(
@@ -469,7 +506,8 @@ class XonadoshRepository {
         unitPriceUzs: 10000,
         minPriceUzs: 8000,
         maxPriceUzs: 14000,
-        totalPriceUzs: ((2 * scale).clamp(1.0, 10.0).round() * 10000).toDouble(),
+        totalPriceUzs: ((2 * scale).clamp(1.0, 10.0).round() * 10000)
+            .toDouble(),
         cheapestSource: "Chorsu choy rastasi",
         buyingTips: "Talabalar uchun klassik 95-nav ko‘k choy",
         usedForMeals: ['🌅 Nonushta', '🌤 Tushlik', '🌙 Kechki'],
@@ -590,15 +628,37 @@ class XonadoshRepository {
       totalCostUzs: totalCost.round(),
       perPersonUzs: perPerson,
       perPersonDailyUzs: perPersonDaily,
-      perPersonDailyUsd: double.parse((perPersonDaily / 12800).toStringAsFixed(2)),
-      cheapestMarket: 'Qo‘yliq ulgurji dehqon bozori (Shanba/Yakshanba 07:00–09:00)',
+      perPersonDailyUsd: double.parse(
+        (perPersonDaily / 12800).toStringAsFixed(2),
+      ),
+      cheapestMarket:
+          'Qo‘yliq ulgurji dehqon bozori (Shanba/Yakshanba 07:00–09:00)',
       shoppingDay: 'Shanba ertalab (Navbatchi xonadoshlar)',
       items: fallbackItems,
       byCategorySummary: [
-        {'category': "Go'sht", 'total_uzs': (3.8 * scale * 45000).round(), 'item_count': 1},
-        {'category': "Non mahsulotlari", 'total_uzs': totalBreadCost, 'item_count': 2},
-        {'category': "Sut & Tuxum", 'total_uzs': ((64 * scale).round() * 1600 + 1.2 * scale * 10000).round(), 'item_count': 2},
-        {'category': "Sabzavot", 'total_uzs': (3.4 * scale * 14000 + 4.1 * scale * 6000 + 3.4 * scale * 4000).round(), 'item_count': 4},
+        {
+          'category': "Go'sht",
+          'total_uzs': (3.8 * scale * 45000).round(),
+          'item_count': 1,
+        },
+        {
+          'category': "Non mahsulotlari",
+          'total_uzs': totalBreadCost,
+          'item_count': 2,
+        },
+        {
+          'category': "Sut & Tuxum",
+          'total_uzs': ((64 * scale).round() * 1600 + 1.2 * scale * 10000)
+              .round(),
+          'item_count': 2,
+        },
+        {
+          'category': "Sabzavot",
+          'total_uzs':
+              (3.4 * scale * 14000 + 4.1 * scale * 6000 + 3.4 * scale * 4000)
+                  .round(),
+          'item_count': 4,
+        },
       ],
       breadBreakdown: {
         'breakfast_lunch_buxanka': (28 * scale).round(),
@@ -615,10 +675,12 @@ class XonadoshRepository {
   Map<String, dynamic>? _karmaCache;
   Map<String, dynamic>? _pollsCache;
   Map<String, dynamic>? _financesCache;
+  List<Map<String, dynamic>>? _houseRulesCache;
 
   static const _kKarmaPref = 'xd_karma_v1';
   static const _kPollsPref = 'xd_polls_v1';
   static const _kFinancesPref = 'xd_finances_v1';
+  static const _kHouseRulesPref = 'xd_house_rules_v1';
 
   Future<void> _saveJson(String key, Map<String, dynamic> data) async {
     try {
@@ -639,46 +701,47 @@ class XonadoshRepository {
   }
 
   List<Map<String, dynamic>> _defaultBadges() => [
-        {
-          'key': 'cleanliness_master',
-          'name': 'Tozalik ustasi',
-          'icon': '🧹',
-          'description': 'Xonani chinnidek toza tutgani uchun'
-        },
-        {
-          'key': 'chef_pro',
-          'name': 'Mohir oshpaz',
-          'icon': '👨‍🍳',
-          'description': 'Mazali taomlar tayyorlagani uchun'
-        },
-        {
-          'key': 'ontime_payer',
-          'name': 'Vaqtida to‘lovchi',
-          'icon': '⏱',
-          'description': 'Ijara va kommunalni o‘z vaqtida to‘lagani uchun'
-        },
-        {
-          'key': 'quiet_peacekeeper',
-          'name': 'Tinchlik posboni',
-          'icon': '🤫',
-          'description': 'Kechasi osoyishtalikni saqlagani uchun'
-        },
-        {
-          'key': 'helpful_friend',
-          'name': 'Do‘stona xonadosh',
-          'icon': '🤝',
-          'description': 'Yordamga shay va ishonchli bo‘lgani uchun'
-        },
-        {
-          'key': 'wake_up_hero',
-          'name': 'Tonggi uyg‘otuvchi',
-          'icon': '⏰',
-          'description': 'Darsga kechikmaslik uchun uyg‘otgani uchun'
-        },
-      ];
+    {
+      'key': 'cleanliness_master',
+      'name': 'Tozalik ustasi',
+      'icon': '🧹',
+      'description': 'Xonani chinnidek toza tutgani uchun',
+    },
+    {
+      'key': 'chef_pro',
+      'name': 'Mohir oshpaz',
+      'icon': '👨‍🍳',
+      'description': 'Mazali taomlar tayyorlagani uchun',
+    },
+    {
+      'key': 'ontime_payer',
+      'name': 'Vaqtida to‘lovchi',
+      'icon': '⏱',
+      'description': 'Ijara va kommunalni o‘z vaqtida to‘lagani uchun',
+    },
+    {
+      'key': 'quiet_peacekeeper',
+      'name': 'Tinchlik posboni',
+      'icon': '🤫',
+      'description': 'Kechasi osoyishtalikni saqlagani uchun',
+    },
+    {
+      'key': 'helpful_friend',
+      'name': 'Do‘stona xonadosh',
+      'icon': '🤝',
+      'description': 'Yordamga shay va ishonchli bo‘lgani uchun',
+    },
+    {
+      'key': 'wake_up_hero',
+      'name': 'Tonggi uyg‘otuvchi',
+      'icon': '⏰',
+      'description': 'Darsga kechikmaslik uchun uyg‘otgani uchun',
+    },
+  ];
 
   Map<String, dynamic> _rebuildKarmaLeaderboard(Map<String, dynamic> cache) {
-    final roommates = (cache['roommates'] as List?)?.map((e) => e.toString()).toList() ??
+    final roommates =
+        (cache['roommates'] as List?)?.map((e) => e.toString()).toList() ??
         ['Jasur', 'Azizbek', 'Bekzod', 'Sardor'];
     final history = (cache['history'] as List?) ?? [];
     final stats = <String, Map<String, dynamic>>{};
@@ -711,10 +774,12 @@ class XonadoshRepository {
       final bName = (r['badge_name'] ?? 'Do‘stona xonadosh').toString();
       stats[to]!['total_points'] = (stats[to]!['total_points'] as int) + pts;
       stats[to]!['badges_count'] = (stats[to]!['badges_count'] as int) + 1;
-      final summary = stats[to]!['badges_summary'] as Map<String, Map<String, dynamic>>;
+      final summary =
+          stats[to]!['badges_summary'] as Map<String, Map<String, dynamic>>;
       summary.putIfAbsent(bKey, () => {'key': bKey, 'name': bName, 'count': 0});
       summary[bKey]!['count'] = (summary[bKey]!['count'] as int) + 1;
-      final praises = stats[to]!['recent_praises'] as List<Map<String, dynamic>>;
+      final praises =
+          stats[to]!['recent_praises'] as List<Map<String, dynamic>>;
       if (praises.length < 3) {
         praises.add({
           'from_name': r['from_name'] ?? '',
@@ -724,17 +789,22 @@ class XonadoshRepository {
         });
       }
     }
-    final leaderboard = stats.values.map((m) {
-      final summary = (m['badges_summary'] as Map<String, Map<String, dynamic>>).values.toList();
-      return {
-        'name': m['name'],
-        'total_points': m['total_points'],
-        'badges_count': m['badges_count'],
-        'badges_summary': summary,
-        'recent_praises': m['recent_praises'],
-      };
-    }).toList()
-      ..sort((a, b) => (b['total_points'] as int).compareTo(a['total_points'] as int));
+    final leaderboard =
+        stats.values.map((m) {
+          final summary =
+              (m['badges_summary'] as Map<String, Map<String, dynamic>>).values
+                  .toList();
+          return {
+            'name': m['name'],
+            'total_points': m['total_points'],
+            'badges_count': m['badges_count'],
+            'badges_summary': summary,
+            'recent_praises': m['recent_praises'],
+          };
+        }).toList()..sort(
+          (a, b) =>
+              (b['total_points'] as int).compareTo(a['total_points'] as int),
+        );
     cache['leaderboard'] = leaderboard;
     return cache;
   }
@@ -749,7 +819,9 @@ class XonadoshRepository {
         'badge_name': 'Mohir oshpaz',
         'points': 3,
         'comment': 'Dushanba kungi palov juda mazali chiqdi!',
-        'created_at': DateTime.now().subtract(const Duration(days: 1)).toIso8601String(),
+        'created_at': DateTime.now()
+            .subtract(const Duration(days: 1))
+            .toIso8601String(),
       },
       {
         'id': 2,
@@ -759,7 +831,9 @@ class XonadoshRepository {
         'badge_name': 'Tozalik ustasi',
         'points': 2,
         'comment': 'Oshxona va zalni chinnidek yuvib qo‘ydi',
-        'created_at': DateTime.now().subtract(const Duration(days: 2)).toIso8601String(),
+        'created_at': DateTime.now()
+            .subtract(const Duration(days: 2))
+            .toIso8601String(),
       },
       {
         'id': 3,
@@ -769,7 +843,9 @@ class XonadoshRepository {
         'badge_name': 'Vaqtida to‘lovchi',
         'points': 3,
         'comment': 'Wi-Fi va svet pulini 1-bo‘lib to‘ladi',
-        'created_at': DateTime.now().subtract(const Duration(days: 3)).toIso8601String(),
+        'created_at': DateTime.now()
+            .subtract(const Duration(days: 3))
+            .toIso8601String(),
       },
       {
         'id': 4,
@@ -779,7 +855,9 @@ class XonadoshRepository {
         'badge_name': 'Tinchlik posboni',
         'points': 2,
         'comment': 'Imtihon oldidan kechasi juda sokin muhit yaratdi',
-        'created_at': DateTime.now().subtract(const Duration(days: 4)).toIso8601String(),
+        'created_at': DateTime.now()
+            .subtract(const Duration(days: 4))
+            .toIso8601String(),
       },
       {
         'id': 5,
@@ -789,7 +867,9 @@ class XonadoshRepository {
         'badge_name': 'Do‘stona xonadosh',
         'points': 2,
         'comment': 'Bozorlik yuklarini ko‘tarishda yordam berdi',
-        'created_at': DateTime.now().subtract(const Duration(days: 5)).toIso8601String(),
+        'created_at': DateTime.now()
+            .subtract(const Duration(days: 5))
+            .toIso8601String(),
       },
     ];
     return _rebuildKarmaLeaderboard({
@@ -818,7 +898,9 @@ class XonadoshRepository {
         'yes_percent': 75,
         'no_percent': 25,
         'neutral_percent': 0,
-        'created_at': DateTime.now().subtract(const Duration(days: 2)).toIso8601String(),
+        'created_at': DateTime.now()
+            .subtract(const Duration(days: 2))
+            .toIso8601String(),
       },
       {
         'id': 2,
@@ -834,7 +916,9 @@ class XonadoshRepository {
         'yes_percent': 67,
         'no_percent': 0,
         'neutral_percent': 33,
-        'created_at': DateTime.now().subtract(const Duration(days: 1)).toIso8601String(),
+        'created_at': DateTime.now()
+            .subtract(const Duration(days: 1))
+            .toIso8601String(),
       },
       {
         'id': 3,
@@ -850,7 +934,9 @@ class XonadoshRepository {
         'yes_percent': 50,
         'no_percent': 25,
         'neutral_percent': 25,
-        'created_at': DateTime.now().subtract(const Duration(hours: 3)).toIso8601String(),
+        'created_at': DateTime.now()
+            .subtract(const Duration(hours: 3))
+            .toIso8601String(),
       },
     ];
     return {
@@ -863,9 +949,15 @@ class XonadoshRepository {
 
   Map<String, dynamic> _rebuildFinanceSummary(Map<String, dynamic> cache) {
     final all = <Map<String, dynamic>>[
-      ...((cache['rent_items'] as List?) ?? []).map((e) => Map<String, dynamic>.from(e as Map)),
-      ...((cache['utility_items'] as List?) ?? []).map((e) => Map<String, dynamic>.from(e as Map)),
-      ...((cache['expense_items'] as List?) ?? []).map((e) => Map<String, dynamic>.from(e as Map)),
+      ...((cache['rent_items'] as List?) ?? []).map(
+        (e) => Map<String, dynamic>.from(e as Map),
+      ),
+      ...((cache['utility_items'] as List?) ?? []).map(
+        (e) => Map<String, dynamic>.from(e as Map),
+      ),
+      ...((cache['expense_items'] as List?) ?? []).map(
+        (e) => Map<String, dynamic>.from(e as Map),
+      ),
     ];
     int totalSpend = 0;
     int totalPending = 0;
@@ -930,8 +1022,9 @@ class XonadoshRepository {
 
     cache['rent_items'] = all.where((e) => e['type'] == 'rent').toList();
     cache['utility_items'] = all.where((e) => e['type'] == 'utility').toList();
-    cache['expense_items'] =
-        all.where((e) => e['type'] == 'expense_split' || e['type'] == 'debt').toList();
+    cache['expense_items'] = all
+        .where((e) => e['type'] == 'expense_split' || e['type'] == 'debt')
+        .toList();
     cache['all_items'] = all;
     cache['debt_balances'] = debts.values.toList();
     cache['summary'] = {
@@ -963,7 +1056,9 @@ class XonadoshRepository {
         {'name': 'Sardor', 'amount_uzs': 1000000, 'is_paid': true},
       ],
       'notes': 'Bekzod stipendiyasi tushishi bilan to‘laydi',
-      'created_at': DateTime.now().subtract(const Duration(days: 5)).toIso8601String(),
+      'created_at': DateTime.now()
+          .subtract(const Duration(days: 5))
+          .toIso8601String(),
     };
     final electricity = {
       'id': 2,
@@ -983,7 +1078,9 @@ class XonadoshRepository {
         {'name': 'Sardor', 'amount_uzs': 45000, 'is_paid': false},
       ],
       'notes': 'Jasur Click orqali to‘lab qo‘ydi',
-      'created_at': DateTime.now().subtract(const Duration(days: 3)).toIso8601String(),
+      'created_at': DateTime.now()
+          .subtract(const Duration(days: 3))
+          .toIso8601String(),
     };
     final wifi = {
       'id': 3,
@@ -1003,7 +1100,9 @@ class XonadoshRepository {
         {'name': 'Sardor', 'amount_uzs': 35000, 'is_paid': true},
       ],
       'notes': 'Hamma to‘liq hisob-kitob qildi',
-      'created_at': DateTime.now().subtract(const Duration(days: 1)).toIso8601String(),
+      'created_at': DateTime.now()
+          .subtract(const Duration(days: 1))
+          .toIso8601String(),
     };
     final grocery = {
       'id': 4,
@@ -1023,7 +1122,9 @@ class XonadoshRepository {
         {'name': 'Sardor', 'amount_uzs': 80000, 'is_paid': true},
       ],
       'notes': 'Qo‘yliq bozoridan olingan oziq-ovqatlar',
-      'created_at': DateTime.now().subtract(const Duration(days: 2)).toIso8601String(),
+      'created_at': DateTime.now()
+          .subtract(const Duration(days: 2))
+          .toIso8601String(),
     };
 
     return _rebuildFinanceSummary({
@@ -1039,7 +1140,9 @@ class XonadoshRepository {
   }
 
   /// 12. Obro' va Karma
-  Future<XonadoshKarmaData> getKarma({String groupCode = 'home_default'}) async {
+  Future<XonadoshKarmaData> getKarma({
+    String groupCode = 'home_default',
+  }) async {
     if (_karmaCache != null) {
       return XonadoshKarmaData.fromJson(_karmaCache!);
     }
@@ -1070,8 +1173,9 @@ class XonadoshRepository {
     final groupCode = (data['group_code'] ?? 'home_default').toString();
     _karmaCache ??= (await _loadJson(_kKarmaPref)) ?? _defaultKarma(groupCode);
     final history = List<Map<String, dynamic>>.from(
-      ((_karmaCache!['history'] as List?) ?? [])
-          .map((e) => Map<String, dynamic>.from(e as Map)),
+      ((_karmaCache!['history'] as List?) ?? []).map(
+        (e) => Map<String, dynamic>.from(e as Map),
+      ),
     );
     final toName = (data['to_name'] ?? '').toString();
     final fromName = (data['from_name'] ?? 'Xonadosh').toString();
@@ -1103,12 +1207,15 @@ class XonadoshRepository {
     await _saveJson(_kKarmaPref, _karmaCache!);
     return {
       'ok': true,
-      'message': '🎉 ${toName}ga "$badgeName" nishoni va +$points obro‘ berildi!',
+      'message':
+          '🎉 ${toName}ga "$badgeName" nishoni va +$points obro‘ berildi!',
     };
   }
 
   /// 13. Anonim masalalar & Ovoz berish
-  Future<XonadoshPollsData> getPolls({String groupCode = 'home_default'}) async {
+  Future<XonadoshPollsData> getPolls({
+    String groupCode = 'home_default',
+  }) async {
     if (_pollsCache != null) {
       return XonadoshPollsData.fromJson(_pollsCache!);
     }
@@ -1139,8 +1246,9 @@ class XonadoshRepository {
     final groupCode = (data['group_code'] ?? 'home_default').toString();
     _pollsCache ??= (await _loadJson(_kPollsPref)) ?? _defaultPolls(groupCode);
     final polls = List<Map<String, dynamic>>.from(
-      ((_pollsCache!['polls'] as List?) ?? [])
-          .map((e) => Map<String, dynamic>.from(e as Map)),
+      ((_pollsCache!['polls'] as List?) ?? []).map(
+        (e) => Map<String, dynamic>.from(e as Map),
+      ),
     );
     final title = (data['title'] ?? '').toString().trim();
     if (title.isEmpty) {
@@ -1163,7 +1271,9 @@ class XonadoshRepository {
       'created_at': DateTime.now().toIso8601String(),
     });
     _pollsCache!['polls'] = polls;
-    _pollsCache!['active_count'] = polls.where((p) => p['status'] == 'active').length;
+    _pollsCache!['active_count'] = polls
+        .where((p) => p['status'] == 'active')
+        .length;
     await _saveJson(_kPollsPref, _pollsCache!);
     return {
       'ok': true,
@@ -1193,14 +1303,18 @@ class XonadoshRepository {
 
     _pollsCache ??= (await _loadJson(_kPollsPref)) ?? _defaultPolls(groupCode);
     final polls = List<Map<String, dynamic>>.from(
-      ((_pollsCache!['polls'] as List?) ?? [])
-          .map((e) => Map<String, dynamic>.from(e as Map)),
+      ((_pollsCache!['polls'] as List?) ?? []).map(
+        (e) => Map<String, dynamic>.from(e as Map),
+      ),
     );
     final idx = polls.indexWhere((p) => (p['id'] as num?)?.toInt() == pollId);
     if (idx < 0) return {'ok': false, 'error': 'Masala topilmadi'};
     final p = polls[idx];
     if ((p['status'] ?? '') != 'active') {
-      return {'ok': false, 'error': 'Bu masala bo‘yicha ovoz berish yakunlangan'};
+      return {
+        'ok': false,
+        'error': 'Bu masala bo‘yicha ovoz berish yakunlangan',
+      };
     }
     var yes = (p['votes_yes'] as num?)?.toInt() ?? 0;
     var no = (p['votes_no'] as num?)?.toInt() ?? 0;
@@ -1229,7 +1343,9 @@ class XonadoshRepository {
     }
     polls[idx] = p;
     _pollsCache!['polls'] = polls;
-    _pollsCache!['active_count'] = polls.where((x) => x['status'] == 'active').length;
+    _pollsCache!['active_count'] = polls
+        .where((x) => x['status'] == 'active')
+        .length;
     await _saveJson(_kPollsPref, _pollsCache!);
     return {
       'ok': true,
@@ -1258,22 +1374,26 @@ class XonadoshRepository {
 
     _pollsCache ??= (await _loadJson(_kPollsPref)) ?? _defaultPolls(groupCode);
     final polls = List<Map<String, dynamic>>.from(
-      ((_pollsCache!['polls'] as List?) ?? [])
-          .map((e) => Map<String, dynamic>.from(e as Map)),
+      ((_pollsCache!['polls'] as List?) ?? []).map(
+        (e) => Map<String, dynamic>.from(e as Map),
+      ),
     );
     final idx = polls.indexWhere((p) => (p['id'] as num?)?.toInt() == pollId);
     if (idx >= 0) {
       polls[idx]['status'] = status;
       _pollsCache!['polls'] = polls;
-      _pollsCache!['active_count'] =
-          polls.where((x) => x['status'] == 'active').length;
+      _pollsCache!['active_count'] = polls
+          .where((x) => x['status'] == 'active')
+          .length;
       await _saveJson(_kPollsPref, _pollsCache!);
     }
     return {'ok': true, 'message': 'Masala yakunlandi'};
   }
 
   /// 14. Moliya, Ijara, Kommunal va Qarz
-  Future<XonadoshFinancesData> getFinances({String groupCode = 'home_default'}) async {
+  Future<XonadoshFinancesData> getFinances({
+    String groupCode = 'home_default',
+  }) async {
     if (_financesCache != null) {
       return XonadoshFinancesData.fromJson(_financesCache!);
     }
@@ -1318,9 +1438,12 @@ class XonadoshRepository {
           (m) => {
             'name': m,
             'amount_uzs': per,
-            'is_paid': m == paidBy &&
+            'is_paid':
+                m == paidBy &&
                 paidBy != 'Uy egasiga' &&
-                (type == 'expense_split' || type == 'utility' || type == 'debt'),
+                (type == 'expense_split' ||
+                    type == 'utility' ||
+                    type == 'debt'),
           },
         )
         .toList();
@@ -1343,8 +1466,9 @@ class XonadoshRepository {
         ? 'rent_items'
         : (type == 'utility' ? 'utility_items' : 'expense_items');
     final list = List<Map<String, dynamic>>.from(
-      ((_financesCache![bucket] as List?) ?? [])
-          .map((e) => Map<String, dynamic>.from(e as Map)),
+      ((_financesCache![bucket] as List?) ?? []).map(
+        (e) => Map<String, dynamic>.from(e as Map),
+      ),
     );
     list.insert(0, item);
     _financesCache![bucket] = list;
@@ -1352,7 +1476,8 @@ class XonadoshRepository {
     await _saveJson(_kFinancesPref, _financesCache!);
     return {
       'ok': true,
-      'message': 'To‘lov/xarajat qo‘shildi va xonadoshlar o‘rtasida taqsimlandi!',
+      'message':
+          'To‘lov/xarajat qo‘shildi va xonadoshlar o‘rtasida taqsimlandi!',
       'finance_id': item['id'],
     };
   }
@@ -1381,14 +1506,16 @@ class XonadoshRepository {
     bool found = false;
     for (final key in ['rent_items', 'utility_items', 'expense_items']) {
       final list = List<Map<String, dynamic>>.from(
-        ((_financesCache![key] as List?) ?? [])
-            .map((e) => Map<String, dynamic>.from(e as Map)),
+        ((_financesCache![key] as List?) ?? []).map(
+          (e) => Map<String, dynamic>.from(e as Map),
+        ),
       );
       for (var i = 0; i < list.length; i++) {
         if ((list[i]['id'] as num?)?.toInt() != financeId) continue;
         final splits = List<Map<String, dynamic>>.from(
-          ((list[i]['splits'] as List?) ?? [])
-              .map((e) => Map<String, dynamic>.from(e as Map)),
+          ((list[i]['splits'] as List?) ?? []).map(
+            (e) => Map<String, dynamic>.from(e as Map),
+          ),
         );
         for (final s in splits) {
           if ((s['name'] ?? '').toString().toLowerCase() ==
@@ -1430,8 +1557,9 @@ class XonadoshRepository {
         (await _loadJson(_kFinancesPref)) ?? _defaultFinances(groupCode);
     for (final key in ['rent_items', 'utility_items', 'expense_items']) {
       final list = List<Map<String, dynamic>>.from(
-        ((_financesCache![key] as List?) ?? [])
-            .map((e) => Map<String, dynamic>.from(e as Map)),
+        ((_financesCache![key] as List?) ?? []).map(
+          (e) => Map<String, dynamic>.from(e as Map),
+        ),
       );
       list.removeWhere((e) => (e['id'] as num?)?.toInt() == financeId);
       _financesCache![key] = list;
@@ -1445,10 +1573,139 @@ class XonadoshRepository {
     required String targetType,
     required String targetId,
     required String reason,
-  }) =>
-      _api.submitReport(
-        targetType: targetType,
-        targetId: targetId,
-        reason: reason,
-      );
+  }) => _api.submitReport(
+    targetType: targetType,
+    targetId: targetId,
+    reason: reason,
+  );
+
+  // ── Xonadon qoidalari (House Rules) boshqaruvi ──
+  List<Map<String, dynamic>> _defaultHouseRules() => [
+    {
+      'id': 'rule_quiet_hours',
+      'title': 'Tinchlik soatlari (Quiet Hours)',
+      'description':
+          'Soat 23:00 dan 08:00 gacha xonadonda baland musiqa va shovqin taqiqlanadi. Dars qilish va dam olish huquqiga hurmat.',
+      'category': 'quiet_hours',
+      'icon': 'bedtime',
+      'is_active': true,
+      'is_custom': false,
+    },
+    {
+      'id': 'rule_guests',
+      'title': 'Mehmonlar va tashrif buyuruvchilar',
+      'description':
+          'Mehmon taklif qilishdan oldin xonadoshlar guruhida kamida 3 soat oldin ogohlantirish lozim. Tunab qolish faqat barcha xonadoshlar ruxsati bilan.',
+      'category': 'guests',
+      'icon': 'groups',
+      'is_active': true,
+      'is_custom': false,
+    },
+    {
+      'id': 'rule_cleanliness',
+      'title': 'Oshxona va umumiy tozalik',
+      'description':
+          'Ovqat pishirgach idishlarni darhol yuvish shart. Navbatchi kunida oshxona, zal va koridor tozalanishi, axlat chiqarilishi lozim.',
+      'category': 'cleanliness',
+      'icon': 'cleaning_services',
+      'is_active': true,
+      'is_custom': false,
+    },
+    {
+      'id': 'rule_smoking',
+      'title': 'Zararli odatlar (Chekish taqiqlanadi)',
+      'description':
+          'Xonadon ichida sigareta, veyp yoki boshqa zararli moddalar chekish qat\'iyan taqiqlanadi.',
+      'category': 'smoking',
+      'icon': 'smoke_free',
+      'is_active': true,
+      'is_custom': false,
+    },
+    {
+      'id': 'rule_bills',
+      'title': 'Ijara va kommunal to‘lovlar',
+      'description':
+          'Ijara va kommunal to‘lovlar har oyning 5-sanasigacha to‘liq to‘lanishi shart. Qarzdorlik kechiktirilmasligi kerak.',
+      'category': 'finances',
+      'icon': 'receipt_long',
+      'is_active': true,
+      'is_custom': false,
+    },
+    {
+      'id': 'rule_privacy_safety',
+      'title': 'Xavfsizlik va shaxsiy daxlsizlik',
+      'description':
+          'Birovning buyumlarini ruxsatsiz ishlatmaslik. Xonadondan oxirgi chiqqan shaxs gaz, suv va eshik qulfini tekshiradi.',
+      'category': 'safety',
+      'icon': 'security',
+      'is_active': true,
+      'is_custom': false,
+    },
+  ];
+
+  Future<List<XonadoshHouseRule>> getHouseRules() async {
+    if (_houseRulesCache != null) {
+      return _houseRulesCache!
+          .map((e) => XonadoshHouseRule.fromJson(e))
+          .toList();
+    }
+    try {
+      final prefs = await SharedPreferences.getInstance();
+      final str = prefs.getString(_kHouseRulesPref);
+      if (str != null && str.isNotEmpty) {
+        final decoded = jsonDecode(str);
+        if (decoded is List) {
+          _houseRulesCache = decoded
+              .map((e) => Map<String, dynamic>.from(e as Map))
+              .toList();
+          return _houseRulesCache!
+              .map((e) => XonadoshHouseRule.fromJson(e))
+              .toList();
+        }
+      }
+    } catch (_) {}
+    _houseRulesCache = _defaultHouseRules();
+    await _saveHouseRules();
+    return _houseRulesCache!
+        .map((e) => XonadoshHouseRule.fromJson(e))
+        .toList();
+  }
+
+  Future<void> _saveHouseRules() async {
+    try {
+      final prefs = await SharedPreferences.getInstance();
+      await prefs.setString(_kHouseRulesPref, jsonEncode(_houseRulesCache ?? []));
+    } catch (_) {}
+  }
+
+  Future<void> toggleHouseRule(String id, bool isActive) async {
+    await getHouseRules();
+    if (_houseRulesCache == null) return;
+    for (var i = 0; i < _houseRulesCache!.length; i++) {
+      if (_houseRulesCache![i]['id'] == id) {
+        _houseRulesCache![i]['is_active'] = isActive;
+        break;
+      }
+    }
+    await _saveHouseRules();
+  }
+
+  Future<void> addHouseRule(XonadoshHouseRule rule) async {
+    await getHouseRules();
+    _houseRulesCache ??= _defaultHouseRules();
+    _houseRulesCache!.add(rule.toJson());
+    await _saveHouseRules();
+  }
+
+  Future<void> deleteHouseRule(String id) async {
+    await getHouseRules();
+    if (_houseRulesCache == null) return;
+    _houseRulesCache!.removeWhere((e) => e['id'] == id);
+    await _saveHouseRules();
+  }
+
+  Future<void> resetHouseRules() async {
+    _houseRulesCache = _defaultHouseRules();
+    await _saveHouseRules();
+  }
 }

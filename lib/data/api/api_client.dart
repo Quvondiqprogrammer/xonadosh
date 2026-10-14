@@ -61,7 +61,10 @@ class ApiClient {
           handler.next(options);
         },
         onResponse: (response, handler) async {
-          final retry = await _retryAfter401(response.requestOptions, response.statusCode);
+          final retry = await _retryAfter401(
+            response.requestOptions,
+            response.statusCode,
+          );
           if (retry != null) return handler.resolve(retry);
           handler.next(response);
         },

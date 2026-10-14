@@ -8,6 +8,7 @@ declare(strict_types=1);
 require_once dirname(__DIR__) . '/includes/bootstrap.php';
 require_once dirname(__DIR__) . '/includes/db.php';
 require_once dirname(__DIR__) . '/includes/auth_lib.php';
+require_once dirname(__DIR__) . '/includes/xonadosh_lib.php';
 
 try {
     $pdo = db_connect($cfg);
@@ -15,12 +16,15 @@ try {
     json_response(['ok' => false, 'error' => 'Database connection failed: ' . $e->getMessage()], 500);
 }
 
-$groupCode = isset($_GET['group_code']) ? trim($_GET['group_code']) : 'home_default';
+$raw = file_get_contents('php://input');
+$body = json_decode($raw ?: '{}', true);
+if (!is_array($body)) {
+    $body = $_POST;
+}
+$groupCode = xonadosh_get_group_code($body['group_code'] ?? ($_GET['group_code'] ?? null));
 $method = $_SERVER['REQUEST_METHOD'] ?? 'GET';
 
 if ($method === 'POST') {
-    $raw = file_get_contents('php://input');
-    $body = json_decode($raw, true) ?? $_POST;
     $action = $body['action'] ?? 'add';
 
     if ($action === 'toggle_done') {
@@ -88,6 +92,32 @@ if ($method === 'POST') {
 $stmt = $pdo->prepare("SELECT * FROM `xonadosh_chores` WHERE group_code = ? ORDER BY FIELD(day_of_week, 'dushanba', 'seshanba', 'chorshanba', 'payshanba', 'juma', 'shanba', 'yakshanba'), id ASC");
 $stmt->execute([$groupCode]);
 $rows = $stmt->fetchAll(PDO::FETCH_ASSOC);
+
+if (empty($rows)) {
+    // Seed default schedule so users don't see an empty schedule initially
+    $seedSchedule = [
+        ['day' => 'dushanba', 'type' => 'cleaning', 'title' => 'Oshxona va zalni tozalash', 'name' => 'Jasur', 'notes' => 'Idish-tovoqlar va pol yuvish'],
+        ['day' => 'seshanba', 'type' => 'grocery', 'title' => 'Bozorlik va non-choy olish', 'name' => 'Azizbek', 'notes' => 'Non, sut va sabzavotlar'],
+        ['day' => 'chorshanba', 'type' => 'trash', 'title' => 'Chiqindilarni olib chiqish', 'name' => 'Bekzod', 'notes' => 'Kechqurun soat 21:00 gacha'],
+        ['day' => 'payshanba', 'type' => 'cooking', 'title' => 'Kechki ovqat tayyorlash (Osh)', 'name' => 'Sardor', 'notes' => 'Besh kishilik palov'],
+        ['day' => 'juma', 'type' => 'cleaning', 'title' => 'Hammom va sanuzelni tozalash', 'name' => 'Jasur', 'notes' => 'Tozalash vositalari shkafda'],
+        ['day' => 'shanba', 'type' => 'grocery', 'title' => 'Haftalik katta bozorlik', 'name' => 'Azizbek', 'notes' => 'Chorsu bozoridan go‘sht va meva'],
+        ['day' => 'yakshanba', 'type' => 'cleaning', 'title' => 'Umumiy xona tozaligi va changlar', 'name' => 'Hamma birga', 'notes' => 'Haftalik umumiy tozalash kuni'],
+    ];
+    foreach ($seedSchedule as $idx => $s) {
+        $rows[] = [
+            'id' => $idx + 1,
+            'group_code' => $groupCode,
+            'title' => $s['title'],
+            'chore_type' => $s['type'],
+            'day_of_week' => $s['day'],
+            'assigned_name' => $s['name'],
+            'is_completed' => 0,
+            'notes' => $s['notes'],
+            'created_at' => date('Y-m-d H:i:s')
+        ];
+    }
+}
 
 // Map Uzbek day of week to English day for today's highlight
 $daysMap = [

@@ -52,6 +52,8 @@ class _XonadoshCreateListingScreenState
   bool _uploadingPhoto = false;
   double? _latitude;
   double? _longitude;
+  bool _isNoBroker = true;
+  bool _utilitiesIncluded = false;
 
   final List<String> _selectedAmenities = [
     'Wi-Fi',
@@ -117,16 +119,20 @@ class _XonadoshCreateListingScreenState
     if (_titleController.text.trim().isNotEmpty) return;
     switch (_type) {
       case 'rent':
-        _titleController.text = '${_selectedDistrict}da ${_roomsController.text} xonali kvartira ijaraga beriladi';
+        _titleController.text =
+            '${_selectedDistrict}da ${_roomsController.text} xonali kvartira ijaraga beriladi';
         break;
       case 'roommate_wanted':
-        _titleController.text = '${_selectedDistrict}da kvartiraga xonadosh (sherik) kerak';
+        _titleController.text =
+            '${_selectedDistrict}da kvartiraga xonadosh (sherik) kerak';
         break;
       case 'sell':
-        _titleController.text = '${_selectedDistrict}da ${_roomsController.text} xonali uy sotiladi';
+        _titleController.text =
+            '${_selectedDistrict}da ${_roomsController.text} xonali uy sotiladi';
         break;
       case 'buy':
-        _titleController.text = '${_selectedDistrict}da ijara uchun shinam kvartira izlayapman';
+        _titleController.text =
+            '${_selectedDistrict}da ijara uchun shinam kvartira izlayapman';
         break;
     }
   }
@@ -162,7 +168,8 @@ class _XonadoshCreateListingScreenState
       'title': _titleController.text.trim(),
       'description': _descController.text.trim(),
       'type': _type,
-      'price': double.tryParse(_priceController.text.replaceAll(' ', '')) ?? 1000000,
+      'price':
+          double.tryParse(_priceController.text.replaceAll(' ', '')) ?? 1000000,
       'currency': _currency,
       'price_period': _pricePeriod,
       'city': _selectedRegion.name,
@@ -177,8 +184,12 @@ class _XonadoshCreateListingScreenState
       'total_floors': int.tryParse(_totalFloorsController.text) ?? 4,
       'area_sqm': double.tryParse(_areaController.text) ?? 50.0,
       'target_gender': _targetGender,
+      'is_no_broker': _isNoBroker,
+      'utilities_included': _utilitiesIncluded,
       'amenities': _selectedAmenities,
-      'photos': _photos.isNotEmpty ? _photos : [XonadoshLocationData.presetPhotos.first['url']!],
+      'photos': _photos.isNotEmpty
+          ? _photos
+          : [XonadoshLocationData.presetPhotos.first['url']!],
       'latitude': _latitude ?? _selectedUni?.latitude ?? 41.311081,
       'longitude': _longitude ?? _selectedUni?.longitude ?? 69.240562,
     };
@@ -202,7 +213,9 @@ class _XonadoshCreateListingScreenState
           ),
           backgroundColor: XonaDoshColors.primary,
           behavior: SnackBarBehavior.floating,
-          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(12),
+          ),
         ),
       );
       if (Navigator.of(context).canPop()) {
@@ -213,10 +226,14 @@ class _XonadoshCreateListingScreenState
     } else {
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(
-          content: Text(res['error']?.toString() ?? context.l10n.commonErrorOccurred),
+          content: Text(
+            res['error']?.toString() ?? context.l10n.commonErrorOccurred,
+          ),
           backgroundColor: const Color(0xFFEF4444),
           behavior: SnackBarBehavior.floating,
-          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(12),
+          ),
         ),
       );
     }
@@ -329,6 +346,7 @@ class _XonadoshCreateListingScreenState
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
+    final isDark = theme.brightness == Brightness.dark;
     final unisAsync = ref.watch(xonadoshUniversitiesProvider);
     final unis = unisAsync.valueOrNull ?? [];
 
@@ -354,13 +372,21 @@ class _XonadoshCreateListingScreenState
             child: Row(
               mainAxisSize: MainAxisSize.min,
               children: [
-                const Icon(Icons.public_rounded, size: 14, color: XonaDoshColors.primary),
+                const Icon(
+                  Icons.public_rounded,
+                  size: 14,
+                  color: XonaDoshColors.primary,
+                ),
                 const SizedBox(width: 4),
                 ConstrainedBox(
                   constraints: const BoxConstraints(maxWidth: 140),
                   child: Text(
                     context.l10n.xonadoshGlobalUzbekistan,
-                    style: const TextStyle(fontSize: 11, fontWeight: FontWeight.w800, color: XonaDoshColors.primary),
+                    style: const TextStyle(
+                      fontSize: 11,
+                      fontWeight: FontWeight.w800,
+                      color: XonaDoshColors.primary,
+                    ),
                     maxLines: 1,
                     overflow: TextOverflow.ellipsis,
                   ),
@@ -388,17 +414,33 @@ class _XonadoshCreateListingScreenState
               const SizedBox(height: 12),
               Row(
                 children: [
-                  _buildTypeChip('rent', context.l10n.xonadoshTypeRentHome, Icons.home_rounded),
+                  _buildTypeChip(
+                    'rent',
+                    context.l10n.xonadoshTypeRentHome,
+                    Icons.home_rounded,
+                  ),
                   const SizedBox(width: 8),
-                  _buildTypeChip('roommate_wanted', context.l10n.xonadoshTypeRoommate, Icons.people_rounded),
+                  _buildTypeChip(
+                    'roommate_wanted',
+                    context.l10n.xonadoshTypeRoommate,
+                    Icons.people_rounded,
+                  ),
                 ],
               ),
               const SizedBox(height: 8),
               Row(
                 children: [
-                  _buildTypeChip('sell', context.l10n.xonadoshTypeForSale, Icons.sell_rounded),
+                  _buildTypeChip(
+                    'sell',
+                    context.l10n.xonadoshTypeForSale,
+                    Icons.sell_rounded,
+                  ),
                   const SizedBox(width: 8),
-                  _buildTypeChip('buy', context.l10n.xonadoshTypeLookingRent, Icons.search_rounded),
+                  _buildTypeChip(
+                    'buy',
+                    context.l10n.xonadoshTypeLookingRent,
+                    Icons.search_rounded,
+                  ),
                 ],
               ),
               const SizedBox(height: 20),
@@ -418,8 +460,13 @@ class _XonadoshCreateListingScreenState
                 initialValue: _selectedRegion,
                 decoration: InputDecoration(
                   labelText: context.l10n.xonadoshSelectRegionReq,
-                  prefixIcon: const Icon(Icons.map_rounded, color: XonaDoshColors.primary),
-                  border: OutlineInputBorder(borderRadius: BorderRadius.circular(10)),
+                  prefixIcon: const Icon(
+                    Icons.map_rounded,
+                    color: XonaDoshColors.primary,
+                  ),
+                  border: OutlineInputBorder(
+                    borderRadius: BorderRadius.circular(10),
+                  ),
                 ),
                 isExpanded: true,
                 items: XonadoshLocationData.regions.map((r) {
@@ -427,7 +474,10 @@ class _XonadoshCreateListingScreenState
                     value: r,
                     child: Text(
                       '${r.flag} ${r.name}',
-                      style: const TextStyle(fontWeight: FontWeight.w700, fontSize: 14),
+                      style: const TextStyle(
+                        fontWeight: FontWeight.w700,
+                        fontSize: 14,
+                      ),
                     ),
                   );
                 }).toList(),
@@ -443,8 +493,13 @@ class _XonadoshCreateListingScreenState
                   initialValue: _selectedDistrict,
                   decoration: InputDecoration(
                     labelText: context.l10n.xonadoshSelectDistrictReq,
-                    prefixIcon: const Icon(Icons.location_city_rounded, color: XonaDoshColors.primary),
-                    border: OutlineInputBorder(borderRadius: BorderRadius.circular(10)),
+                    prefixIcon: const Icon(
+                      Icons.location_city_rounded,
+                      color: XonaDoshColors.primary,
+                    ),
+                    border: OutlineInputBorder(
+                      borderRadius: BorderRadius.circular(10),
+                    ),
                   ),
                   isExpanded: true,
                   items: [
@@ -458,7 +513,10 @@ class _XonadoshCreateListingScreenState
                       value: '__custom__',
                       child: Text(
                         context.l10n.xonadoshOtherDistrictWrite,
-                        style: const TextStyle(color: XonaDoshColors.accentPurple, fontWeight: FontWeight.bold),
+                        style: const TextStyle(
+                          color: XonaDoshColors.accentPurple,
+                          fontWeight: FontWeight.bold,
+                        ),
                       ),
                     ),
                   ],
@@ -479,17 +537,24 @@ class _XonadoshCreateListingScreenState
                         decoration: InputDecoration(
                           labelText: context.l10n.xonadoshEnterDistrictName,
                           hintText: context.l10n.xonadoshDistrictExampleHint,
-                          prefixIcon: const Icon(Icons.edit_location_alt_rounded, color: XonaDoshColors.accentPurple),
-                          border: OutlineInputBorder(borderRadius: BorderRadius.circular(10)),
+                          prefixIcon: const Icon(
+                            Icons.edit_location_alt_rounded,
+                            color: XonaDoshColors.accentPurple,
+                          ),
+                          border: OutlineInputBorder(
+                            borderRadius: BorderRadius.circular(10),
+                          ),
                         ),
-                        validator: (v) => _isCustomDistrict && (v == null || v.trim().isEmpty)
+                        validator: (v) =>
+                            _isCustomDistrict && (v == null || v.trim().isEmpty)
                             ? context.l10n.xonadoshEnterDistrictName
                             : null,
                       ),
                     ),
                     const SizedBox(width: 8),
                     IconButton.filledTonal(
-                      onPressed: () => setState(() => _isCustomDistrict = false),
+                      onPressed: () =>
+                          setState(() => _isCustomDistrict = false),
                       tooltip: context.l10n.xonadoshBackToListSelection,
                       icon: const Icon(Icons.list_rounded),
                     ),
@@ -505,9 +570,13 @@ class _XonadoshCreateListingScreenState
                   labelText: context.l10n.xonadoshAddressReq,
                   hintText: context.l10n.xonadoshAddressHint,
                   prefixIcon: const Icon(Icons.pin_drop_outlined),
-                  border: OutlineInputBorder(borderRadius: BorderRadius.circular(14)),
+                  border: OutlineInputBorder(
+                    borderRadius: BorderRadius.circular(14),
+                  ),
                 ),
-                validator: (v) => (v == null || v.trim().isEmpty) ? context.l10n.xonadoshEnterAddress : null,
+                validator: (v) => (v == null || v.trim().isEmpty)
+                    ? context.l10n.xonadoshEnterAddress
+                    : null,
               ),
               const SizedBox(height: 14),
 
@@ -517,16 +586,26 @@ class _XonadoshCreateListingScreenState
                   initialValue: _selectedUni,
                   decoration: InputDecoration(
                     labelText: context.l10n.xonadoshUniOptionalLabel,
-                    prefixIcon: const Icon(Icons.school_outlined, color: Color(0xFF6366F1)),
-                    border: OutlineInputBorder(borderRadius: BorderRadius.circular(14)),
+                    prefixIcon: const Icon(
+                      Icons.school_outlined,
+                      color: Color(0xFF6366F1),
+                    ),
+                    border: OutlineInputBorder(
+                      borderRadius: BorderRadius.circular(14),
+                    ),
                   ),
                   isExpanded: true,
                   items: [
-                    DropdownMenuItem(value: null, child: Text(context.l10n.xonadoshUniNotLinked)),
-                    ...unis.map((u) => DropdownMenuItem(
-                          value: u,
-                          child: Text('${u.shortName} (${u.district})'),
-                        )),
+                    DropdownMenuItem(
+                      value: null,
+                      child: Text(context.l10n.xonadoshUniNotLinked),
+                    ),
+                    ...unis.map(
+                      (u) => DropdownMenuItem(
+                        value: u,
+                        child: Text('${u.shortName} (${u.district})'),
+                      ),
+                    ),
                   ],
                   onChanged: (u) => setState(() => _selectedUni = u),
                 ),
@@ -550,9 +629,13 @@ class _XonadoshCreateListingScreenState
                 decoration: InputDecoration(
                   labelText: context.l10n.xonadoshListingTitleReq,
                   hintText: context.l10n.xonadoshListingTitleHint,
-                  border: OutlineInputBorder(borderRadius: BorderRadius.circular(14)),
+                  border: OutlineInputBorder(
+                    borderRadius: BorderRadius.circular(14),
+                  ),
                 ),
-                validator: (v) => (v == null || v.trim().isEmpty) ? context.l10n.xonadoshEnterTitle : null,
+                validator: (v) => (v == null || v.trim().isEmpty)
+                    ? context.l10n.xonadoshEnterTitle
+                    : null,
               ),
               const SizedBox(height: 14),
 
@@ -569,10 +652,17 @@ class _XonadoshCreateListingScreenState
                         labelText: context.l10n.xonadoshPriceRequired,
                         hintText: '1 200 000',
                         prefixIcon: const Icon(Icons.price_change_outlined),
-                        contentPadding: const EdgeInsets.symmetric(horizontal: 12, vertical: 14),
-                        border: OutlineInputBorder(borderRadius: BorderRadius.circular(14)),
+                        contentPadding: const EdgeInsets.symmetric(
+                          horizontal: 12,
+                          vertical: 14,
+                        ),
+                        border: OutlineInputBorder(
+                          borderRadius: BorderRadius.circular(14),
+                        ),
                       ),
-                      validator: (v) => (v == null || v.trim().isEmpty) ? context.l10n.xonadoshEnterPrice : null,
+                      validator: (v) => (v == null || v.trim().isEmpty)
+                          ? context.l10n.xonadoshEnterPrice
+                          : null,
                     ),
                   ),
                   const SizedBox(width: 8),
@@ -583,8 +673,13 @@ class _XonadoshCreateListingScreenState
                       isExpanded: true,
                       decoration: InputDecoration(
                         labelText: context.l10n.xonadoshCurrency,
-                        contentPadding: const EdgeInsets.symmetric(horizontal: 10, vertical: 14),
-                        border: OutlineInputBorder(borderRadius: BorderRadius.circular(14)),
+                        contentPadding: const EdgeInsets.symmetric(
+                          horizontal: 10,
+                          vertical: 14,
+                        ),
+                        border: OutlineInputBorder(
+                          borderRadius: BorderRadius.circular(14),
+                        ),
                       ),
                       items: XonadoshLocationData.availableCurrencies.map((c) {
                         return DropdownMenuItem(
@@ -592,7 +687,10 @@ class _XonadoshCreateListingScreenState
                           child: Text(
                             '$c (${XonadoshLocationData.currencySymbols[c]})',
                             overflow: TextOverflow.ellipsis,
-                            style: const TextStyle(fontWeight: FontWeight.w700, fontSize: 13),
+                            style: const TextStyle(
+                              fontWeight: FontWeight.w700,
+                              fontSize: 13,
+                            ),
                           ),
                         );
                       }).toList(),
@@ -612,8 +710,13 @@ class _XonadoshCreateListingScreenState
                 decoration: InputDecoration(
                   labelText: context.l10n.xonadoshPaymentPeriod,
                   prefixIcon: const Icon(Icons.calendar_month_rounded),
-                  contentPadding: const EdgeInsets.symmetric(horizontal: 12, vertical: 14),
-                  border: OutlineInputBorder(borderRadius: BorderRadius.circular(14)),
+                  contentPadding: const EdgeInsets.symmetric(
+                    horizontal: 12,
+                    vertical: 14,
+                  ),
+                  border: OutlineInputBorder(
+                    borderRadius: BorderRadius.circular(14),
+                  ),
                 ),
                 items: XonadoshLocationData.pricePeriods.map((p) {
                   return DropdownMenuItem(
@@ -650,7 +753,9 @@ class _XonadoshCreateListingScreenState
                         labelText: context.l10n.xonadoshRoomsCount,
                         hintText: '2',
                         prefixIcon: const Icon(Icons.meeting_room_outlined),
-                        border: OutlineInputBorder(borderRadius: BorderRadius.circular(14)),
+                        border: OutlineInputBorder(
+                          borderRadius: BorderRadius.circular(14),
+                        ),
                       ),
                     ),
                   ),
@@ -663,7 +768,9 @@ class _XonadoshCreateListingScreenState
                         labelText: context.l10n.xonadoshAreaSqM,
                         hintText: '65',
                         prefixIcon: const Icon(Icons.square_foot_outlined),
-                        border: OutlineInputBorder(borderRadius: BorderRadius.circular(14)),
+                        border: OutlineInputBorder(
+                          borderRadius: BorderRadius.circular(14),
+                        ),
                       ),
                     ),
                   ),
@@ -681,7 +788,9 @@ class _XonadoshCreateListingScreenState
                         labelText: context.l10n.xonadoshFloor,
                         hintText: '3',
                         prefixIcon: const Icon(Icons.layers_outlined),
-                        border: OutlineInputBorder(borderRadius: BorderRadius.circular(14)),
+                        border: OutlineInputBorder(
+                          borderRadius: BorderRadius.circular(14),
+                        ),
                       ),
                     ),
                   ),
@@ -694,7 +803,9 @@ class _XonadoshCreateListingScreenState
                         labelText: context.l10n.xonadoshTotalFloors,
                         hintText: '9',
                         prefixIcon: const Icon(Icons.apartment_rounded),
-                        border: OutlineInputBorder(borderRadius: BorderRadius.circular(14)),
+                        border: OutlineInputBorder(
+                          borderRadius: BorderRadius.circular(14),
+                        ),
                       ),
                     ),
                   ),
@@ -703,7 +814,13 @@ class _XonadoshCreateListingScreenState
               const SizedBox(height: 14),
 
               // Kim uchun
-              Text(context.l10n.xonadoshTargetAudience, style: const TextStyle(fontWeight: FontWeight.w700, fontSize: 13)),
+              Text(
+                context.l10n.xonadoshTargetAudience,
+                style: const TextStyle(
+                  fontWeight: FontWeight.w700,
+                  fontSize: 13,
+                ),
+              ),
               const SizedBox(height: 8),
               Wrap(
                 spacing: 8,
@@ -711,8 +828,14 @@ class _XonadoshCreateListingScreenState
                 children: [
                   _buildAudienceChip('any', context.l10n.xonadoshAudienceAll),
                   _buildAudienceChip('boys', context.l10n.xonadoshAudienceBoys),
-                  _buildAudienceChip('girls', context.l10n.xonadoshAudienceGirls),
-                  _buildAudienceChip('family', context.l10n.xonadoshAudienceFamily),
+                  _buildAudienceChip(
+                    'girls',
+                    context.l10n.xonadoshAudienceGirls,
+                  ),
+                  _buildAudienceChip(
+                    'family',
+                    context.l10n.xonadoshAudienceFamily,
+                  ),
                 ],
               ),
               const SizedBox(height: 20),
@@ -753,7 +876,9 @@ class _XonadoshCreateListingScreenState
                         decoration: BoxDecoration(
                           borderRadius: BorderRadius.circular(10),
                           border: Border.all(
-                            color: isSelected ? XonaDoshColors.primary : Colors.transparent,
+                            color: isSelected
+                                ? XonaDoshColors.primary
+                                : Colors.transparent,
                             width: 2,
                           ),
                         ),
@@ -767,13 +892,19 @@ class _XonadoshCreateListingScreenState
                                 fit: BoxFit.cover,
                                 errorBuilder: (_, _, _) => Container(
                                   color: const Color(0xFF1E293B),
-                                  child: const Icon(Icons.apartment_rounded, color: Colors.white54),
+                                  child: const Icon(
+                                    Icons.apartment_rounded,
+                                    color: Colors.white54,
+                                  ),
                                 ),
                               ),
                               Container(
                                 decoration: const BoxDecoration(
                                   gradient: LinearGradient(
-                                    colors: [Colors.transparent, Colors.black87],
+                                    colors: [
+                                      Colors.transparent,
+                                      Colors.black87,
+                                    ],
                                     begin: Alignment.topCenter,
                                     end: Alignment.bottomCenter,
                                   ),
@@ -786,7 +917,11 @@ class _XonadoshCreateListingScreenState
                                   child: CircleAvatar(
                                     radius: 11,
                                     backgroundColor: XonaDoshColors.primary,
-                                    child: Icon(Icons.check, size: 14, color: Colors.white),
+                                    child: Icon(
+                                      Icons.check,
+                                      size: 14,
+                                      color: Colors.white,
+                                    ),
                                   ),
                                 ),
                               Positioned(
@@ -873,7 +1008,9 @@ class _XonadoshCreateListingScreenState
                         labelText: context.l10n.xonadoshPhotoUrlOptional,
                         hintText: 'https://...',
                         prefixIcon: const Icon(Icons.link_rounded),
-                        border: OutlineInputBorder(borderRadius: BorderRadius.circular(14)),
+                        border: OutlineInputBorder(
+                          borderRadius: BorderRadius.circular(14),
+                        ),
                       ),
                     ),
                   ),
@@ -927,6 +1064,86 @@ class _XonadoshCreateListingScreenState
                   );
                 }).toList(),
               ),
+              const SizedBox(height: 14),
+
+              // Bez Makler & Utilities Toggles
+              Container(
+                decoration: BoxDecoration(
+                  color: isDark
+                      ? const Color(0xFF1E293B)
+                      : const Color(0xFFF8FAFC),
+                  borderRadius: BorderRadius.circular(14),
+                  border: Border.all(
+                    color: isDark
+                        ? const Color(0xFF334155)
+                        : const Color(0xFFE2E8F0),
+                  ),
+                ),
+                child: Column(
+                  children: [
+                    SwitchListTile.adaptive(
+                      value: _isNoBroker,
+                      activeTrackColor: const Color(0xFF059669),
+                      activeThumbColor: Colors.white,
+                      secondary: Container(
+                        padding: const EdgeInsets.all(8),
+                        decoration: BoxDecoration(
+                          color: const Color(0xFF059669).withAlpha(25),
+                          borderRadius: BorderRadius.circular(8),
+                        ),
+                        child: const Icon(
+                          Icons.verified_user_rounded,
+                          color: Color(0xFF059669),
+                          size: 20,
+                        ),
+                      ),
+                      title: const Text(
+                        'Bez Makler (E’lon uy egasidan)',
+                        style: TextStyle(
+                          fontWeight: FontWeight.w700,
+                          fontSize: 14,
+                        ),
+                      ),
+                      subtitle: const Text(
+                        'Ijarachilar 50% makler to‘lovini tejaydi va e’loningizga maxsus belgi beriladi',
+                        style: TextStyle(fontSize: 12),
+                      ),
+                      onChanged: (val) => setState(() => _isNoBroker = val),
+                    ),
+                    const Divider(height: 1),
+                    SwitchListTile.adaptive(
+                      value: _utilitiesIncluded,
+                      activeTrackColor: const Color(0xFF0284C7),
+                      activeThumbColor: Colors.white,
+                      secondary: Container(
+                        padding: const EdgeInsets.all(8),
+                        decoration: BoxDecoration(
+                          color: const Color(0xFF0284C7).withAlpha(25),
+                          borderRadius: BorderRadius.circular(8),
+                        ),
+                        child: const Icon(
+                          Icons.bolt_rounded,
+                          color: Color(0xFF0284C7),
+                          size: 20,
+                        ),
+                      ),
+                      title: const Text(
+                        'Kommunal to‘lovlar narx ichida',
+                        style: TextStyle(
+                          fontWeight: FontWeight.w700,
+                          fontSize: 14,
+                        ),
+                      ),
+                      subtitle: const Text(
+                        'Elektr, gaz, suv va Wi-Fi xarajatlari oylik to‘lov ichiga kiritilgan',
+                        style: TextStyle(fontSize: 12),
+                      ),
+                      onChanged: (val) =>
+                          setState(() => _utilitiesIncluded = val),
+                    ),
+                  ],
+                ),
+              ),
               const SizedBox(height: 20),
 
               // ==========================================
@@ -949,9 +1166,13 @@ class _XonadoshCreateListingScreenState
                         labelText: context.l10n.xonadoshPhoneRequired,
                         hintText: '+998 90 123 45 67',
                         prefixIcon: const Icon(Icons.phone_rounded),
-                        border: OutlineInputBorder(borderRadius: BorderRadius.circular(10)),
+                        border: OutlineInputBorder(
+                          borderRadius: BorderRadius.circular(10),
+                        ),
                       ),
-                      validator: (v) => (v == null || v.trim().isEmpty) ? context.l10n.xonadoshEnterPhone : null,
+                      validator: (v) => (v == null || v.trim().isEmpty)
+                          ? context.l10n.xonadoshEnterPhone
+                          : null,
                     ),
                   ),
                   const SizedBox(width: 8),
@@ -962,7 +1183,9 @@ class _XonadoshCreateListingScreenState
                         labelText: context.l10n.xonadoshTelegram,
                         hintText: '@username',
                         prefixIcon: const Icon(Icons.send_rounded),
-                        border: OutlineInputBorder(borderRadius: BorderRadius.circular(10)),
+                        border: OutlineInputBorder(
+                          borderRadius: BorderRadius.circular(10),
+                        ),
                       ),
                     ),
                   ),
@@ -977,7 +1200,9 @@ class _XonadoshCreateListingScreenState
                   labelText: context.l10n.xonadoshDetailedDesc,
                   hintText: context.l10n.xonadoshDetailedDescHint,
                   alignLabelWithHint: true,
-                  border: OutlineInputBorder(borderRadius: BorderRadius.circular(10)),
+                  border: OutlineInputBorder(
+                    borderRadius: BorderRadius.circular(10),
+                  ),
                 ),
               ),
               const SizedBox(height: 28),
@@ -992,13 +1217,18 @@ class _XonadoshCreateListingScreenState
                   foregroundColor: Colors.white,
                   padding: const EdgeInsets.symmetric(vertical: 16),
                   elevation: 0,
-                  shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(12),
+                  ),
                 ),
                 child: _isLoading
                     ? const SizedBox(
                         height: 22,
                         width: 22,
-                        child: CircularProgressIndicator(color: Colors.white, strokeWidth: 2.5),
+                        child: CircularProgressIndicator(
+                          color: Colors.white,
+                          strokeWidth: 2.5,
+                        ),
                       )
                     : Row(
                         mainAxisAlignment: MainAxisAlignment.center,
@@ -1008,7 +1238,10 @@ class _XonadoshCreateListingScreenState
                           Flexible(
                             child: Text(
                               context.l10n.xonadoshPublishListing,
-                              style: const TextStyle(fontWeight: FontWeight.w800, fontSize: 16),
+                              style: const TextStyle(
+                                fontWeight: FontWeight.w800,
+                                fontSize: 16,
+                              ),
                               maxLines: 1,
                               overflow: TextOverflow.ellipsis,
                             ),
@@ -1047,7 +1280,10 @@ class _XonadoshCreateListingScreenState
             children: [
               Text(
                 title,
-                style: const TextStyle(fontWeight: FontWeight.w800, fontSize: 15),
+                style: const TextStyle(
+                  fontWeight: FontWeight.w800,
+                  fontSize: 15,
+                ),
                 maxLines: 2,
                 overflow: TextOverflow.ellipsis,
               ),
@@ -1080,7 +1316,9 @@ class _XonadoshCreateListingScreenState
           duration: const Duration(milliseconds: 180),
           padding: const EdgeInsets.symmetric(vertical: 12, horizontal: 10),
           decoration: BoxDecoration(
-            color: isSelected ? XonaDoshColors.primary : Colors.grey.withAlpha(20),
+            color: isSelected
+                ? XonaDoshColors.primary
+                : Colors.grey.withAlpha(20),
             borderRadius: BorderRadius.circular(10),
             border: Border.all(
               color: isSelected ? XonaDoshColors.primary : Colors.transparent,
@@ -1090,7 +1328,11 @@ class _XonadoshCreateListingScreenState
           child: Row(
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
-              Icon(icon, color: isSelected ? Colors.white : Colors.grey, size: 18),
+              Icon(
+                icon,
+                color: isSelected ? Colors.white : Colors.grey,
+                size: 18,
+              ),
               const SizedBox(width: 6),
               Flexible(
                 child: Text(

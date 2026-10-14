@@ -4,6 +4,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:xonadosh/config/theme.dart';
 import 'package:xonadosh/data/models/xonadosh_models.dart';
 import 'package:xonadosh/l10n/l10n_ext.dart';
+import 'package:xonadosh/presentation/common/contact_actions.dart';
 import 'package:xonadosh/presentation/features/xonadosh/widgets/onboarding_welcome.dart';
 import 'package:xonadosh/presentation/providers/xonadosh_providers.dart';
 import '../widgets/xonadosh_create_recipe_sheet.dart';
@@ -13,12 +14,15 @@ class XonadoshColivingTab extends ConsumerStatefulWidget {
   const XonadoshColivingTab({super.key});
 
   @override
-  ConsumerState<XonadoshColivingTab> createState() => _XonadoshColivingTabState();
+  ConsumerState<XonadoshColivingTab> createState() =>
+      _XonadoshColivingTabState();
 }
 
 class _XonadoshColivingTabState extends ConsumerState<XonadoshColivingTab> {
   // 0: Navbatchilik, 1: Taomnoma, 2: Bozorlik, 3: Moliya, 4: Masalalar, 5: Obro'/Karma
   int _activeSubTab = 0;
+  bool _showTip = true;
+
   /// Moliya filtri: all | due | rent | utility | expense
   String _financeFilter = 'all';
 
@@ -31,13 +35,17 @@ class _XonadoshColivingTabState extends ConsumerState<XonadoshColivingTab> {
     return Scaffold(
       body: Column(
         children: [
-          Padding(
-            padding: const EdgeInsets.fromLTRB(16, 8, 16, 4),
-            child: XonadoshColivingUnlockTip(
-              onFindRoom: () => ref.read(xonadoshShellTabIndexProvider.notifier).state = 0,
-              onFindRoommate: () => ref.read(xonadoshShellTabIndexProvider.notifier).state = 1,
+          if (_showTip)
+            Padding(
+              padding: const EdgeInsets.fromLTRB(16, 8, 16, 4),
+              child: XonadoshColivingUnlockTip(
+                onFindRoom: () =>
+                    ref.read(xonadoshShellTabIndexProvider.notifier).state = 0,
+                onFindRoommate: () =>
+                    ref.read(xonadoshShellTabIndexProvider.notifier).state = 1,
+                onDismiss: () => setState(() => _showTip = false),
+              ),
             ),
-          ),
           Container(
             width: double.infinity,
             padding: const EdgeInsets.fromLTRB(16, 8, 16, 6),
@@ -47,17 +55,47 @@ class _XonadoshColivingTabState extends ConsumerState<XonadoshColivingTab> {
               physics: const BouncingScrollPhysics(),
               child: Row(
                 children: [
-                  _buildSubTabPill(0, Icons.assignment_turned_in_rounded, l10n.xonadoshDutyRosterTab, isDark),
+                  _buildSubTabPill(
+                    0,
+                    Icons.assignment_turned_in_rounded,
+                    l10n.xonadoshDutyRosterTab,
+                    isDark,
+                  ),
                   const SizedBox(width: 6),
-                  _buildSubTabPill(1, Icons.restaurant_menu_rounded, l10n.xonadoshMenuTab, isDark),
+                  _buildSubTabPill(
+                    1,
+                    Icons.restaurant_menu_rounded,
+                    l10n.xonadoshMenuTab,
+                    isDark,
+                  ),
                   const SizedBox(width: 6),
-                  _buildSubTabPill(2, Icons.shopping_cart_rounded, l10n.xonadoshGroceryTab, isDark),
+                  _buildSubTabPill(
+                    2,
+                    Icons.shopping_cart_rounded,
+                    l10n.xonadoshGroceryTab,
+                    isDark,
+                  ),
                   const SizedBox(width: 6),
-                  _buildSubTabPill(3, Icons.account_balance_wallet_rounded, l10n.xonadoshFinanceTab, isDark),
+                  _buildSubTabPill(
+                    3,
+                    Icons.account_balance_wallet_rounded,
+                    l10n.xonadoshFinanceTab,
+                    isDark,
+                  ),
                   const SizedBox(width: 6),
-                  _buildSubTabPill(4, Icons.how_to_vote_rounded, l10n.xonadoshPollsTab, isDark),
+                  _buildSubTabPill(
+                    4,
+                    Icons.how_to_vote_rounded,
+                    l10n.xonadoshPollsTab,
+                    isDark,
+                  ),
                   const SizedBox(width: 6),
-                  _buildSubTabPill(5, Icons.military_tech_rounded, l10n.xonadoshKarmaTab, isDark),
+                  _buildSubTabPill(
+                    5,
+                    Icons.military_tech_rounded,
+                    l10n.xonadoshKarmaTab,
+                    isDark,
+                  ),
                 ],
               ),
             ),
@@ -88,18 +126,30 @@ class _XonadoshColivingTabState extends ConsumerState<XonadoshColivingTab> {
       onTap: () => setState(() => _activeSubTab = index),
       child: AnimatedContainer(
         duration: const Duration(milliseconds: 180),
-        padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 7),
+        padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 8),
         decoration: BoxDecoration(
           color: isSelected
               ? (isDark ? const Color(0xFF0F766E) : const Color(0xFF0D9488))
               : (isDark ? const Color(0xFF1E293B) : const Color(0xFFF1F5F9)),
-          borderRadius: BorderRadius.circular(10),
+          borderRadius: BorderRadius.circular(12),
           border: Border.all(
             color: isSelected
                 ? Colors.transparent
                 : (isDark ? const Color(0xFF334155) : const Color(0xFFE2E8F0)),
             width: 1,
           ),
+          boxShadow: isSelected
+              ? [
+                  BoxShadow(
+                    color: (isDark
+                            ? const Color(0xFF0F766E)
+                            : const Color(0xFF0D9488))
+                        .withValues(alpha: 0.28),
+                    blurRadius: 6,
+                    offset: const Offset(0, 2),
+                  ),
+                ]
+              : null,
         ),
         child: Row(
           mainAxisSize: MainAxisSize.min,
@@ -109,7 +159,9 @@ class _XonadoshColivingTabState extends ConsumerState<XonadoshColivingTab> {
               size: 14,
               color: isSelected
                   ? Colors.white
-                  : (isDark ? const Color(0xFF94A3B8) : const Color(0xFF64748B)),
+                  : (isDark
+                        ? const Color(0xFF94A3B8)
+                        : const Color(0xFF64748B)),
             ),
             const SizedBox(width: 5),
             Text(
@@ -119,7 +171,9 @@ class _XonadoshColivingTabState extends ConsumerState<XonadoshColivingTab> {
                 fontWeight: isSelected ? FontWeight.w700 : FontWeight.w500,
                 color: isSelected
                     ? Colors.white
-                    : (isDark ? const Color(0xFFCBD5E1) : const Color(0xFF334155)),
+                    : (isDark
+                          ? const Color(0xFFCBD5E1)
+                          : const Color(0xFF334155)),
               ),
             ),
           ],
@@ -133,14 +187,22 @@ class _XonadoshColivingTabState extends ConsumerState<XonadoshColivingTab> {
   // ==========================================
   String _getLocalizedDayName(String day, dynamic l10n) {
     switch (day.toLowerCase()) {
-      case 'dushanba': return l10n.xonadoshDayMonday;
-      case 'seshanba': return l10n.xonadoshDayTuesday;
-      case 'chorshanba': return l10n.xonadoshDayWednesday;
-      case 'payshanba': return l10n.xonadoshDayThursday;
-      case 'juma': return l10n.xonadoshDayFriday;
-      case 'shanba': return l10n.xonadoshDaySaturday;
-      case 'yakshanba': return l10n.xonadoshDaySunday;
-      default: return day;
+      case 'dushanba':
+        return l10n.xonadoshDayMonday;
+      case 'seshanba':
+        return l10n.xonadoshDayTuesday;
+      case 'chorshanba':
+        return l10n.xonadoshDayWednesday;
+      case 'payshanba':
+        return l10n.xonadoshDayThursday;
+      case 'juma':
+        return l10n.xonadoshDayFriday;
+      case 'shanba':
+        return l10n.xonadoshDaySaturday;
+      case 'yakshanba':
+        return l10n.xonadoshDaySunday;
+      default:
+        return day;
     }
   }
 
@@ -148,8 +210,11 @@ class _XonadoshColivingTabState extends ConsumerState<XonadoshColivingTab> {
     final choresAsync = ref.watch(xonadoshChoresProvider);
 
     return choresAsync.when(
-      loading: () => const Center(child: CircularProgressIndicator(color: XonaDoshColors.emerald)),
-      error: (err, _) => Center(child: Text(context.l10n.xonadoshErrGeneric('$err'))),
+      loading: () => const Center(
+        child: CircularProgressIndicator(color: XonaDoshColors.emerald),
+      ),
+      error: (err, _) =>
+          Center(child: Text(context.l10n.xonadoshErrGeneric('$err'))),
       data: (data) {
         final todayDuties = data.todayDuties;
         final allChores = data.allChores;
@@ -167,7 +232,9 @@ class _XonadoshColivingTabState extends ConsumerState<XonadoshColivingTab> {
                   color: isDark ? const Color(0xFF1E293B) : Colors.white,
                   borderRadius: BorderRadius.circular(14),
                   border: Border.all(
-                    color: isDark ? const Color(0xFF334155) : const Color(0xFFE2E8F0),
+                    color: isDark
+                        ? const Color(0xFF334155)
+                        : const Color(0xFFE2E8F0),
                     width: 1,
                   ),
                 ),
@@ -179,18 +246,30 @@ class _XonadoshColivingTabState extends ConsumerState<XonadoshColivingTab> {
                       children: [
                         Row(
                           children: [
-                            const Icon(Icons.today_rounded, color: XonaDoshColors.primary, size: 18),
+                            const Icon(
+                              Icons.today_rounded,
+                              color: XonaDoshColors.primary,
+                              size: 18,
+                            ),
                             const SizedBox(width: 8),
                             Text(
                               '${context.l10n.xonadoshToday} (${_getLocalizedDayName(data.todayDay, context.l10n)})',
-                              style: const TextStyle(fontWeight: FontWeight.w700, fontSize: 14),
+                              style: const TextStyle(
+                                fontWeight: FontWeight.w700,
+                                fontSize: 14,
+                              ),
                             ),
                           ],
                         ),
                         Container(
-                          padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 3),
+                          padding: const EdgeInsets.symmetric(
+                            horizontal: 8,
+                            vertical: 3,
+                          ),
                           decoration: BoxDecoration(
-                            color: XonaDoshColors.primary.withValues(alpha: 0.1),
+                            color: XonaDoshColors.primary.withValues(
+                              alpha: 0.1,
+                            ),
                             borderRadius: BorderRadius.circular(6),
                           ),
                           child: Text(
@@ -209,12 +288,17 @@ class _XonadoshColivingTabState extends ConsumerState<XonadoshColivingTab> {
                       Text(
                         context.l10n.xonadoshNoDutyToday,
                         style: TextStyle(
-                          color: isDark ? const Color(0xFF94A3B8) : const Color(0xFF64748B),
+                          color: isDark
+                              ? const Color(0xFF94A3B8)
+                              : const Color(0xFF64748B),
                           fontSize: 13,
                         ),
                       )
                     else
-                      ...todayDuties.map((chore) => _buildChoreItem(chore, isDark, isToday: true)),
+                      ...todayDuties.map(
+                        (chore) =>
+                            _buildChoreItem(chore, isDark, isToday: true),
+                      ),
                   ],
                 ),
               ),
@@ -227,20 +311,57 @@ class _XonadoshColivingTabState extends ConsumerState<XonadoshColivingTab> {
                 children: [
                   Text(
                     context.l10n.xonadoshDutySchedule,
-                    style: const TextStyle(fontWeight: FontWeight.w800, fontSize: 15),
+                    style: const TextStyle(
+                      fontWeight: FontWeight.w800,
+                      fontSize: 15,
+                    ),
                   ),
-                  IconButton.filledTonal(
-                    onPressed: () => _showAddChoreDialog(context),
-                    icon: const Icon(Icons.add_rounded, size: 18),
-                    visualDensity: VisualDensity.compact,
+                  Row(
+                    children: [
+                      OutlinedButton.icon(
+                        onPressed: () => _openHouseRulesModal(context),
+                        icon: const Icon(Icons.rule_rounded, size: 16),
+                        label: const Text('Uy Qoidalari'),
+                        style: OutlinedButton.styleFrom(
+                          foregroundColor: XonaDoshColors.accentPurple,
+                          side: const BorderSide(
+                            color: XonaDoshColors.accentPurple,
+                          ),
+                          visualDensity: VisualDensity.compact,
+                          padding: const EdgeInsets.symmetric(
+                            horizontal: 10,
+                            vertical: 6,
+                          ),
+                          shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(10),
+                          ),
+                        ),
+                      ),
+                      const SizedBox(width: 8),
+                      IconButton.filledTonal(
+                        onPressed: () => _showAddChoreDialog(context),
+                        icon: const Icon(Icons.add_rounded, size: 18),
+                        visualDensity: VisualDensity.compact,
+                      ),
+                    ],
                   ),
                 ],
               ),
               const SizedBox(height: 8),
 
               // Group chores by day
-              ...['dushanba', 'seshanba', 'chorshanba', 'payshanba', 'juma', 'shanba', 'yakshanba'].map((day) {
-                final dayChores = allChores.where((c) => c.dayOfWeek == day).toList();
+              ...[
+                'dushanba',
+                'seshanba',
+                'chorshanba',
+                'payshanba',
+                'juma',
+                'shanba',
+                'yakshanba',
+              ].map((day) {
+                final dayChores = allChores
+                    .where((c) => c.dayOfWeek == day)
+                    .toList();
                 final isToday = day == data.todayDay;
 
                 return Container(
@@ -255,19 +376,30 @@ class _XonadoshColivingTabState extends ConsumerState<XonadoshColivingTab> {
                         border: Border.all(
                           color: isToday
                               ? XonaDoshColors.emerald
-                              : (isDark ? const Color(0xFF334155) : const Color(0xFFE8EEF3)),
+                              : (isDark
+                                    ? const Color(0xFF334155)
+                                    : const Color(0xFFE8EEF3)),
                           width: isToday ? 1.5 : 1,
                         ),
                       ),
                       child: Theme(
-                        data: Theme.of(context).copyWith(dividerColor: Colors.transparent),
+                        data: Theme.of(
+                          context,
+                        ).copyWith(dividerColor: Colors.transparent),
                         child: ExpansionTile(
                           initiallyExpanded: isToday,
-                          tilePadding: const EdgeInsets.symmetric(horizontal: 14, vertical: 0),
+                          tilePadding: const EdgeInsets.symmetric(
+                            horizontal: 14,
+                            vertical: 0,
+                          ),
                           leading: Icon(
                             Icons.calendar_today_rounded,
                             size: 18,
-                            color: isToday ? XonaDoshColors.emerald : (isDark ? Colors.grey[400] : Colors.grey[600]),
+                            color: isToday
+                                ? XonaDoshColors.emerald
+                                : (isDark
+                                      ? Colors.grey[400]
+                                      : Colors.grey[600]),
                           ),
                           title: Text(
                             _getLocalizedDayName(day, context.l10n),
@@ -278,9 +410,14 @@ class _XonadoshColivingTabState extends ConsumerState<XonadoshColivingTab> {
                             ),
                           ),
                           trailing: Container(
-                            padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 2),
+                            padding: const EdgeInsets.symmetric(
+                              horizontal: 8,
+                              vertical: 2,
+                            ),
                             decoration: BoxDecoration(
-                              color: isDark ? const Color(0xFF0F172A) : const Color(0xFFF1F5F9),
+                              color: isDark
+                                  ? const Color(0xFF0F172A)
+                                  : const Color(0xFFF1F5F9),
                               borderRadius: BorderRadius.circular(8),
                             ),
                             child: Text(
@@ -288,7 +425,9 @@ class _XonadoshColivingTabState extends ConsumerState<XonadoshColivingTab> {
                               style: TextStyle(
                                 fontSize: 11,
                                 fontWeight: FontWeight.w700,
-                                color: isDark ? Colors.grey[400] : Colors.grey[700],
+                                color: isDark
+                                    ? Colors.grey[400]
+                                    : Colors.grey[700],
                               ),
                             ),
                           ),
@@ -298,14 +437,24 @@ class _XonadoshColivingTabState extends ConsumerState<XonadoshColivingTab> {
                                 padding: const EdgeInsets.all(12),
                                 child: Text(
                                   'Bu kunga vazifalar biriktirilmagan',
-                                  style: TextStyle(color: Colors.grey[500], fontSize: 12),
+                                  style: TextStyle(
+                                    color: Colors.grey[500],
+                                    fontSize: 12,
+                                  ),
                                 ),
                               )
                             else
                               Padding(
-                                padding: const EdgeInsets.fromLTRB(10, 0, 10, 8),
+                                padding: const EdgeInsets.fromLTRB(
+                                  10,
+                                  0,
+                                  10,
+                                  8,
+                                ),
                                 child: Column(
-                                  children: dayChores.map((c) => _buildChoreItem(c, isDark)).toList(),
+                                  children: dayChores
+                                      .map((c) => _buildChoreItem(c, isDark))
+                                      .toList(),
                                 ),
                               ),
                           ],
@@ -322,7 +471,11 @@ class _XonadoshColivingTabState extends ConsumerState<XonadoshColivingTab> {
     );
   }
 
-  Widget _buildChoreItem(XonadoshChore chore, bool isDark, {bool isToday = false}) {
+  Widget _buildChoreItem(
+    XonadoshChore chore,
+    bool isDark, {
+    bool isToday = false,
+  }) {
     final bgColor = isDark ? const Color(0xFF0F172A) : const Color(0xFFF8FAFC);
 
     return Container(
@@ -340,13 +493,17 @@ class _XonadoshColivingTabState extends ConsumerState<XonadoshColivingTab> {
           Checkbox(
             value: chore.isCompleted,
             activeColor: XonaDoshColors.emerald,
-            shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(4)),
+            shape: RoundedRectangleBorder(
+              borderRadius: BorderRadius.circular(4),
+            ),
             visualDensity: VisualDensity.compact,
             onChanged: (val) async {
-              await ref.read(xonadoshRepositoryProvider).toggleChoreDone(
-                choreId: chore.id,
-                isCompleted: val ?? false,
-              );
+              await ref
+                  .read(xonadoshRepositoryProvider)
+                  .toggleChoreDone(
+                    choreId: chore.id,
+                    isCompleted: val ?? false,
+                  );
               ref.invalidate(xonadoshChoresProvider);
             },
           ),
@@ -361,9 +518,13 @@ class _XonadoshColivingTabState extends ConsumerState<XonadoshColivingTab> {
                     fontWeight: FontWeight.w600,
                     fontSize: 13,
                     color: chore.isCompleted
-                        ? (isDark ? const Color(0xFF64748B) : const Color(0xFF94A3B8))
+                        ? (isDark
+                              ? const Color(0xFF64748B)
+                              : const Color(0xFF94A3B8))
                         : null,
-                    decoration: chore.isCompleted ? TextDecoration.lineThrough : null,
+                    decoration: chore.isCompleted
+                        ? TextDecoration.lineThrough
+                        : null,
                   ),
                 ),
                 if (chore.notes.isNotEmpty)
@@ -371,7 +532,9 @@ class _XonadoshColivingTabState extends ConsumerState<XonadoshColivingTab> {
                     chore.notes,
                     style: TextStyle(
                       fontSize: 11,
-                      color: isDark ? const Color(0xFF94A3B8) : const Color(0xFF64748B),
+                      color: isDark
+                          ? const Color(0xFF94A3B8)
+                          : const Color(0xFF64748B),
                     ),
                   ),
               ],
@@ -388,7 +551,9 @@ class _XonadoshColivingTabState extends ConsumerState<XonadoshColivingTab> {
               style: TextStyle(
                 fontSize: 11,
                 fontWeight: FontWeight.w600,
-                color: isDark ? const Color(0xFFCBD5E1) : const Color(0xFF334155),
+                color: isDark
+                    ? const Color(0xFFCBD5E1)
+                    : const Color(0xFF334155),
               ),
             ),
           ),
@@ -404,8 +569,11 @@ class _XonadoshColivingTabState extends ConsumerState<XonadoshColivingTab> {
     final mealPlanAsync = ref.watch(xonadoshRecipesAndMealPlanProvider);
 
     return mealPlanAsync.when(
-      loading: () => const Center(child: CircularProgressIndicator(color: XonaDoshColors.emerald)),
-      error: (err, _) => Center(child: Text(context.l10n.xonadoshErrGeneric('$err'))),
+      loading: () => const Center(
+        child: CircularProgressIndicator(color: XonaDoshColors.emerald),
+      ),
+      error: (err, _) =>
+          Center(child: Text(context.l10n.xonadoshErrGeneric('$err'))),
       data: (data) {
         final Map<String, List<XonadoshMealPlan>> grouped = {};
         for (final m in data.mealPlans) {
@@ -414,7 +582,8 @@ class _XonadoshColivingTabState extends ConsumerState<XonadoshColivingTab> {
 
         return RefreshIndicator(
           color: XonaDoshColors.emerald,
-          onRefresh: () async => ref.refresh(xonadoshRecipesAndMealPlanProvider),
+          onRefresh: () async =>
+              ref.refresh(xonadoshRecipesAndMealPlanProvider),
           child: ListView(
             padding: const EdgeInsets.fromLTRB(16, 8, 16, 80),
             children: [
@@ -426,16 +595,28 @@ class _XonadoshColivingTabState extends ConsumerState<XonadoshColivingTab> {
                     Expanded(
                       child: Text(
                         context.l10n.xonadosh7DayPlan,
-                        style: const TextStyle(fontWeight: FontWeight.w800, fontSize: 16),
+                        style: const TextStyle(
+                          fontWeight: FontWeight.w800,
+                          fontSize: 16,
+                        ),
                       ),
                     ),
                     FilledButton.tonalIcon(
                       onPressed: () => _showCreateRecipeSheet(context),
                       icon: const Icon(Icons.add_rounded, size: 16),
-                      label: Text(context.l10n.xonadoshAddNewRecipe, style: const TextStyle(fontSize: 12, fontWeight: FontWeight.w700)),
+                      label: Text(
+                        context.l10n.xonadoshAddNewRecipe,
+                        style: const TextStyle(
+                          fontSize: 12,
+                          fontWeight: FontWeight.w700,
+                        ),
+                      ),
                       style: FilledButton.styleFrom(
                         visualDensity: VisualDensity.compact,
-                        padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 4),
+                        padding: const EdgeInsets.symmetric(
+                          horizontal: 10,
+                          vertical: 4,
+                        ),
                       ),
                     ),
                   ],
@@ -443,7 +624,15 @@ class _XonadoshColivingTabState extends ConsumerState<XonadoshColivingTab> {
               ),
               const SizedBox(height: 10),
 
-              ...['dushanba', 'seshanba', 'chorshanba', 'payshanba', 'juma', 'shanba', 'yakshanba'].map((day) {
+              ...[
+                'dushanba',
+                'seshanba',
+                'chorshanba',
+                'payshanba',
+                'juma',
+                'shanba',
+                'yakshanba',
+              ].map((day) {
                 final meals = grouped[day] ?? [];
                 return _buildDayAccordionCard(context, day, meals, isDark);
               }),
@@ -454,7 +643,12 @@ class _XonadoshColivingTabState extends ConsumerState<XonadoshColivingTab> {
     );
   }
 
-  Widget _buildDayAccordionCard(BuildContext context, String day, List<XonadoshMealPlan> meals, bool isDark) {
+  Widget _buildDayAccordionCard(
+    BuildContext context,
+    String day,
+    List<XonadoshMealPlan> meals,
+    bool isDark,
+  ) {
     return Container(
       margin: const EdgeInsets.only(bottom: 10),
       child: Material(
@@ -464,17 +658,29 @@ class _XonadoshColivingTabState extends ConsumerState<XonadoshColivingTab> {
         child: Container(
           decoration: BoxDecoration(
             borderRadius: BorderRadius.circular(16),
-            border: Border.all(color: isDark ? const Color(0xFF334155) : const Color(0xFFE8EEF3)),
+            border: Border.all(
+              color: isDark ? const Color(0xFF334155) : const Color(0xFFE8EEF3),
+            ),
           ),
           child: Theme(
             data: Theme.of(context).copyWith(dividerColor: Colors.transparent),
             child: ExpansionTile(
               initiallyExpanded: day == 'dushanba',
-              tilePadding: const EdgeInsets.symmetric(horizontal: 14, vertical: 0),
-              leading: const Icon(Icons.restaurant_menu_rounded, size: 18, color: XonaDoshColors.emerald),
+              tilePadding: const EdgeInsets.symmetric(
+                horizontal: 14,
+                vertical: 0,
+              ),
+              leading: const Icon(
+                Icons.restaurant_menu_rounded,
+                size: 18,
+                color: XonaDoshColors.emerald,
+              ),
               title: Text(
                 _getLocalizedDayName(day, context.l10n),
-                style: const TextStyle(fontWeight: FontWeight.w800, fontSize: 14),
+                style: const TextStyle(
+                  fontWeight: FontWeight.w800,
+                  fontSize: 14,
+                ),
               ),
               children: [
                 Padding(
@@ -517,12 +723,17 @@ class _XonadoshColivingTabState extends ConsumerState<XonadoshColivingTab> {
                         margin: const EdgeInsets.only(bottom: 6),
                         padding: const EdgeInsets.all(10),
                         decoration: BoxDecoration(
-                          color: isDark ? const Color(0xFF0F172A) : const Color(0xFFF8FAFC),
+                          color: isDark
+                              ? const Color(0xFF0F172A)
+                              : const Color(0xFFF8FAFC),
                           borderRadius: BorderRadius.circular(12),
                         ),
                         child: Row(
                           children: [
-                            Text(mealIcon, style: const TextStyle(fontSize: 18)),
+                            Text(
+                              mealIcon,
+                              style: const TextStyle(fontSize: 18),
+                            ),
                             const SizedBox(width: 8),
                             Expanded(
                               child: Column(
@@ -530,22 +741,43 @@ class _XonadoshColivingTabState extends ConsumerState<XonadoshColivingTab> {
                                 children: [
                                   Text(
                                     mealLabel,
-                                    style: const TextStyle(fontSize: 10, fontWeight: FontWeight.w700, color: Colors.grey),
+                                    style: const TextStyle(
+                                      fontSize: 10,
+                                      fontWeight: FontWeight.w700,
+                                      color: Colors.grey,
+                                    ),
                                   ),
                                   Text(
                                     plan.recipeName,
-                                    style: const TextStyle(fontWeight: FontWeight.w700, fontSize: 13),
+                                    style: const TextStyle(
+                                      fontWeight: FontWeight.w700,
+                                      fontSize: 13,
+                                    ),
                                   ),
                                   Text(
                                     'Oshpaz: ${plan.cookName} • ${plan.prepSchedule}',
-                                    style: TextStyle(fontSize: 11, color: isDark ? Colors.grey[400] : Colors.grey[600]),
+                                    style: TextStyle(
+                                      fontSize: 11,
+                                      color: isDark
+                                          ? Colors.grey[400]
+                                          : Colors.grey[600],
+                                    ),
                                   ),
                                 ],
                               ),
                             ),
                             IconButton(
-                              icon: const Icon(Icons.edit_note_rounded, size: 20, color: XonaDoshColors.emerald),
-                              onPressed: () => _showRecipePickerSheet(context, day, mealTime, plan.recipeName),
+                              icon: const Icon(
+                                Icons.edit_note_rounded,
+                                size: 20,
+                                color: XonaDoshColors.emerald,
+                              ),
+                              onPressed: () => _showRecipePickerSheet(
+                                context,
+                                day,
+                                mealTime,
+                                plan.recipeName,
+                              ),
                             ),
                           ],
                         ),
@@ -569,43 +801,68 @@ class _XonadoshColivingTabState extends ConsumerState<XonadoshColivingTab> {
     final roommateCount = ref.watch(xonadoshRoommateCountProvider);
 
     return groceryAsync.when(
-      loading: () => const Center(child: CircularProgressIndicator(color: XonaDoshColors.emerald)),
-      error: (err, _) => Center(child: Text(context.l10n.xonadoshErrGeneric('$err'))),
+      loading: () => const Center(
+        child: CircularProgressIndicator(color: XonaDoshColors.emerald),
+      ),
+      error: (err, _) =>
+          Center(child: Text(context.l10n.xonadoshErrGeneric('$err'))),
       data: (calc) {
-        if (calc == null) return Center(child: Text(context.l10n.xonadoshCalcFailed));
+        if (calc == null) {
+          return Center(child: Text(context.l10n.xonadoshCalcFailed));
+        }
 
         final bread = calc.breadBreakdown;
 
         return RefreshIndicator(
           color: XonaDoshColors.emerald,
-          onRefresh: () async => ref.refresh(xonadoshGroceryCalculationProvider),
+          onRefresh: () async =>
+              ref.refresh(xonadoshGroceryCalculationProvider),
           child: ListView(
-            physics: const AlwaysScrollableScrollPhysics(parent: BouncingScrollPhysics()),
+            physics: const AlwaysScrollableScrollPhysics(
+              parent: BouncingScrollPhysics(),
+            ),
             padding: const EdgeInsets.fromLTRB(16, 8, 16, 80),
             children: [
               // 1. Roommates Count Stepper
               Container(
-                padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 10),
+                padding: const EdgeInsets.symmetric(
+                  horizontal: 16,
+                  vertical: 10,
+                ),
                 decoration: BoxDecoration(
                   color: isDark ? const Color(0xFF1E293B) : Colors.white,
                   borderRadius: BorderRadius.circular(16),
-                  border: Border.all(color: isDark ? const Color(0xFF334155) : const Color(0xFFE8EEF3)),
+                  border: Border.all(
+                    color: isDark
+                        ? const Color(0xFF334155)
+                        : const Color(0xFFE8EEF3),
+                  ),
                 ),
                 child: Row(
                   children: [
-                    const Icon(Icons.group_rounded, color: XonaDoshColors.emerald),
+                    const Icon(
+                      Icons.group_rounded,
+                      color: XonaDoshColors.emerald,
+                    ),
                     const SizedBox(width: 10),
                     Expanded(
                       child: Text(
                         context.l10n.xonadoshRoommatesCountLabel,
-                        style: const TextStyle(fontWeight: FontWeight.w700, fontSize: 13),
+                        style: const TextStyle(
+                          fontWeight: FontWeight.w700,
+                          fontSize: 13,
+                        ),
                       ),
                     ),
                     IconButton.filledTonal(
                       onPressed: roommateCount > 1
                           ? () {
-                              ref.read(xonadoshRoommateCountProvider.notifier).state--;
-                              ref.invalidate(xonadoshGroceryCalculationProvider);
+                              ref
+                                  .read(xonadoshRoommateCountProvider.notifier)
+                                  .state--;
+                              ref.invalidate(
+                                xonadoshGroceryCalculationProvider,
+                              );
                             }
                           : null,
                       icon: const Icon(Icons.remove_rounded, size: 16),
@@ -615,14 +872,21 @@ class _XonadoshColivingTabState extends ConsumerState<XonadoshColivingTab> {
                       padding: const EdgeInsets.symmetric(horizontal: 8),
                       child: Text(
                         context.l10n.xonadoshPeopleCount(roommateCount),
-                        style: const TextStyle(fontWeight: FontWeight.w900, fontSize: 15),
+                        style: const TextStyle(
+                          fontWeight: FontWeight.w900,
+                          fontSize: 15,
+                        ),
                       ),
                     ),
                     IconButton.filledTonal(
                       onPressed: roommateCount < 10
                           ? () {
-                              ref.read(xonadoshRoommateCountProvider.notifier).state++;
-                              ref.invalidate(xonadoshGroceryCalculationProvider);
+                              ref
+                                  .read(xonadoshRoommateCountProvider.notifier)
+                                  .state++;
+                              ref.invalidate(
+                                xonadoshGroceryCalculationProvider,
+                              );
                             }
                           : null,
                       icon: const Icon(Icons.add_rounded, size: 16),
@@ -640,7 +904,9 @@ class _XonadoshColivingTabState extends ConsumerState<XonadoshColivingTab> {
                   color: isDark ? const Color(0xFF1E293B) : Colors.white,
                   borderRadius: BorderRadius.circular(14),
                   border: Border.all(
-                    color: isDark ? const Color(0xFF334155) : const Color(0xFFE2E8F0),
+                    color: isDark
+                        ? const Color(0xFF334155)
+                        : const Color(0xFFE2E8F0),
                   ),
                 ),
                 child: Column(
@@ -655,7 +921,9 @@ class _XonadoshColivingTabState extends ConsumerState<XonadoshColivingTab> {
                             Text(
                               context.l10n.xonadoshWeeklyGrocerySummary,
                               style: TextStyle(
-                                color: isDark ? const Color(0xFF94A3B8) : const Color(0xFF64748B),
+                                color: isDark
+                                    ? const Color(0xFF94A3B8)
+                                    : const Color(0xFF64748B),
                                 fontSize: 12,
                                 fontWeight: FontWeight.w600,
                               ),
@@ -663,7 +931,9 @@ class _XonadoshColivingTabState extends ConsumerState<XonadoshColivingTab> {
                             Text(
                               '${context.l10n.xonadosh21Meals7Days} ($roommateCount kishi)',
                               style: TextStyle(
-                                color: isDark ? const Color(0xFF64748B) : const Color(0xFF94A3B8),
+                                color: isDark
+                                    ? const Color(0xFF64748B)
+                                    : const Color(0xFF94A3B8),
                                 fontSize: 11,
                               ),
                             ),
@@ -672,7 +942,9 @@ class _XonadoshColivingTabState extends ConsumerState<XonadoshColivingTab> {
                         Text(
                           '${_formatMoney(calc.totalCostUzs.toDouble())} so‘m',
                           style: TextStyle(
-                            color: isDark ? Colors.white : const Color(0xFF0F172A),
+                            color: isDark
+                                ? Colors.white
+                                : const Color(0xFF0F172A),
                             fontWeight: FontWeight.w800,
                             fontSize: 17,
                           ),
@@ -680,7 +952,12 @@ class _XonadoshColivingTabState extends ConsumerState<XonadoshColivingTab> {
                       ],
                     ),
                     const SizedBox(height: 12),
-                    Divider(color: isDark ? const Color(0xFF334155) : const Color(0xFFE2E8F0), height: 1),
+                    Divider(
+                      color: isDark
+                          ? const Color(0xFF334155)
+                          : const Color(0xFFE2E8F0),
+                      height: 1,
+                    ),
                     const SizedBox(height: 12),
                     Row(
                       children: [
@@ -705,20 +982,31 @@ class _XonadoshColivingTabState extends ConsumerState<XonadoshColivingTab> {
                     ),
                     const SizedBox(height: 10),
                     Container(
-                      padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 6),
+                      padding: const EdgeInsets.symmetric(
+                        horizontal: 10,
+                        vertical: 6,
+                      ),
                       decoration: BoxDecoration(
-                        color: isDark ? const Color(0xFF0F172A) : const Color(0xFFF1F5F9),
+                        color: isDark
+                            ? const Color(0xFF0F172A)
+                            : const Color(0xFFF1F5F9),
                         borderRadius: BorderRadius.circular(8),
                       ),
                       child: Row(
                         children: [
-                          const Icon(Icons.storefront_rounded, size: 14, color: XonaDoshColors.primary),
+                          const Icon(
+                            Icons.storefront_rounded,
+                            size: 14,
+                            color: XonaDoshColors.primary,
+                          ),
                           const SizedBox(width: 6),
                           Expanded(
                             child: Text(
                               '📍 ${calc.cheapestMarket}',
                               style: TextStyle(
-                                color: isDark ? const Color(0xFFCBD5E1) : const Color(0xFF334155),
+                                color: isDark
+                                    ? const Color(0xFFCBD5E1)
+                                    : const Color(0xFF334155),
                                 fontSize: 11,
                                 fontWeight: FontWeight.w600,
                               ),
@@ -742,14 +1030,20 @@ class _XonadoshColivingTabState extends ConsumerState<XonadoshColivingTab> {
                   decoration: BoxDecoration(
                     color: const Color(0xFFD97706).withValues(alpha: 0.08),
                     borderRadius: BorderRadius.circular(12),
-                    border: Border.all(color: const Color(0xFFD97706).withValues(alpha: 0.2)),
+                    border: Border.all(
+                      color: const Color(0xFFD97706).withValues(alpha: 0.2),
+                    ),
                   ),
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
                       Row(
                         children: [
-                          const Icon(Icons.bakery_dining_rounded, size: 18, color: Color(0xFFD97706)),
+                          const Icon(
+                            Icons.bakery_dining_rounded,
+                            size: 18,
+                            color: Color(0xFFD97706),
+                          ),
                           const SizedBox(width: 6),
                           Text(
                             context.l10n.xonadoshBreadCalcTitle,
@@ -766,7 +1060,9 @@ class _XonadoshColivingTabState extends ConsumerState<XonadoshColivingTab> {
                         '🍞 Qolipli buxanka (ertalab/kunduzi): ${bread['total_buxanka'] ?? bread['breakfast_lunch_buxanka'] ?? 0} dona',
                         style: TextStyle(
                           fontSize: 12,
-                          color: isDark ? Colors.grey[300] : const Color(0xFF451A03),
+                          color: isDark
+                              ? Colors.grey[300]
+                              : const Color(0xFF451A03),
                         ),
                       ),
                       const SizedBox(height: 2),
@@ -774,7 +1070,9 @@ class _XonadoshColivingTabState extends ConsumerState<XonadoshColivingTab> {
                         '🫓 Tandir patir / Obi non (kechki ovqat): ${bread['total_patir'] ?? bread['dinner_patir'] ?? 0} dona',
                         style: TextStyle(
                           fontSize: 12,
-                          color: isDark ? Colors.grey[300] : const Color(0xFF451A03),
+                          color: isDark
+                              ? Colors.grey[300]
+                              : const Color(0xFF451A03),
                         ),
                       ),
                       const SizedBox(height: 4),
@@ -798,7 +1096,10 @@ class _XonadoshColivingTabState extends ConsumerState<XonadoshColivingTab> {
                 children: [
                   Text(
                     context.l10n.xonadoshGroceryListCount(calc.items.length),
-                    style: const TextStyle(fontWeight: FontWeight.w800, fontSize: 14),
+                    style: const TextStyle(
+                      fontWeight: FontWeight.w800,
+                      fontSize: 14,
+                    ),
                   ),
                   TextButton(
                     onPressed: () {
@@ -810,8 +1111,13 @@ class _XonadoshColivingTabState extends ConsumerState<XonadoshColivingTab> {
                       });
                     },
                     child: Text(
-                      calc.items.every((it) => it.isBought) ? context.l10n.commonClear : context.l10n.xonadoshAllBought,
-                      style: const TextStyle(fontSize: 12, fontWeight: FontWeight.w700),
+                      calc.items.every((it) => it.isBought)
+                          ? context.l10n.commonClear
+                          : context.l10n.xonadoshAllBought,
+                      style: const TextStyle(
+                        fontSize: 12,
+                        fontWeight: FontWeight.w700,
+                      ),
                     ),
                   ),
                 ],
@@ -819,116 +1125,179 @@ class _XonadoshColivingTabState extends ConsumerState<XonadoshColivingTab> {
               const SizedBox(height: 6),
 
               // 5. Expandable Item Cards
-              ...calc.items.map((it) => Container(
-                margin: const EdgeInsets.only(bottom: 8),
-                child: Material(
-                  color: isDark ? const Color(0xFF1E293B) : Colors.white,
-                  borderRadius: BorderRadius.circular(14),
-                  clipBehavior: Clip.antiAlias,
-                  child: Container(
-                    decoration: BoxDecoration(
-                      borderRadius: BorderRadius.circular(14),
-                      border: Border.all(color: isDark ? const Color(0xFF334155) : const Color(0xFFE8EEF3)),
-                    ),
-                    child: Theme(
-                      data: Theme.of(context).copyWith(dividerColor: Colors.transparent),
-                      child: ExpansionTile(
-                        tilePadding: const EdgeInsets.symmetric(horizontal: 10, vertical: 0),
-                        leading: Checkbox(
-                          value: it.isBought,
-                          activeColor: XonaDoshColors.emerald,
-                          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(4)),
-                          onChanged: (val) => setState(() => it.isBought = val ?? false),
+              ...calc.items.map(
+                (it) => Container(
+                  margin: const EdgeInsets.only(bottom: 8),
+                  child: Material(
+                    color: isDark ? const Color(0xFF1E293B) : Colors.white,
+                    borderRadius: BorderRadius.circular(14),
+                    clipBehavior: Clip.antiAlias,
+                    child: Container(
+                      decoration: BoxDecoration(
+                        borderRadius: BorderRadius.circular(14),
+                        border: Border.all(
+                          color: isDark
+                              ? const Color(0xFF334155)
+                              : const Color(0xFFE8EEF3),
                         ),
-                        title: Text(
-                          it.nameUz,
-                          style: TextStyle(
-                            fontWeight: FontWeight.w700,
-                            fontSize: 13,
-                            decoration: it.isBought ? TextDecoration.lineThrough : null,
-                            color: it.isBought ? Colors.grey : null,
+                      ),
+                      child: Theme(
+                        data: Theme.of(
+                          context,
+                        ).copyWith(dividerColor: Colors.transparent),
+                        child: ExpansionTile(
+                          tilePadding: const EdgeInsets.symmetric(
+                            horizontal: 10,
+                            vertical: 0,
                           ),
-                        ),
-                        subtitle: Text(
-                          '${it.quantity} ${it.unit}  •  ~${_formatMoney(it.unitPriceUzs)} so‘m/${it.unit}',
-                          style: TextStyle(fontSize: 11, color: isDark ? Colors.grey[400] : Colors.grey[600]),
-                        ),
-                        trailing: Text(
-                          '${_formatMoney(it.totalPriceUzs)} so‘m',
-                          style: TextStyle(
-                            fontWeight: FontWeight.w800,
-                            fontSize: 12,
-                            color: it.isBought ? Colors.grey : XonaDoshColors.emeraldDark,
+                          leading: Checkbox(
+                            value: it.isBought,
+                            activeColor: XonaDoshColors.emerald,
+                            shape: RoundedRectangleBorder(
+                              borderRadius: BorderRadius.circular(4),
+                            ),
+                            onChanged: (val) =>
+                                setState(() => it.isBought = val ?? false),
                           ),
-                        ),
-                        children: [
-                          Padding(
-                            padding: const EdgeInsets.fromLTRB(16, 0, 16, 12),
-                            child: Column(
-                              crossAxisAlignment: CrossAxisAlignment.start,
-                              children: [
-                                if (it.cheapestSource.isNotEmpty) ...[
-                                  Row(
-                                    crossAxisAlignment: CrossAxisAlignment.start,
-                                    children: [
-                                      const Icon(Icons.storefront_rounded, size: 14, color: XonaDoshColors.emerald),
-                                      const SizedBox(width: 5),
-                                      Expanded(
-                                        child: Text(
-                                          'Eng arzon manba: ${it.cheapestSource}',
-                                          style: const TextStyle(fontSize: 11, fontWeight: FontWeight.w700, color: XonaDoshColors.emeraldDark),
-                                        ),
-                                      ),
-                                    ],
-                                  ),
-                                  const SizedBox(height: 4),
-                                ],
-                                if (it.buyingTips.isNotEmpty) ...[
-                                  Row(
-                                    crossAxisAlignment: CrossAxisAlignment.start,
-                                    children: [
-                                      const Icon(Icons.lightbulb_outline_rounded, size: 14, color: Color(0xFFF59E0B)),
-                                      const SizedBox(width: 5),
-                                      Expanded(
-                                        child: Text(
-                                          it.buyingTips,
-                                          style: const TextStyle(fontSize: 11, color: Color(0xFFB45309)),
-                                        ),
-                                      ),
-                                    ],
-                                  ),
-                                  const SizedBox(height: 4),
-                                ],
-                                if (it.minPriceUzs > 0 && it.maxPriceUzs > 0) ...[
-                                  Text(
-                                    'Bozor narxlari oralig‘i: ${_formatMoney(it.minPriceUzs)} – ${_formatMoney(it.maxPriceUzs)} so‘m/${it.unit}',
-                                    style: TextStyle(fontSize: 11, color: isDark ? Colors.grey[400] : Colors.grey[600]),
-                                  ),
-                                  const SizedBox(height: 4),
-                                ],
-                                if (it.usedForMeals.isNotEmpty) ...[
-                                  Wrap(
-                                    spacing: 4,
-                                    runSpacing: 4,
-                                    children: it.usedForMeals.map((m) => Container(
-                                      padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 2),
-                                      decoration: BoxDecoration(
-                                        color: isDark ? const Color(0xFF0F172A) : const Color(0xFFF1F5F9),
-                                        borderRadius: BorderRadius.circular(6),
-                                      ),
-                                      child: Text(m, style: const TextStyle(fontSize: 10, fontWeight: FontWeight.w600)),
-                                    )).toList(),
-                                  ),
-                                ],
-                              ],
+                          title: Text(
+                            it.nameUz,
+                            style: TextStyle(
+                              fontWeight: FontWeight.w700,
+                              fontSize: 13,
+                              decoration: it.isBought
+                                  ? TextDecoration.lineThrough
+                                  : null,
+                              color: it.isBought ? Colors.grey : null,
                             ),
                           ),
-                        ],
+                          subtitle: Text(
+                            '${it.quantity} ${it.unit}  •  ~${_formatMoney(it.unitPriceUzs)} so‘m/${it.unit}',
+                            style: TextStyle(
+                              fontSize: 11,
+                              color: isDark
+                                  ? Colors.grey[400]
+                                  : Colors.grey[600],
+                            ),
+                          ),
+                          trailing: Text(
+                            '${_formatMoney(it.totalPriceUzs)} so‘m',
+                            style: TextStyle(
+                              fontWeight: FontWeight.w800,
+                              fontSize: 12,
+                              color: it.isBought
+                                  ? Colors.grey
+                                  : XonaDoshColors.emeraldDark,
+                            ),
+                          ),
+                          children: [
+                            Padding(
+                              padding: const EdgeInsets.fromLTRB(16, 0, 16, 12),
+                              child: Column(
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: [
+                                  if (it.cheapestSource.isNotEmpty) ...[
+                                    Row(
+                                      crossAxisAlignment:
+                                          CrossAxisAlignment.start,
+                                      children: [
+                                        const Icon(
+                                          Icons.storefront_rounded,
+                                          size: 14,
+                                          color: XonaDoshColors.emerald,
+                                        ),
+                                        const SizedBox(width: 5),
+                                        Expanded(
+                                          child: Text(
+                                            'Eng arzon manba: ${it.cheapestSource}',
+                                            style: const TextStyle(
+                                              fontSize: 11,
+                                              fontWeight: FontWeight.w700,
+                                              color: XonaDoshColors.emeraldDark,
+                                            ),
+                                          ),
+                                        ),
+                                      ],
+                                    ),
+                                    const SizedBox(height: 4),
+                                  ],
+                                  if (it.buyingTips.isNotEmpty) ...[
+                                    Row(
+                                      crossAxisAlignment:
+                                          CrossAxisAlignment.start,
+                                      children: [
+                                        const Icon(
+                                          Icons.lightbulb_outline_rounded,
+                                          size: 14,
+                                          color: Color(0xFFF59E0B),
+                                        ),
+                                        const SizedBox(width: 5),
+                                        Expanded(
+                                          child: Text(
+                                            it.buyingTips,
+                                            style: const TextStyle(
+                                              fontSize: 11,
+                                              color: Color(0xFFB45309),
+                                            ),
+                                          ),
+                                        ),
+                                      ],
+                                    ),
+                                    const SizedBox(height: 4),
+                                  ],
+                                  if (it.minPriceUzs > 0 &&
+                                      it.maxPriceUzs > 0) ...[
+                                    Text(
+                                      'Bozor narxlari oralig‘i: ${_formatMoney(it.minPriceUzs)} – ${_formatMoney(it.maxPriceUzs)} so‘m/${it.unit}',
+                                      style: TextStyle(
+                                        fontSize: 11,
+                                        color: isDark
+                                            ? Colors.grey[400]
+                                            : Colors.grey[600],
+                                      ),
+                                    ),
+                                    const SizedBox(height: 4),
+                                  ],
+                                  if (it.usedForMeals.isNotEmpty) ...[
+                                    Wrap(
+                                      spacing: 4,
+                                      runSpacing: 4,
+                                      children: it.usedForMeals
+                                          .map(
+                                            (m) => Container(
+                                              padding:
+                                                  const EdgeInsets.symmetric(
+                                                    horizontal: 6,
+                                                    vertical: 2,
+                                                  ),
+                                              decoration: BoxDecoration(
+                                                color: isDark
+                                                    ? const Color(0xFF0F172A)
+                                                    : const Color(0xFFF1F5F9),
+                                                borderRadius:
+                                                    BorderRadius.circular(6),
+                                              ),
+                                              child: Text(
+                                                m,
+                                                style: const TextStyle(
+                                                  fontSize: 10,
+                                                  fontWeight: FontWeight.w600,
+                                                ),
+                                              ),
+                                            ),
+                                          )
+                                          .toList(),
+                                    ),
+                                  ],
+                                ],
+                              ),
+                            ),
+                          ],
+                        ),
                       ),
                     ),
                   ),
                 ),
-              )),
+              ),
             ],
           ),
         );
@@ -943,8 +1312,11 @@ class _XonadoshColivingTabState extends ConsumerState<XonadoshColivingTab> {
     final financesAsync = ref.watch(xonadoshFinancesProvider);
 
     return financesAsync.when(
-      loading: () => const Center(child: CircularProgressIndicator(color: XonaDoshColors.emerald)),
-      error: (err, _) => Center(child: Text(context.l10n.xonadoshErrGeneric('$err'))),
+      loading: () => const Center(
+        child: CircularProgressIndicator(color: XonaDoshColors.emerald),
+      ),
+      error: (err, _) =>
+          Center(child: Text(context.l10n.xonadoshErrGeneric('$err'))),
       data: (data) {
         final allItems = [
           ...data.rentItems,
@@ -968,7 +1340,9 @@ class _XonadoshColivingTabState extends ConsumerState<XonadoshColivingTab> {
               color: XonaDoshColors.emerald,
               onRefresh: () async => ref.refresh(xonadoshFinancesProvider),
               child: ListView(
-                physics: const AlwaysScrollableScrollPhysics(parent: BouncingScrollPhysics()),
+                physics: const AlwaysScrollableScrollPhysics(
+                  parent: BouncingScrollPhysics(),
+                ),
                 padding: const EdgeInsets.fromLTRB(16, 8, 16, 100),
                 children: [
                   // Compact summary — numbers first, almost no prose
@@ -978,7 +1352,9 @@ class _XonadoshColivingTabState extends ConsumerState<XonadoshColivingTab> {
                       color: isDark ? const Color(0xFF1E293B) : Colors.white,
                       borderRadius: BorderRadius.circular(14),
                       border: Border.all(
-                        color: isDark ? const Color(0xFF334155) : const Color(0xFFE2E8F0),
+                        color: isDark
+                            ? const Color(0xFF334155)
+                            : const Color(0xFFE2E8F0),
                       ),
                     ),
                     child: Column(
@@ -994,7 +1370,13 @@ class _XonadoshColivingTabState extends ConsumerState<XonadoshColivingTab> {
                                 isDark,
                               ),
                             ),
-                            Container(width: 1, height: 36, color: isDark ? const Color(0xFF334155) : const Color(0xFFE2E8F0)),
+                            Container(
+                              width: 1,
+                              height: 36,
+                              color: isDark
+                                  ? const Color(0xFF334155)
+                                  : const Color(0xFFE2E8F0),
+                            ),
                             Expanded(
                               child: _financeStat(
                                 Icons.schedule_rounded,
@@ -1004,7 +1386,13 @@ class _XonadoshColivingTabState extends ConsumerState<XonadoshColivingTab> {
                                 isDark,
                               ),
                             ),
-                            Container(width: 1, height: 36, color: isDark ? const Color(0xFF334155) : const Color(0xFFE2E8F0)),
+                            Container(
+                              width: 1,
+                              height: 36,
+                              color: isDark
+                                  ? const Color(0xFF334155)
+                                  : const Color(0xFFE2E8F0),
+                            ),
                             Expanded(
                               child: _financeStat(
                                 Icons.check_circle_outline_rounded,
@@ -1021,10 +1409,14 @@ class _XonadoshColivingTabState extends ConsumerState<XonadoshColivingTab> {
                           ClipRRect(
                             borderRadius: BorderRadius.circular(4),
                             child: LinearProgressIndicator(
-                              value: ((data.totalSpendUzs - data.totalPendingUzs) / data.totalSpendUzs)
-                                  .clamp(0.0, 1.0),
+                              value:
+                                  ((data.totalSpendUzs - data.totalPendingUzs) /
+                                          data.totalSpendUzs)
+                                      .clamp(0.0, 1.0),
                               minHeight: 6,
-                              backgroundColor: isDark ? const Color(0xFF0F172A) : const Color(0xFFF1F5F9),
+                              backgroundColor: isDark
+                                  ? const Color(0xFF0F172A)
+                                  : const Color(0xFFF1F5F9),
                               color: XonaDoshColors.primary,
                             ),
                           ),
@@ -1032,12 +1424,74 @@ class _XonadoshColivingTabState extends ConsumerState<XonadoshColivingTab> {
                           Text(
                             '${(((data.totalSpendUzs - data.totalPendingUzs) / data.totalSpendUzs) * 100).round()}% to‘langan',
                             style: TextStyle(
-                              color: isDark ? const Color(0xFF94A3B8) : const Color(0xFF64748B),
+                              color: isDark
+                                  ? const Color(0xFF94A3B8)
+                                  : const Color(0xFF64748B),
                               fontSize: 11,
                               fontWeight: FontWeight.w600,
                             ),
                           ),
                         ],
+                        const SizedBox(height: 12),
+                        Row(
+                          children: [
+                            Expanded(
+                              child: OutlinedButton.icon(
+                                onPressed: () =>
+                                    _shareTelegramReport(context, data),
+                                icon: const Icon(Icons.send_rounded, size: 16),
+                                label: const Text(
+                                  'Telegramga ulashish',
+                                  style: TextStyle(
+                                    fontSize: 12,
+                                    fontWeight: FontWeight.w700,
+                                  ),
+                                ),
+                                style: OutlinedButton.styleFrom(
+                                  foregroundColor: const Color(0xFF0284C7),
+                                  side: const BorderSide(
+                                    color: Color(0xFF0284C7),
+                                  ),
+                                  shape: RoundedRectangleBorder(
+                                    borderRadius: BorderRadius.circular(10),
+                                  ),
+                                  padding: const EdgeInsets.symmetric(
+                                    vertical: 8,
+                                    horizontal: 10,
+                                  ),
+                                ),
+                              ),
+                            ),
+                            const SizedBox(width: 8),
+                            OutlinedButton.icon(
+                              onPressed: () => _showQuickSplitDialog(context),
+                              icon: const Icon(
+                                Icons.calculate_rounded,
+                                size: 16,
+                              ),
+                              label: const Text(
+                                'Taqsimlash',
+                                style: TextStyle(
+                                  fontSize: 12,
+                                  fontWeight: FontWeight.w700,
+                                ),
+                              ),
+                              style: OutlinedButton.styleFrom(
+                                foregroundColor: XonaDoshColors.emerald,
+                                side: const BorderSide(
+                                  color: XonaDoshColors.emerald,
+                                ),
+                                shape: RoundedRectangleBorder(
+                                  borderRadius: BorderRadius.circular(10),
+                                ),
+                                padding: const EdgeInsets.symmetric(
+                                  vertical: 8,
+                                  horizontal: 10,
+                                ),
+                              ),
+                            ),
+                          ],
+                        ),
                       ],
                     ),
                   ),
@@ -1056,21 +1510,39 @@ class _XonadoshColivingTabState extends ConsumerState<XonadoshColivingTab> {
                             width: 168,
                             padding: const EdgeInsets.all(12),
                             decoration: BoxDecoration(
-                              color: isDark ? const Color(0xFF1E293B) : Colors.white,
+                              color: isDark
+                                  ? const Color(0xFF1E293B)
+                                  : Colors.white,
                               borderRadius: BorderRadius.circular(16),
-                              border: Border.all(color: const Color(0xFFF59E0B).withValues(alpha: 0.35)),
+                              border: Border.all(
+                                color: const Color(
+                                  0xFFF59E0B,
+                                ).withValues(alpha: 0.35),
+                              ),
                             ),
                             child: Column(
                               crossAxisAlignment: CrossAxisAlignment.start,
                               children: [
                                 Row(
                                   children: [
-                                    _avatarInitial(d.debtor, const Color(0xFFF59E0B)),
-                                    const Padding(
-                                      padding: EdgeInsets.symmetric(horizontal: 4),
-                                      child: Icon(Icons.arrow_forward_rounded, size: 14, color: Color(0xFFF59E0B)),
+                                    _avatarInitial(
+                                      d.debtor,
+                                      const Color(0xFFF59E0B),
                                     ),
-                                    _avatarInitial(d.creditor, XonaDoshColors.emerald),
+                                    const Padding(
+                                      padding: EdgeInsets.symmetric(
+                                        horizontal: 4,
+                                      ),
+                                      child: Icon(
+                                        Icons.arrow_forward_rounded,
+                                        size: 14,
+                                        color: Color(0xFFF59E0B),
+                                      ),
+                                    ),
+                                    _avatarInitial(
+                                      d.creditor,
+                                      XonaDoshColors.emerald,
+                                    ),
                                   ],
                                 ),
                                 const Spacer(),
@@ -1084,7 +1556,12 @@ class _XonadoshColivingTabState extends ConsumerState<XonadoshColivingTab> {
                                 ),
                                 Text(
                                   'so‘m',
-                                  style: TextStyle(fontSize: 10, color: isDark ? Colors.grey[400] : Colors.grey[600]),
+                                  style: TextStyle(
+                                    fontSize: 10,
+                                    color: isDark
+                                        ? Colors.grey[400]
+                                        : Colors.grey[600],
+                                  ),
                                 ),
                               ],
                             ),
@@ -1102,9 +1579,24 @@ class _XonadoshColivingTabState extends ConsumerState<XonadoshColivingTab> {
                       children: [
                         _financeChip('all', 'Hammasi', allItems.length, isDark),
                         _financeChip('due', 'Qarzda', dueCount, isDark),
-                        _financeChip('rent', 'Ijara', data.rentItems.length, isDark),
-                        _financeChip('utility', 'Kommunal', data.utilityItems.length, isDark),
-                        _financeChip('expense', 'Xarid', data.expenseItems.length, isDark),
+                        _financeChip(
+                          'rent',
+                          'Ijara',
+                          data.rentItems.length,
+                          isDark,
+                        ),
+                        _financeChip(
+                          'utility',
+                          'Kommunal',
+                          data.utilityItems.length,
+                          isDark,
+                        ),
+                        _financeChip(
+                          'expense',
+                          'Xarid',
+                          data.expenseItems.length,
+                          isDark,
+                        ),
                       ],
                     ),
                   ),
@@ -1117,14 +1609,26 @@ class _XonadoshColivingTabState extends ConsumerState<XonadoshColivingTab> {
                       alignment: Alignment.center,
                       child: Column(
                         children: [
-                          Icon(Icons.inbox_rounded, size: 40, color: Colors.grey[400]),
+                          Icon(
+                            Icons.inbox_rounded,
+                            size: 40,
+                            color: Colors.grey[400],
+                          ),
                           const SizedBox(height: 8),
-                          Text('Bo‘sh', style: TextStyle(color: Colors.grey[500], fontWeight: FontWeight.w700)),
+                          Text(
+                            'Bo‘sh',
+                            style: TextStyle(
+                              color: Colors.grey[500],
+                              fontWeight: FontWeight.w700,
+                            ),
+                          ),
                         ],
                       ),
                     )
                   else
-                    ...filtered.map((f) => _buildFinanceItemCard(context, f, isDark)),
+                    ...filtered.map(
+                      (f) => _buildFinanceItemCard(context, f, isDark),
+                    ),
                 ],
               ),
             ),
@@ -1136,7 +1640,10 @@ class _XonadoshColivingTabState extends ConsumerState<XonadoshColivingTab> {
                 backgroundColor: XonaDoshColors.emerald,
                 foregroundColor: Colors.white,
                 icon: const Icon(Icons.add_rounded),
-                label: const Text('To‘lov', style: TextStyle(fontWeight: FontWeight.w800)),
+                label: const Text(
+                  'To‘lov',
+                  style: TextStyle(fontWeight: FontWeight.w800),
+                ),
               ),
             ),
           ],
@@ -1145,7 +1652,13 @@ class _XonadoshColivingTabState extends ConsumerState<XonadoshColivingTab> {
     );
   }
 
-  Widget _financeStat(IconData icon, String value, String label, Color accent, bool isDark) {
+  Widget _financeStat(
+    IconData icon,
+    String value,
+    String label,
+    Color accent,
+    bool isDark,
+  ) {
     return Column(
       children: [
         Icon(icon, size: 18, color: accent),
@@ -1177,7 +1690,14 @@ class _XonadoshColivingTabState extends ConsumerState<XonadoshColivingTab> {
     return CircleAvatar(
       radius: 12,
       backgroundColor: color.withValues(alpha: 0.2),
-      child: Text(initial, style: TextStyle(fontSize: 11, fontWeight: FontWeight.w900, color: color)),
+      child: Text(
+        initial,
+        style: TextStyle(
+          fontSize: 11,
+          fontWeight: FontWeight.w900,
+          color: color,
+        ),
+      ),
     );
   }
 
@@ -1190,15 +1710,21 @@ class _XonadoshColivingTabState extends ConsumerState<XonadoshColivingTab> {
         showCheckmark: false,
         label: Text('$label · $count'),
         onSelected: (_) => setState(() => _financeFilter = key),
-        selectedColor: XonaDoshColors.emerald.withValues(alpha: isDark ? 0.25 : 0.15),
+        selectedColor: XonaDoshColors.emerald.withValues(
+          alpha: isDark ? 0.25 : 0.15,
+        ),
         backgroundColor: isDark ? const Color(0xFF1E293B) : Colors.white,
         side: BorderSide(
-          color: selected ? XonaDoshColors.emerald : (isDark ? const Color(0xFF334155) : const Color(0xFFE2E8F0)),
+          color: selected
+              ? XonaDoshColors.emerald
+              : (isDark ? const Color(0xFF334155) : const Color(0xFFE2E8F0)),
         ),
         labelStyle: TextStyle(
           fontSize: 12,
           fontWeight: FontWeight.w800,
-          color: selected ? XonaDoshColors.emeraldDark : (isDark ? Colors.white70 : const Color(0xFF334155)),
+          color: selected
+              ? XonaDoshColors.emeraldDark
+              : (isDark ? Colors.white70 : const Color(0xFF334155)),
         ),
         visualDensity: VisualDensity.compact,
         padding: const EdgeInsets.symmetric(horizontal: 4),
@@ -1224,7 +1750,11 @@ class _XonadoshColivingTabState extends ConsumerState<XonadoshColivingTab> {
     };
   }
 
-  Widget _buildFinanceItemCard(BuildContext context, XonadoshFinanceItem item, bool isDark) {
+  Widget _buildFinanceItemCard(
+    BuildContext context,
+    XonadoshFinanceItem item,
+    bool isDark,
+  ) {
     final paidRatio = item.amountUzs > 0
         ? (item.paidAmountUzs / item.amountUzs).clamp(0.0, 1.0)
         : 0.0;
@@ -1253,7 +1783,11 @@ class _XonadoshColivingTabState extends ConsumerState<XonadoshColivingTab> {
                         color: typeColor.withValues(alpha: 0.12),
                         borderRadius: BorderRadius.circular(12),
                       ),
-                      child: Icon(_financeTypeIcon(item.type), color: typeColor, size: 20),
+                      child: Icon(
+                        _financeTypeIcon(item.type),
+                        color: typeColor,
+                        size: 20,
+                      ),
                     ),
                     const SizedBox(width: 10),
                     Expanded(
@@ -1262,7 +1796,10 @@ class _XonadoshColivingTabState extends ConsumerState<XonadoshColivingTab> {
                         children: [
                           Text(
                             item.title,
-                            style: const TextStyle(fontWeight: FontWeight.w800, fontSize: 14),
+                            style: const TextStyle(
+                              fontWeight: FontWeight.w800,
+                              fontSize: 14,
+                            ),
                             maxLines: 1,
                             overflow: TextOverflow.ellipsis,
                           ),
@@ -1270,17 +1807,25 @@ class _XonadoshColivingTabState extends ConsumerState<XonadoshColivingTab> {
                           Row(
                             children: [
                               Icon(
-                                item.isSettled ? Icons.check_circle_rounded : Icons.timelapse_rounded,
+                                item.isSettled
+                                    ? Icons.check_circle_rounded
+                                    : Icons.timelapse_rounded,
                                 size: 13,
-                                color: item.isSettled ? XonaDoshColors.emerald : const Color(0xFFF59E0B),
+                                color: item.isSettled
+                                    ? XonaDoshColors.emerald
+                                    : const Color(0xFFF59E0B),
                               ),
                               const SizedBox(width: 4),
                               Text(
-                                item.isSettled ? 'Yopildi' : '${unpaid.length} kishi qarzdor',
+                                item.isSettled
+                                    ? 'Yopildi'
+                                    : '${unpaid.length} kishi qarzdor',
                                 style: TextStyle(
                                   fontSize: 11,
                                   fontWeight: FontWeight.w700,
-                                  color: item.isSettled ? XonaDoshColors.emerald : const Color(0xFFD97706),
+                                  color: item.isSettled
+                                      ? XonaDoshColors.emerald
+                                      : const Color(0xFFD97706),
                                 ),
                               ),
                             ],
@@ -1296,12 +1841,17 @@ class _XonadoshColivingTabState extends ConsumerState<XonadoshColivingTab> {
                           style: TextStyle(
                             fontWeight: FontWeight.w900,
                             fontSize: 14,
-                            color: isDark ? Colors.white : const Color(0xFF0F172A),
+                            color: isDark
+                                ? Colors.white
+                                : const Color(0xFF0F172A),
                           ),
                         ),
                         Text(
                           'so‘m',
-                          style: TextStyle(fontSize: 10, color: isDark ? Colors.grey[400] : Colors.grey[500]),
+                          style: TextStyle(
+                            fontSize: 10,
+                            color: isDark ? Colors.grey[400] : Colors.grey[500],
+                          ),
                         ),
                       ],
                     ),
@@ -1313,7 +1863,9 @@ class _XonadoshColivingTabState extends ConsumerState<XonadoshColivingTab> {
                   child: LinearProgressIndicator(
                     value: paidRatio,
                     minHeight: 6,
-                    backgroundColor: isDark ? const Color(0xFF0F172A) : const Color(0xFFE2E8F0),
+                    backgroundColor: isDark
+                        ? const Color(0xFF0F172A)
+                        : const Color(0xFFE2E8F0),
                     color: item.isSettled ? XonaDoshColors.emerald : typeColor,
                   ),
                 ),
@@ -1328,11 +1880,13 @@ class _XonadoshColivingTabState extends ConsumerState<XonadoshColivingTab> {
                           onTap: () async {
                             final messenger = ScaffoldMessenger.of(context);
                             final markingPaid = !s.isPaid;
-                            await ref.read(xonadoshRepositoryProvider).toggleFinancePaid(
-                              financeId: item.id,
-                              memberName: s.name,
-                              isPaid: markingPaid,
-                            );
+                            await ref
+                                .read(xonadoshRepositoryProvider)
+                                .toggleFinancePaid(
+                                  financeId: item.id,
+                                  memberName: s.name,
+                                  isPaid: markingPaid,
+                                );
                             if (!mounted) return;
                             messenger.showSnackBar(
                               SnackBar(
@@ -1349,25 +1903,40 @@ class _XonadoshColivingTabState extends ConsumerState<XonadoshColivingTab> {
                           },
                           child: AnimatedContainer(
                             duration: const Duration(milliseconds: 180),
-                            padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 5),
+                            padding: const EdgeInsets.symmetric(
+                              horizontal: 8,
+                              vertical: 5,
+                            ),
                             decoration: BoxDecoration(
                               color: s.isPaid
-                                  ? XonaDoshColors.emerald.withValues(alpha: 0.12)
-                                  : (isDark ? const Color(0xFF0F172A) : const Color(0xFFF8FAFC)),
+                                  ? XonaDoshColors.emerald.withValues(
+                                      alpha: 0.12,
+                                    )
+                                  : (isDark
+                                        ? const Color(0xFF0F172A)
+                                        : const Color(0xFFF8FAFC)),
                               borderRadius: BorderRadius.circular(20),
                               border: Border.all(
                                 color: s.isPaid
-                                    ? XonaDoshColors.emerald.withValues(alpha: 0.4)
-                                    : (isDark ? const Color(0xFF334155) : const Color(0xFFE2E8F0)),
+                                    ? XonaDoshColors.emerald.withValues(
+                                        alpha: 0.4,
+                                      )
+                                    : (isDark
+                                          ? const Color(0xFF334155)
+                                          : const Color(0xFFE2E8F0)),
                               ),
                             ),
                             child: Row(
                               mainAxisSize: MainAxisSize.min,
                               children: [
                                 Icon(
-                                  s.isPaid ? Icons.check_rounded : Icons.radio_button_unchecked_rounded,
+                                  s.isPaid
+                                      ? Icons.check_rounded
+                                      : Icons.radio_button_unchecked_rounded,
                                   size: 14,
-                                  color: s.isPaid ? XonaDoshColors.emerald : Colors.grey,
+                                  color: s.isPaid
+                                      ? XonaDoshColors.emerald
+                                      : Colors.grey,
                                 ),
                                 const SizedBox(width: 4),
                                 Text(
@@ -1377,8 +1946,12 @@ class _XonadoshColivingTabState extends ConsumerState<XonadoshColivingTab> {
                                     fontWeight: FontWeight.w800,
                                     color: s.isPaid
                                         ? XonaDoshColors.emeraldDark
-                                        : (isDark ? Colors.white70 : const Color(0xFF334155)),
-                                    decoration: s.isPaid ? TextDecoration.lineThrough : null,
+                                        : (isDark
+                                              ? Colors.white70
+                                              : const Color(0xFF334155)),
+                                    decoration: s.isPaid
+                                        ? TextDecoration.lineThrough
+                                        : null,
                                   ),
                                 ),
                               ],
@@ -1403,7 +1976,11 @@ class _XonadoshColivingTabState extends ConsumerState<XonadoshColivingTab> {
     );
   }
 
-  void _showFinanceDetailSheet(BuildContext context, XonadoshFinanceItem item, bool isDark) {
+  void _showFinanceDetailSheet(
+    BuildContext context,
+    XonadoshFinanceItem item,
+    bool isDark,
+  ) {
     final typeColor = _financeTypeColor(item.type);
     showModalBottomSheet(
       context: context,
@@ -1415,7 +1992,12 @@ class _XonadoshColivingTabState extends ConsumerState<XonadoshColivingTab> {
             color: isDark ? const Color(0xFF1E293B) : Colors.white,
             borderRadius: const BorderRadius.vertical(top: Radius.circular(24)),
           ),
-          padding: EdgeInsets.fromLTRB(20, 12, 20, 20 + MediaQuery.of(ctx).padding.bottom),
+          padding: EdgeInsets.fromLTRB(
+            20,
+            12,
+            20,
+            20 + MediaQuery.of(ctx).padding.bottom,
+          ),
           child: Column(
             mainAxisSize: MainAxisSize.min,
             crossAxisAlignment: CrossAxisAlignment.start,
@@ -1446,10 +2028,20 @@ class _XonadoshColivingTabState extends ConsumerState<XonadoshColivingTab> {
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
-                        Text(item.title, style: const TextStyle(fontWeight: FontWeight.w900, fontSize: 16)),
+                        Text(
+                          item.title,
+                          style: const TextStyle(
+                            fontWeight: FontWeight.w900,
+                            fontSize: 16,
+                          ),
+                        ),
                         Text(
                           '${_formatMoney(item.amountUzs.toDouble())} so‘m',
-                          style: TextStyle(fontWeight: FontWeight.w800, fontSize: 14, color: typeColor),
+                          style: TextStyle(
+                            fontWeight: FontWeight.w800,
+                            fontSize: 14,
+                            color: typeColor,
+                          ),
                         ),
                       ],
                     ),
@@ -1482,24 +2074,40 @@ class _XonadoshColivingTabState extends ConsumerState<XonadoshColivingTab> {
               ...item.splits.map((s) {
                 return Container(
                   margin: const EdgeInsets.only(bottom: 8),
-                  padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 10),
+                  padding: const EdgeInsets.symmetric(
+                    horizontal: 12,
+                    vertical: 10,
+                  ),
                   decoration: BoxDecoration(
-                    color: isDark ? const Color(0xFF0F172A) : const Color(0xFFF8FAFC),
+                    color: isDark
+                        ? const Color(0xFF0F172A)
+                        : const Color(0xFFF8FAFC),
                     borderRadius: BorderRadius.circular(14),
                   ),
                   child: Row(
                     children: [
                       _avatarInitial(
                         s.name,
-                        s.isPaid ? XonaDoshColors.emerald : const Color(0xFFF59E0B),
+                        s.isPaid
+                            ? XonaDoshColors.emerald
+                            : const Color(0xFFF59E0B),
                       ),
                       const SizedBox(width: 10),
                       Expanded(
-                        child: Text(s.name, style: const TextStyle(fontWeight: FontWeight.w800, fontSize: 14)),
+                        child: Text(
+                          s.name,
+                          style: const TextStyle(
+                            fontWeight: FontWeight.w800,
+                            fontSize: 14,
+                          ),
+                        ),
                       ),
                       Text(
                         _formatMoney(s.amountUzs.toDouble()),
-                        style: const TextStyle(fontWeight: FontWeight.w900, fontSize: 14),
+                        style: const TextStyle(
+                          fontWeight: FontWeight.w900,
+                          fontSize: 14,
+                        ),
                       ),
                       const SizedBox(width: 10),
                       FilledButton(
@@ -1510,22 +2118,30 @@ class _XonadoshColivingTabState extends ConsumerState<XonadoshColivingTab> {
                           foregroundColor: s.isPaid
                               ? (isDark ? Colors.white70 : Colors.black54)
                               : Colors.white,
-                          padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 0),
+                          padding: const EdgeInsets.symmetric(
+                            horizontal: 12,
+                            vertical: 0,
+                          ),
                           minimumSize: const Size(0, 34),
                           visualDensity: VisualDensity.compact,
                         ),
                         onPressed: () async {
-                          await ref.read(xonadoshRepositoryProvider).toggleFinancePaid(
-                            financeId: item.id,
-                            memberName: s.name,
-                            isPaid: !s.isPaid,
-                          );
+                          await ref
+                              .read(xonadoshRepositoryProvider)
+                              .toggleFinancePaid(
+                                financeId: item.id,
+                                memberName: s.name,
+                                isPaid: !s.isPaid,
+                              );
                           if (ctx.mounted) Navigator.pop(ctx);
                           ref.invalidate(xonadoshFinancesProvider);
                         },
                         child: Text(
                           s.isPaid ? 'Bekor' : 'To‘ladi',
-                          style: const TextStyle(fontWeight: FontWeight.w800, fontSize: 12),
+                          style: const TextStyle(
+                            fontWeight: FontWeight.w800,
+                            fontSize: 12,
+                          ),
                         ),
                       ),
                     ],
@@ -1551,7 +2167,10 @@ class _XonadoshColivingTabState extends ConsumerState<XonadoshColivingTab> {
         children: [
           Icon(icon, size: 14, color: XonaDoshColors.emerald),
           const SizedBox(width: 4),
-          Text(text, style: const TextStyle(fontSize: 12, fontWeight: FontWeight.w700)),
+          Text(
+            text,
+            style: const TextStyle(fontSize: 12, fontWeight: FontWeight.w700),
+          ),
         ],
       ),
     );
@@ -1564,8 +2183,11 @@ class _XonadoshColivingTabState extends ConsumerState<XonadoshColivingTab> {
     final pollsAsync = ref.watch(xonadoshPollsProvider);
 
     return pollsAsync.when(
-      loading: () => const Center(child: CircularProgressIndicator(color: XonaDoshColors.emerald)),
-      error: (err, _) => Center(child: Text(context.l10n.xonadoshErrGeneric('$err'))),
+      loading: () => const Center(
+        child: CircularProgressIndicator(color: XonaDoshColors.emerald),
+      ),
+      error: (err, _) =>
+          Center(child: Text(context.l10n.xonadoshErrGeneric('$err'))),
       data: (data) {
         return RefreshIndicator(
           color: XonaDoshColors.emerald,
@@ -1583,29 +2205,47 @@ class _XonadoshColivingTabState extends ConsumerState<XonadoshColivingTab> {
                         children: [
                           Text(
                             'Masalalar (${data.polls.length})',
-                            style: const TextStyle(fontWeight: FontWeight.w800, fontSize: 16),
+                            style: const TextStyle(
+                              fontWeight: FontWeight.w800,
+                              fontSize: 16,
+                            ),
                           ),
                           const SizedBox(width: 8),
                           Container(
-                            padding: const EdgeInsets.symmetric(horizontal: 7, vertical: 3),
+                            padding: const EdgeInsets.symmetric(
+                              horizontal: 7,
+                              vertical: 3,
+                            ),
                             decoration: BoxDecoration(
-                              color: isDark ? const Color(0xFF1E293B) : const Color(0xFFF1F5F9),
+                              color: isDark
+                                  ? const Color(0xFF1E293B)
+                                  : const Color(0xFFF1F5F9),
                               borderRadius: BorderRadius.circular(8),
                               border: Border.all(
-                                color: isDark ? const Color(0xFF334155) : const Color(0xFFE2E8F0),
+                                color: isDark
+                                    ? const Color(0xFF334155)
+                                    : const Color(0xFFE2E8F0),
                               ),
                             ),
                             child: Row(
                               mainAxisSize: MainAxisSize.min,
                               children: [
-                                Icon(Icons.lock_outline_rounded, size: 12, color: isDark ? Colors.grey[400] : Colors.grey[600]),
+                                Icon(
+                                  Icons.lock_outline_rounded,
+                                  size: 12,
+                                  color: isDark
+                                      ? Colors.grey[400]
+                                      : Colors.grey[600],
+                                ),
                                 const SizedBox(width: 4),
                                 Text(
                                   'Anonim',
                                   style: TextStyle(
                                     fontSize: 11,
                                     fontWeight: FontWeight.w600,
-                                    color: isDark ? Colors.grey[400] : Colors.grey[600],
+                                    color: isDark
+                                        ? Colors.grey[400]
+                                        : Colors.grey[600],
                                   ),
                                 ),
                               ],
@@ -1617,10 +2257,19 @@ class _XonadoshColivingTabState extends ConsumerState<XonadoshColivingTab> {
                     FilledButton.tonalIcon(
                       onPressed: () => _showCreatePollDialog(context),
                       icon: const Icon(Icons.add_rounded, size: 16),
-                      label: const Text('Yangi masala', style: TextStyle(fontSize: 12, fontWeight: FontWeight.w700)),
+                      label: const Text(
+                        'Yangi masala',
+                        style: TextStyle(
+                          fontSize: 12,
+                          fontWeight: FontWeight.w700,
+                        ),
+                      ),
                       style: FilledButton.styleFrom(
                         visualDensity: VisualDensity.compact,
-                        padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 4),
+                        padding: const EdgeInsets.symmetric(
+                          horizontal: 10,
+                          vertical: 4,
+                        ),
                       ),
                     ),
                   ],
@@ -1636,10 +2285,14 @@ class _XonadoshColivingTabState extends ConsumerState<XonadoshColivingTab> {
                     color: isDark ? const Color(0xFF1E293B) : Colors.white,
                     borderRadius: BorderRadius.circular(16),
                   ),
-                  child: const Center(child: Text('Hozircha o‘rtaga tashlangan masalalar yo‘q')),
+                  child: const Center(
+                    child: Text('Hozircha o‘rtaga tashlangan masalalar yo‘q'),
+                  ),
                 )
               else
-                ...data.polls.map((poll) => _buildPollCard(context, poll, isDark)),
+                ...data.polls.map(
+                  (poll) => _buildPollCard(context, poll, isDark),
+                ),
             ],
           ),
         );
@@ -1686,12 +2339,20 @@ class _XonadoshColivingTabState extends ConsumerState<XonadoshColivingTab> {
                 ),
                 child: Text(
                   statusText,
-                  style: TextStyle(color: statusBadgeColor, fontWeight: FontWeight.w800, fontSize: 11),
+                  style: TextStyle(
+                    color: statusBadgeColor,
+                    fontWeight: FontWeight.w800,
+                    fontSize: 11,
+                  ),
                 ),
               ),
               Text(
                 '${poll.totalVotes} ta ovoz',
-                style: TextStyle(fontSize: 11, color: isDark ? Colors.grey[400] : Colors.grey[600], fontWeight: FontWeight.w600),
+                style: TextStyle(
+                  fontSize: 11,
+                  color: isDark ? Colors.grey[400] : Colors.grey[600],
+                  fontWeight: FontWeight.w600,
+                ),
               ),
             ],
           ),
@@ -1704,7 +2365,10 @@ class _XonadoshColivingTabState extends ConsumerState<XonadoshColivingTab> {
             const SizedBox(height: 4),
             Text(
               poll.description,
-              style: TextStyle(fontSize: 12, color: isDark ? Colors.grey[300] : Colors.grey[700]),
+              style: TextStyle(
+                fontSize: 12,
+                color: isDark ? Colors.grey[300] : Colors.grey[700],
+              ),
             ),
           ],
           const SizedBox(height: 12),
@@ -1741,7 +2405,11 @@ class _XonadoshColivingTabState extends ConsumerState<XonadoshColivingTab> {
               Expanded(
                 child: Text(
                   '👍 ${poll.votesYes} (${poll.yesPercent}%)',
-                  style: const TextStyle(fontSize: 11, fontWeight: FontWeight.w700, color: XonaDoshColors.primary),
+                  style: const TextStyle(
+                    fontSize: 11,
+                    fontWeight: FontWeight.w700,
+                    color: XonaDoshColors.primary,
+                  ),
                   maxLines: 1,
                   overflow: TextOverflow.ellipsis,
                 ),
@@ -1750,7 +2418,11 @@ class _XonadoshColivingTabState extends ConsumerState<XonadoshColivingTab> {
                 child: Text(
                   '👎 ${poll.votesNo} (${poll.noPercent}%)',
                   textAlign: TextAlign.center,
-                  style: const TextStyle(fontSize: 11, fontWeight: FontWeight.w700, color: Color(0xFFDC2626)),
+                  style: const TextStyle(
+                    fontSize: 11,
+                    fontWeight: FontWeight.w700,
+                    color: Color(0xFFDC2626),
+                  ),
                   maxLines: 1,
                   overflow: TextOverflow.ellipsis,
                 ),
@@ -1759,7 +2431,10 @@ class _XonadoshColivingTabState extends ConsumerState<XonadoshColivingTab> {
                 child: Text(
                   '🤷 ${poll.votesNeutral}',
                   textAlign: TextAlign.end,
-                  style: TextStyle(fontSize: 11, color: isDark ? Colors.grey[400] : Colors.grey[600]),
+                  style: TextStyle(
+                    fontSize: 11,
+                    color: isDark ? Colors.grey[400] : Colors.grey[600],
+                  ),
                   maxLines: 1,
                   overflow: TextOverflow.ellipsis,
                 ),
@@ -1776,24 +2451,40 @@ class _XonadoshColivingTabState extends ConsumerState<XonadoshColivingTab> {
                 Expanded(
                   child: FilledButton.tonal(
                     style: FilledButton.styleFrom(
-                      backgroundColor: XonaDoshColors.primary.withValues(alpha: 0.15),
+                      backgroundColor: XonaDoshColors.primary.withValues(
+                        alpha: 0.15,
+                      ),
                       foregroundColor: XonaDoshColors.primaryDark,
                       padding: const EdgeInsets.symmetric(vertical: 6),
                     ),
                     onPressed: () => _submitVote(poll.id, 'yes'),
-                    child: const Text('👍 Rozi', style: TextStyle(fontSize: 12, fontWeight: FontWeight.w800)),
+                    child: const Text(
+                      '👍 Rozi',
+                      style: TextStyle(
+                        fontSize: 12,
+                        fontWeight: FontWeight.w800,
+                      ),
+                    ),
                   ),
                 ),
                 const SizedBox(width: 6),
                 Expanded(
                   child: FilledButton.tonal(
                     style: FilledButton.styleFrom(
-                      backgroundColor: const Color(0xFFEF4444).withValues(alpha: 0.15),
+                      backgroundColor: const Color(
+                        0xFFEF4444,
+                      ).withValues(alpha: 0.15),
                       foregroundColor: const Color(0xFFB91C1C),
                       padding: const EdgeInsets.symmetric(vertical: 6),
                     ),
                     onPressed: () => _submitVote(poll.id, 'no'),
-                    child: const Text('👎 Qarshi', style: TextStyle(fontSize: 12, fontWeight: FontWeight.w800)),
+                    child: const Text(
+                      '👎 Qarshi',
+                      style: TextStyle(
+                        fontSize: 12,
+                        fontWeight: FontWeight.w800,
+                      ),
+                    ),
                   ),
                 ),
                 const SizedBox(width: 6),
@@ -1805,7 +2496,10 @@ class _XonadoshColivingTabState extends ConsumerState<XonadoshColivingTab> {
                       padding: const EdgeInsets.symmetric(vertical: 6),
                     ),
                     onPressed: () => _submitVote(poll.id, 'neutral'),
-                    child: const Text('🤷‍♂️ Betaraf', style: TextStyle(fontSize: 11)),
+                    child: const Text(
+                      '🤷‍♂️ Betaraf',
+                      style: TextStyle(fontSize: 11),
+                    ),
                   ),
                 ),
               ],
@@ -1817,14 +2511,15 @@ class _XonadoshColivingTabState extends ConsumerState<XonadoshColivingTab> {
   }
 
   Future<void> _submitVote(int pollId, String vote) async {
-    final res = await ref.read(xonadoshRepositoryProvider).votePoll(
-      pollId: pollId,
-      vote: vote,
-    );
+    final res = await ref
+        .read(xonadoshRepositoryProvider)
+        .votePoll(pollId: pollId, vote: vote);
     if (mounted) {
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(
-          content: Text(res['message']?.toString() ?? 'Ovozingiz qabul qilindi!'),
+          content: Text(
+            res['message']?.toString() ?? 'Ovozingiz qabul qilindi!',
+          ),
           backgroundColor: XonaDoshColors.emeraldDark,
         ),
       );
@@ -1839,8 +2534,11 @@ class _XonadoshColivingTabState extends ConsumerState<XonadoshColivingTab> {
     final karmaAsync = ref.watch(xonadoshKarmaProvider);
 
     return karmaAsync.when(
-      loading: () => const Center(child: CircularProgressIndicator(color: XonaDoshColors.emerald)),
-      error: (err, _) => Center(child: Text(context.l10n.xonadoshErrGeneric('$err'))),
+      loading: () => const Center(
+        child: CircularProgressIndicator(color: XonaDoshColors.emerald),
+      ),
+      error: (err, _) =>
+          Center(child: Text(context.l10n.xonadoshErrGeneric('$err'))),
       data: (data) {
         return RefreshIndicator(
           color: XonaDoshColors.emerald,
@@ -1856,16 +2554,32 @@ class _XonadoshColivingTabState extends ConsumerState<XonadoshColivingTab> {
                     const Expanded(
                       child: Text(
                         'Reyting jadvali',
-                        style: TextStyle(fontWeight: FontWeight.w800, fontSize: 16),
+                        style: TextStyle(
+                          fontWeight: FontWeight.w800,
+                          fontSize: 16,
+                        ),
                       ),
                     ),
                     FilledButton.tonalIcon(
-                      onPressed: () => _showGiveKarmaDialog(context, data.roommates, data.availableBadges),
+                      onPressed: () => _showGiveKarmaDialog(
+                        context,
+                        data.roommates,
+                        data.availableBadges,
+                      ),
                       icon: const Icon(Icons.star_rounded, size: 16),
-                      label: const Text('Ball berish', style: TextStyle(fontSize: 12, fontWeight: FontWeight.w700)),
+                      label: const Text(
+                        'Ball berish',
+                        style: TextStyle(
+                          fontSize: 12,
+                          fontWeight: FontWeight.w700,
+                        ),
+                      ),
                       style: FilledButton.styleFrom(
                         visualDensity: VisualDensity.compact,
-                        padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 4),
+                        padding: const EdgeInsets.symmetric(
+                          horizontal: 10,
+                          vertical: 4,
+                        ),
                       ),
                     ),
                   ],
@@ -1894,7 +2608,9 @@ class _XonadoshColivingTabState extends ConsumerState<XonadoshColivingTab> {
                     border: Border.all(
                       color: idx == 0
                           ? const Color(0xFFF59E0B)
-                          : (isDark ? const Color(0xFF334155) : const Color(0xFFE8EEF3)),
+                          : (isDark
+                                ? const Color(0xFF334155)
+                                : const Color(0xFFE8EEF3)),
                       width: idx == 0 ? 1.5 : 1,
                     ),
                   ),
@@ -1909,28 +2625,52 @@ class _XonadoshColivingTabState extends ConsumerState<XonadoshColivingTab> {
                             child: Column(
                               crossAxisAlignment: CrossAxisAlignment.start,
                               children: [
-                                Text(member.name, style: const TextStyle(fontWeight: FontWeight.w800, fontSize: 14)),
+                                Text(
+                                  member.name,
+                                  style: const TextStyle(
+                                    fontWeight: FontWeight.w800,
+                                    fontSize: 14,
+                                  ),
+                                ),
                                 Text(
                                   '${member.badgesCount} ta nishon olingan',
-                                  style: TextStyle(fontSize: 11, color: isDark ? Colors.grey[400] : Colors.grey[600]),
+                                  style: TextStyle(
+                                    fontSize: 11,
+                                    color: isDark
+                                        ? Colors.grey[400]
+                                        : Colors.grey[600],
+                                  ),
                                 ),
                               ],
                             ),
                           ),
                           Container(
-                            padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 4),
+                            padding: const EdgeInsets.symmetric(
+                              horizontal: 10,
+                              vertical: 4,
+                            ),
                             decoration: BoxDecoration(
-                              color: const Color(0xFFF59E0B).withValues(alpha: 0.15),
+                              color: const Color(
+                                0xFFF59E0B,
+                              ).withValues(alpha: 0.15),
                               borderRadius: BorderRadius.circular(12),
                             ),
                             child: Row(
                               mainAxisSize: MainAxisSize.min,
                               children: [
-                                const Icon(Icons.star_rounded, size: 16, color: Color(0xFFD97706)),
+                                const Icon(
+                                  Icons.star_rounded,
+                                  size: 16,
+                                  color: Color(0xFFD97706),
+                                ),
                                 const SizedBox(width: 4),
                                 Text(
                                   '${member.totalPoints} ball',
-                                  style: const TextStyle(fontWeight: FontWeight.w900, fontSize: 13, color: Color(0xFFD97706)),
+                                  style: const TextStyle(
+                                    fontWeight: FontWeight.w900,
+                                    fontSize: 13,
+                                    color: Color(0xFFD97706),
+                                  ),
                                 ),
                               ],
                             ),
@@ -1942,17 +2682,29 @@ class _XonadoshColivingTabState extends ConsumerState<XonadoshColivingTab> {
                         Wrap(
                           spacing: 6,
                           runSpacing: 4,
-                          children: member.badgesSummary.map((b) => Container(
-                            padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 3),
-                            decoration: BoxDecoration(
-                              color: isDark ? const Color(0xFF0F172A) : const Color(0xFFF1F5F9),
-                              borderRadius: BorderRadius.circular(8),
-                            ),
-                            child: Text(
-                              '${b['name']} (${b['count']})',
-                              style: const TextStyle(fontSize: 10, fontWeight: FontWeight.w700),
-                            ),
-                          )).toList(),
+                          children: member.badgesSummary
+                              .map(
+                                (b) => Container(
+                                  padding: const EdgeInsets.symmetric(
+                                    horizontal: 8,
+                                    vertical: 3,
+                                  ),
+                                  decoration: BoxDecoration(
+                                    color: isDark
+                                        ? const Color(0xFF0F172A)
+                                        : const Color(0xFFF1F5F9),
+                                    borderRadius: BorderRadius.circular(8),
+                                  ),
+                                  child: Text(
+                                    '${b['name']} (${b['count']})',
+                                    style: const TextStyle(
+                                      fontSize: 10,
+                                      fontWeight: FontWeight.w700,
+                                    ),
+                                  ),
+                                ),
+                              )
+                              .toList(),
                         ),
                       ],
                       if (member.recentPraises.isNotEmpty) ...[
@@ -1961,7 +2713,11 @@ class _XonadoshColivingTabState extends ConsumerState<XonadoshColivingTab> {
                         const SizedBox(height: 6),
                         Text(
                           '💬 Oxirgi izoh: "${member.recentPraises.first.comment}" — ${member.recentPraises.first.fromName}',
-                          style: TextStyle(fontSize: 11, fontStyle: FontStyle.italic, color: isDark ? Colors.grey[300] : Colors.grey[700]),
+                          style: TextStyle(
+                            fontSize: 11,
+                            fontStyle: FontStyle.italic,
+                            color: isDark ? Colors.grey[300] : Colors.grey[700],
+                          ),
                         ),
                       ],
                     ],
@@ -1978,7 +2734,12 @@ class _XonadoshColivingTabState extends ConsumerState<XonadoshColivingTab> {
   // ==========================================
   // DIALOGS & ACTION SHEETS
   // ==========================================
-  Widget _buildSummaryTile(String label, String value, Color color, bool isDark) {
+  Widget _buildSummaryTile(
+    String label,
+    String value,
+    Color color,
+    bool isDark,
+  ) {
     return Container(
       padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 8),
       decoration: BoxDecoration(
@@ -2022,8 +2783,13 @@ class _XonadoshColivingTabState extends ConsumerState<XonadoshColivingTab> {
       context: context,
       builder: (ctx) => StatefulBuilder(
         builder: (ctx, setDialogState) => AlertDialog(
-          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
-          title: Text(context.l10n.xonadoshNewDuty, style: const TextStyle(fontWeight: FontWeight.w800)),
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(20),
+          ),
+          title: Text(
+            context.l10n.xonadoshNewDuty,
+            style: const TextStyle(fontWeight: FontWeight.w800),
+          ),
           content: Column(
             mainAxisSize: MainAxisSize.min,
             children: [
@@ -2037,22 +2803,48 @@ class _XonadoshColivingTabState extends ConsumerState<XonadoshColivingTab> {
               const SizedBox(height: 10),
               TextField(
                 controller: personCtrl,
-                decoration: InputDecoration(labelText: context.l10n.xonadoshDutyPersonInCharge),
+                decoration: InputDecoration(
+                  labelText: context.l10n.xonadoshDutyPersonInCharge,
+                ),
               ),
               const SizedBox(height: 10),
               DropdownButtonFormField<String>(
                 initialValue: day,
-                decoration: InputDecoration(labelText: context.l10n.xonadoshDutyDay),
+                decoration: InputDecoration(
+                  labelText: context.l10n.xonadoshDutyDay,
+                ),
                 items: [
-                  DropdownMenuItem(value: 'dushanba', child: Text(context.l10n.xonadoshDayMonday)),
-                  DropdownMenuItem(value: 'seshanba', child: Text(context.l10n.xonadoshDayTuesday)),
-                  DropdownMenuItem(value: 'chorshanba', child: Text(context.l10n.xonadoshDayWednesday)),
-                  DropdownMenuItem(value: 'payshanba', child: Text(context.l10n.xonadoshDayThursday)),
-                  DropdownMenuItem(value: 'juma', child: Text(context.l10n.xonadoshDayFriday)),
-                  DropdownMenuItem(value: 'shanba', child: Text(context.l10n.xonadoshDaySaturday)),
-                  DropdownMenuItem(value: 'yakshanba', child: Text(context.l10n.xonadoshDaySunday)),
+                  DropdownMenuItem(
+                    value: 'dushanba',
+                    child: Text(context.l10n.xonadoshDayMonday),
+                  ),
+                  DropdownMenuItem(
+                    value: 'seshanba',
+                    child: Text(context.l10n.xonadoshDayTuesday),
+                  ),
+                  DropdownMenuItem(
+                    value: 'chorshanba',
+                    child: Text(context.l10n.xonadoshDayWednesday),
+                  ),
+                  DropdownMenuItem(
+                    value: 'payshanba',
+                    child: Text(context.l10n.xonadoshDayThursday),
+                  ),
+                  DropdownMenuItem(
+                    value: 'juma',
+                    child: Text(context.l10n.xonadoshDayFriday),
+                  ),
+                  DropdownMenuItem(
+                    value: 'shanba',
+                    child: Text(context.l10n.xonadoshDaySaturday),
+                  ),
+                  DropdownMenuItem(
+                    value: 'yakshanba',
+                    child: Text(context.l10n.xonadoshDaySunday),
+                  ),
                 ],
-                onChanged: (val) => setDialogState(() => day = val ?? 'dushanba'),
+                onChanged: (val) =>
+                    setDialogState(() => day = val ?? 'dushanba'),
               ),
             ],
           ),
@@ -2062,12 +2854,16 @@ class _XonadoshColivingTabState extends ConsumerState<XonadoshColivingTab> {
               child: Text(context.l10n.commonCancel),
             ),
             FilledButton(
-              style: FilledButton.styleFrom(backgroundColor: XonaDoshColors.emerald),
+              style: FilledButton.styleFrom(
+                backgroundColor: XonaDoshColors.emerald,
+              ),
               onPressed: () async {
                 if (titleCtrl.text.trim().isEmpty) return;
                 await ref.read(xonadoshRepositoryProvider).addChore({
                   'title': titleCtrl.text.trim(),
-                  'assigned_name': personCtrl.text.trim().isEmpty ? 'Jasur' : personCtrl.text.trim(),
+                  'assigned_name': personCtrl.text.trim().isEmpty
+                      ? 'Jasur'
+                      : personCtrl.text.trim(),
                   'day_of_week': day,
                   'group_code': 'home_default',
                 });
@@ -2096,9 +2892,7 @@ class _XonadoshColivingTabState extends ConsumerState<XonadoshColivingTab> {
         (title: 'Suv', amount: '60000'),
         (title: 'Wi-Fi', amount: '140000'),
       ],
-      'rent': [
-        (title: 'Oylik ijara', amount: '4000000'),
-      ],
+      'rent': [(title: 'Oylik ijara', amount: '4000000')],
       'expense_split': [
         (title: 'Bozorlik', amount: '320000'),
         (title: 'Uy jihozlari', amount: '150000'),
@@ -2119,7 +2913,9 @@ class _XonadoshColivingTabState extends ConsumerState<XonadoshColivingTab> {
               child: Container(
                 decoration: BoxDecoration(
                   color: isDark ? const Color(0xFF1E293B) : Colors.white,
-                  borderRadius: const BorderRadius.vertical(top: Radius.circular(24)),
+                  borderRadius: const BorderRadius.vertical(
+                    top: Radius.circular(24),
+                  ),
                 ),
                 padding: const EdgeInsets.fromLTRB(20, 12, 20, 24),
                 child: SingleChildScrollView(
@@ -2131,15 +2927,41 @@ class _XonadoshColivingTabState extends ConsumerState<XonadoshColivingTab> {
                         child: Container(
                           width: 36,
                           height: 4,
-                          decoration: BoxDecoration(color: Colors.grey[400], borderRadius: BorderRadius.circular(2)),
+                          decoration: BoxDecoration(
+                            color: Colors.grey[400],
+                            borderRadius: BorderRadius.circular(2),
+                          ),
                         ),
                       ),
                       const SizedBox(height: 14),
-                      const Text('Yangi to‘lov', style: TextStyle(fontWeight: FontWeight.w900, fontSize: 18)),
+                      const Text(
+                        'Yangi to‘lov',
+                        style: TextStyle(
+                          fontWeight: FontWeight.w900,
+                          fontSize: 18,
+                        ),
+                      ),
                       const SizedBox(height: 12),
                       Row(
                         children: [
-                          _typePick('utility', Icons.bolt_rounded, 'Kommunal', type, (v) {
+                          _typePick(
+                            'utility',
+                            Icons.bolt_rounded,
+                            'Kommunal',
+                            type,
+                            (v) {
+                              setDialogState(() {
+                                type = v;
+                                titleCtrl.clear();
+                                amountCtrl.clear();
+                              });
+                            },
+                            isDark,
+                          ),
+                          const SizedBox(width: 6),
+                          _typePick('rent', Icons.home_rounded, 'Ijara', type, (
+                            v,
+                          ) {
                             setDialogState(() {
                               type = v;
                               titleCtrl.clear();
@@ -2147,21 +2969,20 @@ class _XonadoshColivingTabState extends ConsumerState<XonadoshColivingTab> {
                             });
                           }, isDark),
                           const SizedBox(width: 6),
-                          _typePick('rent', Icons.home_rounded, 'Ijara', type, (v) {
-                            setDialogState(() {
-                              type = v;
-                              titleCtrl.clear();
-                              amountCtrl.clear();
-                            });
-                          }, isDark),
-                          const SizedBox(width: 6),
-                          _typePick('expense_split', Icons.shopping_bag_rounded, 'Xarid', type, (v) {
-                            setDialogState(() {
-                              type = v;
-                              titleCtrl.clear();
-                              amountCtrl.clear();
-                            });
-                          }, isDark),
+                          _typePick(
+                            'expense_split',
+                            Icons.shopping_bag_rounded,
+                            'Xarid',
+                            type,
+                            (v) {
+                              setDialogState(() {
+                                type = v;
+                                titleCtrl.clear();
+                                amountCtrl.clear();
+                              });
+                            },
+                            isDark,
+                          ),
                         ],
                       ),
                       const SizedBox(height: 12),
@@ -2181,13 +3002,20 @@ class _XonadoshColivingTabState extends ConsumerState<XonadoshColivingTab> {
                       const SizedBox(height: 10),
                       TextField(
                         controller: titleCtrl,
-                        decoration: const InputDecoration(labelText: 'Nomi', hintText: 'Masalan: Svet'),
+                        decoration: const InputDecoration(
+                          labelText: 'Nomi',
+                          hintText: 'Masalan: Svet',
+                        ),
                       ),
                       const SizedBox(height: 10),
                       TextField(
                         controller: amountCtrl,
                         keyboardType: TextInputType.number,
-                        decoration: const InputDecoration(labelText: 'Summa', hintText: '180000', suffixText: 'so‘m'),
+                        decoration: const InputDecoration(
+                          labelText: 'Summa',
+                          hintText: '180000',
+                          suffixText: 'so‘m',
+                        ),
                       ),
                       const SizedBox(height: 12),
                       Text(
@@ -2206,13 +3034,17 @@ class _XonadoshColivingTabState extends ConsumerState<XonadoshColivingTab> {
                             ChoiceChip(
                               label: const Text('Uy egasi'),
                               selected: paidBy == 'Uy egasiga',
-                              onSelected: (_) => setDialogState(() => paidBy = 'Uy egasiga'),
+                              onSelected: (_) =>
+                                  setDialogState(() => paidBy = 'Uy egasiga'),
                             ),
-                          ...roommates.map((r) => ChoiceChip(
-                                label: Text(r),
-                                selected: paidBy == r,
-                                onSelected: (_) => setDialogState(() => paidBy = r),
-                              )),
+                          ...roommates.map(
+                            (r) => ChoiceChip(
+                              label: Text(r),
+                              selected: paidBy == r,
+                              onSelected: (_) =>
+                                  setDialogState(() => paidBy = r),
+                            ),
+                          ),
                         ],
                       ),
                       const SizedBox(height: 18),
@@ -2224,24 +3056,35 @@ class _XonadoshColivingTabState extends ConsumerState<XonadoshColivingTab> {
                             padding: const EdgeInsets.symmetric(vertical: 14),
                           ),
                           onPressed: () async {
-                            final amt = int.tryParse(amountCtrl.text.replaceAll(RegExp(r'\D'), '')) ?? 0;
+                            final amt =
+                                int.tryParse(
+                                  amountCtrl.text.replaceAll(RegExp(r'\D'), ''),
+                                ) ??
+                                0;
                             if (titleCtrl.text.trim().isEmpty || amt <= 0) {
                               ScaffoldMessenger.of(context).showSnackBar(
-                                const SnackBar(content: Text('Nom va summani kiriting')),
+                                const SnackBar(
+                                  content: Text('Nom va summani kiriting'),
+                                ),
                               );
                               return;
                             }
-                            await ref.read(xonadoshRepositoryProvider).addFinance({
-                              'type': type,
-                              'title': titleCtrl.text.trim(),
-                              'amount_uzs': amt,
-                              'paid_by': paidBy,
-                              'group_code': 'home_default',
-                            });
+                            await ref
+                                .read(xonadoshRepositoryProvider)
+                                .addFinance({
+                                  'type': type,
+                                  'title': titleCtrl.text.trim(),
+                                  'amount_uzs': amt,
+                                  'paid_by': paidBy,
+                                  'group_code': 'home_default',
+                                });
                             if (ctx.mounted) Navigator.pop(ctx);
                             ref.invalidate(xonadoshFinancesProvider);
                           },
-                          child: const Text('Saqlash va taqsimlash', style: TextStyle(fontWeight: FontWeight.w800)),
+                          child: const Text(
+                            'Saqlash va taqsimlash',
+                            style: TextStyle(fontWeight: FontWeight.w800),
+                          ),
                         ),
                       ),
                     ],
@@ -2281,7 +3124,11 @@ class _XonadoshColivingTabState extends ConsumerState<XonadoshColivingTab> {
           ),
           child: Column(
             children: [
-              Icon(icon, size: 20, color: selected ? XonaDoshColors.emerald : Colors.grey),
+              Icon(
+                icon,
+                size: 20,
+                color: selected ? XonaDoshColors.emerald : Colors.grey,
+              ),
               const SizedBox(height: 4),
               Text(
                 label,
@@ -2307,8 +3154,13 @@ class _XonadoshColivingTabState extends ConsumerState<XonadoshColivingTab> {
       context: context,
       builder: (ctx) => StatefulBuilder(
         builder: (ctx, setDialogState) => AlertDialog(
-          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
-          title: const Text('Yangi masala', style: TextStyle(fontWeight: FontWeight.w800)),
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(20),
+          ),
+          title: const Text(
+            'Yangi masala',
+            style: TextStyle(fontWeight: FontWeight.w800),
+          ),
           content: SingleChildScrollView(
             child: Column(
               mainAxisSize: MainAxisSize.min,
@@ -2317,20 +3169,37 @@ class _XonadoshColivingTabState extends ConsumerState<XonadoshColivingTab> {
                   initialValue: category,
                   decoration: const InputDecoration(labelText: 'Kategoriya'),
                   items: const [
-                    DropdownMenuItem(value: 'rules', child: Text('📋 Xonadon qoidasi')),
-                    DropdownMenuItem(value: 'cleaning', child: Text('🧹 Tozalik va tartib')),
-                    DropdownMenuItem(value: 'shopping', child: Text('🛒 Xaridlar va byudjet')),
-                    DropdownMenuItem(value: 'guests', child: Text('👥 Mehmonlar tartibi')),
-                    DropdownMenuItem(value: 'general', child: Text('💡 Umumiy taklif')),
+                    DropdownMenuItem(
+                      value: 'rules',
+                      child: Text('📋 Xonadon qoidasi'),
+                    ),
+                    DropdownMenuItem(
+                      value: 'cleaning',
+                      child: Text('🧹 Tozalik va tartib'),
+                    ),
+                    DropdownMenuItem(
+                      value: 'shopping',
+                      child: Text('🛒 Xaridlar va byudjet'),
+                    ),
+                    DropdownMenuItem(
+                      value: 'guests',
+                      child: Text('👥 Mehmonlar tartibi'),
+                    ),
+                    DropdownMenuItem(
+                      value: 'general',
+                      child: Text('💡 Umumiy taklif'),
+                    ),
                   ],
-                  onChanged: (val) => setDialogState(() => category = val ?? 'rules'),
+                  onChanged: (val) =>
+                      setDialogState(() => category = val ?? 'rules'),
                 ),
                 const SizedBox(height: 10),
                 TextField(
                   controller: titleCtrl,
                   decoration: const InputDecoration(
                     labelText: 'Masala / Taklif sarlavhasi',
-                    hintText: 'e.g. 23:00 dan keyin oshxonada shovqin qilmaslik',
+                    hintText:
+                        'e.g. 23:00 dan keyin oshxonada shovqin qilmaslik',
                   ),
                 ),
                 const SizedBox(height: 10),
@@ -2351,7 +3220,9 @@ class _XonadoshColivingTabState extends ConsumerState<XonadoshColivingTab> {
               child: Text(context.l10n.commonCancel),
             ),
             FilledButton(
-              style: FilledButton.styleFrom(backgroundColor: const Color(0xFF4338CA)),
+              style: FilledButton.styleFrom(
+                backgroundColor: const Color(0xFF4338CA),
+              ),
               onPressed: () async {
                 if (titleCtrl.text.trim().isEmpty) return;
                 await ref.read(xonadoshRepositoryProvider).createPoll({
@@ -2371,10 +3242,20 @@ class _XonadoshColivingTabState extends ConsumerState<XonadoshColivingTab> {
     );
   }
 
-  void _showGiveKarmaDialog(BuildContext context, List<String> roommates, List<XonadoshKarmaBadge> badges) {
-    String selectedRoommate = roommates.isNotEmpty ? roommates.first : 'Azizbek';
-    String selectedBadgeKey = badges.isNotEmpty ? badges.first.key : 'cleanliness_master';
-    String selectedBadgeName = badges.isNotEmpty ? badges.first.name : 'Tozalik ustasi';
+  void _showGiveKarmaDialog(
+    BuildContext context,
+    List<String> roommates,
+    List<XonadoshKarmaBadge> badges,
+  ) {
+    String selectedRoommate = roommates.isNotEmpty
+        ? roommates.first
+        : 'Azizbek';
+    String selectedBadgeKey = badges.isNotEmpty
+        ? badges.first.key
+        : 'cleanliness_master';
+    String selectedBadgeName = badges.isNotEmpty
+        ? badges.first.name
+        : 'Tozalik ustasi';
     final commentCtrl = TextEditingController();
     int points = 2;
 
@@ -2382,33 +3263,74 @@ class _XonadoshColivingTabState extends ConsumerState<XonadoshColivingTab> {
       context: context,
       builder: (ctx) => StatefulBuilder(
         builder: (ctx, setDialogState) => AlertDialog(
-          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
-          title: const Text('Minnatdorchilik bildirish', style: TextStyle(fontWeight: FontWeight.w800)),
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(20),
+          ),
+          title: const Text(
+            'Minnatdorchilik bildirish',
+            style: TextStyle(fontWeight: FontWeight.w800),
+          ),
           content: SingleChildScrollView(
             child: Column(
               mainAxisSize: MainAxisSize.min,
               children: [
                 DropdownButtonFormField<String>(
                   initialValue: selectedRoommate,
-                  decoration: const InputDecoration(labelText: 'Kimga obro‘ berasiz?'),
-                  items: (roommates.isEmpty ? ['Jasur', 'Azizbek', 'Bekzod', 'Sardor'] : roommates)
-                      .map((r) => DropdownMenuItem(value: r, child: Text(r)))
-                      .toList(),
-                  onChanged: (val) => setDialogState(() => selectedRoommate = val ?? 'Azizbek'),
+                  decoration: const InputDecoration(
+                    labelText: 'Kimga obro‘ berasiz?',
+                  ),
+                  items:
+                      (roommates.isEmpty
+                              ? ['Jasur', 'Azizbek', 'Bekzod', 'Sardor']
+                              : roommates)
+                          .map(
+                            (r) => DropdownMenuItem(value: r, child: Text(r)),
+                          )
+                          .toList(),
+                  onChanged: (val) =>
+                      setDialogState(() => selectedRoommate = val ?? 'Azizbek'),
                 ),
                 const SizedBox(height: 10),
                 DropdownButtonFormField<String>(
                   initialValue: selectedBadgeKey,
-                  decoration: const InputDecoration(labelText: 'Qanday nishon berasiz?'),
-                  items: (badges.isEmpty ? [
-                    const XonadoshKarmaBadge(key: 'cleanliness_master', name: 'Tozalik ustasi', icon: '🧹', description: ''),
-                    const XonadoshKarmaBadge(key: 'chef_pro', name: 'Mohir oshpaz', icon: '👨‍🍳', description: ''),
-                    const XonadoshKarmaBadge(key: 'ontime_payer', name: 'Vaqtida to‘lovchi', icon: '⏱', description: ''),
-                  ] : badges)
-                      .map((b) => DropdownMenuItem(value: b.key, child: Text('${b.icon} ${b.name}')))
-                      .toList(),
+                  decoration: const InputDecoration(
+                    labelText: 'Qanday nishon berasiz?',
+                  ),
+                  items:
+                      (badges.isEmpty
+                              ? [
+                                  const XonadoshKarmaBadge(
+                                    key: 'cleanliness_master',
+                                    name: 'Tozalik ustasi',
+                                    icon: '🧹',
+                                    description: '',
+                                  ),
+                                  const XonadoshKarmaBadge(
+                                    key: 'chef_pro',
+                                    name: 'Mohir oshpaz',
+                                    icon: '👨‍🍳',
+                                    description: '',
+                                  ),
+                                  const XonadoshKarmaBadge(
+                                    key: 'ontime_payer',
+                                    name: 'Vaqtida to‘lovchi',
+                                    icon: '⏱',
+                                    description: '',
+                                  ),
+                                ]
+                              : badges)
+                          .map(
+                            (b) => DropdownMenuItem(
+                              value: b.key,
+                              child: Text('${b.icon} ${b.name}'),
+                            ),
+                          )
+                          .toList(),
                   onChanged: (val) {
-                    final found = badges.firstWhere((b) => b.key == val, orElse: () => badges.first);
+                    final found = badges.firstWhere(
+                      (b) => b.key == val,
+                      orElse: () => badges.first,
+                    );
                     setDialogState(() {
                       selectedBadgeKey = val ?? 'cleanliness_master';
                       selectedBadgeName = found.name;
@@ -2418,16 +3340,24 @@ class _XonadoshColivingTabState extends ConsumerState<XonadoshColivingTab> {
                 const SizedBox(height: 10),
                 Row(
                   children: [
-                    const Text('Ball miqdori:', style: TextStyle(fontWeight: FontWeight.w700, fontSize: 13)),
-                    const SizedBox(width: 10),
-                    ...[1, 2, 3, 5].map((p) => Padding(
-                      padding: const EdgeInsets.only(right: 6),
-                      child: ChoiceChip(
-                        label: Text('+$p'),
-                        selected: points == p,
-                        onSelected: (val) => setDialogState(() => points = p),
+                    const Text(
+                      'Ball miqdori:',
+                      style: TextStyle(
+                        fontWeight: FontWeight.w700,
+                        fontSize: 13,
                       ),
-                    )),
+                    ),
+                    const SizedBox(width: 10),
+                    ...[1, 2, 3, 5].map(
+                      (p) => Padding(
+                        padding: const EdgeInsets.only(right: 6),
+                        child: ChoiceChip(
+                          label: Text('+$p'),
+                          selected: points == p,
+                          onSelected: (val) => setDialogState(() => points = p),
+                        ),
+                      ),
+                    ),
                   ],
                 ),
                 const SizedBox(height: 10),
@@ -2447,7 +3377,9 @@ class _XonadoshColivingTabState extends ConsumerState<XonadoshColivingTab> {
               child: Text(context.l10n.commonCancel),
             ),
             FilledButton(
-              style: FilledButton.styleFrom(backgroundColor: const Color(0xFFD97706)),
+              style: FilledButton.styleFrom(
+                backgroundColor: const Color(0xFFD97706),
+              ),
               onPressed: () async {
                 await ref.read(xonadoshRepositoryProvider).giveKarma({
                   'from_name': 'Xonadosh',
@@ -2469,7 +3401,12 @@ class _XonadoshColivingTabState extends ConsumerState<XonadoshColivingTab> {
     );
   }
 
-  void _showRecipePickerSheet(BuildContext context, String day, String mealTime, String currentRecipeName) {
+  void _showRecipePickerSheet(
+    BuildContext context,
+    String day,
+    String mealTime,
+    String currentRecipeName,
+  ) {
     showModalBottomSheet(
       context: context,
       isScrollControlled: true,
@@ -2501,5 +3438,889 @@ class _XonadoshColivingTabState extends ConsumerState<XonadoshColivingTab> {
       buffer.write(s[i]);
     }
     return buffer.toString();
+  }
+
+  // ── Uy Qoidalari (House Rules) Modali ──
+  void _openHouseRulesModal(BuildContext context) {
+    showModalBottomSheet(
+      context: context,
+      isScrollControlled: true,
+      backgroundColor: Colors.transparent,
+      builder: (ctx) {
+        return Consumer(
+          builder: (context, ref, _) {
+            final isDark = Theme.of(context).brightness == Brightness.dark;
+            final rulesAsync = ref.watch(xonadoshHouseRulesProvider);
+
+            return Container(
+              constraints: BoxConstraints(
+                maxHeight: MediaQuery.sizeOf(context).height * 0.85,
+              ),
+              decoration: BoxDecoration(
+                color: isDark ? const Color(0xFF1E293B) : Colors.white,
+                borderRadius:
+                    const BorderRadius.vertical(top: Radius.circular(24)),
+              ),
+              child: SafeArea(
+                child: Column(
+                  children: [
+                    Container(
+                      margin: const EdgeInsets.symmetric(vertical: 10),
+                      width: 40,
+                      height: 4,
+                      decoration: BoxDecoration(
+                        color: isDark ? Colors.white24 : Colors.grey[300],
+                        borderRadius: BorderRadius.circular(2),
+                      ),
+                    ),
+                    Padding(
+                      padding: const EdgeInsets.symmetric(
+                        horizontal: 20,
+                        vertical: 6,
+                      ),
+                      child: Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        children: [
+                          Row(
+                            children: [
+                              Container(
+                                padding: const EdgeInsets.all(8),
+                                decoration: BoxDecoration(
+                                  color: XonaDoshColors.accentPurple
+                                      .withValues(alpha: 0.15),
+                                  borderRadius: BorderRadius.circular(10),
+                                ),
+                                child: const Icon(
+                                  Icons.rule_rounded,
+                                  color: XonaDoshColors.accentPurple,
+                                  size: 20,
+                                ),
+                              ),
+                              const SizedBox(width: 10),
+                              const Column(
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: [
+                                  Text(
+                                    'Uy Qoidalari',
+                                    style: TextStyle(
+                                      fontSize: 18,
+                                      fontWeight: FontWeight.w800,
+                                    ),
+                                  ),
+                                  Text(
+                                    'Xonadon ichki kelishuvlari',
+                                    style: TextStyle(
+                                      fontSize: 12,
+                                      color: Colors.grey,
+                                    ),
+                                  ),
+                                ],
+                              ),
+                            ],
+                          ),
+                          IconButton(
+                            onPressed: () => Navigator.pop(ctx),
+                            icon: const Icon(Icons.close_rounded),
+                          ),
+                        ],
+                      ),
+                    ),
+                    const Divider(height: 1),
+                    Expanded(
+                      child: rulesAsync.when(
+                        loading: () => const Center(
+                          child: CircularProgressIndicator(
+                            color: XonaDoshColors.emerald,
+                          ),
+                        ),
+                        error: (err, _) => Center(
+                          child: Text('Qoidalar yuklanmadi: $err'),
+                        ),
+                        data: (rules) {
+                          return ListView(
+                            padding: const EdgeInsets.all(16),
+                            children: [
+                              ...rules.map((rule) {
+                                final color = _ruleCategoryColor(rule.category);
+                                return Container(
+                                  margin: const EdgeInsets.only(bottom: 12),
+                                  padding: const EdgeInsets.all(14),
+                                  decoration: BoxDecoration(
+                                    color: isDark
+                                        ? const Color(0xFF0F172A)
+                                        : const Color(0xFFF8FAFC),
+                                    borderRadius: BorderRadius.circular(14),
+                                    border: Border.all(
+                                      color: rule.isActive
+                                          ? color.withValues(
+                                              alpha: isDark ? 0.35 : 0.2,
+                                            )
+                                          : (isDark
+                                              ? const Color(0xFF334155)
+                                              : const Color(0xFFE2E8F0)),
+                                      width: rule.isActive ? 1.4 : 1,
+                                    ),
+                                  ),
+                                  child: Row(
+                                    crossAxisAlignment:
+                                        CrossAxisAlignment.start,
+                                    children: [
+                                      Container(
+                                        padding: const EdgeInsets.all(8),
+                                        decoration: BoxDecoration(
+                                          color: color.withValues(
+                                            alpha: isDark ? 0.25 : 0.12,
+                                          ),
+                                          borderRadius:
+                                              BorderRadius.circular(10),
+                                        ),
+                                        child: Icon(
+                                          _ruleCategoryIcon(rule.category),
+                                          size: 18,
+                                          color: color,
+                                        ),
+                                      ),
+                                      const SizedBox(width: 12),
+                                      Expanded(
+                                        child: Column(
+                                          crossAxisAlignment:
+                                              CrossAxisAlignment.start,
+                                          children: [
+                                            Row(
+                                              children: [
+                                                Expanded(
+                                                  child: Text(
+                                                    rule.title,
+                                                    style: TextStyle(
+                                                      fontWeight:
+                                                          FontWeight.w800,
+                                                      fontSize: 14,
+                                                      color: rule.isActive
+                                                          ? null
+                                                          : Colors.grey,
+                                                      decoration: rule.isActive
+                                                          ? null
+                                                          : TextDecoration
+                                                              .lineThrough,
+                                                    ),
+                                                  ),
+                                                ),
+                                                if (rule.isCustom)
+                                                  IconButton(
+                                                    icon: const Icon(
+                                                      Icons.delete_outline_rounded,
+                                                      size: 18,
+                                                      color: Colors.red,
+                                                    ),
+                                                    onPressed: () async {
+                                                      await ref
+                                                          .read(
+                                                            xonadoshRepositoryProvider,
+                                                          )
+                                                          .deleteHouseRule(
+                                                            rule.id,
+                                                          );
+                                                      ref.invalidate(
+                                                        xonadoshHouseRulesProvider,
+                                                      );
+                                                    },
+                                                    visualDensity:
+                                                        VisualDensity.compact,
+                                                  ),
+                                              ],
+                                            ),
+                                            const SizedBox(height: 4),
+                                            Text(
+                                              rule.description,
+                                              style: TextStyle(
+                                                fontSize: 12,
+                                                color: isDark
+                                                    ? const Color(0xFF94A3B8)
+                                                    : const Color(0xFF64748B),
+                                                height: 1.35,
+                                              ),
+                                            ),
+                                          ],
+                                        ),
+                                      ),
+                                      const SizedBox(width: 8),
+                                      Switch.adaptive(
+                                        value: rule.isActive,
+                                        activeTrackColor: color,
+                                        activeThumbColor: Colors.white,
+                                        onChanged: (val) async {
+                                          await ref
+                                              .read(
+                                                xonadoshRepositoryProvider,
+                                              )
+                                              .toggleHouseRule(rule.id, val);
+                                          ref.invalidate(
+                                            xonadoshHouseRulesProvider,
+                                          );
+                                        },
+                                      ),
+                                    ],
+                                  ),
+                                );
+                              }),
+                              const SizedBox(height: 10),
+                              Row(
+                                children: [
+                                  Expanded(
+                                    child: OutlinedButton.icon(
+                                      onPressed: () =>
+                                          _showAddHouseRuleDialog(context),
+                                      icon: const Icon(
+                                        Icons.add_rounded,
+                                        size: 18,
+                                      ),
+                                      label: const Text(
+                                        'Yangi qoida qo‘shish',
+                                      ),
+                                      style: OutlinedButton.styleFrom(
+                                        padding: const EdgeInsets.symmetric(
+                                          vertical: 12,
+                                        ),
+                                        shape: RoundedRectangleBorder(
+                                          borderRadius:
+                                              BorderRadius.circular(12),
+                                        ),
+                                      ),
+                                    ),
+                                  ),
+                                  const SizedBox(width: 8),
+                                  IconButton.filledTonal(
+                                    tooltip: 'Standart qoidalarga qaytarish',
+                                    onPressed: () async {
+                                      await ref
+                                          .read(xonadoshRepositoryProvider)
+                                          .resetHouseRules();
+                                      ref.invalidate(
+                                        xonadoshHouseRulesProvider,
+                                      );
+                                    },
+                                    icon: const Icon(
+                                      Icons.restart_alt_rounded,
+                                      size: 18,
+                                    ),
+                                  ),
+                                ],
+                              ),
+                            ],
+                          );
+                        },
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+            );
+          },
+        );
+      },
+    );
+  }
+
+  Color _ruleCategoryColor(String category) {
+    switch (category) {
+      case 'quiet_hours':
+        return const Color(0xFF6366F1);
+      case 'guests':
+        return const Color(0xFF0284C7);
+      case 'cleanliness':
+        return const Color(0xFF10B981);
+      case 'smoking':
+        return const Color(0xFFEF4444);
+      case 'finances':
+        return const Color(0xFFF59E0B);
+      case 'safety':
+        return const Color(0xFF8B5CF6);
+      default:
+        return const Color(0xFF64748B);
+    }
+  }
+
+  IconData _ruleCategoryIcon(String category) {
+    switch (category) {
+      case 'quiet_hours':
+        return Icons.bedtime_rounded;
+      case 'guests':
+        return Icons.groups_rounded;
+      case 'cleanliness':
+        return Icons.cleaning_services_rounded;
+      case 'smoking':
+        return Icons.smoke_free_rounded;
+      case 'finances':
+        return Icons.receipt_long_rounded;
+      case 'safety':
+        return Icons.security_rounded;
+      default:
+        return Icons.rule_rounded;
+    }
+  }
+
+  void _showAddHouseRuleDialog(BuildContext context) {
+    final titleCtrl = TextEditingController();
+    final descCtrl = TextEditingController();
+    String category = 'cleanliness';
+
+    showDialog(
+      context: context,
+      builder: (dlgCtx) {
+        return StatefulBuilder(
+          builder: (dlgCtx, setDlgState) {
+            return AlertDialog(
+              title: const Text(
+                'Yangi qoida',
+                style: TextStyle(fontWeight: FontWeight.w800, fontSize: 18),
+              ),
+              content: SingleChildScrollView(
+                child: Column(
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    TextField(
+                      controller: titleCtrl,
+                      decoration: const InputDecoration(
+                        labelText: 'Qoida nomi',
+                        hintText: 'Masalan: Oshxonani yig‘ishtirish',
+                      ),
+                    ),
+                    const SizedBox(height: 12),
+                    TextField(
+                      controller: descCtrl,
+                      maxLines: 3,
+                      decoration: const InputDecoration(
+                        labelText: 'Tavsif / Kelishuv matni',
+                        hintText: 'Har kim ovqatlanib bo‘lgach...',
+                      ),
+                    ),
+                    const SizedBox(height: 12),
+                    DropdownButtonFormField<String>(
+                      initialValue: category,
+                      decoration: const InputDecoration(labelText: 'Kategoriya'),
+                      items: const [
+                        DropdownMenuItem(
+                          value: 'cleanliness',
+                          child: Text('🧹 Tozalik'),
+                        ),
+                        DropdownMenuItem(
+                          value: 'quiet_hours',
+                          child: Text('🌙 Tinchlik soatlari'),
+                        ),
+                        DropdownMenuItem(
+                          value: 'guests',
+                          child: Text('👥 Mehmonlar tartibi'),
+                        ),
+                        DropdownMenuItem(
+                          value: 'smoking',
+                          child: Text('🚭 Zararli odatlar'),
+                        ),
+                        DropdownMenuItem(
+                          value: 'finances',
+                          child: Text('💰 To‘lovlar'),
+                        ),
+                        DropdownMenuItem(
+                          value: 'safety',
+                          child: Text('🔒 Xavfsizlik'),
+                        ),
+                      ],
+                      onChanged: (val) {
+                        if (val != null) setDlgState(() => category = val);
+                      },
+                    ),
+                  ],
+                ),
+              ),
+              actions: [
+                TextButton(
+                  onPressed: () => Navigator.pop(dlgCtx),
+                  child: const Text('Bekor qilish'),
+                ),
+                FilledButton(
+                  style: FilledButton.styleFrom(
+                    backgroundColor: XonaDoshColors.accentPurple,
+                  ),
+                  onPressed: () async {
+                    if (titleCtrl.text.trim().isEmpty) return;
+                    final newRule = XonadoshHouseRule(
+                      id: 'custom_${DateTime.now().millisecondsSinceEpoch}',
+                      title: titleCtrl.text.trim(),
+                      description: descCtrl.text.trim(),
+                      category: category,
+                      icon: category,
+                      isActive: true,
+                      isCustom: true,
+                    );
+                    await ref
+                        .read(xonadoshRepositoryProvider)
+                        .addHouseRule(newRule);
+                    if (dlgCtx.mounted) Navigator.pop(dlgCtx);
+                    ref.invalidate(xonadoshHouseRulesProvider);
+                  },
+                  child: const Text('Qo‘shish'),
+                ),
+              ],
+            );
+          },
+        );
+      },
+    );
+  }
+
+  // ── Telegram hisoboti generatori va ulashish ──
+  String _generateTelegramExpenseReport(XonadoshFinancesData data) {
+    final now = DateTime.now();
+    final dateStr =
+        '${now.day.toString().padLeft(2, '0')}.${now.month.toString().padLeft(2, '0')}.${now.year}';
+    final buffer = StringBuffer();
+    buffer.writeln('🏠 *XONADOSH — XONADON HISOB-KITOBLARI*');
+    buffer.writeln('📅 *Sana:* $dateStr');
+    buffer.writeln('━━━━━━━━━━━━━━━━━━━━━');
+    buffer.writeln(
+      '💰 *Jami xarajat:* ${_formatMoney(data.totalSpendUzs.toDouble())} UZS',
+    );
+    buffer.writeln(
+      '⚠️ *To‘lanmagan qarz:* ${_formatMoney(data.totalPendingUzs.toDouble())} UZS',
+    );
+
+    if (data.rentTotalUzs > 0) {
+      buffer.writeln(
+        '🏢 *Ijara to‘lovi:* ${_formatMoney(data.rentTotalUzs.toDouble())} UZS',
+      );
+    }
+    if (data.utilityTotalUzs > 0) {
+      buffer.writeln(
+        '💡 *Kommunal:* ${_formatMoney(data.utilityTotalUzs.toDouble())} UZS',
+      );
+    }
+    if (data.expenseTotalUzs > 0) {
+      buffer.writeln(
+        '🛒 *Boshqa xaridlar:* ${_formatMoney(data.expenseTotalUzs.toDouble())} UZS',
+      );
+    }
+
+    buffer.writeln('━━━━━━━━━━━━━━━━━━━━━');
+    buffer.writeln('📋 *TO‘LOV VA QARZ TAQSIMOTI:*');
+
+    final allItems = [
+      ...data.rentItems,
+      ...data.utilityItems,
+      ...data.expenseItems,
+    ];
+
+    for (final item in allItems) {
+      final mark = item.isSettled ? '✅' : '⏳';
+      buffer.writeln(
+        '$mark *${item.title}*: ${_formatMoney(item.amountUzs.toDouble())} UZS (To‘lovchi: ${item.paidBy})',
+      );
+      for (final s in item.splits) {
+        final st = s.isPaid ? 'to‘landi' : 'QARZ';
+        buffer.writeln(
+          '   • ${s.name}: ${_formatMoney(s.amountUzs.toDouble())} UZS ($st)',
+        );
+      }
+    }
+
+    if (data.debtBalances.isNotEmpty) {
+      buffer.writeln('━━━━━━━━━━━━━━━━━━━━━');
+      buffer.writeln('🤝 *XONADOSHLAR O‘ZARO BALANSI:*');
+      for (final d in data.debtBalances) {
+        buffer.writeln(
+          '👉 *${d.debtor}* ➔ *${d.creditor}*ga: ${_formatMoney(d.amountUzs.toDouble())} UZS',
+        );
+      }
+    }
+
+    buffer.writeln('━━━━━━━━━━━━━━━━━━━━━');
+    buffer.writeln('📲 _XonaDosh Coliving Hub orqali yaratildi_');
+    return buffer.toString();
+  }
+
+  Future<void> _shareTelegramReport(
+    BuildContext context,
+    XonadoshFinancesData data,
+  ) async {
+    final text = _generateTelegramExpenseReport(data);
+    await ContactActions.shareText(context, text);
+  }
+
+  // ── Tezkor Kommunal & Ijara Taqsimlash Dialogi ──
+  void _showQuickSplitDialog(BuildContext context) {
+    int roommateCount = 4;
+    final roommates = [
+      'Jasur',
+      'Azizbek',
+      'Bekzod',
+      'Sardor',
+      'Diyor',
+      'Nodir',
+      'Otabek',
+      'Shaxboz',
+    ];
+
+    final utilities = <Map<String, dynamic>>[
+      {
+        'id': 'rent',
+        'title': 'Uy ijarasi',
+        'amount': 3600000,
+        'type': 'rent',
+        'selected': true,
+      },
+      {
+        'id': 'electricity',
+        'title': 'Elektr energiyasi (Svet)',
+        'amount': 180000,
+        'type': 'utility',
+        'selected': true,
+      },
+      {
+        'id': 'gas',
+        'title': 'Gaz to‘lovi',
+        'amount': 90000,
+        'type': 'utility',
+        'selected': true,
+      },
+      {
+        'id': 'water',
+        'title': 'Sovuq va issiq suv',
+        'amount': 70000,
+        'type': 'utility',
+        'selected': true,
+      },
+      {
+        'id': 'wifi',
+        'title': 'Wi-Fi internet',
+        'amount': 150000,
+        'type': 'utility',
+        'selected': true,
+      },
+      {
+        'id': 'trash',
+        'title': 'Axlat puli',
+        'amount': 30000,
+        'type': 'utility',
+        'selected': true,
+      },
+      {
+        'id': 'supplies',
+        'title': 'Xo‘jalik mollari',
+        'amount': 100000,
+        'type': 'expense_split',
+        'selected': false,
+      },
+    ];
+
+    showModalBottomSheet(
+      context: context,
+      isScrollControlled: true,
+      backgroundColor: Colors.transparent,
+      builder: (ctx) {
+        return StatefulBuilder(
+          builder: (ctx, setSplitState) {
+            final isDark = Theme.of(ctx).brightness == Brightness.dark;
+            int totalSelected = 0;
+            for (final u in utilities) {
+              if (u['selected'] == true) {
+                totalSelected += (u['amount'] as int);
+              }
+            }
+            final perPerson = (totalSelected / roommateCount).round();
+
+            return Container(
+              constraints: BoxConstraints(
+                maxHeight: MediaQuery.sizeOf(ctx).height * 0.85,
+              ),
+              decoration: BoxDecoration(
+                color: isDark ? const Color(0xFF1E293B) : Colors.white,
+                borderRadius:
+                    const BorderRadius.vertical(top: Radius.circular(24)),
+              ),
+              child: SafeArea(
+                child: Column(
+                  children: [
+                    Container(
+                      margin: const EdgeInsets.symmetric(vertical: 10),
+                      width: 40,
+                      height: 4,
+                      decoration: BoxDecoration(
+                        color: isDark ? Colors.white24 : Colors.grey[300],
+                        borderRadius: BorderRadius.circular(2),
+                      ),
+                    ),
+                    Padding(
+                      padding: const EdgeInsets.symmetric(
+                        horizontal: 20,
+                        vertical: 6,
+                      ),
+                      child: Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        children: [
+                          const Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              Text(
+                                'Kommunal & Ijara Taqsimlash',
+                                style: TextStyle(
+                                  fontSize: 17,
+                                  fontWeight: FontWeight.w800,
+                                ),
+                              ),
+                              Text(
+                                'Xonadoshlar bo‘yicha teng taqsimot',
+                                style: TextStyle(
+                                  fontSize: 12,
+                                  color: Colors.grey,
+                                ),
+                              ),
+                            ],
+                          ),
+                          IconButton(
+                            onPressed: () => Navigator.pop(ctx),
+                            icon: const Icon(Icons.close_rounded),
+                          ),
+                        ],
+                      ),
+                    ),
+                    const Divider(height: 1),
+                    Expanded(
+                      child: ListView(
+                        padding: const EdgeInsets.all(18),
+                        children: [
+                          // Roommates count selector
+                          Text(
+                            '👥 Xonadoshlar soni: $roommateCount kishi',
+                            style: const TextStyle(
+                              fontWeight: FontWeight.w800,
+                              fontSize: 14,
+                            ),
+                          ),
+                          const SizedBox(height: 8),
+                          SingleChildScrollView(
+                            scrollDirection: Axis.horizontal,
+                            child: Row(
+                              children: [2, 3, 4, 5, 6, 7, 8].map((n) {
+                                final isSel = roommateCount == n;
+                                return Padding(
+                                  padding: const EdgeInsets.only(right: 6),
+                                  child: ChoiceChip(
+                                    label: Text('$n kishi'),
+                                    selected: isSel,
+                                    onSelected: (_) => setSplitState(
+                                      () => roommateCount = n,
+                                    ),
+                                  ),
+                                );
+                              }).toList(),
+                            ),
+                          ),
+                          const SizedBox(height: 16),
+                          const Text(
+                            '⚡ Xarajat turlari:',
+                            style: TextStyle(
+                              fontWeight: FontWeight.w800,
+                              fontSize: 14,
+                            ),
+                          ),
+                          const SizedBox(height: 8),
+                          ...utilities.map((item) {
+                            final selected = item['selected'] == true;
+                            final amount = item['amount'] as int;
+                            final itemPerPerson =
+                                (amount / roommateCount).round();
+
+                            return Container(
+                              margin: const EdgeInsets.only(bottom: 8),
+                              decoration: BoxDecoration(
+                                color: isDark
+                                    ? const Color(0xFF0F172A)
+                                    : const Color(0xFFF8FAFC),
+                                borderRadius: BorderRadius.circular(12),
+                                border: Border.all(
+                                  color: selected
+                                      ? XonaDoshColors.emerald.withValues(
+                                          alpha: 0.4,
+                                        )
+                                      : (isDark
+                                          ? const Color(0xFF334155)
+                                          : const Color(0xFFE2E8F0)),
+                                ),
+                              ),
+                              child: CheckboxListTile(
+                                value: selected,
+                                activeColor: XonaDoshColors.emerald,
+                                dense: true,
+                                title: Text(
+                                  item['title'].toString(),
+                                  style: const TextStyle(
+                                    fontWeight: FontWeight.w700,
+                                    fontSize: 13,
+                                  ),
+                                ),
+                                subtitle: Text(
+                                  'Jami: ${_formatMoney(amount.toDouble())} UZS · Kishi boshiga: ${_formatMoney(itemPerPerson.toDouble())} UZS',
+                                  style: TextStyle(
+                                    fontSize: 11,
+                                    color: isDark
+                                        ? const Color(0xFF94A3B8)
+                                        : const Color(0xFF64748B),
+                                  ),
+                                ),
+                                secondary: Icon(
+                                  item['type'] == 'rent'
+                                      ? Icons.home_rounded
+                                      : Icons.bolt_rounded,
+                                  color: item['type'] == 'rent'
+                                      ? XonaDoshColors.accentPurple
+                                      : const Color(0xFF0284C7),
+                                  size: 20,
+                                ),
+                                onChanged: (val) {
+                                  setSplitState(() {
+                                    item['selected'] = val ?? false;
+                                  });
+                                },
+                              ),
+                            );
+                          }),
+                        ],
+                      ),
+                    ),
+                    // Summary Banner + CTA
+                    Container(
+                      padding: const EdgeInsets.all(16),
+                      decoration: BoxDecoration(
+                        color: isDark
+                            ? const Color(0xFF0F172A)
+                            : const Color(0xFFF1F5F9),
+                        borderRadius: const BorderRadius.vertical(
+                          top: Radius.circular(18),
+                        ),
+                      ),
+                      child: Column(
+                        children: [
+                          Row(
+                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                            children: [
+                              Column(
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: [
+                                  const Text(
+                                    'Kishi boshiga to‘lov:',
+                                    style: TextStyle(
+                                      fontSize: 12,
+                                      color: Colors.grey,
+                                      fontWeight: FontWeight.w600,
+                                    ),
+                                  ),
+                                  Text(
+                                    '${_formatMoney(perPerson.toDouble())} UZS',
+                                    style: const TextStyle(
+                                      fontSize: 19,
+                                      fontWeight: FontWeight.w900,
+                                      color: XonaDoshColors.emeraldDark,
+                                    ),
+                                  ),
+                                ],
+                              ),
+                              Column(
+                                crossAxisAlignment: CrossAxisAlignment.end,
+                                children: [
+                                  const Text(
+                                    'Jami summa:',
+                                    style: TextStyle(
+                                      fontSize: 12,
+                                      color: Colors.grey,
+                                      fontWeight: FontWeight.w600,
+                                    ),
+                                  ),
+                                  Text(
+                                    '${_formatMoney(totalSelected.toDouble())} UZS',
+                                    style: const TextStyle(
+                                      fontSize: 16,
+                                      fontWeight: FontWeight.w800,
+                                    ),
+                                  ),
+                                ],
+                              ),
+                            ],
+                          ),
+                          const SizedBox(height: 12),
+                          SizedBox(
+                            width: double.infinity,
+                            child: FilledButton(
+                              style: FilledButton.styleFrom(
+                                backgroundColor: XonaDoshColors.emerald,
+                                padding: const EdgeInsets.symmetric(
+                                  vertical: 13,
+                                ),
+                                shape: RoundedRectangleBorder(
+                                  borderRadius: BorderRadius.circular(12),
+                                ),
+                              ),
+                              onPressed: () async {
+                                final selectedRoommates =
+                                    roommates.take(roommateCount).toList();
+
+                                for (final item in utilities) {
+                                  if (item['selected'] != true) continue;
+                                  final amount = item['amount'] as int;
+                                  final splitAmt =
+                                      (amount / roommateCount).round();
+                                  final splits = selectedRoommates
+                                      .map(
+                                        (r) => {
+                                          'name': r,
+                                          'amount': splitAmt,
+                                          'is_paid': false,
+                                        },
+                                      )
+                                      .toList();
+
+                                  await ref
+                                      .read(xonadoshRepositoryProvider)
+                                      .addFinance({
+                                        'title': item['title'],
+                                        'type': item['type'],
+                                        'amount': amount,
+                                        'paid_by': 'Umumiy hisob',
+                                        'roommates': selectedRoommates,
+                                        'splits': splits,
+                                        'group_code': 'home_default',
+                                      });
+                                }
+
+                                if (ctx.mounted) Navigator.pop(ctx);
+                                ref.invalidate(xonadoshFinancesProvider);
+
+                                if (context.mounted) {
+                                  ScaffoldMessenger.of(context).showSnackBar(
+                                    const SnackBar(
+                                      content: Text(
+                                        'Xarajatlar muvaffaqiyatli xonadoshlar o‘rtasida taqsimlandi!',
+                                      ),
+                                    ),
+                                  );
+                                }
+                              },
+                              child: const Text(
+                                'Xonadon hisobiga yozish',
+                                style: TextStyle(
+                                  fontSize: 15,
+                                  fontWeight: FontWeight.w800,
+                                ),
+                              ),
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+            );
+          },
+        );
+      },
+    );
   }
 }

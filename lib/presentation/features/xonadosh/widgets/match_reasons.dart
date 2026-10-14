@@ -2,11 +2,7 @@ import 'package:xonadosh/data/models/xonadosh_models.dart';
 import 'package:xonadosh/domain/matching_score.dart';
 import 'package:xonadosh/l10n/app_localizations.dart';
 
-String localizeMatchReason(
-  AppLocalizations l10n,
-  String key, {
-  String? uni,
-}) {
+String localizeMatchReason(AppLocalizations l10n, String key, {String? uni}) {
   return switch (key) {
     'sleep_early' => l10n.xonadoshMatchSleepEarly,
     'sleep_night' => l10n.xonadoshMatchSleepNight,

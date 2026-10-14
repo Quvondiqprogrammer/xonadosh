@@ -31,7 +31,9 @@ class _XonadoshListingDetailScreenState
     final theme = Theme.of(context);
     final isDark = theme.brightness == Brightness.dark;
 
-    final listingAsync = ref.watch(xonadoshListingDetailProvider(widget.listingId));
+    final listingAsync = ref.watch(
+      xonadoshListingDetailProvider(widget.listingId),
+    );
     final unisAsync = ref.watch(xonadoshUniversitiesProvider);
     final unis = unisAsync.valueOrNull ?? [];
 
@@ -44,12 +46,18 @@ class _XonadoshListingDetailScreenState
           child: Column(
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
-              const Icon(Icons.error_outline_rounded, size: 48, color: Colors.red),
+              const Icon(
+                Icons.error_outline_rounded,
+                size: 48,
+                color: Colors.red,
+              ),
               const SizedBox(height: 12),
               Text(context.l10n.xonadoshErrGeneric('$err')),
               const SizedBox(height: 12),
               ElevatedButton(
-                onPressed: () => ref.refresh(xonadoshListingDetailProvider(widget.listingId)),
+                onPressed: () => ref.refresh(
+                  xonadoshListingDetailProvider(widget.listingId),
+                ),
                 child: Text(context.l10n.commonRetry),
               ),
             ],
@@ -77,7 +85,11 @@ class _XonadoshListingDetailScreenState
                     shape: BoxShape.circle,
                   ),
                   child: IconButton(
-                    icon: const Icon(Icons.arrow_back_rounded, color: Colors.white, size: 20),
+                    icon: const Icon(
+                      Icons.arrow_back_rounded,
+                      color: Colors.white,
+                      size: 20,
+                    ),
                     tooltip: context.l10n.commonBack,
                     onPressed: () {
                       if (Navigator.of(context).canPop()) {
@@ -97,9 +109,14 @@ class _XonadoshListingDetailScreenState
                         shape: BoxShape.circle,
                       ),
                       child: IconButton(
-                        icon: const Icon(Icons.delete_outline_rounded, color: Colors.white, size: 18),
+                        icon: const Icon(
+                          Icons.delete_outline_rounded,
+                          color: Colors.white,
+                          size: 18,
+                        ),
                         tooltip: context.l10n.xonadoshDeleteListing,
-                        onPressed: () => _confirmDeleteListing(context, ref, item),
+                        onPressed: () =>
+                            _confirmDeleteListing(context, ref, item),
                       ),
                     )
                   else if (item.username.trim().isNotEmpty)
@@ -110,7 +127,11 @@ class _XonadoshListingDetailScreenState
                         shape: BoxShape.circle,
                       ),
                       child: IconButton(
-                        icon: const Icon(Icons.block_rounded, color: Colors.white, size: 18),
+                        icon: const Icon(
+                          Icons.block_rounded,
+                          color: Colors.white,
+                          size: 18,
+                        ),
                         tooltip: context.l10n.blockUser,
                         onPressed: () => confirmAndBlockUser(
                           context,
@@ -127,14 +148,20 @@ class _XonadoshListingDetailScreenState
                       shape: BoxShape.circle,
                     ),
                     child: IconButton(
-                      icon: const Icon(Icons.flag_outlined, color: Colors.white, size: 18),
+                      icon: const Icon(
+                        Icons.flag_outlined,
+                        color: Colors.white,
+                        size: 18,
+                      ),
                       tooltip: context.l10n.reportAction,
                       onPressed: () => showReportContentDialog(
                         context,
                         ref,
                         targetType: ReportTargetType.listing,
                         targetId: '${item.id}',
-                        subjectLabel: context.l10n.reportContentSubjectListing(item.title),
+                        subjectLabel: context.l10n.reportContentSubjectListing(
+                          item.title,
+                        ),
                       ),
                     ),
                   ),
@@ -145,7 +172,11 @@ class _XonadoshListingDetailScreenState
                       shape: BoxShape.circle,
                     ),
                     child: IconButton(
-                      icon: const Icon(Icons.share_rounded, color: Colors.white, size: 18),
+                      icon: const Icon(
+                        Icons.share_rounded,
+                        color: Colors.white,
+                        size: 18,
+                      ),
                       tooltip: context.l10n.commonShare,
                       onPressed: () {
                         ContactActions.shareText(
@@ -169,14 +200,21 @@ class _XonadoshListingDetailScreenState
                     children: [
                       PageView.builder(
                         itemCount: photos.length,
-                        onPageChanged: (idx) => setState(() => _currentPhotoIndex = idx),
+                        onPageChanged: (idx) =>
+                            setState(() => _currentPhotoIndex = idx),
                         itemBuilder: (context, idx) {
                           return Image.network(
                             photos[idx],
                             fit: BoxFit.cover,
                             errorBuilder: (_, _, _) => Container(
-                              color: isDark ? const Color(0xFF1E293B) : const Color(0xFFCBD5E1),
-                              child: const Icon(Icons.apartment_rounded, size: 64, color: Colors.grey),
+                              color: isDark
+                                  ? const Color(0xFF1E293B)
+                                  : const Color(0xFFCBD5E1),
+                              child: const Icon(
+                                Icons.apartment_rounded,
+                                size: 64,
+                                color: Colors.grey,
+                              ),
                             ),
                           );
                         },
@@ -186,7 +224,11 @@ class _XonadoshListingDetailScreenState
                         child: DecoratedBox(
                           decoration: BoxDecoration(
                             gradient: LinearGradient(
-                              colors: [Colors.black54, Colors.transparent, Colors.black87],
+                              colors: [
+                                Colors.black54,
+                                Colors.transparent,
+                                Colors.black87,
+                              ],
                               begin: Alignment.topCenter,
                               end: Alignment.bottomCenter,
                               stops: const [0.0, 0.5, 1.0],
@@ -199,14 +241,21 @@ class _XonadoshListingDetailScreenState
                         bottom: 16,
                         right: 16,
                         child: Container(
-                          padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 4),
+                          padding: const EdgeInsets.symmetric(
+                            horizontal: 10,
+                            vertical: 4,
+                          ),
                           decoration: BoxDecoration(
                             color: Colors.black54,
                             borderRadius: BorderRadius.circular(12),
                           ),
                           child: Text(
                             '${_currentPhotoIndex + 1} / ${photos.length}',
-                            style: const TextStyle(color: Colors.white, fontSize: 12, fontWeight: FontWeight.bold),
+                            style: const TextStyle(
+                              color: Colors.white,
+                              fontSize: 12,
+                              fontWeight: FontWeight.bold,
+                            ),
                           ),
                         ),
                       ),
@@ -215,14 +264,21 @@ class _XonadoshListingDetailScreenState
                         bottom: 16,
                         left: 16,
                         child: Container(
-                          padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 4),
+                          padding: const EdgeInsets.symmetric(
+                            horizontal: 10,
+                            vertical: 4,
+                          ),
                           decoration: BoxDecoration(
                             color: _getTypeColor(item.type),
                             borderRadius: BorderRadius.circular(10),
                           ),
                           child: Text(
                             _getTypeLabel(context, item.type),
-                            style: const TextStyle(color: Colors.white, fontSize: 12, fontWeight: FontWeight.bold),
+                            style: const TextStyle(
+                              color: Colors.white,
+                              fontSize: 12,
+                              fontWeight: FontWeight.bold,
+                            ),
                           ),
                         ),
                       ),
@@ -280,9 +336,14 @@ class _XonadoshListingDetailScreenState
                         if (item.targetGender != 'any')
                           Flexible(
                             child: Container(
-                              padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 4),
+                              padding: const EdgeInsets.symmetric(
+                                horizontal: 10,
+                                vertical: 4,
+                              ),
                               decoration: BoxDecoration(
-                                color: XonaDoshColors.accentPurple.withAlpha(20),
+                                color: XonaDoshColors.accentPurple.withAlpha(
+                                  20,
+                                ),
                                 borderRadius: BorderRadius.circular(8),
                               ),
                               child: Text(
@@ -304,6 +365,126 @@ class _XonadoshListingDetailScreenState
 
                     const SizedBox(height: 16),
 
+                    if (item.isNoBroker || item.utilitiesIncluded) ...[
+                      Row(
+                        children: [
+                          if (item.isNoBroker)
+                            Expanded(
+                              child: Container(
+                                padding: const EdgeInsets.symmetric(
+                                  horizontal: 12,
+                                  vertical: 10,
+                                ),
+                                decoration: BoxDecoration(
+                                  color: const Color(
+                                    0xFF059669,
+                                  ).withValues(alpha: isDark ? 0.2 : 0.1),
+                                  borderRadius: BorderRadius.circular(12),
+                                  border: Border.all(
+                                    color: const Color(
+                                      0xFF059669,
+                                    ).withValues(alpha: isDark ? 0.5 : 0.3),
+                                  ),
+                                ),
+                                child: Row(
+                                  children: [
+                                    const Icon(
+                                      Icons.verified_user_rounded,
+                                      color: Color(0xFF059669),
+                                      size: 20,
+                                    ),
+                                    const SizedBox(width: 8),
+                                    Expanded(
+                                      child: Column(
+                                        crossAxisAlignment:
+                                            CrossAxisAlignment.start,
+                                        children: [
+                                          const Text(
+                                            'Bez Makler',
+                                            style: TextStyle(
+                                              fontWeight: FontWeight.w800,
+                                              fontSize: 13,
+                                              color: Color(0xFF059669),
+                                            ),
+                                          ),
+                                          Text(
+                                            '50% makler to‘lovini tejang',
+                                            style: TextStyle(
+                                              fontSize: 11,
+                                              color: isDark
+                                                  ? Colors.white70
+                                                  : const Color(0xFF065F46),
+                                            ),
+                                          ),
+                                        ],
+                                      ),
+                                    ),
+                                  ],
+                                ),
+                              ),
+                            ),
+                          if (item.isNoBroker && item.utilitiesIncluded)
+                            const SizedBox(width: 8),
+                          if (item.utilitiesIncluded)
+                            Expanded(
+                              child: Container(
+                                padding: const EdgeInsets.symmetric(
+                                  horizontal: 12,
+                                  vertical: 10,
+                                ),
+                                decoration: BoxDecoration(
+                                  color: const Color(
+                                    0xFF0284C7,
+                                  ).withValues(alpha: isDark ? 0.2 : 0.1),
+                                  borderRadius: BorderRadius.circular(12),
+                                  border: Border.all(
+                                    color: const Color(
+                                      0xFF0284C7,
+                                    ).withValues(alpha: isDark ? 0.5 : 0.3),
+                                  ),
+                                ),
+                                child: Row(
+                                  children: [
+                                    const Icon(
+                                      Icons.bolt_rounded,
+                                      color: Color(0xFF0284C7),
+                                      size: 20,
+                                    ),
+                                    const SizedBox(width: 8),
+                                    Expanded(
+                                      child: Column(
+                                        crossAxisAlignment:
+                                            CrossAxisAlignment.start,
+                                        children: [
+                                          const Text(
+                                            'Kommunal ichida',
+                                            style: TextStyle(
+                                              fontWeight: FontWeight.w800,
+                                              fontSize: 13,
+                                              color: Color(0xFF0284C7),
+                                            ),
+                                          ),
+                                          Text(
+                                            'Gaz, svet, suv to‘lovi ichida',
+                                            style: TextStyle(
+                                              fontSize: 11,
+                                              color: isDark
+                                                  ? Colors.white70
+                                                  : const Color(0xFF0369A1),
+                                            ),
+                                          ),
+                                        ],
+                                      ),
+                                    ),
+                                  ],
+                                ),
+                              ),
+                            ),
+                        ],
+                      ),
+                      const SizedBox(height: 14),
+                    ],
+
                     // Key Specs Grid
                     _buildSpecGrid(context, item, isDark),
 
@@ -313,10 +494,14 @@ class _XonadoshListingDetailScreenState
                     Container(
                       padding: const EdgeInsets.all(14),
                       decoration: BoxDecoration(
-                        color: isDark ? const Color(0xFF1E293B) : const Color(0xFFF8FAFC),
+                        color: isDark
+                            ? const Color(0xFF1E293B)
+                            : const Color(0xFFF8FAFC),
                         borderRadius: BorderRadius.circular(12),
                         border: Border.all(
-                          color: isDark ? const Color(0xFF334155) : const Color(0xFFE2E8F0),
+                          color: isDark
+                              ? const Color(0xFF334155)
+                              : const Color(0xFFE2E8F0),
                         ),
                       ),
                       child: Row(
@@ -327,7 +512,11 @@ class _XonadoshListingDetailScreenState
                               color: XonaDoshColors.primary.withAlpha(20),
                               borderRadius: BorderRadius.circular(8),
                             ),
-                            child: const Icon(Icons.location_on_rounded, color: XonaDoshColors.primary, size: 20),
+                            child: const Icon(
+                              Icons.location_on_rounded,
+                              color: XonaDoshColors.primary,
+                              size: 20,
+                            ),
                           ),
                           const SizedBox(width: 12),
                           Expanded(
@@ -336,14 +525,22 @@ class _XonadoshListingDetailScreenState
                               children: [
                                 Text(
                                   '${item.city} • ${item.district}',
-                                  style: const TextStyle(fontWeight: FontWeight.w800, fontSize: 14),
+                                  style: const TextStyle(
+                                    fontWeight: FontWeight.w800,
+                                    fontSize: 14,
+                                  ),
                                   maxLines: 1,
                                   overflow: TextOverflow.ellipsis,
                                 ),
                                 const SizedBox(height: 2),
                                 Text(
                                   item.address,
-                                  style: TextStyle(fontSize: 12, color: isDark ? Colors.grey[400] : Colors.grey[700]),
+                                  style: TextStyle(
+                                    fontSize: 12,
+                                    color: isDark
+                                        ? Colors.grey[400]
+                                        : Colors.grey[700],
+                                  ),
                                   maxLines: 2,
                                   overflow: TextOverflow.ellipsis,
                                 ),
@@ -365,7 +562,9 @@ class _XonadoshListingDetailScreenState
                     if (item.amenities.isNotEmpty) ...[
                       Text(
                         context.l10n.xonadoshAmenitiesTitle,
-                        style: theme.textTheme.titleMedium?.copyWith(fontWeight: FontWeight.w800),
+                        style: theme.textTheme.titleMedium?.copyWith(
+                          fontWeight: FontWeight.w800,
+                        ),
                       ),
                       const SizedBox(height: 10),
                       Wrap(
@@ -373,17 +572,32 @@ class _XonadoshListingDetailScreenState
                         runSpacing: 8,
                         children: item.amenities.map((a) {
                           return Container(
-                            padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
+                            padding: const EdgeInsets.symmetric(
+                              horizontal: 12,
+                              vertical: 8,
+                            ),
                             decoration: BoxDecoration(
-                              color: isDark ? const Color(0xFF1E293B) : const Color(0xFFF1F5F9),
+                              color: isDark
+                                  ? const Color(0xFF1E293B)
+                                  : const Color(0xFFF1F5F9),
                               borderRadius: BorderRadius.circular(12),
                             ),
                             child: Row(
                               mainAxisSize: MainAxisSize.min,
                               children: [
-                                Icon(_getAmenityIcon(a), size: 16, color: XonaDoshColors.primary),
+                                Icon(
+                                  _getAmenityIcon(a),
+                                  size: 16,
+                                  color: XonaDoshColors.primary,
+                                ),
                                 const SizedBox(width: 6),
-                                Text(a, style: const TextStyle(fontSize: 12, fontWeight: FontWeight.w600)),
+                                Text(
+                                  a,
+                                  style: const TextStyle(
+                                    fontSize: 12,
+                                    fontWeight: FontWeight.w600,
+                                  ),
+                                ),
                               ],
                             ),
                           );
@@ -396,7 +610,9 @@ class _XonadoshListingDetailScreenState
                     if (item.description.isNotEmpty) ...[
                       Text(
                         context.l10n.xonadoshDescriptionTitle,
-                        style: theme.textTheme.titleMedium?.copyWith(fontWeight: FontWeight.w800),
+                        style: theme.textTheme.titleMedium?.copyWith(
+                          fontWeight: FontWeight.w800,
+                        ),
                       ),
                       const SizedBox(height: 8),
                       Text(
@@ -432,16 +648,16 @@ class _XonadoshListingDetailScreenState
     final theme = Theme.of(context);
 
     // If user selected a custom uni, fetch dynamic commute
-    final activeUni = _selectedUni ??
+    final activeUni =
+        _selectedUni ??
         (item.nearestUniversityId != null
             ? unis.where((u) => u.id == item.nearestUniversityId).firstOrNull
             : unis.firstOrNull);
 
     final dynamicCommuteAsync = activeUni != null
-        ? ref.watch(xonadoshCommuteProvider((
-            listingId: item.id,
-            uniId: activeUni.id,
-          )))
+        ? ref.watch(
+            xonadoshCommuteProvider((listingId: item.id, uniId: activeUni.id)),
+          )
         : null;
 
     final commute = dynamicCommuteAsync?.valueOrNull ?? item.commute;
@@ -466,14 +682,19 @@ class _XonadoshListingDetailScreenState
                   children: [
                     Text(
                       context.l10n.xonadoshTransportAnalysis,
-                      style: theme.textTheme.titleMedium?.copyWith(fontWeight: FontWeight.w800),
+                      style: theme.textTheme.titleMedium?.copyWith(
+                        fontWeight: FontWeight.w800,
+                      ),
                     ),
                   ],
                 ),
               ),
               if (commute != null)
                 Container(
-                  padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 5),
+                  padding: const EdgeInsets.symmetric(
+                    horizontal: 10,
+                    vertical: 5,
+                  ),
                   decoration: BoxDecoration(
                     color: XonaDoshColors.primary.withAlpha(20),
                     borderRadius: BorderRadius.circular(8),
@@ -498,9 +719,17 @@ class _XonadoshListingDetailScreenState
               initialValue: activeUni,
               decoration: InputDecoration(
                 labelText: context.l10n.xonadoshSelectDestUni,
-                prefixIcon: const Icon(Icons.school_rounded, color: XonaDoshColors.primary),
-                contentPadding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
-                border: OutlineInputBorder(borderRadius: BorderRadius.circular(10)),
+                prefixIcon: const Icon(
+                  Icons.school_rounded,
+                  color: XonaDoshColors.primary,
+                ),
+                contentPadding: const EdgeInsets.symmetric(
+                  horizontal: 12,
+                  vertical: 8,
+                ),
+                border: OutlineInputBorder(
+                  borderRadius: BorderRadius.circular(10),
+                ),
               ),
               isExpanded: true,
               items: unis.map((u) {
@@ -508,7 +737,10 @@ class _XonadoshListingDetailScreenState
                   value: u,
                   child: Text(
                     '${u.shortName} (${u.district})',
-                    style: const TextStyle(fontSize: 13, fontWeight: FontWeight.w700),
+                    style: const TextStyle(
+                      fontSize: 13,
+                      fontWeight: FontWeight.w700,
+                    ),
                   ),
                 );
               }).toList(),
@@ -525,7 +757,8 @@ class _XonadoshListingDetailScreenState
               icon: Icons.directions_subway_rounded,
               iconColor: const Color(0xFF3B82F6),
               title: context.l10n.xonadoshMetro,
-              subtitle: commute.metro.station ?? context.l10n.xonadoshNearbyStop,
+              subtitle:
+                  commute.metro.station ?? context.l10n.xonadoshNearbyStop,
               timeMin: commute.metro.timeMin,
               singleFare: commute.metro.fareUzs,
               monthlyBudget: commute.metro.monthlyBudgetUzs,
@@ -591,7 +824,10 @@ class _XonadoshListingDetailScreenState
                     Flexible(
                       child: Text(
                         title,
-                        style: const TextStyle(fontWeight: FontWeight.w700, fontSize: 13),
+                        style: const TextStyle(
+                          fontWeight: FontWeight.w700,
+                          fontSize: 13,
+                        ),
                         maxLines: 1,
                         overflow: TextOverflow.ellipsis,
                       ),
@@ -599,17 +835,24 @@ class _XonadoshListingDetailScreenState
                     if (highlight) ...[
                       const SizedBox(width: 6),
                       Container(
-                        padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 1),
+                        padding: const EdgeInsets.symmetric(
+                          horizontal: 6,
+                          vertical: 1,
+                        ),
                         decoration: BoxDecoration(
                           color: XonaDoshColors.primary,
                           borderRadius: BorderRadius.circular(6),
                         ),
                         child: Text(
                           context.l10n.xonadoshRecommendBadge,
-                          style: const TextStyle(color: Colors.white, fontSize: 9, fontWeight: FontWeight.bold),
+                          style: const TextStyle(
+                            color: Colors.white,
+                            fontSize: 9,
+                            fontWeight: FontWeight.bold,
+                          ),
                         ),
                       ),
-                    ]
+                    ],
                   ],
                 ),
                 Text(
@@ -627,7 +870,10 @@ class _XonadoshListingDetailScreenState
             children: [
               Text(
                 '~ $timeMin ${context.l10n.xonadoshEstimatedTimeMinutes}',
-                style: const TextStyle(fontWeight: FontWeight.w800, fontSize: 13),
+                style: const TextStyle(
+                  fontWeight: FontWeight.w800,
+                  fontSize: 13,
+                ),
               ),
               Text(
                 singleFare > 0
@@ -638,7 +884,9 @@ class _XonadoshListingDetailScreenState
                       )
                     : context.l10n.xonadoshFree,
                 style: TextStyle(
-                  color: singleFare > 0 ? (isDark ? Colors.grey[400] : Colors.grey[700]) : XonaDoshColors.primary,
+                  color: singleFare > 0
+                      ? (isDark ? Colors.grey[400] : Colors.grey[700])
+                      : XonaDoshColors.primary,
                   fontSize: 11,
                   fontWeight: FontWeight.w600,
                 ),
@@ -653,7 +901,11 @@ class _XonadoshListingDetailScreenState
     );
   }
 
-  Widget _buildSpecGrid(BuildContext context, XonadoshListing item, bool isDark) {
+  Widget _buildSpecGrid(
+    BuildContext context,
+    XonadoshListing item,
+    bool isDark,
+  ) {
     final l10n = context.l10n;
     return Container(
       padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 14),
@@ -664,13 +916,37 @@ class _XonadoshListingDetailScreenState
       child: Row(
         mainAxisAlignment: MainAxisAlignment.spaceAround,
         children: [
-          Expanded(child: _buildSpecColumn(Icons.meeting_room_outlined, '${item.roomsCount} ${l10n.xonadoshRoomsShort}', l10n.xonadoshRoomsCount)),
+          Expanded(
+            child: _buildSpecColumn(
+              Icons.meeting_room_outlined,
+              '${item.roomsCount} ${l10n.xonadoshRoomsShort}',
+              l10n.xonadoshRoomsCount,
+            ),
+          ),
           _buildSpecDivider(),
-          Expanded(child: _buildSpecColumn(Icons.layers_outlined, '${item.floor}/${item.totalFloors}', l10n.xonadoshFloor)),
+          Expanded(
+            child: _buildSpecColumn(
+              Icons.layers_outlined,
+              '${item.floor}/${item.totalFloors}',
+              l10n.xonadoshFloor,
+            ),
+          ),
           _buildSpecDivider(),
-          Expanded(child: _buildSpecColumn(Icons.square_foot_outlined, '${item.areaSqm.toStringAsFixed(0)} m²', l10n.xonadoshAreaShort)),
+          Expanded(
+            child: _buildSpecColumn(
+              Icons.square_foot_outlined,
+              '${item.areaSqm.toStringAsFixed(0)} m²',
+              l10n.xonadoshAreaShort,
+            ),
+          ),
           _buildSpecDivider(),
-          Expanded(child: _buildSpecColumn(Icons.location_city_outlined, item.district, l10n.xonadoshDistrictShort)),
+          Expanded(
+            child: _buildSpecColumn(
+              Icons.location_city_outlined,
+              item.district,
+              l10n.xonadoshDistrictShort,
+            ),
+          ),
         ],
       ),
     );
@@ -693,7 +969,11 @@ class _XonadoshListingDetailScreenState
             backgroundColor: XonaDoshColors.primary.withAlpha(25),
             child: Text(
               item.ownerName.isNotEmpty ? item.ownerName[0].toUpperCase() : 'M',
-              style: const TextStyle(fontWeight: FontWeight.w800, fontSize: 18, color: XonaDoshColors.primary),
+              style: const TextStyle(
+                fontWeight: FontWeight.w800,
+                fontSize: 18,
+                color: XonaDoshColors.primary,
+              ),
             ),
           ),
           const SizedBox(width: 12),
@@ -703,14 +983,21 @@ class _XonadoshListingDetailScreenState
               children: [
                 Text(
                   item.ownerName,
-                  style: const TextStyle(fontWeight: FontWeight.w800, fontSize: 15),
+                  style: const TextStyle(
+                    fontWeight: FontWeight.w800,
+                    fontSize: 15,
+                  ),
                   maxLines: 1,
                   overflow: TextOverflow.ellipsis,
                 ),
                 const SizedBox(height: 2),
                 Text(
                   item.phoneNumber,
-                  style: TextStyle(color: Colors.grey[600], fontSize: 13, fontWeight: FontWeight.w600),
+                  style: TextStyle(
+                    color: Colors.grey[600],
+                    fontSize: 13,
+                    fontWeight: FontWeight.w600,
+                  ),
                 ),
               ],
             ),
@@ -718,15 +1005,25 @@ class _XonadoshListingDetailScreenState
           if (item.telegramHandle != null && item.telegramHandle!.isNotEmpty)
             Text(
               item.telegramHandle!,
-              style: const TextStyle(color: Color(0xFF0284C7), fontWeight: FontWeight.w700, fontSize: 12),
+              style: const TextStyle(
+                color: Color(0xFF0284C7),
+                fontWeight: FontWeight.w700,
+                fontSize: 12,
+              ),
             ),
         ],
       ),
     );
   }
 
-  Widget _buildBottomContactBar(BuildContext context, WidgetRef ref, bool isDark) {
-    final listingAsync = ref.watch(xonadoshListingDetailProvider(widget.listingId));
+  Widget _buildBottomContactBar(
+    BuildContext context,
+    WidgetRef ref,
+    bool isDark,
+  ) {
+    final listingAsync = ref.watch(
+      xonadoshListingDetailProvider(widget.listingId),
+    );
     final item = listingAsync.valueOrNull;
     if (item == null) return const SizedBox();
 
@@ -755,7 +1052,8 @@ class _XonadoshListingDetailScreenState
             Expanded(
               flex: 3,
               child: FilledButton.icon(
-                onPressed: () => ContactActions.callPhone(context, item.phoneNumber),
+                onPressed: () =>
+                    ContactActions.callPhone(context, item.phoneNumber),
                 onLongPress: () => ContactActions.showContactSheet(
                   context,
                   phone: item.phoneNumber,
@@ -764,23 +1062,30 @@ class _XonadoshListingDetailScreenState
                 icon: const Icon(Icons.call_rounded, size: 20),
                 label: Text(
                   context.l10n.xonadoshCallBtn,
-                  style: const TextStyle(fontWeight: FontWeight.w800, fontSize: 15),
+                  style: const TextStyle(
+                    fontWeight: FontWeight.w800,
+                    fontSize: 15,
+                  ),
                 ),
                 style: FilledButton.styleFrom(
                   backgroundColor: XonaDoshColors.primary,
                   foregroundColor: Colors.white,
                   padding: const EdgeInsets.symmetric(vertical: 14),
-                  shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(12),
+                  ),
                   elevation: 0,
                 ),
               ),
             ),
-            if (item.telegramHandle != null && item.telegramHandle!.isNotEmpty) ...[
+            if (item.telegramHandle != null &&
+                item.telegramHandle!.isNotEmpty) ...[
               const SizedBox(width: 10),
               Expanded(
                 flex: 2,
                 child: FilledButton.icon(
-                  onPressed: () => ContactActions.openTelegram(context, item.telegramHandle),
+                  onPressed: () =>
+                      ContactActions.openTelegram(context, item.telegramHandle),
                   icon: const Icon(Icons.send_rounded, size: 18),
                   label: const Text(
                     'Telegram',
@@ -790,7 +1095,9 @@ class _XonadoshListingDetailScreenState
                     backgroundColor: const Color(0xFF0284C7),
                     foregroundColor: Colors.white,
                     padding: const EdgeInsets.symmetric(vertical: 14),
-                    shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(12),
+                    ),
                     elevation: 0,
                   ),
                 ),
@@ -804,14 +1111,30 @@ class _XonadoshListingDetailScreenState
 
   IconData _getAmenityIcon(String name) {
     final n = name.toLowerCase();
-    if (n.contains('wi-fi') || n.contains('wifi') || n.contains('internet')) return Icons.wifi_rounded;
-    if (n.contains('kir') || n.contains('mashina')) return Icons.local_laundry_service_rounded;
-    if (n.contains('muz') || n.contains('xolod')) return Icons.kitchen_rounded;
-    if (n.contains('kondit') || n.contains('havo')) return Icons.ac_unit_rounded;
-    if (n.contains('mebel') || n.contains('krovat')) return Icons.chair_rounded;
-    if (n.contains('suv') || n.contains('isitish')) return Icons.water_drop_rounded;
-    if (n.contains('balkon')) return Icons.balcony_rounded;
-    if (n.contains('televizor') || n.contains('tv')) return Icons.tv_rounded;
+    if (n.contains('wi-fi') || n.contains('wifi') || n.contains('internet')) {
+      return Icons.wifi_rounded;
+    }
+    if (n.contains('kir') || n.contains('mashina')) {
+      return Icons.local_laundry_service_rounded;
+    }
+    if (n.contains('muz') || n.contains('xolod')) {
+      return Icons.kitchen_rounded;
+    }
+    if (n.contains('kondit') || n.contains('havo')) {
+      return Icons.ac_unit_rounded;
+    }
+    if (n.contains('mebel') || n.contains('krovat')) {
+      return Icons.chair_rounded;
+    }
+    if (n.contains('suv') || n.contains('isitish')) {
+      return Icons.water_drop_rounded;
+    }
+    if (n.contains('balkon')) {
+      return Icons.balcony_rounded;
+    }
+    if (n.contains('televizor') || n.contains('tv')) {
+      return Icons.tv_rounded;
+    }
     return Icons.check_circle_outline_rounded;
   }
 
@@ -863,11 +1186,7 @@ class _XonadoshListingDetailScreenState
   }
 
   Widget _buildSpecDivider() {
-    return Container(
-      width: 1,
-      height: 28,
-      color: Colors.grey.withAlpha(60),
-    );
+    return Container(width: 1, height: 28, color: Colors.grey.withAlpha(60));
   }
 
   bool _isOwnListing(WidgetRef ref, XonadoshListing item) {
@@ -886,12 +1205,23 @@ class _XonadoshListingDetailScreenState
       context: context,
       builder: (ctx) => AlertDialog(
         shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
-        title: Text(l10n.xonadoshDeleteListing, style: const TextStyle(fontWeight: FontWeight.w800)),
-        content: Text(l10n.xonadoshDeleteListingBody, style: const TextStyle(fontSize: 13, height: 1.4)),
+        title: Text(
+          l10n.xonadoshDeleteListing,
+          style: const TextStyle(fontWeight: FontWeight.w800),
+        ),
+        content: Text(
+          l10n.xonadoshDeleteListingBody,
+          style: const TextStyle(fontSize: 13, height: 1.4),
+        ),
         actions: [
-          TextButton(onPressed: () => Navigator.pop(ctx, false), child: Text(l10n.commonCancel)),
+          TextButton(
+            onPressed: () => Navigator.pop(ctx, false),
+            child: Text(l10n.commonCancel),
+          ),
           FilledButton(
-            style: FilledButton.styleFrom(backgroundColor: const Color(0xFFEF4444)),
+            style: FilledButton.styleFrom(
+              backgroundColor: const Color(0xFFEF4444),
+            ),
             onPressed: () => Navigator.pop(ctx, true),
             child: Text(l10n.commonDelete),
           ),
@@ -899,13 +1229,15 @@ class _XonadoshListingDetailScreenState
       ),
     );
     if (ok != true) return;
-    final res = await ref.read(xonadoshRepositoryProvider).deleteListing(item.id);
+    final res = await ref
+        .read(xonadoshRepositoryProvider)
+        .deleteListing(item.id);
     if (!context.mounted) return;
     if (res['ok'] == true) {
       ref.invalidate(xonadoshListingsProvider);
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text(l10n.xonadoshListingDeleted)),
-      );
+      ScaffoldMessenger.of(
+        context,
+      ).showSnackBar(SnackBar(content: Text(l10n.xonadoshListingDeleted)));
       if (Navigator.of(context).canPop()) {
         Navigator.of(context).pop();
       } else {
@@ -919,7 +1251,9 @@ class _XonadoshListingDetailScreenState
   }
 
   String _formatMoney(double amount) {
-    return amount.toStringAsFixed(0).replaceAllMapped(
+    return amount
+        .toStringAsFixed(0)
+        .replaceAllMapped(
           RegExp(r'(\d{1,3})(?=(\d{3})+(?!\d))'),
           (Match m) => '${m[1]} ',
         );

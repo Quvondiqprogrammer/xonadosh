@@ -13,8 +13,9 @@ class UserModel {
   final String? phoneNumber;
   final String? avatarUrl;
 
-  String get displayName =>
-      (fullName != null && fullName!.trim().isNotEmpty) ? fullName!.trim() : username;
+  String get displayName => (fullName != null && fullName!.trim().isNotEmpty)
+      ? fullName!.trim()
+      : username;
 
   factory UserModel.fromJson(Map<String, dynamic> json) {
     int asInt(dynamic v) {
@@ -26,19 +27,21 @@ class UserModel {
     return UserModel(
       userId: asInt(json['user_id'] ?? json['id']),
       username: (json['username'] ?? '').toString(),
-      fullName: json['full_name']?.toString() ?? json['display_name']?.toString(),
-      phoneNumber: json['phone_number']?.toString() ?? json['phone']?.toString(),
+      fullName:
+          json['full_name']?.toString() ?? json['display_name']?.toString(),
+      phoneNumber:
+          json['phone_number']?.toString() ?? json['phone']?.toString(),
       avatarUrl: json['avatar_url']?.toString(),
     );
   }
 
   Map<String, dynamic> toJson() => {
-        'user_id': userId,
-        'username': username,
-        'full_name': fullName,
-        'phone_number': phoneNumber,
-        'avatar_url': avatarUrl,
-      };
+    'user_id': userId,
+    'username': username,
+    'full_name': fullName,
+    'phone_number': phoneNumber,
+    'avatar_url': avatarUrl,
+  };
 
   UserModel copyWith({
     int? userId,

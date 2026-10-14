@@ -7,12 +7,13 @@ import 'package:xonadosh/presentation/auth/login_screen.dart';
 import 'package:xonadosh/presentation/auth/register_screen.dart';
 import 'package:xonadosh/presentation/common/loading.dart';
 import 'package:xonadosh/presentation/features/xonadosh/screens/create_listing_screen.dart';
+import 'package:xonadosh/presentation/features/xonadosh/screens/first_run_onboarding_screen.dart';
 import 'package:xonadosh/presentation/features/xonadosh/screens/listing_detail_screen.dart';
 import 'package:xonadosh/presentation/features/xonadosh/screens/map_screen.dart';
 import 'package:xonadosh/presentation/features/xonadosh/screens/profile_edit_screen.dart';
 import 'package:xonadosh/presentation/features/xonadosh/screens/settings_screen.dart';
 import 'package:xonadosh/presentation/features/xonadosh/xonadosh_shell.dart';
-import 'package:xonadosh/presentation/providers/app_providers.dart';
+import 'package:xonadosh/presentation/providers/xonadosh_providers.dart';
 import 'package:xonadosh/presentation/router/app_routes.dart';
 
 final _rootKey = GlobalKey<NavigatorState>();
@@ -24,32 +25,58 @@ GoRouter createAppRouter(Ref ref) {
     refreshListenable: _AuthRefresh(ref),
     redirect: (context, state) {
       final boot = ref.read(authBootstrapProvider);
+      final firstRun = ref.read(firstRunSeenProvider);
       final loc = state.matchedLocation;
       final onLogin = loc == AppRoutes.login;
       final onRegister = loc == AppRoutes.register;
       final onSplash = loc == AppRoutes.splash;
+      final onOnboarding = loc == AppRoutes.onboarding;
 
-      // Still checking session → keep splash only.
-      // If a local session already exists, don't yank the user back to splash
-      // (login/register would flash splash after a successful sign-in).
-      if (boot.isLoading || boot.isRefreshing) {
+      // Ekotizim Single Sign-On (SSO): Hamyon AI orqali ochilganda avto-kirish
+      final ssoToken = state.uri.queryParameters['sso_token'];
+      final ssoUserId = state.uri.queryParameters['user_id'];
+      if (ssoToken != null && ssoToken.isNotEmpty) {
+        final session = ref.read(sessionManagerProvider);
+        if (!session.isAuthenticated) {
+          final effectiveUser =
+              ssoUserId != null ? 'user_$ssoUserId' : 'hamyon_user';
+          session.saveSession(
+            username: effectiveUser,
+            token: ssoToken,
+            expiresAt:
+                DateTime.now().add(const Duration(days: 30)).millisecondsSinceEpoch,
+          );
+          ref.invalidate(authBootstrapProvider);
+          return AppRoutes.shell;
+        }
+      }
+
+      // Still checking session or first-run flag → splash.
+      if (boot.isLoading || boot.isRefreshing || firstRun.isLoading) {
         final hasLocal = ref.read(sessionManagerProvider).isAuthenticated;
-        if (hasLocal && !onLogin && !onRegister && !onSplash) {
+        if (hasLocal && !onLogin && !onRegister && !onSplash && !onOnboarding) {
           return null;
         }
         return onSplash ? null : AppRoutes.splash;
       }
 
-      final loggedIn = boot.asData?.value == true;
+      final loggedIn = (boot.asData?.value == true) ||
+          ref.read(sessionManagerProvider).isAuthenticated;
+      final seenFirstRun = firstRun.asData?.value ?? true;
 
-      // Not logged in (or bootstrap error) → login (never stay on splash).
+      // Unique 3-screen first-run before auth (ASC 4.3 differentiation).
+      if (!loggedIn && !seenFirstRun) {
+        if (onOnboarding) return null;
+        return AppRoutes.onboarding;
+      }
+
       if (!loggedIn) {
         if (onLogin || onRegister) return null;
+        if (onOnboarding && seenFirstRun) return AppRoutes.login;
         return AppRoutes.login;
       }
 
-      // Logged in → leave auth screens.
-      if (onLogin || onRegister || onSplash) {
+      if (onLogin || onRegister || onSplash || onOnboarding) {
         return AppRoutes.shell;
       }
       return null;
@@ -60,9 +87,10 @@ GoRouter createAppRouter(Ref ref) {
         builder: (_, _) => const Scaffold(body: AppLoading()),
       ),
       GoRoute(
-        path: AppRoutes.login,
-        builder: (_, _) => const LoginScreen(),
+        path: AppRoutes.onboarding,
+        builder: (_, _) => const FirstRunOnboardingScreen(),
       ),
+      GoRoute(path: AppRoutes.login, builder: (_, _) => const LoginScreen()),
       GoRoute(
         path: AppRoutes.register,
         builder: (_, _) => const RegisterScreen(),
@@ -71,10 +99,7 @@ GoRouter createAppRouter(Ref ref) {
         path: AppRoutes.shell,
         builder: (_, _) => const XonadoshShell(),
         routes: [
-          GoRoute(
-            path: 'map',
-            builder: (_, _) => const XonadoshMapScreen(),
-          ),
+          GoRoute(path: 'map', builder: (_, _) => const XonadoshMapScreen()),
           GoRoute(
             path: 'listing/:id',
             builder: (_, state) {
@@ -114,6 +139,7 @@ final appRouterProvider = Provider<GoRouter>((ref) {
 class _AuthRefresh extends ChangeNotifier {
   _AuthRefresh(this._ref) {
     _ref.listen(authBootstrapProvider, (_, _) => notifyListeners());
+    _ref.listen(firstRunSeenProvider, (_, _) => notifyListeners());
   }
 
   final Ref _ref;

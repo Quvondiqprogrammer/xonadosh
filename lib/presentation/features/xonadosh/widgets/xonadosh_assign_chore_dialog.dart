@@ -9,10 +9,7 @@ import 'package:xonadosh/presentation/providers/xonadosh_providers.dart';
 class XonadoshAssignChoreDialog extends ConsumerStatefulWidget {
   final XonadoshChore chore;
 
-  const XonadoshAssignChoreDialog({
-    super.key,
-    required this.chore,
-  });
+  const XonadoshAssignChoreDialog({super.key, required this.chore});
 
   @override
   ConsumerState<XonadoshAssignChoreDialog> createState() =>
@@ -63,7 +60,9 @@ class _XonadoshAssignChoreDialogState
           Navigator.of(context).pop(true);
           ScaffoldMessenger.of(context).showSnackBar(
             SnackBar(
-              content: Text(context.l10n.xonadoshAssignedSnack(widget.chore.title, name)),
+              content: Text(
+                context.l10n.xonadoshAssignedSnack(widget.chore.title, name),
+              ),
               backgroundColor: XonaDoshColors.primary,
             ),
           );
@@ -72,7 +71,10 @@ class _XonadoshAssignChoreDialogState
     } catch (e) {
       if (mounted) {
         ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(content: Text(context.l10n.xonadoshErrGeneric('$e')), backgroundColor: Colors.red),
+          SnackBar(
+            content: Text(context.l10n.xonadoshErrGeneric('$e')),
+            backgroundColor: Colors.red,
+          ),
         );
       }
     } finally {
@@ -96,7 +98,9 @@ class _XonadoshAssignChoreDialogState
           Expanded(
             child: Text(
               context.l10n.xonadoshAssignDutyTitle,
-              style: theme.textTheme.titleMedium?.copyWith(fontWeight: FontWeight.w900),
+              style: theme.textTheme.titleMedium?.copyWith(
+                fontWeight: FontWeight.w900,
+              ),
             ),
           ),
         ],
@@ -107,16 +111,28 @@ class _XonadoshAssignChoreDialogState
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             Text(
-              context.l10n.xonadoshTaskWithDay(widget.chore.title, widget.chore.dayOfWeek),
-              style: const TextStyle(fontWeight: FontWeight.w700, fontSize: 13, color: XonaDoshColors.primary),
+              context.l10n.xonadoshTaskWithDay(
+                widget.chore.title,
+                widget.chore.dayOfWeek,
+              ),
+              style: const TextStyle(
+                fontWeight: FontWeight.w700,
+                fontSize: 13,
+                color: XonaDoshColors.primary,
+              ),
             ),
             const SizedBox(height: 16),
             TextField(
               controller: _nameController,
               decoration: InputDecoration(
                 labelText: context.l10n.xonadoshDutyPersonInCharge,
-                prefixIcon: const Icon(Icons.person_rounded, color: XonaDoshColors.primary),
-                border: OutlineInputBorder(borderRadius: BorderRadius.circular(10)),
+                prefixIcon: const Icon(
+                  Icons.person_rounded,
+                  color: XonaDoshColors.primary,
+                ),
+                border: OutlineInputBorder(
+                  borderRadius: BorderRadius.circular(10),
+                ),
               ),
             ),
             const SizedBox(height: 14),
@@ -129,11 +145,17 @@ class _XonadoshAssignChoreDialogState
               spacing: 6,
               runSpacing: 6,
               children: _suggestedRoommates.map((name) {
-                final label = name == 'Men' ? context.l10n.xonadoshMeSelf : name;
+                final label = name == 'Men'
+                    ? context.l10n.xonadoshMeSelf
+                    : name;
                 return ActionChip(
                   label: Text(label),
                   backgroundColor: XonaDoshColors.primary.withAlpha(20),
-                  labelStyle: const TextStyle(fontSize: 12, fontWeight: FontWeight.w700, color: XonaDoshColors.primary),
+                  labelStyle: const TextStyle(
+                    fontSize: 12,
+                    fontWeight: FontWeight.w700,
+                    color: XonaDoshColors.primary,
+                  ),
                   onPressed: () {
                     _nameController.text = label;
                   },
@@ -154,11 +176,23 @@ class _XonadoshAssignChoreDialogState
             backgroundColor: XonaDoshColors.primary,
             foregroundColor: Colors.white,
             elevation: 0,
-            shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
+            shape: RoundedRectangleBorder(
+              borderRadius: BorderRadius.circular(10),
+            ),
           ),
           child: _isLoading
-              ? const SizedBox(width: 16, height: 16, child: CircularProgressIndicator(strokeWidth: 2, color: Colors.white))
-              : Text(context.l10n.xonadoshAssignChoreBtn, style: const TextStyle(fontWeight: FontWeight.w800)),
+              ? const SizedBox(
+                  width: 16,
+                  height: 16,
+                  child: CircularProgressIndicator(
+                    strokeWidth: 2,
+                    color: Colors.white,
+                  ),
+                )
+              : Text(
+                  context.l10n.xonadoshAssignChoreBtn,
+                  style: const TextStyle(fontWeight: FontWeight.w800),
+                ),
         ),
       ],
     );

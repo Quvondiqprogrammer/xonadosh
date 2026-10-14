@@ -1109,7 +1109,7 @@
   "settings": "Sozlamalar",
   "accountDelete": "Hisobni o‘chirish",
   "loginTitle": "XonaDoshga xush kelibsiz",
-  "loginSubtitle": "Uy toping. Mos sherik tanlang. Birga yashang.",
+  "loginSubtitle": "O‘zbekiston universitetlari uchun talaba uy-joy va xonadosh moslash.",
   "registerUsername": "Login",
   "registerPhone": "Telefon",
   "registerPassword": "Parol (kamida 8)",
@@ -1149,13 +1149,17 @@
   "reportContentSubjectListing": "E'lon: {title}",
   "@reportContentSubjectListing": {
     "placeholders": {
-      "title": {"type": "String"}
+      "title": {
+        "type": "String"
+      }
     }
   },
   "reportContentSubjectProfile": "Anketa: {name}",
   "@reportContentSubjectProfile": {
     "placeholders": {
-      "name": {"type": "String"}
+      "name": {
+        "type": "String"
+      }
     }
   },
   "reportReasonSpam": "Spam yoki soxta e'lon",
@@ -1188,8 +1192,8 @@
   "xonadoshDeleteListingBody": "E’lon lentadan yashiriladi. Ortga qaytarib bo‘lmaydi.",
   "xonadoshListingDeleted": "E’lon o‘chirildi",
   "xonadoshFindRoom": "Uy topish",
-  "xonadoshOnboardingTitle": "XonaDosh nima qiladi",
-  "xonadoshOnboardingSubtitle": "Uchta oddiy ish — Telegram guruhlari va OLX o‘rniga.",
+  "xonadoshOnboardingTitle": "O‘zbekiston talabalari uchun",
+  "xonadoshOnboardingSubtitle": "Kampus yonida uy-joy, Campus Fit xonadosh va birga yashash — yetkazib berish, dating yoki VoIP emas.",
   "xonadoshJobHousingTitle": "Uy topish",
   "xonadoshJobHousingBody": "Universitet yonidagi ijara. Narx, tuman va metro ko‘rinadi.",
   "xonadoshJobMatchTitle": "Sherik topish",
@@ -1209,13 +1213,17 @@
   "xonadoshKmAway": "{km} uzoqda",
   "@xonadoshKmAway": {
     "placeholders": {
-      "km": {"type": "String"}
+      "km": {
+        "type": "String"
+      }
     }
   },
   "xonadoshNearMetro": "Metro {name}",
   "@xonadoshNearMetro": {
     "placeholders": {
-      "name": {"type": "String"}
+      "name": {
+        "type": "String"
+      }
     }
   },
   "xonadoshHousingHeroTitle": "Nima kerak?",
@@ -1233,5 +1241,43 @@
   "xonadoshTypeBuy": "Qidiruv",
   "xonadoshMatchStudyMusic": "Dars muhiti mos (musiqa / quloqchin)",
   "xonadoshCallShort": "Qo‘ng‘iroq",
-  "xonadoshMoreDetails": "Batafsil"
+  "xonadoshMoreDetails": "Batafsil",
+  "registerSubtitle": "Talaba uy-joy akkauntini yarating",
+  "registerFullNameHint": "Talaba guvohnomasidagidek",
+  "registerNameInvalid": "To‘liq ism kiriting (kamida 2 belgi)",
+  "registerUsernameHint": "Harf, raqam, pastki chiziq",
+  "registerUsernameHelper": "3–24 belgi, unique",
+  "registerPhoneCountryHint": "Davlatni tanlang, keyin raqamni kiriting",
+  "registerPasswordHint": "Kamida 8 belgi",
+  "registerPasswordConfirm": "Parolni tasdiqlang",
+  "registerPasswordMismatch": "Parollar mos kelmadi",
+  "registerSelectCountry": "Davlatni tanlang",
+  "registerSearchCountry": "Davlatni qidirish",
+  "registerErrorPhoneTaken": "Bu telefon allaqachon ro‘yxatdan o‘tgan",
+  "registerErrorUsernameTaken": "Bu login band",
+  "loginErrorInvalid": "Login yoki parol noto‘g‘ri",
+  "loginErrorBlocked": "Akkaunt bloklangan. Supportga yozing.",
+  "errorRateLimited": "Juda ko‘p urinish. Biroz kutib qayta urinib ko‘ring.",
+  "xdFirstRunHousingTitle": "Universitetingiz yonida uy toping",
+  "xdFirstRunHousingBody": "Toshkent, Samarqand va boshqa O‘zbekiston OTMlari atrofidagi talaba ijarasi — narx, tuman va kampus yo‘li bir joyda.",
+  "xdFirstRunMatchTitle": "Odatlar bo‘yicha xonadosh tanlang",
+  "xdFirstRunMatchBody": "Campus Fit uyqu, tozalik, o‘qish uslubi, byudjet va bir xil universitetni hisoblaydi — talaba coliving uchun, dating yoki tasodifiy chat emas.",
+  "xdFirstRunColivingTitle": "Navbatchilik va xarajatlarni bo‘lishing",
+  "xdFirstRunColivingBody": "Mos kelgach, navbatchilik, bozorlik va umumiy to‘lovlarni xonadoshingiz bilan boshqaring — Ikkinchi va VCallda yo‘q vositalar.",
+  "xdFirstRunNext": "Keyingi",
+  "xdFirstRunDone": "XonaDoshga o‘tish",
+  "xdFirstRunSkip": "O‘tkazib yuborish",
+  "xdFirstRunChipTashkent": "Toshkent OTM",
+  "xdFirstRunChipSamarkand": "Samarqand",
+  "xdFirstRunChipNearCampus": "Kampus yonida",
+  "xdFirstRunChipSleep": "Uyqu tartibi",
+  "xdFirstRunChipClean": "Tozalik",
+  "xdFirstRunChipBudget": "Byudjet (so‘m)",
+  "xdFirstRunChipSameUni": "Bir xil OTM",
+  "xdFirstRunChipChores": "Navbatchilik",
+  "xdFirstRunChipGroceries": "Bozorlik",
+  "xdFirstRunChipExpenses": "Umumiy xarajat",
+  "xdCampusFitTitle": "Campus Fit",
+  "xdCampusFitBody": "XonaDoshga xos: O‘zbekiston universiteti, uyqu, tozalik, o‘qish odatlari va byudjet bo‘yicha moslik — oddiy chat emas.",
+  "xdCampusFitPreviewBody": "Misol: bir xil OTM + o‘xshash uyqu va byudjet → yuqori Campus Fit."
 }

@@ -50,6 +50,7 @@ class _XonadoshProfileEditScreenState
   final String _pets = 'no';
   final String _guests = 'sometimes';
 
+  String? _avatarUrl;
   XonadoshUniversity? _selectedUni;
   bool _isLoading = false;
   bool _hasUnsavedChanges = false;
@@ -68,6 +69,7 @@ class _XonadoshProfileEditScreenState
     _facultyCtrl = TextEditingController(text: p?.faculty ?? '');
     _aboutCtrl = TextEditingController(text: p?.aboutMe ?? '');
     _lookingCtrl = TextEditingController(text: p?.lookingForText ?? '');
+    _avatarUrl = p?.avatarUrl;
 
     if (p != null) {
       _populateFromProfile(p);
@@ -94,12 +96,15 @@ class _XonadoshProfileEditScreenState
     _facultyCtrl.text = p.faculty ?? '';
     _aboutCtrl.text = p.aboutMe;
     _lookingCtrl.text = p.lookingForText;
+    _avatarUrl = p.avatarUrl;
     _gender = p.gender;
     _courseYear = p.courseYear;
     _age = p.age;
     _budgetMin = p.budgetMin;
     _budgetMax = p.budgetMax;
-    _targetDistrict = p.targetDistrict.isNotEmpty ? p.targetDistrict : 'Yunusobod';
+    _targetDistrict = p.targetDistrict.isNotEmpty
+        ? p.targetDistrict
+        : 'Yunusobod';
     _sleep = p.sleepSchedule;
     _cleanliness = p.cleanliness;
     _study = p.studyHabit;
@@ -118,7 +123,8 @@ class _XonadoshProfileEditScreenState
     try {
       // 1. Check if user already has an active profile
       final repo = ref.read(xonadoshRepositoryProvider);
-      final existing = ref.read(xonadoshMyProfileProvider).valueOrNull ??
+      final existing =
+          ref.read(xonadoshMyProfileProvider).valueOrNull ??
           await repo.getMyProfile(ref.read(sessionManagerProvider).userId);
 
       if (existing != null && existing.fullName.isNotEmpty) {
@@ -153,14 +159,17 @@ class _XonadoshProfileEditScreenState
             if (_aboutCtrl.text.isEmpty && draft['about_me'] != null) {
               _aboutCtrl.text = draft['about_me'];
             }
-            if (_lookingCtrl.text.isEmpty && draft['looking_for_text'] != null) {
+            if (_lookingCtrl.text.isEmpty &&
+                draft['looking_for_text'] != null) {
               _lookingCtrl.text = draft['looking_for_text'];
             }
             _gender = draft['gender'] ?? _gender;
             _age = draft['age'] ?? _age;
             _courseYear = draft['course_year'] ?? _courseYear;
-            _budgetMin = (draft['budget_min'] as num?)?.toDouble() ?? _budgetMin;
-            _budgetMax = (draft['budget_max'] as num?)?.toDouble() ?? _budgetMax;
+            _budgetMin =
+                (draft['budget_min'] as num?)?.toDouble() ?? _budgetMin;
+            _budgetMax =
+                (draft['budget_max'] as num?)?.toDouble() ?? _budgetMax;
             _sleep = draft['sleep_schedule'] ?? _sleep;
             _cleanliness = draft['cleanliness'] ?? _cleanliness;
             _study = draft['study_habit'] ?? _study;
@@ -255,7 +264,9 @@ class _XonadoshProfileEditScreenState
     }
     if (step == 1) {
       if (_budgetMax < _budgetMin) {
-        _showError("Maksimal byudjet minimal byudjetdan kam bo'lishi mumkin emas");
+        _showError(
+          "Maksimal byudjet minimal byudjetdan kam bo'lishi mumkin emas",
+        );
         return false;
       }
       return true;
@@ -268,7 +279,11 @@ class _XonadoshProfileEditScreenState
       SnackBar(
         content: Row(
           children: [
-            const Icon(Icons.error_outline_rounded, color: Colors.white, size: 20),
+            const Icon(
+              Icons.error_outline_rounded,
+              color: Colors.white,
+              size: 20,
+            ),
             const SizedBox(width: 10),
             Expanded(child: Text(msg)),
           ],
@@ -308,10 +323,15 @@ class _XonadoshProfileEditScreenState
 
     setState(() => _isLoading = true);
 
+    final user = ref.read(sessionManagerProvider).user;
+    final effectiveAvatar = _avatarUrl ?? user?.avatarUrl;
+
     final data = {
       'full_name': _nameCtrl.text.trim(),
       'phone_number': _phoneCtrl.text.trim(),
       'telegram_handle': _tgCtrl.text.trim().replaceAll('@', ''),
+      if (effectiveAvatar != null && effectiveAvatar.trim().isNotEmpty)
+        'avatar_url': effectiveAvatar.trim(),
       'gender': _gender,
       'age': _age,
       'university_id': _selectedUni?.id,
@@ -329,6 +349,7 @@ class _XonadoshProfileEditScreenState
       'pets_habit': _pets,
       'guests_habit': _guests,
       'about_me': _aboutCtrl.text.trim(),
+      'looking_for_text': _lookingCtrl.text.trim(),
       'status': 'looking',
     };
 
@@ -348,7 +369,11 @@ class _XonadoshProfileEditScreenState
           SnackBar(
             content: Row(
               children: [
-                const Icon(Icons.check_circle_rounded, color: Colors.white, size: 22),
+                const Icon(
+                  Icons.check_circle_rounded,
+                  color: Colors.white,
+                  size: 22,
+                ),
                 const SizedBox(width: 10),
                 Expanded(
                   child: Text(
@@ -362,13 +387,17 @@ class _XonadoshProfileEditScreenState
             ),
             backgroundColor: XonaDoshColors.primary,
             behavior: SnackBarBehavior.floating,
-            shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+            shape: RoundedRectangleBorder(
+              borderRadius: BorderRadius.circular(12),
+            ),
           ),
         );
         Navigator.of(context).pop();
       }
     } else {
-      _showError(res['error']?.toString() ?? "Server xatoligi. Qaytadan urinib ko'ring.");
+      _showError(
+        res['error']?.toString() ?? "Server xatoligi. Qaytadan urinib ko'ring.",
+      );
     }
   }
 
@@ -502,8 +531,12 @@ class _XonadoshProfileEditScreenState
     final unis = unisAsync.valueOrNull ?? [];
 
     // Auto-match university if not yet selected
-    if (_selectedUni == null && widget.initialProfile?.universityId != null && unis.isNotEmpty) {
-      _selectedUni = unis.where((u) => u.id == widget.initialProfile!.universityId).firstOrNull;
+    if (_selectedUni == null &&
+        widget.initialProfile?.universityId != null &&
+        unis.isNotEmpty) {
+      _selectedUni = unis
+          .where((u) => u.id == widget.initialProfile!.universityId)
+          .firstOrNull;
     }
 
     final completeness = _calculateCompleteness();
@@ -534,7 +567,9 @@ class _XonadoshProfileEditScreenState
             },
           ),
           title: Text(
-            _isEditingExisting ? context.l10n.xonadoshSurveyEditTitle : context.l10n.xonadoshSurveyTitle,
+            _isEditingExisting
+                ? context.l10n.xonadoshSurveyEditTitle
+                : context.l10n.xonadoshSurveyTitle,
             style: const TextStyle(fontWeight: FontWeight.w800, fontSize: 18),
             maxLines: 1,
             overflow: TextOverflow.ellipsis,
@@ -542,7 +577,10 @@ class _XonadoshProfileEditScreenState
           actions: [
             if (_isEditingExisting)
               IconButton(
-                icon: const Icon(Icons.delete_outline_rounded, color: Color(0xFFEF4444)),
+                icon: const Icon(
+                  Icons.delete_outline_rounded,
+                  color: Color(0xFFEF4444),
+                ),
                 tooltip: context.l10n.xonadoshDeleteProfileTitle,
                 onPressed: _isLoading ? null : _deleteProfile,
               ),
@@ -556,7 +594,11 @@ class _XonadoshProfileEditScreenState
               ),
               child: Row(
                 children: [
-                  const Icon(Icons.check_circle_outline_rounded, size: 14, color: XonaDoshColors.primary),
+                  const Icon(
+                    Icons.check_circle_outline_rounded,
+                    size: 14,
+                    color: XonaDoshColors.primary,
+                  ),
                   const SizedBox(width: 5),
                   Text(
                     '${(completeness * 100).toInt()}%',
@@ -576,23 +618,44 @@ class _XonadoshProfileEditScreenState
               children: [
                 // Step Indicator Pills
                 Padding(
-                  padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 6),
+                  padding: const EdgeInsets.symmetric(
+                    horizontal: 16,
+                    vertical: 6,
+                  ),
                   child: Row(
                     children: [
-                      _buildStepTab(0, context.l10n.xonadoshSurveyStepPersonal, Icons.person_rounded),
+                      _buildStepTab(
+                        0,
+                        context.l10n.xonadoshSurveyStepPersonal,
+                        Icons.person_rounded,
+                      ),
                       const SizedBox(width: 6),
-                      _buildStepTab(1, context.l10n.xonadoshSurveyStepUni, Icons.school_rounded),
+                      _buildStepTab(
+                        1,
+                        context.l10n.xonadoshSurveyStepUni,
+                        Icons.school_rounded,
+                      ),
                       const SizedBox(width: 6),
-                      _buildStepTab(2, context.l10n.xonadoshSurveyStepHabits, Icons.nightlife_rounded),
+                      _buildStepTab(
+                        2,
+                        context.l10n.xonadoshSurveyStepHabits,
+                        Icons.nightlife_rounded,
+                      ),
                       const SizedBox(width: 6),
-                      _buildStepTab(3, context.l10n.xonadoshSurveyStepReqs, Icons.checklist_rounded),
+                      _buildStepTab(
+                        3,
+                        context.l10n.xonadoshSurveyStepReqs,
+                        Icons.checklist_rounded,
+                      ),
                     ],
                   ),
                 ),
                 LinearProgressIndicator(
                   value: (_currentStep + 1) / 4,
                   backgroundColor: Colors.grey.withAlpha(30),
-                  valueColor: const AlwaysStoppedAnimation<Color>(XonaDoshColors.primary),
+                  valueColor: const AlwaysStoppedAnimation<Color>(
+                    XonaDoshColors.primary,
+                  ),
                   minHeight: 3,
                 ),
               ],
@@ -632,8 +695,13 @@ class _XonadoshProfileEditScreenState
                     icon: const Icon(Icons.arrow_back_rounded, size: 18),
                     label: Text(context.l10n.commonBack),
                     style: OutlinedButton.styleFrom(
-                      padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 14),
-                      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+                      padding: const EdgeInsets.symmetric(
+                        horizontal: 16,
+                        vertical: 14,
+                      ),
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(12),
+                      ),
                     ),
                   ),
                   const SizedBox(width: 12),
@@ -646,13 +714,18 @@ class _XonadoshProfileEditScreenState
                       foregroundColor: Colors.white,
                       elevation: 0,
                       padding: const EdgeInsets.symmetric(vertical: 14),
-                      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(12),
+                      ),
                     ),
                     child: _isLoading
                         ? const SizedBox(
                             height: 20,
                             width: 20,
-                            child: CircularProgressIndicator(color: Colors.white, strokeWidth: 2.2),
+                            child: CircularProgressIndicator(
+                              color: Colors.white,
+                              strokeWidth: 2.2,
+                            ),
                           )
                         : Row(
                             mainAxisAlignment: MainAxisAlignment.center,
@@ -661,10 +734,13 @@ class _XonadoshProfileEditScreenState
                                 child: Text(
                                   _currentStep == 3
                                       ? (_isEditingExisting
-                                          ? context.l10n.xonadoshSaveChanges
-                                          : context.l10n.xonadoshSaveAndFind)
+                                            ? context.l10n.xonadoshSaveChanges
+                                            : context.l10n.xonadoshSaveAndFind)
                                       : context.l10n.commonNext,
-                                  style: const TextStyle(fontWeight: FontWeight.w800, fontSize: 14),
+                                  style: const TextStyle(
+                                    fontWeight: FontWeight.w800,
+                                    fontSize: 14,
+                                  ),
                                   maxLines: 1,
                                   overflow: TextOverflow.ellipsis,
                                   textAlign: TextAlign.center,
@@ -673,7 +749,9 @@ class _XonadoshProfileEditScreenState
                               const SizedBox(width: 8),
                               Icon(
                                 _currentStep == 3
-                                    ? (_isEditingExisting ? Icons.save_rounded : Icons.check_circle_outline_rounded)
+                                    ? (_isEditingExisting
+                                          ? Icons.save_rounded
+                                          : Icons.check_circle_outline_rounded)
                                     : Icons.arrow_forward_rounded,
                                 size: 18,
                               ),
@@ -710,15 +788,15 @@ class _XonadoshProfileEditScreenState
             color: isActive
                 ? XonaDoshColors.primary.withAlpha(35)
                 : isDone
-                    ? XonaDoshColors.primary.withAlpha(20)
-                    : Colors.transparent,
+                ? XonaDoshColors.primary.withAlpha(20)
+                : Colors.transparent,
             borderRadius: BorderRadius.circular(10),
             border: Border.all(
               color: isActive
                   ? XonaDoshColors.primary
                   : isDone
-                      ? XonaDoshColors.primary.withAlpha(70)
-                      : Colors.grey.withAlpha(40),
+                  ? XonaDoshColors.primary.withAlpha(70)
+                  : Colors.grey.withAlpha(40),
             ),
           ),
           child: Row(
@@ -730,8 +808,8 @@ class _XonadoshProfileEditScreenState
                 color: isActive
                     ? XonaDoshColors.primary
                     : isDone
-                        ? XonaDoshColors.primary
-                        : Colors.grey,
+                    ? XonaDoshColors.primary
+                    : Colors.grey,
               ),
               const SizedBox(width: 4),
               Flexible(
@@ -739,12 +817,14 @@ class _XonadoshProfileEditScreenState
                   title,
                   style: TextStyle(
                     fontSize: 11,
-                    fontWeight: isActive || isDone ? FontWeight.w800 : FontWeight.w600,
+                    fontWeight: isActive || isDone
+                        ? FontWeight.w800
+                        : FontWeight.w600,
                     color: isActive
                         ? XonaDoshColors.primary
                         : isDone
-                            ? XonaDoshColors.primary
-                            : Colors.grey,
+                        ? XonaDoshColors.primary
+                        : Colors.grey,
                   ),
                   overflow: TextOverflow.ellipsis,
                 ),
@@ -780,7 +860,9 @@ class _XonadoshProfileEditScreenState
               labelText: context.l10n.xonadoshFullNameRequired,
               hintText: 'Masalan: Sardor Aliyev',
               prefixIcon: const Icon(Icons.person_outline_rounded),
-              border: OutlineInputBorder(borderRadius: BorderRadius.circular(14)),
+              border: OutlineInputBorder(
+                borderRadius: BorderRadius.circular(14),
+              ),
             ),
           ),
           const SizedBox(height: 16),
@@ -793,13 +875,18 @@ class _XonadoshProfileEditScreenState
                 child: Container(
                   padding: const EdgeInsets.all(12),
                   decoration: BoxDecoration(
-                    color: isDark ? const Color(0xFF1F2937) : const Color(0xFFF3F4F6),
+                    color: isDark
+                        ? const Color(0xFF1F2937)
+                        : const Color(0xFFF3F4F6),
                     borderRadius: BorderRadius.circular(14),
                   ),
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      Text('Jinsi', style: TextStyle(fontSize: 12, color: Colors.grey)),
+                      Text(
+                        'Jinsi',
+                        style: TextStyle(fontSize: 12, color: Colors.grey),
+                      ),
                       const SizedBox(height: 6),
                       Row(
                         children: [
@@ -812,7 +899,8 @@ class _XonadoshProfileEditScreenState
                           ChoiceChip(
                             label: Text(context.l10n.xonadoshGirl),
                             selected: _gender == 'female',
-                            onSelected: (_) => setState(() => _gender = 'female'),
+                            onSelected: (_) =>
+                                setState(() => _gender = 'female'),
                           ),
                         ],
                       ),
@@ -825,24 +913,45 @@ class _XonadoshProfileEditScreenState
               Container(
                 padding: const EdgeInsets.all(12),
                 decoration: BoxDecoration(
-                  color: isDark ? const Color(0xFF1F2937) : const Color(0xFFF3F4F6),
+                  color: isDark
+                      ? const Color(0xFF1F2937)
+                      : const Color(0xFFF3F4F6),
                   borderRadius: BorderRadius.circular(14),
                 ),
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    Text('Yoshi', style: TextStyle(fontSize: 12, color: Colors.grey)),
+                    Text(
+                      'Yoshi',
+                      style: TextStyle(fontSize: 12, color: Colors.grey),
+                    ),
                     const SizedBox(height: 4),
                     Row(
                       children: [
                         IconButton(
-                          icon: const Icon(Icons.remove_circle_outline_rounded, size: 20),
-                          onPressed: _age > 16 ? () => setState(() => _age--) : null,
+                          icon: const Icon(
+                            Icons.remove_circle_outline_rounded,
+                            size: 20,
+                          ),
+                          onPressed: _age > 16
+                              ? () => setState(() => _age--)
+                              : null,
                         ),
-                        Text('$_age', style: const TextStyle(fontWeight: FontWeight.w800, fontSize: 16)),
+                        Text(
+                          '$_age',
+                          style: const TextStyle(
+                            fontWeight: FontWeight.w800,
+                            fontSize: 16,
+                          ),
+                        ),
                         IconButton(
-                          icon: const Icon(Icons.add_circle_outline_rounded, size: 20),
-                          onPressed: _age < 60 ? () => setState(() => _age++) : null,
+                          icon: const Icon(
+                            Icons.add_circle_outline_rounded,
+                            size: 20,
+                          ),
+                          onPressed: _age < 60
+                              ? () => setState(() => _age++)
+                              : null,
                         ),
                       ],
                     ),
@@ -855,7 +964,8 @@ class _XonadoshProfileEditScreenState
 
           _buildSectionHeader(
             title: context.l10n.xonadoshContactMethods,
-            subtitle: 'Mos xonadoshlar siz bilan to‘g‘ridan-to‘g‘ri bog‘lanishi uchun',
+            subtitle:
+                'Mos xonadoshlar siz bilan to‘g‘ridan-to‘g‘ri bog‘lanishi uchun',
             icon: Icons.contact_phone_rounded,
           ),
           const SizedBox(height: 16),
@@ -868,7 +978,9 @@ class _XonadoshProfileEditScreenState
               labelText: context.l10n.xonadoshPhoneRequired,
               hintText: '+998 90 123 45 67',
               prefixIcon: const Icon(Icons.phone_outlined),
-              border: OutlineInputBorder(borderRadius: BorderRadius.circular(14)),
+              border: OutlineInputBorder(
+                borderRadius: BorderRadius.circular(14),
+              ),
             ),
           ),
           const SizedBox(height: 14),
@@ -879,8 +991,13 @@ class _XonadoshProfileEditScreenState
             decoration: InputDecoration(
               labelText: context.l10n.xonadoshTelegram,
               hintText: '@username',
-              prefixIcon: const Icon(Icons.send_rounded, color: Color(0xFF0088CC)),
-              border: OutlineInputBorder(borderRadius: BorderRadius.circular(14)),
+              prefixIcon: const Icon(
+                Icons.send_rounded,
+                color: Color(0xFF0088CC),
+              ),
+              border: OutlineInputBorder(
+                borderRadius: BorderRadius.circular(14),
+              ),
             ),
           ),
         ],
@@ -891,7 +1008,10 @@ class _XonadoshProfileEditScreenState
   // ==========================================
   // STEP 2: OTM, Kurs & Byudjet
   // ==========================================
-  Widget _buildStep2UniversityAndBudget(bool isDark, List<XonadoshUniversity> unis) {
+  Widget _buildStep2UniversityAndBudget(
+    bool isDark,
+    List<XonadoshUniversity> unis,
+  ) {
     return SingleChildScrollView(
       padding: const EdgeInsets.all(20),
       child: Column(
@@ -899,7 +1019,8 @@ class _XonadoshProfileEditScreenState
         children: [
           _buildSectionHeader(
             title: context.l10n.xonadoshUniPlace,
-            subtitle: 'Bir xil yoki yaqin universitet talabalari bilan birga yashash osonroq',
+            subtitle:
+                'Bir xil yoki yaqin universitet talabalari bilan birga yashash osonroq',
             icon: Icons.school_rounded,
           ),
           const SizedBox(height: 16),
@@ -911,10 +1032,16 @@ class _XonadoshProfileEditScreenState
             child: Container(
               padding: const EdgeInsets.all(14),
               decoration: BoxDecoration(
-                color: isDark ? const Color(0xFF1E293B) : const Color(0xFFF8FAFC),
+                color: isDark
+                    ? const Color(0xFF1E293B)
+                    : const Color(0xFFF8FAFC),
                 borderRadius: BorderRadius.circular(14),
                 border: Border.all(
-                  color: _selectedUni != null ? XonaDoshColors.primary : (isDark ? const Color(0xFF334155) : const Color(0xFFE2E8F0)),
+                  color: _selectedUni != null
+                      ? XonaDoshColors.primary
+                      : (isDark
+                            ? const Color(0xFF334155)
+                            : const Color(0xFFE2E8F0)),
                   width: 1,
                 ),
               ),
@@ -926,7 +1053,11 @@ class _XonadoshProfileEditScreenState
                       color: XonaDoshColors.primary.withAlpha(25),
                       shape: BoxShape.circle,
                     ),
-                    child: const Icon(Icons.account_balance_rounded, color: XonaDoshColors.primary, size: 22),
+                    child: const Icon(
+                      Icons.account_balance_rounded,
+                      color: XonaDoshColors.primary,
+                      size: 22,
+                    ),
                   ),
                   const SizedBox(width: 12),
                   Expanded(
@@ -934,11 +1065,14 @@ class _XonadoshProfileEditScreenState
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
                         Text(
-                          _selectedUni?.nameUz ?? context.l10n.xonadoshSelectUniversity,
+                          _selectedUni?.nameUz ??
+                              context.l10n.xonadoshSelectUniversity,
                           style: TextStyle(
                             fontWeight: FontWeight.w700,
                             fontSize: 15,
-                            color: _selectedUni != null ? null : Colors.grey[600],
+                            color: _selectedUni != null
+                                ? null
+                                : Colors.grey[600],
                           ),
                           maxLines: 2,
                           overflow: TextOverflow.ellipsis,
@@ -946,19 +1080,28 @@ class _XonadoshProfileEditScreenState
                         if (_selectedUni != null)
                           Text(
                             '${_selectedUni!.district} • ${_selectedUni!.shortName}',
-                            style: const TextStyle(fontSize: 12, color: Colors.grey),
+                            style: const TextStyle(
+                              fontSize: 12,
+                              color: Colors.grey,
+                            ),
                             maxLines: 1,
                             overflow: TextOverflow.ellipsis,
                           )
                         else
                           Text(
                             context.l10n.xonadoshSelectUniversity,
-                            style: const TextStyle(fontSize: 12, color: Colors.grey),
+                            style: const TextStyle(
+                              fontSize: 12,
+                              color: Colors.grey,
+                            ),
                           ),
                       ],
                     ),
                   ),
-                  const Icon(Icons.keyboard_arrow_right_rounded, color: Colors.grey),
+                  const Icon(
+                    Icons.keyboard_arrow_right_rounded,
+                    color: Colors.grey,
+                  ),
                 ],
               ),
             ),
@@ -972,13 +1115,18 @@ class _XonadoshProfileEditScreenState
               labelText: context.l10n.xonadoshFaculty,
               hintText: 'Masalan: Dasturiy injiniring',
               prefixIcon: const Icon(Icons.menu_book_rounded),
-              border: OutlineInputBorder(borderRadius: BorderRadius.circular(14)),
+              border: OutlineInputBorder(
+                borderRadius: BorderRadius.circular(14),
+              ),
             ),
           ),
           const SizedBox(height: 16),
 
           // Kurs tanlash
-          Text(context.l10n.xonadoshCourseLevel, style: const TextStyle(fontWeight: FontWeight.w700, fontSize: 13)),
+          Text(
+            context.l10n.xonadoshCourseLevel,
+            style: const TextStyle(fontWeight: FontWeight.w700, fontSize: 13),
+          ),
           const SizedBox(height: 8),
           SingleChildScrollView(
             scrollDirection: Axis.horizontal,
@@ -1032,10 +1180,20 @@ class _XonadoshProfileEditScreenState
                       child: Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
-                          Text(context.l10n.xonadoshMinBudget, style: const TextStyle(fontSize: 11, color: Colors.grey)),
+                          Text(
+                            context.l10n.xonadoshMinBudget,
+                            style: const TextStyle(
+                              fontSize: 11,
+                              color: Colors.grey,
+                            ),
+                          ),
                           Text(
                             '${_formatMoney(_budgetMin)} ${context.l10n.currencyUzsSuffix}',
-                            style: const TextStyle(fontWeight: FontWeight.w800, fontSize: 16, color: XonaDoshColors.primary),
+                            style: const TextStyle(
+                              fontWeight: FontWeight.w800,
+                              fontSize: 16,
+                              color: XonaDoshColors.primary,
+                            ),
                             maxLines: 1,
                             overflow: TextOverflow.ellipsis,
                           ),
@@ -1044,16 +1202,30 @@ class _XonadoshProfileEditScreenState
                     ),
                     const Padding(
                       padding: EdgeInsets.symmetric(horizontal: 6),
-                      child: Icon(Icons.arrow_forward_rounded, color: Colors.grey, size: 18),
+                      child: Icon(
+                        Icons.arrow_forward_rounded,
+                        color: Colors.grey,
+                        size: 18,
+                      ),
                     ),
                     Expanded(
                       child: Column(
                         crossAxisAlignment: CrossAxisAlignment.end,
                         children: [
-                          Text(context.l10n.xonadoshMaxBudget, style: const TextStyle(fontSize: 11, color: Colors.grey)),
+                          Text(
+                            context.l10n.xonadoshMaxBudget,
+                            style: const TextStyle(
+                              fontSize: 11,
+                              color: Colors.grey,
+                            ),
+                          ),
                           Text(
                             '${_formatMoney(_budgetMax)} ${context.l10n.currencyUzsSuffix}',
-                            style: const TextStyle(fontWeight: FontWeight.w800, fontSize: 15, color: XonaDoshColors.primary),
+                            style: const TextStyle(
+                              fontWeight: FontWeight.w800,
+                              fontSize: 15,
+                              color: XonaDoshColors.primary,
+                            ),
                             maxLines: 1,
                             overflow: TextOverflow.ellipsis,
                           ),
@@ -1109,7 +1281,9 @@ class _XonadoshProfileEditScreenState
       child: Container(
         padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 5),
         decoration: BoxDecoration(
-          color: isSelected ? XonaDoshColors.primary : Colors.grey.withAlpha(25),
+          color: isSelected
+              ? XonaDoshColors.primary
+              : Colors.grey.withAlpha(25),
           borderRadius: BorderRadius.circular(8),
         ),
         child: Text(
@@ -1230,7 +1404,10 @@ class _XonadoshProfileEditScreenState
             Expanded(
               child: Text(
                 title,
-                style: const TextStyle(fontWeight: FontWeight.w700, fontSize: 13),
+                style: const TextStyle(
+                  fontWeight: FontWeight.w700,
+                  fontSize: 13,
+                ),
                 maxLines: 2,
                 overflow: TextOverflow.ellipsis,
               ),
@@ -1287,9 +1464,12 @@ class _XonadoshProfileEditScreenState
             maxLines: 3,
             decoration: InputDecoration(
               labelText: context.l10n.xonadoshAboutSelf,
-              hintText: 'Qiziqishlaringiz, xarakteringiz, bo‘sh vaqtingiz haqida...',
+              hintText:
+                  'Qiziqishlaringiz, xarakteringiz, bo‘sh vaqtingiz haqida...',
               alignLabelWithHint: true,
-              border: OutlineInputBorder(borderRadius: BorderRadius.circular(14)),
+              border: OutlineInputBorder(
+                borderRadius: BorderRadius.circular(14),
+              ),
             ),
           ),
           const SizedBox(height: 16),
@@ -1300,9 +1480,12 @@ class _XonadoshProfileEditScreenState
             maxLines: 3,
             decoration: InputDecoration(
               labelText: context.l10n.xonadoshLookingFor,
-              hintText: 'Masalan: Tartibli, TATUda o‘qiydigan, IT sohasidagi yigitlar bo‘lsa yaxshi...',
+              hintText:
+                  'Masalan: Tartibli, TATUda o‘qiydigan, IT sohasidagi yigitlar bo‘lsa yaxshi...',
               alignLabelWithHint: true,
-              border: OutlineInputBorder(borderRadius: BorderRadius.circular(14)),
+              border: OutlineInputBorder(
+                borderRadius: BorderRadius.circular(14),
+              ),
             ),
           ),
           const SizedBox(height: 24),
@@ -1314,7 +1497,9 @@ class _XonadoshProfileEditScreenState
               color: isDark ? const Color(0xFF1E293B) : Colors.white,
               borderRadius: BorderRadius.circular(14),
               border: Border.all(
-                color: isDark ? const Color(0xFF334155) : const Color(0xFFE2E8F0),
+                color: isDark
+                    ? const Color(0xFF334155)
+                    : const Color(0xFFE2E8F0),
               ),
             ),
             child: Column(
@@ -1322,19 +1507,31 @@ class _XonadoshProfileEditScreenState
               children: [
                 Row(
                   children: [
-                    const Icon(Icons.verified_user_rounded, color: XonaDoshColors.primary, size: 20),
+                    const Icon(
+                      Icons.verified_user_rounded,
+                      color: XonaDoshColors.primary,
+                      size: 20,
+                    ),
                     const SizedBox(width: 8),
                     Expanded(
                       child: Text(
                         context.l10n.xonadoshSurveyStatus,
-                        style: const TextStyle(fontWeight: FontWeight.w700, fontSize: 15),
+                        style: const TextStyle(
+                          fontWeight: FontWeight.w700,
+                          fontSize: 15,
+                        ),
                         maxLines: 1,
                         overflow: TextOverflow.ellipsis,
                       ),
                     ),
                     Text(
-                      context.l10n.xonadoshSurveyReadyPercent((completeness * 100).toInt()),
-                      style: const TextStyle(fontWeight: FontWeight.w800, color: XonaDoshColors.primaryDark),
+                      context.l10n.xonadoshSurveyReadyPercent(
+                        (completeness * 100).toInt(),
+                      ),
+                      style: const TextStyle(
+                        fontWeight: FontWeight.w800,
+                        color: XonaDoshColors.primaryDark,
+                      ),
                     ),
                   ],
                 ),
@@ -1346,7 +1543,9 @@ class _XonadoshProfileEditScreenState
                   style: TextStyle(
                     fontSize: 13,
                     height: 1.4,
-                    color: isDark ? const Color(0xFF94A3B8) : const Color(0xFF64748B),
+                    color: isDark
+                        ? const Color(0xFF94A3B8)
+                        : const Color(0xFF64748B),
                   ),
                 ),
               ],
@@ -1356,17 +1555,26 @@ class _XonadoshProfileEditScreenState
             const SizedBox(height: 16),
             OutlinedButton.icon(
               onPressed: _isLoading ? null : _deleteProfile,
-              icon: const Icon(Icons.delete_outline_rounded, color: Color(0xFFEF4444), size: 18),
+              icon: const Icon(
+                Icons.delete_outline_rounded,
+                color: Color(0xFFEF4444),
+                size: 18,
+              ),
               label: Text(
                 context.l10n.xonadoshDeleteSearchStop,
-                style: const TextStyle(color: Color(0xFFEF4444), fontWeight: FontWeight.w700),
+                style: const TextStyle(
+                  color: Color(0xFFEF4444),
+                  fontWeight: FontWeight.w700,
+                ),
                 maxLines: 2,
                 overflow: TextOverflow.ellipsis,
               ),
               style: OutlinedButton.styleFrom(
                 side: const BorderSide(color: Color(0xFFEF4444)),
                 padding: const EdgeInsets.symmetric(vertical: 12),
-                shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(12),
+                ),
               ),
             ),
           ],
@@ -1398,7 +1606,10 @@ class _XonadoshProfileEditScreenState
             children: [
               Text(
                 title,
-                style: const TextStyle(fontWeight: FontWeight.w800, fontSize: 16),
+                style: const TextStyle(
+                  fontWeight: FontWeight.w800,
+                  fontSize: 16,
+                ),
                 maxLines: 2,
                 overflow: TextOverflow.ellipsis,
               ),
@@ -1417,7 +1628,9 @@ class _XonadoshProfileEditScreenState
   }
 
   String _formatMoney(double amount) {
-    return amount.toStringAsFixed(0).replaceAllMapped(
+    return amount
+        .toStringAsFixed(0)
+        .replaceAllMapped(
           RegExp(r'(\d{1,3})(?=(\d{3})+(?!\d))'),
           (Match m) => '${m[1]} ',
         );
@@ -1485,8 +1698,13 @@ class _UniversityPickerSheetState extends State<_UniversityPickerSheet> {
             decoration: InputDecoration(
               hintText: 'OTM nomi, qisqartmasi yoki tumani bo‘yicha...',
               prefixIcon: const Icon(Icons.search_rounded),
-              contentPadding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
-              border: OutlineInputBorder(borderRadius: BorderRadius.circular(14)),
+              contentPadding: const EdgeInsets.symmetric(
+                horizontal: 16,
+                vertical: 12,
+              ),
+              border: OutlineInputBorder(
+                borderRadius: BorderRadius.circular(14),
+              ),
             ),
           ),
           const SizedBox(height: 12),
@@ -1502,7 +1720,10 @@ class _UniversityPickerSheetState extends State<_UniversityPickerSheet> {
                 final u = filtered[i];
                 final isSelected = widget.selectedId == u.id;
                 return ListTile(
-                  contentPadding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
+                  contentPadding: const EdgeInsets.symmetric(
+                    horizontal: 8,
+                    vertical: 4,
+                  ),
                   leading: Container(
                     padding: const EdgeInsets.all(8),
                     decoration: BoxDecoration(
@@ -1520,7 +1741,9 @@ class _UniversityPickerSheetState extends State<_UniversityPickerSheet> {
                   title: Text(
                     u.nameUz,
                     style: TextStyle(
-                      fontWeight: isSelected ? FontWeight.w800 : FontWeight.w600,
+                      fontWeight: isSelected
+                          ? FontWeight.w800
+                          : FontWeight.w600,
                       fontSize: 14,
                     ),
                   ),
@@ -1529,7 +1752,10 @@ class _UniversityPickerSheetState extends State<_UniversityPickerSheet> {
                     style: const TextStyle(fontSize: 12, color: Colors.grey),
                   ),
                   trailing: isSelected
-                      ? const Icon(Icons.check_circle_rounded, color: XonaDoshColors.primary)
+                      ? const Icon(
+                          Icons.check_circle_rounded,
+                          color: XonaDoshColors.primary,
+                        )
                       : null,
                   onTap: () => widget.onSelected(u),
                 );

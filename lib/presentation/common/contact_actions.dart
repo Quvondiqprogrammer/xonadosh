@@ -66,9 +66,9 @@ class ContactActions {
   static Future<void> copyPhone(BuildContext context, String phone) async {
     await Clipboard.setData(ClipboardData(text: phone.trim()));
     if (context.mounted) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text(context.l10n.xonadoshPhoneCopied)),
-      );
+      ScaffoldMessenger.of(
+        context,
+      ).showSnackBar(SnackBar(content: Text(context.l10n.xonadoshPhoneCopied)));
     }
   }
 
@@ -92,7 +92,10 @@ class ContactActions {
               children: [
                 Text(
                   l10n.xonadoshContactOptions,
-                  style: const TextStyle(fontWeight: FontWeight.w800, fontSize: 18),
+                  style: const TextStyle(
+                    fontWeight: FontWeight.w800,
+                    fontSize: 18,
+                  ),
                 ),
                 const SizedBox(height: 4),
                 Text(
@@ -104,7 +107,10 @@ class ContactActions {
                 ),
                 const SizedBox(height: 16),
                 ListTile(
-                  leading: const Icon(Icons.call_rounded, color: XonaDoshColors.primary),
+                  leading: const Icon(
+                    Icons.call_rounded,
+                    color: XonaDoshColors.primary,
+                  ),
                   title: Text(l10n.xonadoshCallBtn),
                   onTap: () async {
                     Navigator.pop(ctx);
@@ -126,17 +132,26 @@ class ContactActions {
                 ),
                 if (digits.length >= 9)
                   ListTile(
-                    leading: const Icon(Icons.chat_rounded, color: Color(0xFF25D366)),
+                    leading: const Icon(
+                      Icons.chat_rounded,
+                      color: Color(0xFF25D366),
+                    ),
                     title: Text(l10n.xonadoshWhatsApp),
                     onTap: () async {
                       Navigator.pop(ctx);
                       final uri = Uri.parse('https://wa.me/$digits');
-                      await launchUrl(uri, mode: LaunchMode.externalApplication);
+                      await launchUrl(
+                        uri,
+                        mode: LaunchMode.externalApplication,
+                      );
                     },
                   ),
                 if (telegramHandle != null && telegramHandle.trim().isNotEmpty)
                   ListTile(
-                    leading: const Icon(Icons.send_rounded, color: Color(0xFF0284C7)),
+                    leading: const Icon(
+                      Icons.send_rounded,
+                      color: Color(0xFF0284C7),
+                    ),
                     title: const Text('Telegram'),
                     onTap: () async {
                       Navigator.pop(ctx);

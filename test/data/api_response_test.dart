@@ -24,19 +24,16 @@ void main() {
     });
 
     test('forces ok false on HTTP 401 even if body says ok', () {
-      final map = ApiResponse.parse(
-        {'ok': true, 'error': 'nope'},
-        status: 401,
-      );
+      final map = ApiResponse.parse({'ok': true, 'error': 'nope'}, status: 401);
       expect(map['ok'], isFalse);
       expect(map['error'], 'nope');
     });
 
     test('uses message as error when ok is false', () {
-      final map = ApiResponse.parse(
-        {'ok': false, 'message': 'Parol noto‘g‘ri'},
-        status: 401,
-      );
+      final map = ApiResponse.parse({
+        'ok': false,
+        'message': 'Parol noto‘g‘ri',
+      }, status: 401);
       expect(map['ok'], isFalse);
       expect(map['error'], 'Parol noto‘g‘ri');
     });

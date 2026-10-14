@@ -29,10 +29,14 @@ Widget _wrap(Widget child, {List<Override> overrides = const []}) {
 }
 
 final _emptyOverrides = <Override>[
-  xonadoshUniversitiesProvider.overrideWith((ref) async => <XonadoshUniversity>[]),
+  xonadoshUniversitiesProvider.overrideWith(
+    (ref) async => <XonadoshUniversity>[],
+  ),
   xonadoshListingsProvider.overrideWith((ref) async => <XonadoshListing>[]),
   xonadoshMyProfileProvider.overrideWith((ref) async => null),
-  xonadoshMatchingRoommatesProvider.overrideWith((ref) async => <XonadoshProfile>[]),
+  xonadoshMatchingRoommatesProvider.overrideWith(
+    (ref) async => <XonadoshProfile>[],
+  ),
   xonadoshChoresProvider.overrideWith(
     (ref) async => (
       todayDay: 'dushanba',
@@ -41,10 +45,8 @@ final _emptyOverrides = <Override>[
     ),
   ),
   xonadoshRecipesAndMealPlanProvider.overrideWith(
-    (ref) async => (
-      recipes: <XonadoshRecipe>[],
-      mealPlans: <XonadoshMealPlan>[],
-    ),
+    (ref) async =>
+        (recipes: <XonadoshRecipe>[], mealPlans: <XonadoshMealPlan>[]),
   ),
   xonadoshGroceryCalculationProvider.overrideWith((ref) async => null),
 ];
@@ -68,7 +70,9 @@ void main() {
     tester.view.devicePixelRatio = 1.0;
     addTearDown(tester.view.reset);
 
-    await tester.pumpWidget(_wrap(const XonadoshShell(), overrides: _emptyOverrides));
+    await tester.pumpWidget(
+      _wrap(const XonadoshShell(), overrides: _emptyOverrides),
+    );
     await tester.pump();
     await tester.pump(const Duration(milliseconds: 50));
 

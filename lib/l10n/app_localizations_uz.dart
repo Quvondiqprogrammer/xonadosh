@@ -1200,7 +1200,8 @@ class AppLocalizationsUz extends AppLocalizations {
   String get loginTitle => 'XonaDoshga xush kelibsiz';
 
   @override
-  String get loginSubtitle => 'Uy toping. Mos sherik tanlang. Birga yashang.';
+  String get loginSubtitle =>
+      'O‘zbekiston universitetlari uchun talaba uy-joy va xonadosh moslash.';
 
   @override
   String get registerUsername => 'Login';
@@ -1418,11 +1419,11 @@ class AppLocalizationsUz extends AppLocalizations {
   String get xonadoshFindRoom => 'Uy topish';
 
   @override
-  String get xonadoshOnboardingTitle => 'XonaDosh nima qiladi';
+  String get xonadoshOnboardingTitle => 'O‘zbekiston talabalari uchun';
 
   @override
   String get xonadoshOnboardingSubtitle =>
-      'Uchta oddiy ish — Telegram guruhlari va OLX o‘rniga.';
+      'Kampus yonida uy-joy, Campus Fit xonadosh va birga yashash — yetkazib berish, dating yoki VoIP emas.';
 
   @override
   String get xonadoshJobHousingTitle => 'Uy topish';
@@ -1536,4 +1537,127 @@ class AppLocalizationsUz extends AppLocalizations {
 
   @override
   String get xonadoshMoreDetails => 'Batafsil';
+
+  @override
+  String get registerSubtitle => 'Talaba uy-joy akkauntini yarating';
+
+  @override
+  String get registerFullNameHint => 'Talaba guvohnomasidagidek';
+
+  @override
+  String get registerNameInvalid => 'To‘liq ism kiriting (kamida 2 belgi)';
+
+  @override
+  String get registerUsernameHint => 'Harf, raqam, pastki chiziq';
+
+  @override
+  String get registerUsernameHelper => '3–24 belgi, unique';
+
+  @override
+  String get registerPhoneCountryHint =>
+      'Davlatni tanlang, keyin raqamni kiriting';
+
+  @override
+  String get registerPasswordHint => 'Kamida 8 belgi';
+
+  @override
+  String get registerPasswordConfirm => 'Parolni tasdiqlang';
+
+  @override
+  String get registerPasswordMismatch => 'Parollar mos kelmadi';
+
+  @override
+  String get registerSelectCountry => 'Davlatni tanlang';
+
+  @override
+  String get registerSearchCountry => 'Davlatni qidirish';
+
+  @override
+  String get registerErrorPhoneTaken =>
+      'Bu telefon allaqachon ro‘yxatdan o‘tgan';
+
+  @override
+  String get registerErrorUsernameTaken => 'Bu login band';
+
+  @override
+  String get loginErrorInvalid => 'Login yoki parol noto‘g‘ri';
+
+  @override
+  String get loginErrorBlocked => 'Akkaunt bloklangan. Supportga yozing.';
+
+  @override
+  String get errorRateLimited =>
+      'Juda ko‘p urinish. Biroz kutib qayta urinib ko‘ring.';
+
+  @override
+  String get xdFirstRunHousingTitle => 'Universitetingiz yonida uy toping';
+
+  @override
+  String get xdFirstRunHousingBody =>
+      'Toshkent, Samarqand va boshqa O‘zbekiston OTMlari atrofidagi talaba ijarasi — narx, tuman va kampus yo‘li bir joyda.';
+
+  @override
+  String get xdFirstRunMatchTitle => 'Odatlar bo‘yicha xonadosh tanlang';
+
+  @override
+  String get xdFirstRunMatchBody =>
+      'Campus Fit uyqu, tozalik, o‘qish uslubi, byudjet va bir xil universitetni hisoblaydi — talaba coliving uchun, dating yoki tasodifiy chat emas.';
+
+  @override
+  String get xdFirstRunColivingTitle =>
+      'Navbatchilik va xarajatlarni bo‘lishing';
+
+  @override
+  String get xdFirstRunColivingBody =>
+      'Mos kelgach, navbatchilik, bozorlik va umumiy to‘lovlarni xonadoshingiz bilan boshqaring — Ikkinchi va VCallda yo‘q vositalar.';
+
+  @override
+  String get xdFirstRunNext => 'Keyingi';
+
+  @override
+  String get xdFirstRunDone => 'XonaDoshga o‘tish';
+
+  @override
+  String get xdFirstRunSkip => 'O‘tkazib yuborish';
+
+  @override
+  String get xdFirstRunChipTashkent => 'Toshkent OTM';
+
+  @override
+  String get xdFirstRunChipSamarkand => 'Samarqand';
+
+  @override
+  String get xdFirstRunChipNearCampus => 'Kampus yonida';
+
+  @override
+  String get xdFirstRunChipSleep => 'Uyqu tartibi';
+
+  @override
+  String get xdFirstRunChipClean => 'Tozalik';
+
+  @override
+  String get xdFirstRunChipBudget => 'Byudjet (so‘m)';
+
+  @override
+  String get xdFirstRunChipSameUni => 'Bir xil OTM';
+
+  @override
+  String get xdFirstRunChipChores => 'Navbatchilik';
+
+  @override
+  String get xdFirstRunChipGroceries => 'Bozorlik';
+
+  @override
+  String get xdFirstRunChipExpenses => 'Umumiy xarajat';
+
+  @override
+  String get xdCampusFitTitle => 'Campus Fit';
+
+  @override
+  String get xdCampusFitBody =>
+      'XonaDoshga xos: O‘zbekiston universiteti, uyqu, tozalik, o‘qish odatlari va byudjet bo‘yicha moslik — oddiy chat emas.';
+
+  @override
+  String get xdCampusFitPreviewBody =>
+      'Misol: bir xil OTM + o‘xshash uyqu va byudjet → yuqori Campus Fit.';
 }

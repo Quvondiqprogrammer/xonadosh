@@ -231,3 +231,192 @@ function auth_require_token(PDO $pdo): array
 
     json_response(['ok' => false, 'error' => 'Invalid or expired authorization token'], 401);
 }
+
+/**
+ * JSON body, form-urlencoded, or $_POST.
+ *
+ * @return array<string, mixed>
+ */
+function request_payload(): array
+{
+    $raw = file_get_contents('php://input');
+    if ($raw !== false && trim($raw) !== '') {
+        $trimmed = ltrim($raw);
+        if (str_starts_with($trimmed, '{') || str_starts_with($trimmed, '[')) {
+            $data = json_decode($raw, true);
+            if (is_array($data)) {
+                return $data;
+            }
+        }
+        if (str_contains($raw, '=')) {
+            $parsed = [];
+            parse_str($raw, $parsed);
+            if (is_array($parsed) && $parsed !== []) {
+                return $parsed;
+            }
+        }
+    }
+    if (!empty($_POST) && is_array($_POST)) {
+        return $_POST;
+    }
+    return [];
+}
+
+function auth_fail(string $code, string $message, int $http = 400): void
+{
+    json_response(['ok' => false, 'error' => $message, 'error_code' => $code], $http);
+}
+
+function e164_digits(string $raw): string
+{
+    $d = preg_replace('/\D+/', '', $raw) ?? '';
+    if (str_starts_with($d, '00')) {
+        $d = substr($d, 2);
+    }
+    return $d;
+}
+
+/**
+ * E.164. Bare 9-digit numbers still default to Uzbekistan (+998).
+ * Any + / 00 international number (8–15 digits) is accepted.
+ */
+function e164_normalize(string $raw): string
+{
+    $t = trim($raw);
+    if ($t === '') {
+        return '';
+    }
+    $d = e164_digits($t);
+    $explicitIntl = str_starts_with($t, '+') || str_starts_with($t, '00');
+
+    if (!$explicitIntl) {
+        if (strlen($d) === 9 && $d[0] !== '0') {
+            $d = '998' . $d;
+        } elseif (strlen($d) === 10 && str_starts_with($d, '0')) {
+            $d = '998' . substr($d, 1);
+        } elseif (str_starts_with($d, '998') && strlen($d) === 12) {
+            // already UZ international digits
+        } elseif (strlen($d) >= 10 && strlen($d) <= 15 && $d[0] !== '0') {
+            // full international number without +
+        } else {
+            return '';
+        }
+    }
+
+    if (strlen($d) < 8 || strlen($d) > 15 || $d[0] === '0') {
+        return '';
+    }
+    return '+' . $d;
+}
+
+function e164_is_uz(string $normalized): bool
+{
+    $d = e164_digits($normalized);
+    return str_starts_with($d, '998') && strlen($d) === 12;
+}
+
+/**
+ * @return list<string>
+ */
+function e164_variants(string $raw): array
+{
+    $norm = e164_normalize($raw);
+    $d = e164_digits($norm !== '' ? $norm : $raw);
+    if ($d === '') {
+        $t = trim($raw);
+        return $t === '' ? [] : [$t];
+    }
+    $out = ['+' . $d, $d, '00' . $d];
+    if (str_starts_with($d, '998') && strlen($d) === 12) {
+        $nine = substr($d, 3);
+        $out[] = $nine;
+        $out[] = '0' . $nine;
+        $out[] = '+998' . $nine;
+        $out[] = '998' . $nine;
+    }
+    return array_values(array_unique($out));
+}
+
+function uz_phone_digits(string $raw): string
+{
+    return e164_digits($raw);
+}
+
+/** @deprecated Use e164_digits; kept for UZ last-9 legacy rows. */
+function uz_phone_key(string $raw): string
+{
+    $d = e164_digits($raw);
+    if (str_starts_with($d, '998') && strlen($d) === 12) {
+        return substr($d, 3);
+    }
+    $norm = e164_normalize($raw);
+    if (e164_is_uz($norm)) {
+        return substr(e164_digits($norm), 3);
+    }
+    return $d;
+}
+
+function uz_phone_normalize(string $raw): string
+{
+    return e164_normalize($raw);
+}
+
+/**
+ * @return list<string>
+ */
+function uz_phone_variants(string $raw): array
+{
+    return e164_variants($raw);
+}
+
+function normalize_username(string $raw): string
+{
+    $s = strtolower(trim($raw));
+    $s = preg_replace('/\s+/', '', $s) ?? $s;
+    return $s;
+}
+
+function username_is_valid(string $username): bool
+{
+    return (bool) preg_match('/^[a-z0-9._]{3,32}$/', $username);
+}
+
+function normalize_full_name(string $raw): string
+{
+    $s = trim(preg_replace('/\s+/u', ' ', $raw) ?? $raw);
+    return $s;
+}
+
+function username_taken(PDO $pdo, string $username): bool
+{
+    $stmt = $pdo->prepare(
+        'SELECT 1 FROM xd_users WHERE LOWER(username) = LOWER(?) AND deleted_at IS NULL LIMIT 1'
+    );
+    $stmt->execute([$username]);
+    return (bool) $stmt->fetchColumn();
+}
+
+function phone_taken(PDO $pdo, string $normalizedPhone): bool
+{
+    $digits = e164_digits($normalizedPhone);
+    if ($digits === '') {
+        return false;
+    }
+    $variants = e164_variants($normalizedPhone);
+    $in = implode(',', array_fill(0, count($variants), '?'));
+    $sql = "SELECT 1 FROM xd_users
+         WHERE deleted_at IS NULL
+           AND (
+             phone IN ($in)
+             OR REPLACE(REPLACE(REPLACE(REPLACE(IFNULL(phone,''), '+', ''), ' ', ''), '-', ''), '(', '') = ?
+           ";
+    $params = [...$variants, $digits];
+    if (e164_is_uz($normalizedPhone)) {
+        $sql .= " OR RIGHT(REPLACE(REPLACE(REPLACE(REPLACE(IFNULL(phone,''), '+', ''), ' ', ''), '-', ''), '(', ''), 9) = ?";
+        $params[] = substr($digits, 3);
+    }
+    $sql .= ') LIMIT 1';
+    $stmt = $pdo->prepare($sql);
+    $stmt->execute($params);
+    return (bool) $stmt->fetchColumn();
+}

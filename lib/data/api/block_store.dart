@@ -15,7 +15,8 @@ class BlockStore {
   Future<Set<String>> block(String username) async {
     final id = username.trim().toLowerCase();
     if (id.isEmpty) return load();
-    final next = await load()..add(id);
+    final next = await load()
+      ..add(id);
     final prefs = await SharedPreferences.getInstance();
     await prefs.setStringList(_key, next.toList());
     return next;
@@ -23,7 +24,8 @@ class BlockStore {
 
   Future<Set<String>> unblock(String username) async {
     final id = username.trim().toLowerCase();
-    final next = await load()..remove(id);
+    final next = await load()
+      ..remove(id);
     final prefs = await SharedPreferences.getInstance();
     await prefs.setStringList(_key, next.toList());
     return next;

@@ -79,22 +79,22 @@ class LocaleNotifier extends StateNotifier<Locale> {
   }
 }
 
-final themeModeProvider =
-    StateNotifierProvider<ThemeModeNotifier, ThemeMode>((ref) {
+final themeModeProvider = StateNotifierProvider<ThemeModeNotifier, ThemeMode>((
+  ref,
+) {
   return ThemeModeNotifier(ref.watch(sessionManagerProvider));
 });
 
 class ThemeModeNotifier extends StateNotifier<ThemeMode> {
-  ThemeModeNotifier(this._session)
-      : super(_map(_session.themeModePref));
+  ThemeModeNotifier(this._session) : super(_map(_session.themeModePref));
 
   final SessionManager _session;
 
   static ThemeMode _map(ThemeModePref p) => switch (p) {
-        ThemeModePref.light => ThemeMode.light,
-        ThemeModePref.dark => ThemeMode.dark,
-        ThemeModePref.system => ThemeMode.system,
-      };
+    ThemeModePref.light => ThemeMode.light,
+    ThemeModePref.dark => ThemeMode.dark,
+    ThemeModePref.system => ThemeMode.system,
+  };
 
   void syncFromSession() {
     state = _map(_session.themeModePref);

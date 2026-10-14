@@ -107,6 +107,17 @@ if ($q !== null && $q !== '') {
     $params[] = $like;
 }
 
+$noBroker = isset($_GET['no_broker']) && ($_GET['no_broker'] === '1' || $_GET['no_broker'] === 'true' || $_GET['no_broker'] === 1);
+$utilitiesIncluded = isset($_GET['utilities_included']) && ($_GET['utilities_included'] === '1' || $_GET['utilities_included'] === 'true' || $_GET['utilities_included'] === 1);
+
+if ($noBroker) {
+    $sql .= " AND (l.amenities_json LIKE '%bez_makler%' OR l.amenities_json LIKE '%no_broker%' OR l.title LIKE '%bez makler%' OR l.title LIKE '%maklersiz%' OR l.description LIKE '%bez makler%' OR l.description LIKE '%maklersiz%' OR l.type = 'roommate_wanted')";
+}
+
+if ($utilitiesIncluded) {
+    $sql .= " AND (l.amenities_json LIKE '%utilities_included%' OR l.amenities_json LIKE '%kommunal_ichida%' OR l.description LIKE '%kommunal ichida%' OR l.description LIKE '%kommunal to‘lov ichida%' OR l.title LIKE '%kommunal ichida%')";
+}
+
 $sql .= " ORDER BY l.id DESC LIMIT $limit OFFSET $offset";
 
 try {
@@ -164,6 +175,17 @@ try {
             if (is_array($decoded)) $photos = $decoded;
         }
 
+        $isNoBroker = in_array('bez_makler', $amenities, true) ||
+                      in_array('no_broker', $amenities, true) ||
+                      $r['type'] === 'roommate_wanted' ||
+                      stripos($r['title'] . ' ' . ($r['description'] ?? ''), 'bez makler') !== false ||
+                      stripos($r['title'] . ' ' . ($r['description'] ?? ''), 'maklersiz') !== false;
+
+        $isUtilitiesIncluded = in_array('utilities_included', $amenities, true) ||
+                               in_array('kommunal_ichida', $amenities, true) ||
+                               stripos($r['title'] . ' ' . ($r['description'] ?? ''), 'kommunal ichida') !== false ||
+                               stripos($r['title'] . ' ' . ($r['description'] ?? ''), 'kommunal to‘lov ichida') !== false;
+
         $listings[] = [
             'id' => (int)$r['id'],
             'user_id' => $r['user_id'] !== null ? (int)$r['user_id'] : null,
@@ -193,6 +215,8 @@ try {
             'area_sqm' => (float)$r['area_sqm'],
             'target_gender' => $r['target_gender'],
             'target_tenant' => $r['target_tenant'],
+            'is_no_broker' => (bool)$isNoBroker,
+            'utilities_included' => (bool)$isUtilitiesIncluded,
             'amenities' => $amenities,
             'photos' => $photos,
             'status' => $r['status'],

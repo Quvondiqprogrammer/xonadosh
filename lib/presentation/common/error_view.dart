@@ -3,11 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:xonadosh/l10n/l10n_ext.dart';
 
 class ErrorView extends StatelessWidget {
-  const ErrorView({
-    super.key,
-    this.message,
-    this.onRetry,
-  });
+  const ErrorView({super.key, this.message, this.onRetry});
 
   final String? message;
   final VoidCallback? onRetry;
@@ -31,10 +27,7 @@ class ErrorView extends StatelessWidget {
             ),
             if (onRetry != null) ...[
               const SizedBox(height: 16),
-              FilledButton(
-                onPressed: onRetry,
-                child: Text(l10n.commonRetry),
-              ),
+              FilledButton(onPressed: onRetry, child: Text(l10n.commonRetry)),
             ],
           ],
         ),

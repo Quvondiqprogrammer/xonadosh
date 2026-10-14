@@ -16,7 +16,8 @@ class CommuteMath {
   ) {
     final dLat = _toRad(lat2 - lat1);
     final dLon = _toRad(lon2 - lon1);
-    final a = math.sin(dLat / 2) * math.sin(dLat / 2) +
+    final a =
+        math.sin(dLat / 2) * math.sin(dLat / 2) +
         math.cos(_toRad(lat1)) *
             math.cos(_toRad(lat2)) *
             math.sin(dLon / 2) *

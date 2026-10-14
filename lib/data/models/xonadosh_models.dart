@@ -63,17 +63,17 @@ class XonadoshUniversity {
   }
 
   Map<String, dynamic> toJson() => {
-        'id': id,
-        'name_uz': nameUz,
-        'short_name': shortName,
-        'city': city,
-        'district': district,
-        'address': address,
-        'latitude': latitude,
-        'longitude': longitude,
-        'nearest_metro': nearestMetro,
-        'metro_distance_m': metroDistanceM,
-      };
+    'id': id,
+    'name_uz': nameUz,
+    'short_name': shortName,
+    'city': city,
+    'district': district,
+    'address': address,
+    'latitude': latitude,
+    'longitude': longitude,
+    'nearest_metro': nearestMetro,
+    'metro_distance_m': metroDistanceM,
+  };
 }
 
 /// Transport va yo'nalish rejimi hisobi (Metro, Avtobus, Taksi, Piyoda)
@@ -105,7 +105,10 @@ class XonadoshCommuteMode {
       name: (json['name'] ?? '').toString(),
       timeMin: _numToInt(json['time_min'], 15),
       fareUzs: _numToInt(json['fare_uzs'], 1700),
-      monthlyBudgetUzs: _numToInt(json['monthly_budget_uzs'] ?? json['monthly_uzs'], 74800),
+      monthlyBudgetUzs: _numToInt(
+        json['monthly_budget_uzs'] ?? json['monthly_uzs'],
+        74800,
+      ),
       icon: (json['icon'] ?? 'directions_bus').toString(),
       description: (json['description'] ?? '').toString(),
       caloriesKcal: _numToInt(json['calories_kcal'], 0),
@@ -136,19 +139,27 @@ class XonadoshCommuteEstimate {
   final int monthlyMetroSavingUzs;
 
   factory XonadoshCommuteEstimate.fromJson(Map<String, dynamic> json) {
-    final dist = _numToDouble(json['distance_km'] ?? json['distance']?['road_km'], 1.5);
+    final dist = _numToDouble(
+      json['distance_km'] ?? json['distance']?['road_km'],
+      1.5,
+    );
     final modes = _asStringKeyMap(json['modes']) ?? json;
 
     return XonadoshCommuteEstimate(
       distanceKm: dist,
-      metro: XonadoshCommuteMode.fromJson(_asStringKeyMap(modes['metro']) ?? {}),
+      metro: XonadoshCommuteMode.fromJson(
+        _asStringKeyMap(modes['metro']) ?? {},
+      ),
       bus: XonadoshCommuteMode.fromJson(_asStringKeyMap(modes['bus']) ?? {}),
       taxi: XonadoshCommuteMode.fromJson(_asStringKeyMap(modes['taxi']) ?? {}),
       walk: XonadoshCommuteMode.fromJson(_asStringKeyMap(modes['walk']) ?? {}),
       bicycle: _asStringKeyMap(modes['bicycle']) != null
           ? XonadoshCommuteMode.fromJson(_asStringKeyMap(modes['bicycle'])!)
           : null,
-      monthlyMetroSavingUzs: _numToInt(json['summary']?['monthly_metro_saving_uzs'], 0),
+      monthlyMetroSavingUzs: _numToInt(
+        json['summary']?['monthly_metro_saving_uzs'],
+        0,
+      ),
     );
   }
 }
@@ -184,6 +195,8 @@ class XonadoshListing {
     required this.areaSqm,
     required this.targetGender, // boys, girls, family, any
     required this.targetTenant,
+    this.isNoBroker = false,
+    this.utilitiesIncluded = false,
     required this.amenities,
     required this.photos,
     required this.status,
@@ -220,6 +233,8 @@ class XonadoshListing {
   final double areaSqm;
   final String targetGender;
   final String targetTenant;
+  final bool isNoBroker;
+  final bool utilitiesIncluded;
   final List<String> amenities;
   final List<String> photos;
   final String status;
@@ -239,6 +254,29 @@ class XonadoshListing {
       }
       return [];
     }
+
+    bool parseBool(dynamic val) {
+      if (val == null) return false;
+      if (val is bool) return val;
+      if (val is num) return val != 0;
+      final s = val.toString().trim().toLowerCase();
+      return s == '1' || s == 'true' || s == 'yes';
+    }
+
+    final amenitiesList = parseList(json['amenities'] ?? json['amenities_json']);
+    final isNoBroker = parseBool(json['is_no_broker']) ||
+        parseBool(json['no_broker']) ||
+        amenitiesList.contains('bez_makler') ||
+        amenitiesList.contains('no_broker') ||
+        (json['type']?.toString() == 'roommate_wanted') ||
+        (json['title']?.toString().toLowerCase().contains('bez makler') ?? false) ||
+        (json['title']?.toString().toLowerCase().contains('maklersiz') ?? false);
+
+    final utilitiesIncluded = parseBool(json['utilities_included']) ||
+        amenitiesList.contains('utilities_included') ||
+        amenitiesList.contains('kommunal_ichida') ||
+        (json['description']?.toString().toLowerCase().contains('kommunal ichida') ?? false) ||
+        (json['title']?.toString().toLowerCase().contains('kommunal ichida') ?? false);
 
     return XonadoshListing(
       id: _numToInt(json['id']),
@@ -273,7 +311,9 @@ class XonadoshListing {
       areaSqm: _numToDouble(json['area_sqm'], 50.0),
       targetGender: (json['target_gender'] ?? 'any').toString(),
       targetTenant: (json['target_tenant'] ?? 'Talabalar uchun').toString(),
-      amenities: parseList(json['amenities'] ?? json['amenities_json']),
+      isNoBroker: isNoBroker,
+      utilitiesIncluded: utilitiesIncluded,
+      amenities: amenitiesList,
       photos: parseList(json['photos'] ?? json['photos_json']),
       status: (json['status'] ?? 'active').toString(),
       viewsCount: _numToInt(json['views_count'], 0),
@@ -281,6 +321,87 @@ class XonadoshListing {
       commute: _asStringKeyMap(json['commute']) != null
           ? XonadoshCommuteEstimate.fromJson(_asStringKeyMap(json['commute'])!)
           : null,
+    );
+  }
+
+  XonadoshListing copyWith({
+    int? id,
+    int? userId,
+    String? username,
+    String? ownerName,
+    String? phoneNumber,
+    String? telegramHandle,
+    String? type,
+    String? title,
+    String? description,
+    double? price,
+    String? currency,
+    String? pricePeriod,
+    String? city,
+    String? district,
+    String? address,
+    double? latitude,
+    double? longitude,
+    int? nearestUniversityId,
+    String? nearestUniversityName,
+    String? nearestUniversityShort,
+    double? distanceToUniversityKm,
+    String? nearestMetro,
+    int? roomsCount,
+    int? floor,
+    int? totalFloors,
+    double? areaSqm,
+    String? targetGender,
+    String? targetTenant,
+    bool? isNoBroker,
+    bool? utilitiesIncluded,
+    List<String>? amenities,
+    List<String>? photos,
+    String? status,
+    int? viewsCount,
+    String? createdAt,
+    XonadoshCommuteEstimate? commute,
+  }) {
+    return XonadoshListing(
+      id: id ?? this.id,
+      userId: userId ?? this.userId,
+      username: username ?? this.username,
+      ownerName: ownerName ?? this.ownerName,
+      phoneNumber: phoneNumber ?? this.phoneNumber,
+      telegramHandle: telegramHandle ?? this.telegramHandle,
+      type: type ?? this.type,
+      title: title ?? this.title,
+      description: description ?? this.description,
+      price: price ?? this.price,
+      currency: currency ?? this.currency,
+      pricePeriod: pricePeriod ?? this.pricePeriod,
+      city: city ?? this.city,
+      district: district ?? this.district,
+      address: address ?? this.address,
+      latitude: latitude ?? this.latitude,
+      longitude: longitude ?? this.longitude,
+      nearestUniversityId: nearestUniversityId ?? this.nearestUniversityId,
+      nearestUniversityName:
+          nearestUniversityName ?? this.nearestUniversityName,
+      nearestUniversityShort:
+          nearestUniversityShort ?? this.nearestUniversityShort,
+      distanceToUniversityKm:
+          distanceToUniversityKm ?? this.distanceToUniversityKm,
+      nearestMetro: nearestMetro ?? this.nearestMetro,
+      roomsCount: roomsCount ?? this.roomsCount,
+      floor: floor ?? this.floor,
+      totalFloors: totalFloors ?? this.totalFloors,
+      areaSqm: areaSqm ?? this.areaSqm,
+      targetGender: targetGender ?? this.targetGender,
+      targetTenant: targetTenant ?? this.targetTenant,
+      isNoBroker: isNoBroker ?? this.isNoBroker,
+      utilitiesIncluded: utilitiesIncluded ?? this.utilitiesIncluded,
+      amenities: amenities ?? this.amenities,
+      photos: photos ?? this.photos,
+      status: status ?? this.status,
+      viewsCount: viewsCount ?? this.viewsCount,
+      createdAt: createdAt ?? this.createdAt,
+      commute: commute ?? this.commute,
     );
   }
 }
@@ -539,7 +660,10 @@ class XonadoshChore {
       choreType: (json['chore_type'] ?? 'cleaning').toString(),
       dayOfWeek: (json['day_of_week'] ?? 'dushanba').toString(),
       assignedName: (json['assigned_name'] ?? 'Xonadosh').toString(),
-      isCompleted: json['is_completed'] == true || json['is_completed'] == 1 || json['is_completed']?.toString() == '1',
+      isCompleted:
+          json['is_completed'] == true ||
+          json['is_completed'] == 1 ||
+          json['is_completed']?.toString() == '1',
       notes: (json['notes'] ?? '').toString(),
     );
   }
@@ -565,7 +689,10 @@ class XonadoshRecipeIngredient {
     return XonadoshRecipeIngredient(
       key: (json['key'] ?? '').toString(),
       name: (json['name_uz'] ?? json['name'] ?? '').toString(),
-      qtyPerPerson: _numToDouble(json['amount_per_person'] ?? json['qty_per_person'], 0.1),
+      qtyPerPerson: _numToDouble(
+        json['amount_per_person'] ?? json['qty_per_person'],
+        0.1,
+      ),
       unit: (json['unit'] ?? 'kg').toString(),
     );
   }
@@ -657,24 +784,24 @@ class XonadoshMealPlan {
   final int caloriesKcal;
 
   // New schedule fields
-  final String prepSchedule;    // e.g. '07:30 – 07:45'
-  final String eatingSchedule;  // e.g. '07:45 – 08:15'
+  final String prepSchedule; // e.g. '07:30 – 07:45'
+  final String eatingSchedule; // e.g. '07:45 – 08:15'
   final String cleanupSchedule; // e.g. '08:15 – 08:25'
-  final double breadCount;      // per person, e.g. 0.5
-  final String teaType;         // e.g. "Ko'k choy (95-nav)"
+  final double breadCount; // per person, e.g. 0.5
+  final String teaType; // e.g. "Ko'k choy (95-nav)"
 
   String get mealEmoji => switch (mealTime) {
     'breakfast' => '🌅',
-    'lunch'     => '🌤',
-    'dinner'    => '🌙',
-    _           => '🍽',
+    'lunch' => '🌤',
+    'dinner' => '🌙',
+    _ => '🍽',
   };
 
   String get mealLabel => switch (mealTime) {
     'breakfast' => 'Nonushta',
-    'lunch'     => 'Tushlik',
-    'dinner'    => 'Kechki ovqat',
-    _           => mealTime,
+    'lunch' => 'Tushlik',
+    'dinner' => 'Kechki ovqat',
+    _ => mealTime,
   };
 
   String get fullMealLabel => '$mealEmoji $mealLabel';
@@ -725,12 +852,12 @@ class XonadoshGroceryItem {
   final String category;
   final String unit;
   final double quantity;
-  final double unitPriceUzs;    // o'rtacha narx
-  final double minPriceUzs;     // eng past narx
-  final double maxPriceUzs;     // eng yuqori narx
+  final double unitPriceUzs; // o'rtacha narx
+  final double minPriceUzs; // eng past narx
+  final double maxPriceUzs; // eng yuqori narx
   final double totalPriceUzs;
-  final String cheapestSource;  // e.g. 'Chorsu parrandachilik paviloni'
-  final String buyingTips;      // e.g. '10 kg qutida 40 000 so'm/kg'
+  final String cheapestSource; // e.g. 'Chorsu parrandachilik paviloni'
+  final String buyingTips; // e.g. '10 kg qutida 40 000 so'm/kg'
   final List<String> usedForMeals; // ['🌅 Nonushta', '🌙 Kechki']
   bool isBought;
 
@@ -738,7 +865,9 @@ class XonadoshGroceryItem {
     final mealsRaw = json['used_for_meals'];
     final mealsList = <String>[];
     if (mealsRaw is List) {
-      for (final m in mealsRaw) { if (m != null) mealsList.add(m.toString()); }
+      for (final m in mealsRaw) {
+        if (m != null) mealsList.add(m.toString());
+      }
     }
     return XonadoshGroceryItem(
       key: (json['item_key'] ?? json['key'] ?? '').toString(),
@@ -746,11 +875,19 @@ class XonadoshGroceryItem {
       category: (json['category'] ?? 'Asosiy').toString(),
       unit: (json['unit'] ?? 'kg').toString(),
       quantity: _numToDouble(json['qty_needed'] ?? json['quantity'], 1.0),
-      unitPriceUzs: _numToDouble(json['avg_price_uzs'] ?? json['unit_price_uzs'], 10000.0),
+      unitPriceUzs: _numToDouble(
+        json['avg_price_uzs'] ?? json['unit_price_uzs'],
+        10000.0,
+      ),
       minPriceUzs: _numToDouble(json['min_price_uzs'], 0.0),
       maxPriceUzs: _numToDouble(json['max_price_uzs'], 0.0),
-      totalPriceUzs: _numToDouble(json['total_cost_uzs'] ?? json['total_price_uzs'], 10000.0),
-      cheapestSource: (json['cheapest_source'] ?? json['bazaar'] ?? 'Chorsu bozor').toString(),
+      totalPriceUzs: _numToDouble(
+        json['total_cost_uzs'] ?? json['total_price_uzs'],
+        10000.0,
+      ),
+      cheapestSource:
+          (json['cheapest_source'] ?? json['bazaar'] ?? 'Chorsu bozor')
+              .toString(),
       buyingTips: (json['buying_tips'] ?? '').toString(),
       usedForMeals: mealsList,
       isBought: json['is_bought'] == true,
@@ -827,7 +964,8 @@ class XonadoshGroceryCalculation {
       perPersonUzs: _numToInt(sumMap['per_person_uzs'], 0),
       perPersonDailyUzs: _numToInt(sumMap['per_person_daily_uzs'], 0),
       perPersonDailyUsd: _numToDouble(sumMap['per_person_daily_usd'], 0.0),
-      cheapestMarket: (sumMap['cheapest_market'] ?? "Qo'yliq ulgurji bozor").toString(),
+      cheapestMarket: (sumMap['cheapest_market'] ?? "Qo'yliq ulgurji bozor")
+          .toString(),
       shoppingDay: (sumMap['shopping_day'] ?? 'Shanba').toString(),
       items: itemsList,
       byCategorySummary: catList,
@@ -947,7 +1085,10 @@ class XonadoshKarmaData {
   factory XonadoshKarmaData.fromJson(Map<String, dynamic> json) {
     final badgesRaw = json['available_badges'] as List? ?? [];
     final badgesList = badgesRaw
-        .map((e) => XonadoshKarmaBadge.fromJson(Map<String, dynamic>.from(e as Map)))
+        .map(
+          (e) =>
+              XonadoshKarmaBadge.fromJson(Map<String, dynamic>.from(e as Map)),
+        )
         .toList();
 
     final rmRaw = json['roommates'] as List? ?? [];
@@ -955,7 +1096,10 @@ class XonadoshKarmaData {
 
     final leadRaw = json['leaderboard'] as List? ?? [];
     final leadList = leadRaw
-        .map((e) => XonadoshKarmaMember.fromJson(Map<String, dynamic>.from(e as Map)))
+        .map(
+          (e) =>
+              XonadoshKarmaMember.fromJson(Map<String, dynamic>.from(e as Map)),
+        )
         .toList();
 
     return XonadoshKarmaData(
@@ -1108,7 +1252,11 @@ class XonadoshFinanceItem {
   factory XonadoshFinanceItem.fromJson(Map<String, dynamic> json) {
     final sRaw = json['splits'] as List? ?? [];
     final sList = sRaw
-        .map((e) => XonadoshFinanceSplit.fromJson(Map<String, dynamic>.from(e as Map)))
+        .map(
+          (e) => XonadoshFinanceSplit.fromJson(
+            Map<String, dynamic>.from(e as Map),
+          ),
+        )
         .toList();
 
     return XonadoshFinanceItem(
@@ -1182,22 +1330,34 @@ class XonadoshFinancesData {
 
     final dRaw = json['debt_balances'] as List? ?? [];
     final dList = dRaw
-        .map((e) => XonadoshDebtBalance.fromJson(Map<String, dynamic>.from(e as Map)))
+        .map(
+          (e) =>
+              XonadoshDebtBalance.fromJson(Map<String, dynamic>.from(e as Map)),
+        )
         .toList();
 
     final rRaw = json['rent_items'] as List? ?? [];
     final rList = rRaw
-        .map((e) => XonadoshFinanceItem.fromJson(Map<String, dynamic>.from(e as Map)))
+        .map(
+          (e) =>
+              XonadoshFinanceItem.fromJson(Map<String, dynamic>.from(e as Map)),
+        )
         .toList();
 
     final uRaw = json['utility_items'] as List? ?? [];
     final uList = uRaw
-        .map((e) => XonadoshFinanceItem.fromJson(Map<String, dynamic>.from(e as Map)))
+        .map(
+          (e) =>
+              XonadoshFinanceItem.fromJson(Map<String, dynamic>.from(e as Map)),
+        )
         .toList();
 
     final eRaw = json['expense_items'] as List? ?? [];
     final eList = eRaw
-        .map((e) => XonadoshFinanceItem.fromJson(Map<String, dynamic>.from(e as Map)))
+        .map(
+          (e) =>
+              XonadoshFinanceItem.fromJson(Map<String, dynamic>.from(e as Map)),
+        )
         .toList();
 
     return XonadoshFinancesData(
@@ -1215,3 +1375,65 @@ class XonadoshFinancesData {
   }
 }
 
+/// Xonadon qoidasi (House Rule) modeli
+class XonadoshHouseRule {
+  const XonadoshHouseRule({
+    required this.id,
+    required this.title,
+    required this.description,
+    required this.category,
+    required this.icon,
+    this.isActive = true,
+    this.isCustom = false,
+  });
+
+  final String id;
+  final String title;
+  final String description;
+  final String category; // quiet_hours, guests, cleanliness, smoking, finances, safety, general
+  final String icon;
+  final bool isActive;
+  final bool isCustom;
+
+  factory XonadoshHouseRule.fromJson(Map<String, dynamic> json) {
+    return XonadoshHouseRule(
+      id: (json['id'] ?? '').toString(),
+      title: (json['title'] ?? '').toString(),
+      description: (json['description'] ?? '').toString(),
+      category: (json['category'] ?? 'general').toString(),
+      icon: (json['icon'] ?? 'rule').toString(),
+      isActive: json['is_active'] != false,
+      isCustom: json['is_custom'] == true,
+    );
+  }
+
+  Map<String, dynamic> toJson() => {
+    'id': id,
+    'title': title,
+    'description': description,
+    'category': category,
+    'icon': icon,
+    'is_active': isActive,
+    'is_custom': isCustom,
+  };
+
+  XonadoshHouseRule copyWith({
+    String? id,
+    String? title,
+    String? description,
+    String? category,
+    String? icon,
+    bool? isActive,
+    bool? isCustom,
+  }) {
+    return XonadoshHouseRule(
+      id: id ?? this.id,
+      title: title ?? this.title,
+      description: description ?? this.description,
+      category: category ?? this.category,
+      icon: icon ?? this.icon,
+      isActive: isActive ?? this.isActive,
+      isCustom: isCustom ?? this.isCustom,
+    );
+  }
+}

@@ -6,9 +6,9 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 
 import 'package:xonadosh/config/theme.dart';
+import 'package:xonadosh/l10n/app_localizations.dart';
 import 'package:xonadosh/l10n/l10n_ext.dart';
 import 'package:xonadosh/presentation/common/xonadosh_logo.dart';
-import 'package:xonadosh/presentation/features/xonadosh/widgets/onboarding_welcome.dart';
 import 'package:xonadosh/presentation/providers/xonadosh_providers.dart';
 import 'package:xonadosh/presentation/router/app_routes.dart';
 
@@ -30,32 +30,6 @@ class _XonadoshShellState extends ConsumerState<XonadoshShell> {
     XonadoshMatchingTab(),
     XonadoshColivingTab(),
   ];
-
-  bool _onboardingPrompted = false;
-
-  @override
-  void initState() {
-    super.initState();
-    WidgetsBinding.instance.addPostFrameCallback((_) => _maybeShowOnboarding());
-  }
-
-  Future<void> _maybeShowOnboarding() async {
-    if (_onboardingPrompted || !mounted) return;
-    _onboardingPrompted = true;
-    final seen = await ref.read(onboardingStoreProvider).isSeen();
-    if (!mounted || seen) return;
-    await showModalBottomSheet<void>(
-      context: context,
-      isScrollControlled: true,
-      showDragHandle: false,
-      builder: (ctx) => XonadoshOnboardingSheet(
-        onDone: () {
-          Navigator.of(ctx).pop();
-        },
-      ),
-    );
-    await ref.read(onboardingStoreProvider).markSeen();
-  }
 
   @override
   Widget build(BuildContext context) {
@@ -90,13 +64,20 @@ class _XonadoshShellState extends ConsumerState<XonadoshShell> {
             onPressed: () => context.push('${AppRoutes.shell}/profile-edit'),
             icon: CircleAvatar(
               radius: 14,
-              backgroundColor: isDark ? const Color(0xFF334155) : const Color(0xFFE2E8F0),
-              backgroundImage: myProfile?.avatarUrl != null && myProfile!.avatarUrl!.isNotEmpty
+              backgroundColor: isDark
+                  ? const Color(0xFF334155)
+                  : const Color(0xFFE2E8F0),
+              backgroundImage:
+                  myProfile?.avatarUrl != null &&
+                      myProfile!.avatarUrl!.isNotEmpty
                   ? NetworkImage(myProfile.avatarUrl!)
                   : null,
-              child: myProfile?.avatarUrl == null || myProfile!.avatarUrl!.isEmpty
+              child:
+                  myProfile?.avatarUrl == null || myProfile!.avatarUrl!.isEmpty
                   ? Text(
-                      myProfile?.fullName.isNotEmpty == true ? myProfile!.fullName[0].toUpperCase() : 'U',
+                      myProfile?.fullName.isNotEmpty == true
+                          ? myProfile!.fullName[0].toUpperCase()
+                          : 'U',
                       style: TextStyle(
                         fontSize: 12,
                         fontWeight: FontWeight.w800,
@@ -116,37 +97,47 @@ class _XonadoshShellState extends ConsumerState<XonadoshShell> {
       ),
       body: SafeArea(
         bottom: false,
-        child: IndexedStack(
-          index: currentIndex,
-          children: _tabs,
-        ),
+        child: IndexedStack(index: currentIndex, children: _tabs),
       ),
-      bottomNavigationBar: _buildFloatingDock(context, isDark, l10n, currentIndex),
+      bottomNavigationBar: _buildFloatingDock(
+        context,
+        isDark,
+        l10n,
+        currentIndex,
+      ),
     );
   }
 
-  Widget _buildFloatingDock(BuildContext context, bool isDark, dynamic l10n, int currentIndex) {
+  Widget _buildFloatingDock(
+    BuildContext context,
+    bool isDark,
+    AppLocalizations l10n,
+    int currentIndex,
+  ) {
     return SafeArea(
       top: false,
       child: Padding(
         padding: const EdgeInsets.fromLTRB(16, 0, 16, 8),
         child: ClipRRect(
-          borderRadius: BorderRadius.circular(14),
+          borderRadius: BorderRadius.circular(16),
           child: BackdropFilter(
-            filter: ImageFilter.blur(sigmaX: 12, sigmaY: 12),
+            filter: ImageFilter.blur(sigmaX: 16, sigmaY: 16),
             child: Container(
               decoration: BoxDecoration(
-                color: (isDark ? const Color(0xFF1E293B) : Colors.white).withValues(alpha: isDark ? 0.94 : 0.96),
-                borderRadius: BorderRadius.circular(14),
+                color: (isDark ? const Color(0xFF1E293B) : Colors.white)
+                    .withValues(alpha: isDark ? 0.92 : 0.95),
+                borderRadius: BorderRadius.circular(16),
                 border: Border.all(
-                  color: isDark ? const Color(0xFF334155) : const Color(0xFFE2E8F0),
+                  color: isDark
+                      ? const Color(0xFF334155).withValues(alpha: 0.8)
+                      : const Color(0xFFE2E8F0).withValues(alpha: 0.85),
                   width: 1,
                 ),
                 boxShadow: [
                   BoxShadow(
-                    color: Colors.black.withValues(alpha: isDark ? 0.25 : 0.04),
-                    blurRadius: 10,
-                    offset: const Offset(0, 2),
+                    color: Colors.black.withValues(alpha: isDark ? 0.28 : 0.05),
+                    blurRadius: 14,
+                    offset: const Offset(0, 3),
                   ),
                 ],
               ),
@@ -155,7 +146,9 @@ class _XonadoshShellState extends ConsumerState<XonadoshShell> {
                 height: 60,
                 elevation: 0,
                 backgroundColor: Colors.transparent,
-                indicatorColor: XonaDoshColors.primary.withValues(alpha: isDark ? 0.2 : 0.12),
+                indicatorColor: XonaDoshColors.primary.withValues(
+                  alpha: isDark ? 0.2 : 0.12,
+                ),
                 onDestinationSelected: (idx) {
                   if (!kIsWeb) {
                     HapticFeedback.selectionClick();
@@ -165,17 +158,26 @@ class _XonadoshShellState extends ConsumerState<XonadoshShell> {
                 destinations: [
                   NavigationDestination(
                     icon: const Icon(Icons.home_outlined),
-                    selectedIcon: const Icon(Icons.home_rounded, color: XonaDoshColors.primary),
+                    selectedIcon: const Icon(
+                      Icons.home_rounded,
+                      color: XonaDoshColors.primary,
+                    ),
                     label: l10n.xonadoshHousingTab,
                   ),
                   NavigationDestination(
                     icon: const Icon(Icons.group_outlined),
-                    selectedIcon: const Icon(Icons.group_rounded, color: XonaDoshColors.primary),
+                    selectedIcon: const Icon(
+                      Icons.group_rounded,
+                      color: XonaDoshColors.primary,
+                    ),
                     label: l10n.xonadoshMatchingTab,
                   ),
                   NavigationDestination(
                     icon: const Icon(Icons.checklist_rounded),
-                    selectedIcon: const Icon(Icons.checklist_rounded, color: XonaDoshColors.primary),
+                    selectedIcon: const Icon(
+                      Icons.checklist_rounded,
+                      color: XonaDoshColors.primary,
+                    ),
                     label: l10n.xonadoshColivingTab,
                   ),
                 ],

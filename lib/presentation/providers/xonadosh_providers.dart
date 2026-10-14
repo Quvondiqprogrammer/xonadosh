@@ -13,8 +13,13 @@ final onboardingStoreProvider = Provider<OnboardingStore>((ref) {
   return OnboardingStore();
 });
 
-final xonadoshSelectedUniProvider =
-    StateProvider<XonadoshUniversity?>((ref) => null);
+final firstRunSeenProvider = FutureProvider<bool>((ref) async {
+  return ref.read(onboardingStoreProvider).isSeen();
+});
+
+final xonadoshSelectedUniProvider = StateProvider<XonadoshUniversity?>(
+  (ref) => null,
+);
 
 final xonadoshTypeFilterProvider = StateProvider<String>((ref) => 'all');
 
@@ -24,8 +29,9 @@ final xonadoshMatchGenderFilterProvider = StateProvider<String>((ref) => 'any');
 
 /// Matching university filter — kept separate from housing so a housing
 /// city/OTM filter does not silently hide roommate matches.
-final xonadoshMatchUniProvider =
-    StateProvider<XonadoshUniversity?>((ref) => null);
+final xonadoshMatchUniProvider = StateProvider<XonadoshUniversity?>(
+  (ref) => null,
+);
 
 final xonadoshSearchQueryProvider = StateProvider<String?>((ref) => null);
 
@@ -39,16 +45,16 @@ final xonadoshRoommateCountProvider = StateProvider<int>((ref) => 4);
 
 final xonadoshUniversitiesProvider =
     FutureProvider.autoDispose<List<XonadoshUniversity>>((ref) async {
-  final city = ref.watch(xonadoshCityProvider);
-  return ref.watch(xonadoshRepositoryProvider).getUniversities(city: city);
-});
+      final city = ref.watch(xonadoshCityProvider);
+      return ref.watch(xonadoshRepositoryProvider).getUniversities(city: city);
+    });
 
 /// Matching OTM picker is independent of housing city so a housing
 /// region filter cannot silently shrink roommate options.
 final xonadoshAllUniversitiesProvider =
     FutureProvider.autoDispose<List<XonadoshUniversity>>((ref) async {
-  return ref.watch(xonadoshRepositoryProvider).getUniversities();
-});
+      return ref.watch(xonadoshRepositoryProvider).getUniversities();
+    });
 
 final blockStoreProvider = Provider<BlockStore>((ref) => BlockStore());
 
@@ -56,127 +62,157 @@ final blockedUsernamesProvider = FutureProvider<Set<String>>((ref) async {
   return ref.watch(blockStoreProvider).load();
 });
 
+final xonadoshNoBrokerFilterProvider = StateProvider<bool>((ref) => false);
+final xonadoshUtilitiesIncludedFilterProvider = StateProvider<bool>((ref) => false);
+
 final xonadoshListingsProvider =
     FutureProvider.autoDispose<List<XonadoshListing>>((ref) async {
-  final repo = ref.watch(xonadoshRepositoryProvider);
-  final selectedUni = ref.watch(xonadoshSelectedUniProvider);
-  final type = ref.watch(xonadoshTypeFilterProvider);
-  final gender = ref.watch(xonadoshGenderFilterProvider);
-  final city = ref.watch(xonadoshCityProvider);
-  final district = ref.watch(xonadoshDistrictProvider);
-  final query = ref.watch(xonadoshSearchQueryProvider);
-  final minPrice = ref.watch(xonadoshMinPriceProvider);
-  final maxPrice = ref.watch(xonadoshMaxPriceProvider);
-  final blocked = await ref.watch(blockedUsernamesProvider.future);
+      final repo = ref.watch(xonadoshRepositoryProvider);
+      final selectedUni = ref.watch(xonadoshSelectedUniProvider);
+      final type = ref.watch(xonadoshTypeFilterProvider);
+      final gender = ref.watch(xonadoshGenderFilterProvider);
+      final city = ref.watch(xonadoshCityProvider);
+      final district = ref.watch(xonadoshDistrictProvider);
+      final query = ref.watch(xonadoshSearchQueryProvider);
+      final minPrice = ref.watch(xonadoshMinPriceProvider);
+      final maxPrice = ref.watch(xonadoshMaxPriceProvider);
+      final noBroker = ref.watch(xonadoshNoBrokerFilterProvider);
+      final utilitiesIncluded =
+          ref.watch(xonadoshUtilitiesIncludedFilterProvider);
+      final blocked = await ref.watch(blockedUsernamesProvider.future);
 
-  final listings = await repo.getListings(
-    universityId: selectedUni?.id,
-    type: type == 'all' ? null : type,
-    gender: gender == 'any' ? null : gender,
-    city: city,
-    district: district,
-    query: query,
-    minPrice: minPrice,
-    maxPrice: maxPrice,
-    limit: 50,
-  );
-  if (blocked.isEmpty) return listings;
-  return listings
-      .where((e) => !blocked.contains(e.username.trim().toLowerCase()))
-      .toList();
-});
+      final listings = await repo.getListings(
+        universityId: selectedUni?.id,
+        type: type == 'all' ? null : type,
+        gender: gender == 'any' ? null : gender,
+        city: city,
+        district: district,
+        query: query,
+        minPrice: minPrice,
+        maxPrice: maxPrice,
+        noBroker: noBroker ? true : null,
+        utilitiesIncluded: utilitiesIncluded ? true : null,
+        limit: 50,
+      );
 
-final xonadoshListingDetailProvider =
-    FutureProvider.autoDispose.family<XonadoshListing?, int>((ref, id) async {
-  if (id <= 0) return null;
-  return ref.watch(xonadoshRepositoryProvider).getListingDetail(id);
-});
+      var filtered = listings;
+      if (noBroker) {
+        filtered = filtered.where((e) => e.isNoBroker).toList();
+      }
+      if (utilitiesIncluded) {
+        filtered = filtered.where((e) => e.utilitiesIncluded).toList();
+      }
+      if (blocked.isNotEmpty) {
+        filtered = filtered
+            .where((e) => !blocked.contains(e.username.trim().toLowerCase()))
+            .toList();
+      }
+      return filtered;
+    });
+
+final xonadoshHouseRulesProvider =
+    FutureProvider.autoDispose<List<XonadoshHouseRule>>((ref) async {
+      return ref.watch(xonadoshRepositoryProvider).getHouseRules();
+    });
+
+final xonadoshListingDetailProvider = FutureProvider.autoDispose
+    .family<XonadoshListing?, int>((ref, id) async {
+      if (id <= 0) return null;
+      return ref.watch(xonadoshRepositoryProvider).getListingDetail(id);
+    });
 
 final xonadoshCommuteProvider = FutureProvider.autoDispose
-    .family<XonadoshCommuteEstimate?, ({int listingId, int uniId})>(
-        (ref, arg) async {
-  return ref.watch(xonadoshRepositoryProvider).calculateCommute(
-        listingId: arg.listingId,
-        universityId: arg.uniId,
-      );
-});
+    .family<XonadoshCommuteEstimate?, ({int listingId, int uniId})>((
+      ref,
+      arg,
+    ) async {
+      return ref
+          .watch(xonadoshRepositoryProvider)
+          .calculateCommute(listingId: arg.listingId, universityId: arg.uniId);
+    });
 
-final xonadoshMyProfileProvider =
-    FutureProvider.autoDispose<XonadoshProfile?>((ref) async {
+final xonadoshMyProfileProvider = FutureProvider.autoDispose<XonadoshProfile?>((
+  ref,
+) async {
   final repo = ref.watch(xonadoshRepositoryProvider);
   final session = ref.watch(sessionManagerProvider);
-  return repo.getMyProfile(session.userId);
+  return repo.getMyProfile(session.username);
 });
 
 final xonadoshMatchingRoommatesProvider =
     FutureProvider.autoDispose<List<XonadoshProfile>>((ref) async {
-  final repo = ref.watch(xonadoshRepositoryProvider);
-  final session = ref.watch(sessionManagerProvider);
-  final selectedUni = ref.watch(xonadoshMatchUniProvider);
-  final gender = ref.watch(xonadoshMatchGenderFilterProvider);
-  final lang = ref.watch(localeProvider).languageCode;
-  final myProfile = await ref.watch(xonadoshMyProfileProvider.future);
+      final repo = ref.watch(xonadoshRepositoryProvider);
+      final session = ref.watch(sessionManagerProvider);
+      final selectedUni = ref.watch(xonadoshMatchUniProvider);
+      final gender = ref.watch(xonadoshMatchGenderFilterProvider);
+      final lang = ref.watch(localeProvider).languageCode;
+      final myProfile = await ref.watch(xonadoshMyProfileProvider.future);
 
-  final apiGender = switch (gender) {
-    'boys' => 'male',
-    'girls' => 'female',
-    _ => null,
-  };
+      final apiGender = switch (gender) {
+        'boys' => 'male',
+        'girls' => 'female',
+        _ => null,
+      };
 
-  final matches = await repo.getMatchingRoommates(
-    username: session.userId,
-    universityId: selectedUni?.id,
-    gender: apiGender,
-    sleepSchedule: myProfile?.sleepSchedule,
-    cleanliness: myProfile?.cleanliness,
-    studyHabit: myProfile?.studyHabit,
-    cookingHabit: myProfile?.cookingHabit,
-    smokingHabit: myProfile?.smokingHabit,
-    budgetMin: myProfile?.budgetMin,
-    budgetMax: myProfile?.budgetMax,
-    lang: lang,
-  );
-  final blocked = await ref.watch(blockedUsernamesProvider.future);
-  if (blocked.isEmpty) return matches;
-  return matches
-      .where((e) => !blocked.contains(e.username.trim().toLowerCase()))
-      .toList();
-});
+      final matches = await repo.getMatchingRoommates(
+        username: session.username,
+        universityId: selectedUni?.id,
+        gender: apiGender,
+        sleepSchedule: myProfile?.sleepSchedule,
+        cleanliness: myProfile?.cleanliness,
+        studyHabit: myProfile?.studyHabit,
+        cookingHabit: myProfile?.cookingHabit,
+        smokingHabit: myProfile?.smokingHabit,
+        budgetMin: myProfile?.budgetMin,
+        budgetMax: myProfile?.budgetMax,
+        lang: lang,
+      );
+      final blocked = await ref.watch(blockedUsernamesProvider.future);
+      if (blocked.isEmpty) return matches;
+      return matches
+          .where((e) => !blocked.contains(e.username.trim().toLowerCase()))
+          .toList();
+    });
 
-final xonadoshChoresProvider = FutureProvider.autoDispose<
-    ({
-      String todayDay,
-      List<XonadoshChore> todayDuties,
-      List<XonadoshChore> allChores
-    })>((ref) async {
-  return ref.watch(xonadoshRepositoryProvider).getChores();
-});
+final xonadoshChoresProvider =
+    FutureProvider.autoDispose<
+      ({
+        String todayDay,
+        List<XonadoshChore> todayDuties,
+        List<XonadoshChore> allChores,
+      })
+    >((ref) async {
+      return ref.watch(xonadoshRepositoryProvider).getChores();
+    });
 
-final xonadoshRecipesAndMealPlanProvider = FutureProvider.autoDispose<
-    ({List<XonadoshRecipe> recipes, List<XonadoshMealPlan> mealPlans})>((ref) async {
-  return ref.watch(xonadoshRepositoryProvider).getRecipesAndMealPlan();
-});
+final xonadoshRecipesAndMealPlanProvider =
+    FutureProvider.autoDispose<
+      ({List<XonadoshRecipe> recipes, List<XonadoshMealPlan> mealPlans})
+    >((ref) async {
+      return ref.watch(xonadoshRepositoryProvider).getRecipesAndMealPlan();
+    });
 
 final xonadoshGroceryCalculationProvider =
     FutureProvider.autoDispose<XonadoshGroceryCalculation?>((ref) async {
-  final roommateCount = ref.watch(xonadoshRoommateCountProvider);
-  return ref
-      .watch(xonadoshRepositoryProvider)
-      .calculateGrocery(roommateCount: roommateCount);
-});
+      final roommateCount = ref.watch(xonadoshRoommateCountProvider);
+      return ref
+          .watch(xonadoshRepositoryProvider)
+          .calculateGrocery(roommateCount: roommateCount);
+    });
 
-final xonadoshKarmaProvider =
-    FutureProvider.autoDispose<XonadoshKarmaData>((ref) async {
+final xonadoshKarmaProvider = FutureProvider.autoDispose<XonadoshKarmaData>((
+  ref,
+) async {
   return ref.watch(xonadoshRepositoryProvider).getKarma();
 });
 
-final xonadoshPollsProvider =
-    FutureProvider.autoDispose<XonadoshPollsData>((ref) async {
+final xonadoshPollsProvider = FutureProvider.autoDispose<XonadoshPollsData>((
+  ref,
+) async {
   return ref.watch(xonadoshRepositoryProvider).getPolls();
 });
 
 final xonadoshFinancesProvider =
     FutureProvider.autoDispose<XonadoshFinancesData>((ref) async {
-  return ref.watch(xonadoshRepositoryProvider).getFinances();
-});
-
+      return ref.watch(xonadoshRepositoryProvider).getFinances();
+    });

@@ -4,6 +4,9 @@ import 'package:go_router/go_router.dart';
 
 import 'package:xonadosh/config/theme.dart';
 import 'package:xonadosh/l10n/l10n_ext.dart';
+import 'package:xonadosh/domain/uz_phone.dart';
+import 'package:xonadosh/presentation/auth/auth_error.dart';
+import 'package:xonadosh/presentation/auth/google_sign_in_button.dart';
 import 'package:xonadosh/presentation/common/xonadosh_logo.dart';
 import 'package:xonadosh/presentation/providers/app_providers.dart';
 import 'package:xonadosh/presentation/router/app_routes.dart';
@@ -31,22 +34,23 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
   }
 
   Future<void> _submit() async {
-    if (!_formKey.currentState!.validate()) return;
+    if (!(_formKey.currentState?.validate() ?? false)) return;
     setState(() {
       _loading = true;
       _error = null;
     });
-    final res = await ref.read(authRepositoryProvider).login(
-          login: _loginCtrl.text.trim(),
-          password: _passwordCtrl.text,
-        );
+    final raw = _loginCtrl.text.trim();
+    final login = IntlPhone.isValid(raw) ? IntlPhone.normalize(raw) : raw;
+    final res = await ref
+        .read(authRepositoryProvider)
+        .login(login: login, password: _passwordCtrl.text);
     if (!mounted) return;
     setState(() => _loading = false);
     if (res['ok'] == true) {
       ref.invalidate(authBootstrapProvider);
       if (context.mounted) context.go(AppRoutes.shell);
     } else {
-      setState(() => _error = res['error']?.toString() ?? context.l10n.errorGeneric);
+      setState(() => _error = localizedAuthError(context.l10n, res));
     }
   }
 
@@ -76,13 +80,19 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
                           shape: BoxShape.circle,
                           boxShadow: [
                             BoxShadow(
-                              color: XonaDoshColors.emerald.withValues(alpha: 0.2),
+                              color: XonaDoshColors.emerald.withValues(
+                                alpha: 0.2,
+                              ),
                               blurRadius: 20,
                               offset: const Offset(0, 6),
                             ),
                           ],
                         ),
-                        child: const XonaDoshLogo.mark(height: 84, width: 84, borderRadius: 24),
+                        child: const XonaDoshLogo.mark(
+                          height: 84,
+                          width: 84,
+                          borderRadius: 24,
+                        ),
                       ),
                     ),
                     const SizedBox(height: 20),
@@ -99,7 +109,9 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
                     Text(
                       l10n.loginSubtitle,
                       style: TextStyle(
-                        color: isDark ? const Color(0xFF94A3B8) : const Color(0xFF64748B),
+                        color: isDark
+                            ? const Color(0xFF94A3B8)
+                            : const Color(0xFF64748B),
                         fontSize: 14,
                       ),
                       textAlign: TextAlign.center,
@@ -111,17 +123,29 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
                       runSpacing: 6,
                       children: [
                         Chip(
-                          avatar: const Icon(Icons.home_outlined, size: 14, color: XonaDoshColors.emerald),
+                          avatar: const Icon(
+                            Icons.home_outlined,
+                            size: 14,
+                            color: XonaDoshColors.emerald,
+                          ),
                           label: Text(l10n.xonadoshJobHousingTitle),
                           visualDensity: VisualDensity.compact,
                         ),
                         Chip(
-                          avatar: const Icon(Icons.group_outlined, size: 14, color: XonaDoshColors.accentPurple),
+                          avatar: const Icon(
+                            Icons.group_outlined,
+                            size: 14,
+                            color: XonaDoshColors.accentPurple,
+                          ),
                           label: Text(l10n.xonadoshJobMatchTitle),
                           visualDensity: VisualDensity.compact,
                         ),
                         Chip(
-                          avatar: const Icon(Icons.checklist_rounded, size: 14, color: XonaDoshColors.amber),
+                          avatar: const Icon(
+                            Icons.checklist_rounded,
+                            size: 14,
+                            color: XonaDoshColors.amber,
+                          ),
                           label: Text(l10n.xonadoshJobColivingTitle),
                           visualDensity: VisualDensity.compact,
                         ),
@@ -131,25 +155,42 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
                     TextFormField(
                       controller: _loginCtrl,
                       textInputAction: TextInputAction.next,
+                      textCapitalization: TextCapitalization.none,
+                      autocorrect: false,
+                      autofillHints: const [
+                        AutofillHints.username,
+                        AutofillHints.telephoneNumber,
+                      ],
+                      keyboardType: TextInputType.emailAddress,
                       decoration: InputDecoration(
                         labelText: l10n.loginUsername,
-                        prefixIcon: const Icon(Icons.person_outline_rounded, color: XonaDoshColors.emerald),
+                        prefixIcon: const Icon(
+                          Icons.person_outline_rounded,
+                          color: XonaDoshColors.emerald,
+                        ),
                       ),
-                      validator: (v) =>
-                          (v == null || v.trim().isEmpty) ? l10n.loginUsername : null,
+                      validator: (v) => (v == null || v.trim().isEmpty)
+                          ? l10n.loginUsername
+                          : null,
                     ),
                     const SizedBox(height: 14),
                     TextFormField(
                       controller: _passwordCtrl,
                       obscureText: _obscure,
                       onFieldSubmitted: (_) => _submit(),
+                      autofillHints: const [AutofillHints.password],
                       decoration: InputDecoration(
                         labelText: l10n.loginPassword,
-                        prefixIcon: const Icon(Icons.lock_outline_rounded, color: XonaDoshColors.emerald),
+                        prefixIcon: const Icon(
+                          Icons.lock_outline_rounded,
+                          color: XonaDoshColors.emerald,
+                        ),
                         suffixIcon: IconButton(
                           onPressed: () => setState(() => _obscure = !_obscure),
                           icon: Icon(
-                            _obscure ? Icons.visibility_outlined : Icons.visibility_off_outlined,
+                            _obscure
+                                ? Icons.visibility_outlined
+                                : Icons.visibility_off_outlined,
                             size: 20,
                           ),
                         ),
@@ -160,15 +201,26 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
                     if (_error != null) ...[
                       const SizedBox(height: 14),
                       Container(
-                        padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 10),
+                        padding: const EdgeInsets.symmetric(
+                          horizontal: 14,
+                          vertical: 10,
+                        ),
                         decoration: BoxDecoration(
                           color: const Color(0xFFEF4444).withValues(alpha: 0.1),
                           borderRadius: BorderRadius.circular(12),
-                          border: Border.all(color: const Color(0xFFEF4444).withValues(alpha: 0.3)),
+                          border: Border.all(
+                            color: const Color(
+                              0xFFEF4444,
+                            ).withValues(alpha: 0.3),
+                          ),
                         ),
                         child: Text(
                           _error!,
-                          style: const TextStyle(color: Color(0xFFEF4444), fontSize: 13, fontWeight: FontWeight.w600),
+                          style: const TextStyle(
+                            color: Color(0xFFEF4444),
+                            fontSize: 13,
+                            fontWeight: FontWeight.w600,
+                          ),
                           textAlign: TextAlign.center,
                         ),
                       ),
@@ -182,17 +234,66 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
                             ? const SizedBox(
                                 width: 22,
                                 height: 22,
-                                child: CircularProgressIndicator(strokeWidth: 2, color: Colors.white),
+                                child: CircularProgressIndicator(
+                                  strokeWidth: 2,
+                                  color: Colors.white,
+                                ),
                               )
-                            : Text(l10n.loginButton, style: const TextStyle(fontSize: 16, fontWeight: FontWeight.w800)),
+                            : Text(
+                                l10n.loginButton,
+                                style: const TextStyle(
+                                  fontSize: 16,
+                                  fontWeight: FontWeight.w800,
+                                ),
+                              ),
                       ),
                     ),
+                    const SizedBox(height: 16),
+                    Row(
+                      children: [
+                        Expanded(
+                          child: Divider(
+                            color: isDark
+                                ? const Color(0xFF334155)
+                                : const Color(0xFFE2E8F0),
+                          ),
+                        ),
+                        Padding(
+                          padding: const EdgeInsets.symmetric(horizontal: 12),
+                          child: Text(
+                            context.l10n.localeName.startsWith('ru')
+                                ? 'или'
+                                : context.l10n.localeName.startsWith('en')
+                                    ? 'or'
+                                    : 'yoki',
+                            style: TextStyle(
+                              fontSize: 13,
+                              color: isDark
+                                  ? const Color(0xFF94A3B8)
+                                  : const Color(0xFF64748B),
+                            ),
+                          ),
+                        ),
+                        Expanded(
+                          child: Divider(
+                            color: isDark
+                                ? const Color(0xFF334155)
+                                : const Color(0xFFE2E8F0),
+                          ),
+                        ),
+                      ],
+                    ),
+                    const SizedBox(height: 16),
+                    const GoogleSignInButton(),
                     const SizedBox(height: 14),
                     TextButton(
                       onPressed: () => context.go(AppRoutes.register),
                       child: Text(
                         l10n.loginNoAccount,
-                        style: const TextStyle(fontWeight: FontWeight.w700, fontSize: 14),
+                        style: const TextStyle(
+                          fontWeight: FontWeight.w700,
+                          fontSize: 14,
+                        ),
                       ),
                     ),
                   ],

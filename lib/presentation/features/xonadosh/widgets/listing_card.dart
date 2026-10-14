@@ -7,7 +7,9 @@ import 'package:xonadosh/l10n/l10n_ext.dart';
 import 'package:xonadosh/presentation/features/xonadosh/data/xonadosh_locations.dart';
 
 String formatListingMoney(double amount) {
-  return amount.toStringAsFixed(0).replaceAllMapped(
+  return amount
+      .toStringAsFixed(0)
+      .replaceAllMapped(
         RegExp(r'(\d{1,3})(?=(\d{3})+(?!\d))'),
         (Match m) => '${m[1]} ',
       );
@@ -44,82 +46,200 @@ class XonadoshListingCard extends StatelessWidget {
     final l10n = context.l10n;
     final isDark = Theme.of(context).brightness == Brightness.dark;
     final photo = item.photos.isNotEmpty ? item.photos.first : null;
-    final currSymbol = XonadoshLocationData.currencySymbols[item.currency] ?? item.currency;
+    final currSymbol =
+        XonadoshLocationData.currencySymbols[item.currency] ?? item.currency;
     final periodLabel = item.pricePeriod == 'month'
         ? l10n.xonadoshPeriodMonth
         : (item.pricePeriod == 'day'
-            ? l10n.xonadoshPeriodDay
-            : (item.pricePeriod == 'year' ? l10n.xonadoshPeriodYear : l10n.xonadoshPeriodTotal));
+              ? l10n.xonadoshPeriodDay
+              : (item.pricePeriod == 'year'
+                    ? l10n.xonadoshPeriodYear
+                    : l10n.xonadoshPeriodTotal));
 
     return Container(
-      margin: const EdgeInsets.only(bottom: 14),
-      decoration: XonaDoshStyles.cardDecoration(isDark),
+      margin: const EdgeInsets.only(bottom: 16),
+      decoration: XonaDoshStyles.cardDecoration(isDark, radius: 18),
       child: InkWell(
-        borderRadius: BorderRadius.circular(14),
+        borderRadius: BorderRadius.circular(18),
         onTap: onTap,
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            Stack(
-              children: [
-                ClipRRect(
-                  borderRadius: const BorderRadius.vertical(top: Radius.circular(14)),
-                  child: photo != null
+            // Photo Container with Rounded Top & Dark Overlay
+            ClipRRect(
+              borderRadius: const BorderRadius.vertical(
+                top: Radius.circular(18),
+              ),
+              child: Stack(
+                children: [
+                  photo != null
                       ? Image.network(
                           photo,
-                          height: 180,
+                          height: 195,
                           width: double.infinity,
                           fit: BoxFit.cover,
-                          errorBuilder: (_, _, _) => _placeholder(),
+                          errorBuilder: (_, _, _) => _placeholder(isDark),
                         )
-                      : _placeholder(),
-                ),
-                Positioned(
-                  top: 10,
-                  left: 10,
-                  child: Container(
-                    padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
-                    decoration: BoxDecoration(
-                      color: _typeColor(item.type),
-                      borderRadius: BorderRadius.circular(6),
-                    ),
-                    child: Text(
-                      _typeLabel(item.type, l10n),
-                      style: const TextStyle(
-                        color: Colors.white,
-                        fontSize: 11,
-                        fontWeight: FontWeight.w700,
+                      : _placeholder(isDark),
+                  // Subtle dark gradient scrim at the top for badge and icon legibility
+                  Positioned.fill(
+                    child: DecoratedBox(
+                      decoration: BoxDecoration(
+                        gradient: LinearGradient(
+                          begin: Alignment.topCenter,
+                          end: Alignment.center,
+                          colors: [
+                            Colors.black.withValues(alpha: 0.45),
+                            Colors.transparent,
+                          ],
+                        ),
                       ),
                     ),
                   ),
-                ),
-                Positioned(
-                  top: 10,
-                  right: 10,
-                  child: Row(
-                    children: [
-                      _roundIconButton(
-                        icon: Icons.flag_outlined,
-                        tooltip: l10n.reportAction,
-                        onTap: onReport,
-                      ),
-                      const SizedBox(width: 6),
-                      _roundIconButton(
-                        icon: bookmarked ? Icons.favorite_rounded : Icons.favorite_border_rounded,
-                        tooltip: l10n.commonSave,
-                        color: bookmarked ? const Color(0xFFF43F5E) : Colors.white,
-                        onTap: onBookmark,
-                      ),
-                    ],
+                  // Top-Left: Type Badge and Features
+                  Positioned(
+                    top: 10,
+                    left: 10,
+                    right: 90,
+                    child: Wrap(
+                      spacing: 6,
+                      runSpacing: 4,
+                      children: [
+                        Container(
+                          padding: const EdgeInsets.symmetric(
+                            horizontal: 9,
+                            vertical: 4.5,
+                          ),
+                          decoration: BoxDecoration(
+                            color: _typeColor(item.type),
+                            borderRadius: BorderRadius.circular(8),
+                            boxShadow: [
+                              BoxShadow(
+                                color: Colors.black.withValues(alpha: 0.2),
+                                blurRadius: 4,
+                              ),
+                            ],
+                          ),
+                          child: Text(
+                            _typeLabel(item.type, l10n),
+                            style: const TextStyle(
+                              color: Colors.white,
+                              fontSize: 11,
+                              fontWeight: FontWeight.w800,
+                              letterSpacing: 0.1,
+                            ),
+                          ),
+                        ),
+                        if (item.isNoBroker)
+                          Container(
+                            padding: const EdgeInsets.symmetric(
+                              horizontal: 8,
+                              vertical: 4.5,
+                            ),
+                            decoration: BoxDecoration(
+                              color: const Color(0xFF059669),
+                              borderRadius: BorderRadius.circular(8),
+                              boxShadow: [
+                                BoxShadow(
+                                  color: Colors.black.withValues(alpha: 0.2),
+                                  blurRadius: 4,
+                                ),
+                              ],
+                            ),
+                            child: const Row(
+                              mainAxisSize: MainAxisSize.min,
+                              children: [
+                                Icon(
+                                  Icons.verified_user_rounded,
+                                  color: Colors.white,
+                                  size: 12,
+                                ),
+                                SizedBox(width: 3),
+                                Text(
+                                  'Bez Makler',
+                                  style: TextStyle(
+                                    color: Colors.white,
+                                    fontSize: 11,
+                                    fontWeight: FontWeight.w800,
+                                  ),
+                                ),
+                              ],
+                            ),
+                          ),
+                        if (item.utilitiesIncluded)
+                          Container(
+                            padding: const EdgeInsets.symmetric(
+                              horizontal: 8,
+                              vertical: 4.5,
+                            ),
+                            decoration: BoxDecoration(
+                              color: const Color(0xFF0284C7),
+                              borderRadius: BorderRadius.circular(8),
+                              boxShadow: [
+                                BoxShadow(
+                                  color: Colors.black.withValues(alpha: 0.2),
+                                  blurRadius: 4,
+                                ),
+                              ],
+                            ),
+                            child: const Row(
+                              mainAxisSize: MainAxisSize.min,
+                              children: [
+                                Icon(
+                                  Icons.bolt_rounded,
+                                  color: Colors.white,
+                                  size: 12,
+                                ),
+                                SizedBox(width: 3),
+                                Text(
+                                  'Kommunal ichida',
+                                  style: TextStyle(
+                                    color: Colors.white,
+                                    fontSize: 11,
+                                    fontWeight: FontWeight.w800,
+                                  ),
+                                ),
+                              ],
+                            ),
+                          ),
+                      ],
+                    ),
                   ),
-                ),
-              ],
+                  // Top-Right: Flag and Bookmark Heart
+                  Positioned(
+                    top: 10,
+                    right: 10,
+                    child: Row(
+                      children: [
+                        _roundIconButton(
+                          icon: Icons.flag_outlined,
+                          tooltip: l10n.reportAction,
+                          onTap: onReport,
+                        ),
+                        const SizedBox(width: 6),
+                        _roundIconButton(
+                          icon: bookmarked
+                              ? Icons.favorite_rounded
+                              : Icons.favorite_border_rounded,
+                          tooltip: l10n.commonSave,
+                          color: bookmarked
+                              ? const Color(0xFFF43F5E)
+                              : Colors.white,
+                          onTap: onBookmark,
+                        ),
+                      ],
+                    ),
+                  ),
+                ],
+              ),
             ),
+            // Card Content Section
             Padding(
-              padding: const EdgeInsets.all(12),
+              padding: const EdgeInsets.all(14),
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
+                  // Row 1: Price and Specs
                   Row(
                     crossAxisAlignment: CrossAxisAlignment.center,
                     children: [
@@ -130,11 +250,13 @@ class XonadoshListingCard extends StatelessWidget {
                           children: [
                             Text(
                               '${formatListingMoney(item.price)} $currSymbol',
-                              style: const TextStyle(
-                                color: XonaDoshColors.emeraldDark,
+                              style: TextStyle(
+                                color: isDark
+                                    ? const Color(0xFF2DD4BF)
+                                    : XonaDoshColors.emeraldDark,
                                 fontWeight: FontWeight.w900,
-                                fontSize: 17,
-                                letterSpacing: -0.3,
+                                fontSize: 18,
+                                letterSpacing: -0.4,
                               ),
                             ),
                             const SizedBox(width: 4),
@@ -142,58 +264,53 @@ class XonadoshListingCard extends StatelessWidget {
                               '/ $periodLabel',
                               style: TextStyle(
                                 fontSize: 12,
-                                color: isDark ? XonaDoshColors.slate400 : XonaDoshColors.slate500,
-                                fontWeight: FontWeight.w500,
+                                color: isDark
+                                    ? XonaDoshColors.slate400
+                                    : XonaDoshColors.slate500,
+                                fontWeight: FontWeight.w600,
                               ),
                             ),
                           ],
                         ),
                       ),
-                      IconButton.filledTonal(
-                        onPressed: onCall,
-                        icon: const Icon(Icons.call_rounded, size: 16),
-                        tooltip: l10n.xonadoshCallShort,
-                        visualDensity: VisualDensity.compact,
-                        style: IconButton.styleFrom(
-                          padding: const EdgeInsets.all(8),
-                          backgroundColor: XonaDoshColors.emerald.withValues(alpha: 0.12),
-                          foregroundColor: XonaDoshColors.emeraldDark,
+                      Container(
+                        padding: const EdgeInsets.symmetric(
+                          horizontal: 8,
+                          vertical: 4,
                         ),
-                      ),
-                      if (onTelegram != null) ...[
-                        const SizedBox(width: 6),
-                        IconButton.filledTonal(
-                          onPressed: onTelegram,
-                          icon: const Icon(Icons.send_rounded, size: 15),
-                          tooltip: l10n.xonadoshTelegram,
-                          visualDensity: VisualDensity.compact,
-                          style: IconButton.styleFrom(
-                            padding: const EdgeInsets.all(8),
-                            backgroundColor: const Color(0xFF0284C7).withValues(alpha: 0.12),
-                            foregroundColor: const Color(0xFF0284C7),
+                        decoration: BoxDecoration(
+                          color: isDark
+                              ? const Color(0xFF334155).withValues(alpha: 0.6)
+                              : const Color(0xFFF1F5F9),
+                          borderRadius: BorderRadius.circular(8),
+                        ),
+                        child: Text(
+                          _specsLine(item, l10n),
+                          style: TextStyle(
+                            color: isDark
+                                ? const Color(0xFFE2E8F0)
+                                : const Color(0xFF334155),
+                            fontWeight: FontWeight.w700,
+                            fontSize: 11,
                           ),
                         ),
-                      ],
+                      ),
                     ],
                   ),
-                  const SizedBox(height: 4),
+                  const SizedBox(height: 8),
+                  // Title
                   Text(
                     item.title,
                     maxLines: 1,
                     overflow: TextOverflow.ellipsis,
-                    style: const TextStyle(fontWeight: FontWeight.w700, fontSize: 14),
-                  ),
-                  const SizedBox(height: 6),
-                  Text(
-                    _specsLine(item, l10n),
-                    maxLines: 1,
-                    overflow: TextOverflow.ellipsis,
-                    style: TextStyle(
-                      color: isDark ? XonaDoshColors.slate400 : XonaDoshColors.slate500,
-                      fontSize: 12,
+                    style: const TextStyle(
+                      fontWeight: FontWeight.w800,
+                      fontSize: 15,
+                      letterSpacing: -0.2,
                     ),
                   ),
-                  const SizedBox(height: 8),
+                  const SizedBox(height: 10),
+                  // Location, Metro & University info chips
                   Wrap(
                     spacing: 6,
                     runSpacing: 6,
@@ -218,6 +335,68 @@ class XonadoshListingCard extends StatelessWidget {
                         ),
                     ],
                   ),
+                  const SizedBox(height: 12),
+                  // Dedicated Bottom Action Row
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.end,
+                    children: [
+                      FilledButton.icon(
+                        onPressed: onCall,
+                        icon: const Icon(Icons.call_rounded, size: 15),
+                        label: Text(l10n.xonadoshCallShort),
+                        style: FilledButton.styleFrom(
+                          backgroundColor: XonaDoshColors.emerald.withValues(
+                            alpha: isDark ? 0.2 : 0.12,
+                          ),
+                          foregroundColor: isDark
+                              ? const Color(0xFF2DD4BF)
+                              : XonaDoshColors.emeraldDark,
+                          elevation: 0,
+                          padding: const EdgeInsets.symmetric(
+                            horizontal: 14,
+                            vertical: 8,
+                          ),
+                          visualDensity: VisualDensity.compact,
+                          shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(10),
+                          ),
+                          textStyle: const TextStyle(
+                            fontSize: 12,
+                            fontWeight: FontWeight.w700,
+                          ),
+                        ),
+                      ),
+                      if (onTelegram != null) ...[
+                        const SizedBox(width: 8),
+                        FilledButton.icon(
+                          onPressed: onTelegram,
+                          icon: const Icon(Icons.send_rounded, size: 14),
+                          label: Text(l10n.xonadoshTelegram),
+                          style: FilledButton.styleFrom(
+                            backgroundColor: const Color(0xFF0284C7).withValues(
+                              alpha: isDark ? 0.2 : 0.12,
+                            ),
+                            foregroundColor: isDark
+                                ? const Color(0xFF38BDF8)
+                                : const Color(0xFF0284C7),
+                            elevation: 0,
+                            padding: const EdgeInsets.symmetric(
+                              horizontal: 14,
+                              vertical: 8,
+                            ),
+                            visualDensity: VisualDensity.compact,
+                            shape: RoundedRectangleBorder(
+                              borderRadius: BorderRadius.circular(10),
+                            ),
+                            textStyle: const TextStyle(
+                              fontSize: 12,
+                              fontWeight: FontWeight.w700,
+                            ),
+                          ),
+                        ),
+                      ],
+                    ],
+                  ),
                 ],
               ),
             ),
@@ -230,7 +409,8 @@ class XonadoshListingCard extends StatelessWidget {
   String _specsLine(XonadoshListing item, AppLocalizations l10n) {
     final rooms = '${item.roomsCount} ${l10n.xonadoshRoomsShort}';
     final area = '${item.areaSqm.toStringAsFixed(0)} m²';
-    final floor = '${item.floor}/${item.totalFloors} ${l10n.xonadoshFloorShort}';
+    final floor =
+        '${item.floor}/${item.totalFloors} ${l10n.xonadoshFloorShort}';
     return '$rooms · $area · $floor';
   }
 
@@ -247,15 +427,19 @@ class XonadoshListingCard extends StatelessWidget {
 
   Widget _metaChip(bool isDark, IconData icon, String text) {
     return Container(
-      padding: const EdgeInsets.symmetric(horizontal: 7, vertical: 3.5),
+      padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
       decoration: BoxDecoration(
         color: isDark ? const Color(0xFF0F172A) : const Color(0xFFF1F5F9),
-        borderRadius: BorderRadius.circular(6),
+        borderRadius: BorderRadius.circular(8),
       ),
       child: Row(
         mainAxisSize: MainAxisSize.min,
         children: [
-          Icon(icon, size: 12, color: isDark ? XonaDoshColors.slate400 : XonaDoshColors.slate500),
+          Icon(
+            icon,
+            size: 13,
+            color: isDark ? XonaDoshColors.slate400 : XonaDoshColors.slate500,
+          ),
           const SizedBox(width: 4),
           Text(
             text,
@@ -278,26 +462,64 @@ class XonadoshListingCard extends StatelessWidget {
   }) {
     return Tooltip(
       message: tooltip,
-      child: GestureDetector(
-        onTap: onTap,
-        child: Container(
-          padding: const EdgeInsets.all(7),
-          decoration: BoxDecoration(
-            color: Colors.black.withValues(alpha: 0.5),
-            shape: BoxShape.circle,
+      child: Material(
+        color: Colors.transparent,
+        child: InkWell(
+          borderRadius: BorderRadius.circular(20),
+          onTap: onTap,
+          child: Container(
+            padding: const EdgeInsets.all(8),
+            decoration: BoxDecoration(
+              color: Colors.black.withValues(alpha: 0.42),
+              shape: BoxShape.circle,
+              border: Border.all(
+                color: Colors.white.withValues(alpha: 0.15),
+                width: 0.8,
+              ),
+            ),
+            child: Icon(icon, color: color, size: 16),
           ),
-          child: Icon(icon, color: color, size: 16),
         ),
       ),
     );
   }
 
-  Widget _placeholder() {
+  Widget _placeholder(bool isDark) {
     return Container(
-      height: 180,
-      color: const Color(0xFFE2E8F0),
-      child: const Center(
-        child: Icon(Icons.apartment_rounded, size: 48, color: Color(0xFF94A3B8)),
+      height: 195,
+      decoration: BoxDecoration(
+        color: isDark ? const Color(0xFF1E293B) : const Color(0xFFF1F5F9),
+        gradient: LinearGradient(
+          begin: Alignment.topLeft,
+          end: Alignment.bottomRight,
+          colors: isDark
+              ? [const Color(0xFF1E293B), const Color(0xFF0F172A)]
+              : [const Color(0xFFF1F5F9), const Color(0xFFE2E8F0)],
+        ),
+      ),
+      child: Center(
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            Icon(
+              Icons.apartment_rounded,
+              size: 44,
+              color: isDark ? const Color(0xFF475569) : const Color(0xFF94A3B8),
+            ),
+            const SizedBox(height: 6),
+            Text(
+              'XonaDosh',
+              style: TextStyle(
+                fontSize: 12,
+                fontWeight: FontWeight.w700,
+                color: isDark
+                    ? const Color(0xFF475569)
+                    : const Color(0xFF94A3B8),
+                letterSpacing: 0.5,
+              ),
+            ),
+          ],
+        ),
       ),
     );
   }

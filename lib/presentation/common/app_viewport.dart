@@ -41,9 +41,9 @@ class AppViewport extends StatelessWidget {
               ),
               clipBehavior: Clip.hardEdge,
               child: MediaQuery(
-                data: MediaQuery.of(context).copyWith(
-                  size: Size(phoneMax, constraints.maxHeight),
-                ),
+                data: MediaQuery.of(
+                  context,
+                ).copyWith(size: Size(phoneMax, constraints.maxHeight)),
                 child: content,
               ),
             ),

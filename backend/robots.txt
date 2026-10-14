@@ -1,0 +1,28 @@
+# xonadosh.uz robots.txt - Optimized for Googlebot, YandexBot, and AI Crawlers
+User-agent: *
+Allow: /
+Disallow: /admin/
+Disallow: /api/
+
+User-agent: GPTBot
+Allow: /
+
+User-agent: ChatGPT-User
+Allow: /
+
+User-agent: Google-Extended
+Allow: /
+
+User-agent: PerplexityBot
+Allow: /
+
+User-agent: ClaudeBot
+Allow: /
+
+User-agent: anthropic-ai
+Allow: /
+
+User-agent: Applebot
+Allow: /
+
+Sitemap: https://xonadosh.uz/sitemap.xml

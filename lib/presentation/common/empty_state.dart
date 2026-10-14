@@ -52,15 +52,14 @@ class EmptyState extends StatelessWidget {
               subtitle ?? l10n.emptyStateSubtitle,
               textAlign: TextAlign.center,
               style: TextStyle(
-                color: isDark ? XonaDoshColors.slate400 : XonaDoshColors.slate500,
+                color: isDark
+                    ? XonaDoshColors.slate400
+                    : XonaDoshColors.slate500,
                 fontSize: 13,
                 height: 1.35,
               ),
             ),
-            if (action != null) ...[
-              const SizedBox(height: 18),
-              action!,
-            ],
+            if (action != null) ...[const SizedBox(height: 18), action!],
             if (secondaryAction != null) ...[
               const SizedBox(height: 8),
               secondaryAction!,

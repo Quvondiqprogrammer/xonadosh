@@ -1046,7 +1046,7 @@
   "settings": "Настройки",
   "accountDelete": "Удалить аккаунт",
   "loginTitle": "Добро пожаловать в XonaDosh",
-  "loginSubtitle": "Найдите комнату. Найдите соседа. Живите вместе.",
+  "loginSubtitle": "Студенческое жильё и подбор соседа для вузов Узбекистана.",
   "registerUsername": "Логин",
   "registerPhone": "Телефон",
   "registerPassword": "Пароль (мин. 8)",
@@ -1086,13 +1086,17 @@
   "reportContentSubjectListing": "Объявление: {title}",
   "@reportContentSubjectListing": {
     "placeholders": {
-      "title": {"type": "String"}
+      "title": {
+        "type": "String"
+      }
     }
   },
   "reportContentSubjectProfile": "Анкета: {name}",
   "@reportContentSubjectProfile": {
     "placeholders": {
-      "name": {"type": "String"}
+      "name": {
+        "type": "String"
+      }
     }
   },
   "reportReasonSpam": "Спам или фейковое объявление",
@@ -1125,8 +1129,8 @@
   "xonadoshDeleteListingBody": "Объявление будет скрыто из ленты. Отменить нельзя.",
   "xonadoshListingDeleted": "Объявление удалено",
   "xonadoshFindRoom": "Найти жильё",
-  "xonadoshOnboardingTitle": "Что делает XonaDosh",
-  "xonadoshOnboardingSubtitle": "Три простые задачи — вместо хаоса OLX и Telegram.",
+  "xonadoshOnboardingTitle": "Для студентов Узбекистана",
+  "xonadoshOnboardingSubtitle": "Жильё у кампуса, Campus Fit и совместная жизнь — не доставка, не дейтинг и не VoIP.",
   "xonadoshJobHousingTitle": "Найти жильё",
   "xonadoshJobHousingBody": "Студенческая аренда рядом с вузами. Цена, район и метро.",
   "xonadoshJobMatchTitle": "Найти соседа",
@@ -1146,13 +1150,17 @@
   "xonadoshKmAway": "{km} от вуза",
   "@xonadoshKmAway": {
     "placeholders": {
-      "km": {"type": "String"}
+      "km": {
+        "type": "String"
+      }
     }
   },
   "xonadoshNearMetro": "Метро {name}",
   "@xonadoshNearMetro": {
     "placeholders": {
-      "name": {"type": "String"}
+      "name": {
+        "type": "String"
+      }
     }
   },
   "xonadoshHousingHeroTitle": "Что нужно?",
@@ -1170,5 +1178,43 @@
   "xonadoshTypeBuy": "Ищу",
   "xonadoshMatchStudyMusic": "Атмосфера учёбы совпадает (музыка / наушники)",
   "xonadoshCallShort": "Звонок",
-  "xonadoshMoreDetails": "Подробнее"
+  "xonadoshMoreDetails": "Подробнее",
+  "registerSubtitle": "Создайте аккаунт для студенческого жилья",
+  "registerFullNameHint": "Как в студенческом билете",
+  "registerNameInvalid": "Введите полное имя (минимум 2 символа)",
+  "registerUsernameHint": "Буквы, цифры, подчёркивание",
+  "registerUsernameHelper": "3–24 символа, уникальный",
+  "registerPhoneCountryHint": "Выберите страну, затем введите номер",
+  "registerPasswordHint": "Не менее 8 символов",
+  "registerPasswordConfirm": "Подтвердите пароль",
+  "registerPasswordMismatch": "Пароли не совпадают",
+  "registerSelectCountry": "Выберите страну",
+  "registerSearchCountry": "Поиск страны",
+  "registerErrorPhoneTaken": "Этот телефон уже зарегистрирован",
+  "registerErrorUsernameTaken": "Этот логин уже занят",
+  "loginErrorInvalid": "Неверный логин или пароль",
+  "loginErrorBlocked": "Аккаунт заблокирован. Обратитесь в поддержку.",
+  "errorRateLimited": "Слишком много попыток. Подождите и попробуйте снова.",
+  "xdFirstRunHousingTitle": "Жильё рядом с университетом",
+  "xdFirstRunHousingBody": "Студенческая аренда вокруг вузов Ташкента, Самарканда и других вузов Узбекистана — цена, район и дорога до кампуса.",
+  "xdFirstRunMatchTitle": "Подбор соседа по привычкам",
+  "xdFirstRunMatchBody": "Campus Fit учитывает сон, чистоту, учёбу, бюджет и тот же вуз — для студенческого коливинга, не для дейтинга или случайного чата.",
+  "xdFirstRunColivingTitle": "Делите обязанности и расходы",
+  "xdFirstRunColivingBody": "После мэтча планируйте дежурства, покупки и общие счета с соседом — инструменты, которых нет в Ikkinchi и VCall.",
+  "xdFirstRunNext": "Далее",
+  "xdFirstRunDone": "Продолжить в XonaDosh",
+  "xdFirstRunSkip": "Пропустить",
+  "xdFirstRunChipTashkent": "Вузы Ташкента",
+  "xdFirstRunChipSamarkand": "Самарканд",
+  "xdFirstRunChipNearCampus": "Рядом с кампусом",
+  "xdFirstRunChipSleep": "Режим сна",
+  "xdFirstRunChipClean": "Чистота",
+  "xdFirstRunChipBudget": "Бюджет (сум)",
+  "xdFirstRunChipSameUni": "Тот же вуз",
+  "xdFirstRunChipChores": "Дежурства",
+  "xdFirstRunChipGroceries": "Продукты",
+  "xdFirstRunChipExpenses": "Общие расходы",
+  "xdCampusFitTitle": "Campus Fit",
+  "xdCampusFitBody": "Уникально для XonaDosh: совпадение по вузу Узбекистана, сну, чистоте, учёбе и бюджету — не обычный чат.",
+  "xdCampusFitPreviewBody": "Пример: тот же вуз + похожий сон и бюджет → высокий Campus Fit."
 }

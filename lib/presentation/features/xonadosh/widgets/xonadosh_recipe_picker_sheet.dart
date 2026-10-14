@@ -156,7 +156,9 @@ class _XonadoshRecipePickerSheetState
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
                           Text(
-                            context.l10n.xonadoshPickMealTitle(_formatDayName(widget.dayOfWeek)),
+                            context.l10n.xonadoshPickMealTitle(
+                              _formatDayName(widget.dayOfWeek),
+                            ),
                             style: theme.textTheme.titleMedium?.copyWith(
                               fontWeight: FontWeight.w900,
                               letterSpacing: -0.3,
@@ -165,8 +167,13 @@ class _XonadoshRecipePickerSheetState
                             overflow: TextOverflow.ellipsis,
                           ),
                           Text(
-                            context.l10n.xonadoshPickMealSubtitle(_formatMealTime(widget.mealTime)),
-                            style: TextStyle(fontSize: 12, color: Colors.grey[600]),
+                            context.l10n.xonadoshPickMealSubtitle(
+                              _formatMealTime(widget.mealTime),
+                            ),
+                            style: TextStyle(
+                              fontSize: 12,
+                              color: Colors.grey[600],
+                            ),
                             maxLines: 1,
                             overflow: TextOverflow.ellipsis,
                           ),
@@ -176,7 +183,10 @@ class _XonadoshRecipePickerSheetState
                     // Create custom recipe action button
                     IconButton.filledTonal(
                       tooltip: context.l10n.xonadoshAddCustomMeal,
-                      icon: const Icon(Icons.add_rounded, color: XonaDoshColors.primary),
+                      icon: const Icon(
+                        Icons.add_rounded,
+                        color: XonaDoshColors.primary,
+                      ),
                       onPressed: () async {
                         final nav = Navigator.of(context);
                         final created = await showModalBottomSheet<bool>(
@@ -202,14 +212,20 @@ class _XonadoshRecipePickerSheetState
               Padding(
                 padding: const EdgeInsets.symmetric(horizontal: 16),
                 child: TextField(
-                  onChanged: (val) => setState(() => _searchQuery = val.toLowerCase()),
+                  onChanged: (val) =>
+                      setState(() => _searchQuery = val.toLowerCase()),
                   decoration: InputDecoration(
                     hintText: context.l10n.xonadoshSearchRecipeHint,
                     prefixIcon: const Icon(Icons.search_rounded, size: 20),
                     isDense: true,
-                    contentPadding: const EdgeInsets.symmetric(horizontal: 14, vertical: 10),
+                    contentPadding: const EdgeInsets.symmetric(
+                      horizontal: 14,
+                      vertical: 10,
+                    ),
                     filled: true,
-                    fillColor: isDark ? const Color(0xFF1E293B) : const Color(0xFFF1F5F9),
+                    fillColor: isDark
+                        ? const Color(0xFF1E293B)
+                        : const Color(0xFFF1F5F9),
                     border: OutlineInputBorder(
                       borderRadius: BorderRadius.circular(10),
                       borderSide: BorderSide.none,
@@ -236,7 +252,9 @@ class _XonadoshRecipePickerSheetState
                       selected: isSel,
                       selectedColor: XonaDoshColors.primary,
                       labelStyle: TextStyle(
-                        color: isSel ? Colors.white : (isDark ? Colors.grey[300] : Colors.grey[800]),
+                        color: isSel
+                            ? Colors.white
+                            : (isDark ? Colors.grey[300] : Colors.grey[800]),
                         fontWeight: isSel ? FontWeight.w800 : FontWeight.w500,
                         fontSize: 12,
                       ),
@@ -254,16 +272,27 @@ class _XonadoshRecipePickerSheetState
               Expanded(
                 child: dataAsync.when(
                   loading: () => const Center(
-                    child: CircularProgressIndicator(color: XonaDoshColors.primary),
+                    child: CircularProgressIndicator(
+                      color: XonaDoshColors.primary,
+                    ),
                   ),
-                  error: (err, _) => Center(child: Text(context.l10n.xonadoshErrGeneric('$err'))),
+                  error: (err, _) => Center(
+                    child: Text(context.l10n.xonadoshErrGeneric('$err')),
+                  ),
                   data: (data) {
                     final filtered = data.recipes.where((r) {
-                      final matchQuery = _searchQuery.isEmpty ||
+                      final matchQuery =
+                          _searchQuery.isEmpty ||
                           r.nameUz.toLowerCase().contains(_searchQuery) ||
-                          r.ingredients.any((i) => i.nameUz.toLowerCase().contains(_searchQuery));
-                      final matchCat = _selectedCategory == 'Barchasi' ||
-                          r.category.toLowerCase().contains(_selectedCategory.toLowerCase());
+                          r.ingredients.any(
+                            (i) =>
+                                i.nameUz.toLowerCase().contains(_searchQuery),
+                          );
+                      final matchCat =
+                          _selectedCategory == 'Barchasi' ||
+                          r.category.toLowerCase().contains(
+                            _selectedCategory.toLowerCase(),
+                          );
                       return matchQuery && matchCat;
                     }).toList();
 
@@ -272,7 +301,11 @@ class _XonadoshRecipePickerSheetState
                         child: Column(
                           mainAxisAlignment: MainAxisAlignment.center,
                           children: [
-                            const Icon(Icons.ramen_dining_outlined, size: 48, color: Colors.grey),
+                            const Icon(
+                              Icons.ramen_dining_outlined,
+                              size: 48,
+                              color: Colors.grey,
+                            ),
                             const SizedBox(height: 10),
                             Text(context.l10n.xonadoshNoRecipeFound),
                             const SizedBox(height: 10),
@@ -301,7 +334,9 @@ class _XonadoshRecipePickerSheetState
                       itemCount: filtered.length,
                       itemBuilder: (context, idx) {
                         final recipe = filtered[idx];
-                        final isCurrentlySelected = recipe.nameUz.toLowerCase() == widget.currentRecipeName.toLowerCase();
+                        final isCurrentlySelected =
+                            recipe.nameUz.toLowerCase() ==
+                            widget.currentRecipeName.toLowerCase();
 
                         return Card(
                           margin: const EdgeInsets.only(bottom: 12),
@@ -311,7 +346,9 @@ class _XonadoshRecipePickerSheetState
                             side: BorderSide(
                               color: isCurrentlySelected
                                   ? XonaDoshColors.primary
-                                  : (isDark ? const Color(0xFF334155) : const Color(0xFFE2E8F0)),
+                                  : (isDark
+                                        ? const Color(0xFF334155)
+                                        : const Color(0xFFE2E8F0)),
                               width: isCurrentlySelected ? 1.5 : 1,
                             ),
                           ),
@@ -321,7 +358,8 @@ class _XonadoshRecipePickerSheetState
                               showModalBottomSheet(
                                 context: context,
                                 isScrollControlled: true,
-                                builder: (_) => XonadoshRecipeDetailSheet(recipe: recipe),
+                                builder: (_) =>
+                                    XonadoshRecipeDetailSheet(recipe: recipe),
                               );
                             },
                             child: Padding(
@@ -331,24 +369,37 @@ class _XonadoshRecipePickerSheetState
                                   // Recipe Image
                                   ClipRRect(
                                     borderRadius: BorderRadius.circular(10),
-                                    child: (recipe.imageUrl != null && recipe.imageUrl!.isNotEmpty)
+                                    child:
+                                        (recipe.imageUrl != null &&
+                                            recipe.imageUrl!.isNotEmpty)
                                         ? Image.network(
                                             recipe.imageUrl!,
                                             width: 74,
                                             height: 74,
                                             fit: BoxFit.cover,
-                                            errorBuilder: (_, _, _) => Container(
-                                              width: 74,
-                                              height: 74,
-                                              color: isDark ? const Color(0xFF334155) : const Color(0xFFCBD5E1),
-                                              child: const Icon(Icons.restaurant, color: Colors.grey),
-                                            ),
+                                            errorBuilder: (_, _, _) =>
+                                                Container(
+                                                  width: 74,
+                                                  height: 74,
+                                                  color: isDark
+                                                      ? const Color(0xFF334155)
+                                                      : const Color(0xFFCBD5E1),
+                                                  child: const Icon(
+                                                    Icons.restaurant,
+                                                    color: Colors.grey,
+                                                  ),
+                                                ),
                                           )
                                         : Container(
                                             width: 74,
                                             height: 74,
-                                            color: isDark ? const Color(0xFF334155) : const Color(0xFFCBD5E1),
-                                            child: const Icon(Icons.restaurant, color: Colors.grey),
+                                            color: isDark
+                                                ? const Color(0xFF334155)
+                                                : const Color(0xFFCBD5E1),
+                                            child: const Icon(
+                                              Icons.restaurant,
+                                              color: Colors.grey,
+                                            ),
                                           ),
                                   ),
                                   const SizedBox(width: 12),
@@ -356,64 +407,105 @@ class _XonadoshRecipePickerSheetState
                                   // Recipe Details
                                   Expanded(
                                     child: Column(
-                                      crossAxisAlignment: CrossAxisAlignment.start,
+                                      crossAxisAlignment:
+                                          CrossAxisAlignment.start,
                                       children: [
                                         Text(
                                           recipe.nameUz,
-                                          style: const TextStyle(fontWeight: FontWeight.w800, fontSize: 15),
+                                          style: const TextStyle(
+                                            fontWeight: FontWeight.w800,
+                                            fontSize: 15,
+                                          ),
                                         ),
                                         const SizedBox(height: 4),
                                         Wrap(
                                           spacing: 6,
                                           runSpacing: 2,
-                                          crossAxisAlignment: WrapCrossAlignment.center,
+                                          crossAxisAlignment:
+                                              WrapCrossAlignment.center,
                                           children: [
                                             Row(
                                               mainAxisSize: MainAxisSize.min,
                                               children: [
-                                                const Icon(Icons.timer_outlined, size: 13, color: Color(0xFFF59E0B)),
+                                                const Icon(
+                                                  Icons.timer_outlined,
+                                                  size: 13,
+                                                  color: Color(0xFFF59E0B),
+                                                ),
                                                 const SizedBox(width: 3),
                                                 Text(
                                                   '${recipe.prepTimeMin} daq',
-                                                  style: TextStyle(fontSize: 11, color: Colors.grey[600]),
+                                                  style: TextStyle(
+                                                    fontSize: 11,
+                                                    color: Colors.grey[600],
+                                                  ),
                                                 ),
                                               ],
                                             ),
                                             Row(
                                               mainAxisSize: MainAxisSize.min,
                                               children: [
-                                                const Icon(Icons.group_outlined, size: 13, color: Color(0xFF3B82F6)),
+                                                const Icon(
+                                                  Icons.group_outlined,
+                                                  size: 13,
+                                                  color: Color(0xFF3B82F6),
+                                                ),
                                                 const SizedBox(width: 3),
                                                 const Text(
                                                   '4-6 kishi',
-                                                  style: TextStyle(fontSize: 11, color: Color(0xFF3B82F6), fontWeight: FontWeight.w700),
+                                                  style: TextStyle(
+                                                    fontSize: 11,
+                                                    color: Color(0xFF3B82F6),
+                                                    fontWeight: FontWeight.w700,
+                                                  ),
                                                 ),
                                               ],
                                             ),
                                             Container(
-                                              padding: const EdgeInsets.symmetric(horizontal: 5, vertical: 1),
+                                              padding:
+                                                  const EdgeInsets.symmetric(
+                                                    horizontal: 5,
+                                                    vertical: 1,
+                                                  ),
                                               decoration: BoxDecoration(
-                                                color: XonaDoshColors.primary.withAlpha(20),
-                                                borderRadius: BorderRadius.circular(4),
+                                                color: XonaDoshColors.primary
+                                                    .withAlpha(20),
+                                                borderRadius:
+                                                    BorderRadius.circular(4),
                                               ),
                                               child: Text(
                                                 recipe.costLevel == 'budget'
-                                                    ? context.l10n.xonadoshBudgetFriendly
-                                                    : context.l10n.xonadoshMediumBudget,
-                                                style: const TextStyle(fontSize: 10, fontWeight: FontWeight.w800, color: XonaDoshColors.primary),
+                                                    ? context
+                                                          .l10n
+                                                          .xonadoshBudgetFriendly
+                                                    : context
+                                                          .l10n
+                                                          .xonadoshMediumBudget,
+                                                style: const TextStyle(
+                                                  fontSize: 10,
+                                                  fontWeight: FontWeight.w800,
+                                                  color: XonaDoshColors.primary,
+                                                ),
                                               ),
                                             ),
                                           ],
                                         ),
                                         const SizedBox(height: 5),
                                         Text(
-                                          context.l10n.xonadoshIngredientCountLine(
-                                            recipe.ingredients.length,
-                                            recipe.ingredients.take(3).map((e) => e.nameUz).join(', '),
-                                          ),
+                                          context.l10n
+                                              .xonadoshIngredientCountLine(
+                                                recipe.ingredients.length,
+                                                recipe.ingredients
+                                                    .take(3)
+                                                    .map((e) => e.nameUz)
+                                                    .join(', '),
+                                              ),
                                           maxLines: 1,
                                           overflow: TextOverflow.ellipsis,
-                                          style: TextStyle(fontSize: 11, color: Colors.grey[500]),
+                                          style: TextStyle(
+                                            fontSize: 11,
+                                            color: Colors.grey[500],
+                                          ),
                                         ),
                                       ],
                                     ),
@@ -424,15 +516,27 @@ class _XonadoshRecipePickerSheetState
                                   ElevatedButton(
                                     onPressed: () => _selectRecipe(recipe),
                                     style: ElevatedButton.styleFrom(
-                                      backgroundColor: isCurrentlySelected ? XonaDoshColors.primaryDark : XonaDoshColors.primary,
+                                      backgroundColor: isCurrentlySelected
+                                          ? XonaDoshColors.primaryDark
+                                          : XonaDoshColors.primary,
                                       foregroundColor: Colors.white,
                                       elevation: 0,
-                                      padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 8),
-                                      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
+                                      padding: const EdgeInsets.symmetric(
+                                        horizontal: 14,
+                                        vertical: 8,
+                                      ),
+                                      shape: RoundedRectangleBorder(
+                                        borderRadius: BorderRadius.circular(10),
+                                      ),
                                     ),
                                     child: Text(
-                                      isCurrentlySelected ? context.l10n.xonadoshSelected : context.l10n.commonSelect,
-                                      style: const TextStyle(fontWeight: FontWeight.w800, fontSize: 12),
+                                      isCurrentlySelected
+                                          ? context.l10n.xonadoshSelected
+                                          : context.l10n.commonSelect,
+                                      style: const TextStyle(
+                                        fontWeight: FontWeight.w800,
+                                        fontSize: 12,
+                                      ),
                                     ),
                                   ),
                                 ],

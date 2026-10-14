@@ -35,10 +35,22 @@ if ($method === 'POST') {
         json_response(['ok' => true, 'message' => 'Anketa muvaffaqiyatli o‘chirildi']);
     }
 
-    $fullName = trim((string)($body['full_name'] ?? ($sess['display_name'] ?? 'Talaba')));
-    $phoneNumber = trim((string)($body['phone_number'] ?? ($sess['phone_number'] ?? '')));
+    $fullName = trim((string)($body['full_name'] ?? ''));
+    if ($fullName === '') {
+        $fullName = trim((string)($sess['display_name'] ?? ($sess['username'] ?? 'Talaba')));
+    }
+    if ($fullName === '') {
+        $fullName = 'Talaba';
+    }
+    $phoneNumber = trim((string)($body['phone_number'] ?? ''));
+    if ($phoneNumber === '') {
+        $phoneNumber = trim((string)($sess['phone_number'] ?? ''));
+    }
     $telegramHandle = trim((string)($body['telegram_handle'] ?? ''));
     $avatarUrl = trim((string)($body['avatar_url'] ?? ''));
+    if ($avatarUrl === '' && !empty($sess['avatar_url'])) {
+        $avatarUrl = trim((string)$sess['avatar_url']);
+    }
     $gender = (string)($body['gender'] ?? 'male');
     $age = (int)($body['age'] ?? 20);
     $uniId = isset($body['university_id']) && is_numeric($body['university_id']) ? (int)$body['university_id'] : null;

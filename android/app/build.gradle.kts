@@ -5,6 +5,7 @@ plugins {
     id("com.android.application")
     // The Flutter Gradle Plugin must be applied after the Android and Kotlin Gradle plugins.
     id("dev.flutter.flutter-gradle-plugin")
+    id("com.google.gms.google-services")
 }
 
 val keystoreProperties = Properties()
@@ -16,7 +17,7 @@ if (hasReleaseKeystore) {
 
 android {
     namespace = "com.zargo.customer"
-    compileSdk = 37
+    compileSdk = 36
     ndkVersion = flutter.ndkVersion
 
     compileOptions {
@@ -25,11 +26,10 @@ android {
     }
 
     defaultConfig {
-        // Play Store published app is com.zargo.customer — must keep for updates.
-        // iOS bundle remains uz.xonadosh.app.
-        applicationId = "com.zargo.customer"
+        // Dedicated package ID for XonaDosh on Google Play
+        applicationId = "uz.zargo.xonadosh"
         minSdk = maxOf(21, flutter.minSdkVersion)
-        targetSdk = flutter.targetSdkVersion
+        targetSdk = 36
         versionCode = flutter.versionCode
         versionName = flutter.versionName
     }
@@ -60,6 +60,11 @@ kotlin {
     compilerOptions {
         jvmTarget = org.jetbrains.kotlin.gradle.dsl.JvmTarget.JVM_17
     }
+}
+
+dependencies {
+    implementation("androidx.activity:activity-ktx:1.9.3")
+    implementation("androidx.core:core-ktx:1.15.0")
 }
 
 flutter {

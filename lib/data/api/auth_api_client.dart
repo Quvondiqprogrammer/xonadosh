@@ -1,5 +1,6 @@
 import 'package:dio/dio.dart';
 
+import '../../domain/uz_phone.dart';
 import 'api_client.dart';
 import 'api_response.dart';
 import '../models/user_model.dart';
@@ -19,13 +20,17 @@ class AuthApiClient {
     required String phone,
     required String password,
   }) async {
+    final uname = AuthUsername.normalize(username);
+    final tel = IntlPhone.isValid(phone)
+        ? IntlPhone.normalize(phone)
+        : phone.trim();
     return _post(
       'api/auth_register.php',
       data: {
-        'full_name': fullName,
-        'username': username,
-        'phone': phone,
-        'phone_number': phone,
+        'full_name': fullName.trim(),
+        'username': uname,
+        'phone': tel,
+        'phone_number': tel,
         'password': password,
       },
       skipAuth: true,
@@ -38,19 +43,67 @@ class AuthApiClient {
   }) async {
     // Backend accepts username OR phone on the `username` field; also send
     // `phone` so either identifier works if the field name changes.
+    final identifier = IntlPhone.isValid(login)
+        ? IntlPhone.normalize(login)
+        : login.trim();
     final payload = <String, dynamic>{
-      'username': login,
+      'username': identifier,
       'password': password,
     };
-    if (_looksLikePhone(login)) {
-      payload['phone'] = login;
-      payload['phone_number'] = login;
+    if (IntlPhone.isValid(login) ||
+        IntlPhone.looksLikePhone(login) ||
+        _looksLikePhone(login)) {
+      payload['phone'] = identifier;
+      payload['phone_number'] = identifier;
     }
+    return _post('api/auth_login.php', data: payload, skipAuth: true);
+  }
+
+  Future<Map<String, dynamic>> loginWithGoogle({
+    required String idToken,
+    String? email,
+    String? name,
+    String? avatarUrl,
+    String? id,
+  }) async {
+    final payload = <String, dynamic>{'id_token': idToken};
+    if (email != null) payload['email'] = email;
+    if (name != null) payload['name'] = name;
+    if (avatarUrl != null) payload['avatar_url'] = avatarUrl;
+    if (id != null) payload['id'] = id;
     return _post(
-      'api/auth_login.php',
+      'api/auth_google.php',
       data: payload,
       skipAuth: true,
     );
+  }
+
+  Future<Map<String, dynamic>> loginWithApple({
+    required String identityToken,
+    String? email,
+    String? name,
+    String? appleId,
+  }) async {
+    final payload = <String, dynamic>{'identity_token': identityToken};
+    if (email != null) payload['email'] = email;
+    if (name != null) payload['name'] = name;
+    if (appleId != null) payload['apple_id'] = appleId;
+    try {
+      return await _post(
+        'api/auth_apple.php',
+        data: payload,
+        skipAuth: true,
+      );
+    } catch (_) {
+      final res = await Dio().post(
+        'https://hamyon-ai.uz/api/apple_auth.php',
+        data: payload,
+      );
+      if (res.data is Map && res.data['ok'] == true) {
+        return Map<String, dynamic>.from(res.data as Map);
+      }
+      rethrow;
+    }
   }
 
   Future<Map<String, dynamic>> refresh(String refreshToken) async {
@@ -72,10 +125,7 @@ class AuthApiClient {
   Future<Map<String, dynamic>> deleteAccount({required String password}) async {
     return _post(
       'api/account_delete.php',
-      data: {
-        'password': password,
-        'confirm': 'delete',
-      },
+      data: {'password': password, 'confirm': 'delete'},
     );
   }
 
@@ -110,6 +160,14 @@ class AuthApiClient {
   }
 
   Map<String, dynamic> _err(DioException e) {
+    final network =
+        e.type == DioExceptionType.connectionTimeout ||
+        e.type == DioExceptionType.sendTimeout ||
+        e.type == DioExceptionType.receiveTimeout ||
+        e.type == DioExceptionType.connectionError;
+    if (network && e.response == null) {
+      return {'ok': false, 'error': 'Network error', 'error_code': 'network'};
+    }
     return ApiResponse.parse(
       e.response?.data,
       status: e.response?.statusCode,

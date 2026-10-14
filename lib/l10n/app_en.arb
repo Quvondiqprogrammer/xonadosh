@@ -1109,7 +1109,7 @@
   "settings": "Settings",
   "accountDelete": "Delete account",
   "loginTitle": "Welcome to XonaDosh",
-  "loginSubtitle": "Find a room. Find a roommate. Live together.",
+  "loginSubtitle": "Student housing & roommate matching for Uzbekistan universities.",
   "registerUsername": "Username",
   "registerPhone": "Phone",
   "registerPassword": "Password (min 8)",
@@ -1149,13 +1149,17 @@
   "reportContentSubjectListing": "Listing: {title}",
   "@reportContentSubjectListing": {
     "placeholders": {
-      "title": {"type": "String"}
+      "title": {
+        "type": "String"
+      }
     }
   },
   "reportContentSubjectProfile": "Profile: {name}",
   "@reportContentSubjectProfile": {
     "placeholders": {
-      "name": {"type": "String"}
+      "name": {
+        "type": "String"
+      }
     }
   },
   "reportReasonSpam": "Spam or fake listing",
@@ -1188,8 +1192,8 @@
   "xonadoshDeleteListingBody": "This listing will be hidden from the feed. You cannot undo this.",
   "xonadoshListingDeleted": "Listing deleted",
   "xonadoshFindRoom": "Find a room",
-  "xonadoshOnboardingTitle": "What XonaDosh does",
-  "xonadoshOnboardingSubtitle": "Three simple jobs — instead of messy OLX and Telegram groups.",
+  "xonadoshOnboardingTitle": "Built for Uzbekistan students",
+  "xonadoshOnboardingSubtitle": "Housing near campus, Campus Fit roommate matching, and shared living — not delivery, dating, or VoIP.",
   "xonadoshJobHousingTitle": "Find a room",
   "xonadoshJobHousingBody": "Student rentals near universities. See price, area, and metro.",
   "xonadoshJobMatchTitle": "Find a roommate",
@@ -1209,13 +1213,17 @@
   "xonadoshKmAway": "{km} away",
   "@xonadoshKmAway": {
     "placeholders": {
-      "km": {"type": "String"}
+      "km": {
+        "type": "String"
+      }
     }
   },
   "xonadoshNearMetro": "Metro {name}",
   "@xonadoshNearMetro": {
     "placeholders": {
-      "name": {"type": "String"}
+      "name": {
+        "type": "String"
+      }
     }
   },
   "xonadoshHousingHeroTitle": "What do you need?",
@@ -1233,5 +1241,43 @@
   "xonadoshTypeBuy": "Looking",
   "xonadoshMatchStudyMusic": "Study vibe matches (music / headphones)",
   "xonadoshCallShort": "Call",
-  "xonadoshMoreDetails": "Details"
+  "xonadoshMoreDetails": "Details",
+  "registerSubtitle": "Create your student housing account",
+  "registerFullNameHint": "As on your student ID",
+  "registerNameInvalid": "Enter your full name (at least 2 characters)",
+  "registerUsernameHint": "Letters, numbers, underscore",
+  "registerUsernameHelper": "3–24 characters, unique",
+  "registerPhoneCountryHint": "Select country, then enter your number",
+  "registerPasswordHint": "At least 8 characters",
+  "registerPasswordConfirm": "Confirm password",
+  "registerPasswordMismatch": "Passwords do not match",
+  "registerSelectCountry": "Select country",
+  "registerSearchCountry": "Search country",
+  "registerErrorPhoneTaken": "This phone number is already registered",
+  "registerErrorUsernameTaken": "This username is already taken",
+  "loginErrorInvalid": "Incorrect username or password",
+  "loginErrorBlocked": "This account is blocked. Contact support.",
+  "errorRateLimited": "Too many attempts. Please wait and try again.",
+  "xdFirstRunHousingTitle": "Find housing near your university",
+  "xdFirstRunHousingBody": "Browse student rentals around Tashkent, Samarkand, and other Uzbekistan HEIs — price, district, and campus commute in one place.",
+  "xdFirstRunMatchTitle": "Match roommates by habits",
+  "xdFirstRunMatchBody": "Campus Fit scores sleep schedule, cleanliness, study vibe, budget, and same-university preference — built for student coliving, not dating or random chat.",
+  "xdFirstRunColivingTitle": "Share chores & expenses",
+  "xdFirstRunColivingBody": "After you match, plan navbatchilik (chores), groceries, and shared bills with your xonadosh — tools Ikkinchi and VCall do not offer.",
+  "xdFirstRunNext": "Next",
+  "xdFirstRunDone": "Continue to XonaDosh",
+  "xdFirstRunSkip": "Skip",
+  "xdFirstRunChipTashkent": "Tashkent HEIs",
+  "xdFirstRunChipSamarkand": "Samarkand",
+  "xdFirstRunChipNearCampus": "Near campus",
+  "xdFirstRunChipSleep": "Sleep schedule",
+  "xdFirstRunChipClean": "Cleanliness",
+  "xdFirstRunChipBudget": "Budget (UZS)",
+  "xdFirstRunChipSameUni": "Same university",
+  "xdFirstRunChipChores": "Chores",
+  "xdFirstRunChipGroceries": "Groceries",
+  "xdFirstRunChipExpenses": "Shared expenses",
+  "xdCampusFitTitle": "Campus Fit",
+  "xdCampusFitBody": "Unique to XonaDosh: roommate matches weighted by Uzbekistan university, sleep, cleanliness, study habits, and budget — not a generic chat inbox.",
+  "xdCampusFitPreviewBody": "Example: same OTM + similar sleep & budget → high Campus Fit."
 }

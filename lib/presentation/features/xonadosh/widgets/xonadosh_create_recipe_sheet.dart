@@ -172,7 +172,9 @@ class _XonadoshCreateRecipeSheetState
         if (mounted) {
           ScaffoldMessenger.of(context).showSnackBar(
             SnackBar(
-              content: Text(res['error']?.toString() ?? context.l10n.commonErrorOccurred),
+              content: Text(
+                res['error']?.toString() ?? context.l10n.commonErrorOccurred,
+              ),
               backgroundColor: Colors.red,
             ),
           );
@@ -250,7 +252,10 @@ class _XonadoshCreateRecipeSheetState
                           ),
                           Text(
                             context.l10n.xonadoshAddMealSubtitle,
-                            style: TextStyle(fontSize: 12, color: Colors.grey[600]),
+                            style: TextStyle(
+                              fontSize: 12,
+                              color: Colors.grey[600],
+                            ),
                             maxLines: 2,
                             overflow: TextOverflow.ellipsis,
                           ),
@@ -268,8 +273,13 @@ class _XonadoshCreateRecipeSheetState
                   decoration: InputDecoration(
                     labelText: context.l10n.xonadoshMealNameReq,
                     hintText: context.l10n.xonadoshRecipeNameHint,
-                    prefixIcon: const Icon(Icons.restaurant_menu_rounded, color: XonaDoshColors.primary),
-                    border: OutlineInputBorder(borderRadius: BorderRadius.circular(10)),
+                    prefixIcon: const Icon(
+                      Icons.restaurant_menu_rounded,
+                      color: XonaDoshColors.primary,
+                    ),
+                    border: OutlineInputBorder(
+                      borderRadius: BorderRadius.circular(10),
+                    ),
                   ),
                   validator: (val) {
                     if (val == null || val.trim().isEmpty) {
@@ -289,16 +299,27 @@ class _XonadoshCreateRecipeSheetState
                         initialValue: _category,
                         decoration: InputDecoration(
                           labelText: context.l10n.xonadoshCategoryLabel,
-                          prefixIcon: const Icon(Icons.category_rounded, color: XonaDoshColors.primary),
-                          border: OutlineInputBorder(borderRadius: BorderRadius.circular(10)),
-                          contentPadding: const EdgeInsets.symmetric(horizontal: 10, vertical: 8),
+                          prefixIcon: const Icon(
+                            Icons.category_rounded,
+                            color: XonaDoshColors.primary,
+                          ),
+                          border: OutlineInputBorder(
+                            borderRadius: BorderRadius.circular(10),
+                          ),
+                          contentPadding: const EdgeInsets.symmetric(
+                            horizontal: 10,
+                            vertical: 8,
+                          ),
                         ),
                         items: _categories.map((c) {
                           return DropdownMenuItem(
                             value: c,
                             child: Text(
                               _categoryLabel(c),
-                              style: const TextStyle(fontSize: 13, fontWeight: FontWeight.w600),
+                              style: const TextStyle(
+                                fontSize: 13,
+                                fontWeight: FontWeight.w600,
+                              ),
                               overflow: TextOverflow.ellipsis,
                             ),
                           );
@@ -314,18 +335,38 @@ class _XonadoshCreateRecipeSheetState
                         initialValue: _costLevel,
                         decoration: InputDecoration(
                           labelText: context.l10n.xonadoshPriceLevelLabel,
-                          prefixIcon: const Icon(Icons.monetization_on_rounded, color: XonaDoshColors.primary),
-                          border: OutlineInputBorder(borderRadius: BorderRadius.circular(10)),
-                          contentPadding: const EdgeInsets.symmetric(horizontal: 10, vertical: 8),
+                          prefixIcon: const Icon(
+                            Icons.monetization_on_rounded,
+                            color: XonaDoshColors.primary,
+                          ),
+                          border: OutlineInputBorder(
+                            borderRadius: BorderRadius.circular(10),
+                          ),
+                          contentPadding: const EdgeInsets.symmetric(
+                            horizontal: 10,
+                            vertical: 8,
+                          ),
                         ),
                         items: [
                           DropdownMenuItem(
                             value: 'budget',
-                            child: Text(context.l10n.xonadoshBudgetFriendly, style: const TextStyle(fontSize: 13, fontWeight: FontWeight.w600)),
+                            child: Text(
+                              context.l10n.xonadoshBudgetFriendly,
+                              style: const TextStyle(
+                                fontSize: 13,
+                                fontWeight: FontWeight.w600,
+                              ),
+                            ),
                           ),
                           DropdownMenuItem(
                             value: 'medium',
-                            child: Text(context.l10n.xonadoshMediumBudget, style: const TextStyle(fontSize: 13, fontWeight: FontWeight.w600)),
+                            child: Text(
+                              context.l10n.xonadoshMediumBudget,
+                              style: const TextStyle(
+                                fontSize: 13,
+                                fontWeight: FontWeight.w600,
+                              ),
+                            ),
                           ),
                         ],
                         onChanged: (val) {
@@ -347,8 +388,13 @@ class _XonadoshCreateRecipeSheetState
                         keyboardType: TextInputType.number,
                         decoration: InputDecoration(
                           labelText: context.l10n.xonadoshPrepTimeMinutes,
-                          prefixIcon: const Icon(Icons.timer_outlined, color: Color(0xFFF59E0B)),
-                          border: OutlineInputBorder(borderRadius: BorderRadius.circular(16)),
+                          prefixIcon: const Icon(
+                            Icons.timer_outlined,
+                            color: Color(0xFFF59E0B),
+                          ),
+                          border: OutlineInputBorder(
+                            borderRadius: BorderRadius.circular(16),
+                          ),
                         ),
                       ),
                     ),
@@ -359,8 +405,13 @@ class _XonadoshCreateRecipeSheetState
                         keyboardType: TextInputType.number,
                         decoration: InputDecoration(
                           labelText: context.l10n.xonadoshCaloriesKcal,
-                          prefixIcon: const Icon(Icons.local_fire_department_rounded, color: Color(0xFFFF6B6B)),
-                          border: OutlineInputBorder(borderRadius: BorderRadius.circular(16)),
+                          prefixIcon: const Icon(
+                            Icons.local_fire_department_rounded,
+                            color: Color(0xFFFF6B6B),
+                          ),
+                          border: OutlineInputBorder(
+                            borderRadius: BorderRadius.circular(16),
+                          ),
                         ),
                       ),
                     ),
@@ -375,12 +426,17 @@ class _XonadoshCreateRecipeSheetState
                     Expanded(
                       child: Text(
                         context.l10n.xonadoshIngredientsPerPerson,
-                        style: theme.textTheme.titleSmall?.copyWith(fontWeight: FontWeight.w800),
+                        style: theme.textTheme.titleSmall?.copyWith(
+                          fontWeight: FontWeight.w800,
+                        ),
                       ),
                     ),
                     TextButton.icon(
                       onPressed: _addIngredient,
-                      icon: const Icon(Icons.add_circle_outline_rounded, size: 16),
+                      icon: const Icon(
+                        Icons.add_circle_outline_rounded,
+                        size: 16,
+                      ),
                       label: Text(context.l10n.xonadoshAddBtn),
                       style: TextButton.styleFrom(
                         foregroundColor: XonaDoshColors.primary,
@@ -400,10 +456,14 @@ class _XonadoshCreateRecipeSheetState
                     margin: const EdgeInsets.only(bottom: 10),
                     padding: const EdgeInsets.all(8),
                     decoration: BoxDecoration(
-                      color: isDark ? const Color(0xFF1E293B) : const Color(0xFFF8FAFC),
+                      color: isDark
+                          ? const Color(0xFF1E293B)
+                          : const Color(0xFFF8FAFC),
                       borderRadius: BorderRadius.circular(10),
                       border: Border.all(
-                        color: isDark ? const Color(0xFF334155) : const Color(0xFFE2E8F0),
+                        color: isDark
+                            ? const Color(0xFF334155)
+                            : const Color(0xFFE2E8F0),
                       ),
                     ),
                     child: Row(
@@ -416,7 +476,10 @@ class _XonadoshCreateRecipeSheetState
                             decoration: InputDecoration(
                               hintText: context.l10n.xonadoshIngredientName,
                               isDense: true,
-                              contentPadding: const EdgeInsets.symmetric(horizontal: 8, vertical: 8),
+                              contentPadding: const EdgeInsets.symmetric(
+                                horizontal: 8,
+                                vertical: 8,
+                              ),
                               border: const OutlineInputBorder(),
                             ),
                           ),
@@ -426,12 +489,17 @@ class _XonadoshCreateRecipeSheetState
                           flex: 2,
                           child: TextFormField(
                             controller: row.amountController,
-                            keyboardType: const TextInputType.numberWithOptions(decimal: true),
+                            keyboardType: const TextInputType.numberWithOptions(
+                              decimal: true,
+                            ),
                             style: const TextStyle(fontSize: 13),
                             decoration: InputDecoration(
                               hintText: context.l10n.xonadoshIngredientAmount,
                               isDense: true,
-                              contentPadding: const EdgeInsets.symmetric(horizontal: 6, vertical: 8),
+                              contentPadding: const EdgeInsets.symmetric(
+                                horizontal: 6,
+                                vertical: 8,
+                              ),
                               border: const OutlineInputBorder(),
                             ),
                           ),
@@ -444,7 +512,10 @@ class _XonadoshCreateRecipeSheetState
                             isExpanded: true,
                             decoration: const InputDecoration(
                               isDense: true,
-                              contentPadding: EdgeInsets.symmetric(horizontal: 4, vertical: 8),
+                              contentPadding: EdgeInsets.symmetric(
+                                horizontal: 4,
+                                vertical: 8,
+                              ),
                               border: OutlineInputBorder(),
                             ),
                             items: _units.map((u) {
@@ -465,8 +536,15 @@ class _XonadoshCreateRecipeSheetState
                         const SizedBox(width: 4),
                         IconButton(
                           padding: EdgeInsets.zero,
-                          constraints: const BoxConstraints(minWidth: 32, minHeight: 32),
-                          icon: const Icon(Icons.delete_outline_rounded, color: Colors.red, size: 20),
+                          constraints: const BoxConstraints(
+                            minWidth: 32,
+                            minHeight: 32,
+                          ),
+                          icon: const Icon(
+                            Icons.delete_outline_rounded,
+                            color: Colors.red,
+                            size: 20,
+                          ),
                           onPressed: () => _removeIngredient(idx),
                         ),
                       ],
@@ -484,8 +562,13 @@ class _XonadoshCreateRecipeSheetState
                     labelText: context.l10n.xonadoshCookingStepsLabel,
                     hintText: context.l10n.xonadoshCookingStepsHint,
                     alignLabelWithHint: true,
-                    prefixIcon: const Icon(Icons.menu_book_rounded, color: XonaDoshColors.primary),
-                    border: OutlineInputBorder(borderRadius: BorderRadius.circular(10)),
+                    prefixIcon: const Icon(
+                      Icons.menu_book_rounded,
+                      color: XonaDoshColors.primary,
+                    ),
+                    border: OutlineInputBorder(
+                      borderRadius: BorderRadius.circular(10),
+                    ),
                   ),
                 ),
 
@@ -500,19 +583,29 @@ class _XonadoshCreateRecipeSheetState
                         ? const SizedBox(
                             width: 20,
                             height: 20,
-                            child: CircularProgressIndicator(color: Colors.white, strokeWidth: 2),
+                            child: CircularProgressIndicator(
+                              color: Colors.white,
+                              strokeWidth: 2,
+                            ),
                           )
                         : const Icon(Icons.check_rounded),
                     label: Text(
-                      _isLoading ? context.l10n.xonadoshSaving : context.l10n.xonadoshSaveAndAddMenu,
-                      style: const TextStyle(fontWeight: FontWeight.w800, fontSize: 15),
+                      _isLoading
+                          ? context.l10n.xonadoshSaving
+                          : context.l10n.xonadoshSaveAndAddMenu,
+                      style: const TextStyle(
+                        fontWeight: FontWeight.w800,
+                        fontSize: 15,
+                      ),
                     ),
                     style: ElevatedButton.styleFrom(
                       backgroundColor: XonaDoshColors.primary,
                       foregroundColor: Colors.white,
                       elevation: 0,
                       padding: const EdgeInsets.symmetric(vertical: 14),
-                      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(12),
+                      ),
                     ),
                   ),
                 ),

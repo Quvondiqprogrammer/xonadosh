@@ -8,20 +8,20 @@ import '../models/user_model.dart';
 
 /// Token + preference session for XonaDosh.
 class SessionManager {
-  SessionManager({
-    FlutterSecureStorage? storage,
-  }) : _storage = storage ??
-            FlutterSecureStorage(
-              iOptions: const IOSOptions(
-                accessibility: KeychainAccessibility.first_unlock,
-              ),
-              webOptions: kIsWeb
-                  ? const WebOptions(
-                      dbName: 'xonadosh_secure',
-                      publicKey: 'xonadosh_web_v1',
-                    )
-                  : const WebOptions(),
-            );
+  SessionManager({FlutterSecureStorage? storage})
+    : _storage =
+          storage ??
+          FlutterSecureStorage(
+            iOptions: const IOSOptions(
+              accessibility: KeychainAccessibility.first_unlock,
+            ),
+            webOptions: kIsWeb
+                ? const WebOptions(
+                    dbName: 'xonadosh_secure',
+                    publicKey: 'xonadosh_web_v1',
+                  )
+                : const WebOptions(),
+          );
 
   final FlutterSecureStorage _storage;
 

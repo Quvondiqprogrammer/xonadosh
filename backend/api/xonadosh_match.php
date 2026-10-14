@@ -15,8 +15,12 @@ try {
     json_response(['ok' => false, 'error' => 'Database connection failed'], 500);
 }
 
-$user = auth_require_token($pdo);
-$myUsername = (string) $user['username'];
+$user = null;
+$token = bearer_token();
+if ($token !== null && trim($token) !== '') {
+    $user = auth_get_user_by_token($pdo, $token);
+}
+$myUsername = $user ? (string) $user['username'] : (isset($_GET['username']) ? trim((string) $_GET['username']) : '');
 $uniFromGet = isset($_GET['university_id']) ? (int)$_GET['university_id'] : 0;
 $myUniId = $uniFromGet > 0 ? $uniFromGet : null;
 

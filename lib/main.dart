@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
@@ -10,6 +11,7 @@ import 'package:xonadosh/presentation/router/app_router.dart';
 
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
+  SystemChrome.setEnabledSystemUIMode(SystemUiMode.edgeToEdge);
   // Hash URL strategy (#/) — /app/ subdirectory deploy uchun ishonchli
   // (path strategy bilan /login domen ildiziga chiqib ketadi).
   runApp(const ProviderScope(child: XonaDoshApp()));

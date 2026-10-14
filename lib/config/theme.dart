@@ -59,25 +59,31 @@ class XonaDoshStyles {
   static BoxDecoration cardDecoration(
     bool isDark, {
     Color? color,
-    double radius = 14,
+    double radius = 16,
     bool hasBorder = true,
     bool hasShadow = true,
     Color? borderColor,
   }) {
     return BoxDecoration(
-      color: color ?? (isDark ? XonaDoshColors.cardDark : XonaDoshColors.cardLight),
+      color:
+          color ??
+          (isDark ? XonaDoshColors.cardDark : XonaDoshColors.cardLight),
       borderRadius: BorderRadius.circular(radius),
       border: hasBorder
           ? Border.all(
-              color: borderColor ?? (isDark ? XonaDoshColors.borderDark : XonaDoshColors.borderLight),
+              color:
+                  borderColor ??
+                  (isDark
+                      ? const Color(0xFF334155).withValues(alpha: 0.75)
+                      : const Color(0xFFE2E8F0).withValues(alpha: 0.85)),
               width: 1,
             )
           : null,
       boxShadow: hasShadow
           ? [
               BoxShadow(
-                color: Colors.black.withValues(alpha: isDark ? 0.2 : 0.03),
-                blurRadius: 8,
+                color: Colors.black.withValues(alpha: isDark ? 0.22 : 0.035),
+                blurRadius: 10,
                 offset: const Offset(0, 2),
               ),
             ]
@@ -88,9 +94,9 @@ class XonaDoshStyles {
   static List<BoxShadow> subtleShadow(bool isDark) {
     return [
       BoxShadow(
-        color: Colors.black.withValues(alpha: isDark ? 0.15 : 0.03),
-        blurRadius: 6,
-        offset: const Offset(0, 1),
+        color: Colors.black.withValues(alpha: isDark ? 0.16 : 0.03),
+        blurRadius: 8,
+        offset: const Offset(0, 2),
       ),
     ];
   }
@@ -215,8 +221,16 @@ ThemeData buildLightTheme() {
       selectedColor: XonaDoshColors.emeraldLight,
       side: const BorderSide(color: XonaDoshColors.borderLight),
       shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
-      labelStyle: const TextStyle(fontSize: 12, fontWeight: FontWeight.w600, color: XonaDoshColors.slate700),
-      secondaryLabelStyle: const TextStyle(fontSize: 12, fontWeight: FontWeight.w700, color: XonaDoshColors.emeraldDark),
+      labelStyle: const TextStyle(
+        fontSize: 12,
+        fontWeight: FontWeight.w600,
+        color: XonaDoshColors.slate700,
+      ),
+      secondaryLabelStyle: const TextStyle(
+        fontSize: 12,
+        fontWeight: FontWeight.w700,
+        color: XonaDoshColors.emeraldDark,
+      ),
       padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 3),
     ),
     navigationBarTheme: NavigationBarThemeData(
@@ -229,7 +243,9 @@ ThemeData buildLightTheme() {
         return TextStyle(
           fontSize: 11,
           fontWeight: selected ? FontWeight.w700 : FontWeight.w500,
-          color: selected ? XonaDoshColors.emeraldDark : XonaDoshColors.slate500,
+          color: selected
+              ? XonaDoshColors.emeraldDark
+              : XonaDoshColors.slate500,
         );
       }),
       iconTheme: WidgetStateProperty.resolveWith((states) {
@@ -242,8 +258,12 @@ ThemeData buildLightTheme() {
     ),
     segmentedButtonTheme: SegmentedButtonThemeData(
       style: ButtonStyle(
-        shape: WidgetStateProperty.all(RoundedRectangleBorder(borderRadius: BorderRadius.circular(10))),
-        padding: WidgetStateProperty.all(const EdgeInsets.symmetric(horizontal: 12, vertical: 6)),
+        shape: WidgetStateProperty.all(
+          RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
+        ),
+        padding: WidgetStateProperty.all(
+          const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
+        ),
       ),
     ),
     floatingActionButtonTheme: FloatingActionButtonThemeData(
@@ -373,8 +393,16 @@ ThemeData buildDarkTheme() {
       selectedColor: XonaDoshColors.emerald.withValues(alpha: 0.18),
       side: const BorderSide(color: XonaDoshColors.borderDark),
       shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
-      labelStyle: const TextStyle(fontSize: 12, fontWeight: FontWeight.w600, color: Color(0xFFE2E8F0)),
-      secondaryLabelStyle: const TextStyle(fontSize: 12, fontWeight: FontWeight.w700, color: XonaDoshColors.emerald),
+      labelStyle: const TextStyle(
+        fontSize: 12,
+        fontWeight: FontWeight.w600,
+        color: Color(0xFFE2E8F0),
+      ),
+      secondaryLabelStyle: const TextStyle(
+        fontSize: 12,
+        fontWeight: FontWeight.w700,
+        color: XonaDoshColors.emerald,
+      ),
       padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 3),
     ),
     navigationBarTheme: NavigationBarThemeData(
@@ -400,8 +428,12 @@ ThemeData buildDarkTheme() {
     ),
     segmentedButtonTheme: SegmentedButtonThemeData(
       style: ButtonStyle(
-        shape: WidgetStateProperty.all(RoundedRectangleBorder(borderRadius: BorderRadius.circular(14))),
-        padding: WidgetStateProperty.all(const EdgeInsets.symmetric(horizontal: 12, vertical: 8)),
+        shape: WidgetStateProperty.all(
+          RoundedRectangleBorder(borderRadius: BorderRadius.circular(14)),
+        ),
+        padding: WidgetStateProperty.all(
+          const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
+        ),
       ),
     ),
     floatingActionButtonTheme: FloatingActionButtonThemeData(

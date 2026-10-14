@@ -2336,7 +2336,7 @@ abstract class AppLocalizations {
   /// No description provided for @loginSubtitle.
   ///
   /// In en, this message translates to:
-  /// **'Find a room. Find a roommate. Live together.'**
+  /// **'Student housing & roommate matching for Uzbekistan universities.'**
   String get loginSubtitle;
 
   /// No description provided for @registerUsername.
@@ -2750,13 +2750,13 @@ abstract class AppLocalizations {
   /// No description provided for @xonadoshOnboardingTitle.
   ///
   /// In en, this message translates to:
-  /// **'What XonaDosh does'**
+  /// **'Built for Uzbekistan students'**
   String get xonadoshOnboardingTitle;
 
   /// No description provided for @xonadoshOnboardingSubtitle.
   ///
   /// In en, this message translates to:
-  /// **'Three simple jobs — instead of messy OLX and Telegram groups.'**
+  /// **'Housing near campus, Campus Fit roommate matching, and shared living — not delivery, dating, or VoIP.'**
   String get xonadoshOnboardingSubtitle;
 
   /// No description provided for @xonadoshJobHousingTitle.
@@ -2962,6 +2962,234 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Details'**
   String get xonadoshMoreDetails;
+
+  /// No description provided for @registerSubtitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Create your student housing account'**
+  String get registerSubtitle;
+
+  /// No description provided for @registerFullNameHint.
+  ///
+  /// In en, this message translates to:
+  /// **'As on your student ID'**
+  String get registerFullNameHint;
+
+  /// No description provided for @registerNameInvalid.
+  ///
+  /// In en, this message translates to:
+  /// **'Enter your full name (at least 2 characters)'**
+  String get registerNameInvalid;
+
+  /// No description provided for @registerUsernameHint.
+  ///
+  /// In en, this message translates to:
+  /// **'Letters, numbers, underscore'**
+  String get registerUsernameHint;
+
+  /// No description provided for @registerUsernameHelper.
+  ///
+  /// In en, this message translates to:
+  /// **'3–24 characters, unique'**
+  String get registerUsernameHelper;
+
+  /// No description provided for @registerPhoneCountryHint.
+  ///
+  /// In en, this message translates to:
+  /// **'Select country, then enter your number'**
+  String get registerPhoneCountryHint;
+
+  /// No description provided for @registerPasswordHint.
+  ///
+  /// In en, this message translates to:
+  /// **'At least 8 characters'**
+  String get registerPasswordHint;
+
+  /// No description provided for @registerPasswordConfirm.
+  ///
+  /// In en, this message translates to:
+  /// **'Confirm password'**
+  String get registerPasswordConfirm;
+
+  /// No description provided for @registerPasswordMismatch.
+  ///
+  /// In en, this message translates to:
+  /// **'Passwords do not match'**
+  String get registerPasswordMismatch;
+
+  /// No description provided for @registerSelectCountry.
+  ///
+  /// In en, this message translates to:
+  /// **'Select country'**
+  String get registerSelectCountry;
+
+  /// No description provided for @registerSearchCountry.
+  ///
+  /// In en, this message translates to:
+  /// **'Search country'**
+  String get registerSearchCountry;
+
+  /// No description provided for @registerErrorPhoneTaken.
+  ///
+  /// In en, this message translates to:
+  /// **'This phone number is already registered'**
+  String get registerErrorPhoneTaken;
+
+  /// No description provided for @registerErrorUsernameTaken.
+  ///
+  /// In en, this message translates to:
+  /// **'This username is already taken'**
+  String get registerErrorUsernameTaken;
+
+  /// No description provided for @loginErrorInvalid.
+  ///
+  /// In en, this message translates to:
+  /// **'Incorrect username or password'**
+  String get loginErrorInvalid;
+
+  /// No description provided for @loginErrorBlocked.
+  ///
+  /// In en, this message translates to:
+  /// **'This account is blocked. Contact support.'**
+  String get loginErrorBlocked;
+
+  /// No description provided for @errorRateLimited.
+  ///
+  /// In en, this message translates to:
+  /// **'Too many attempts. Please wait and try again.'**
+  String get errorRateLimited;
+
+  /// No description provided for @xdFirstRunHousingTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Find housing near your university'**
+  String get xdFirstRunHousingTitle;
+
+  /// No description provided for @xdFirstRunHousingBody.
+  ///
+  /// In en, this message translates to:
+  /// **'Browse student rentals around Tashkent, Samarkand, and other Uzbekistan HEIs — price, district, and campus commute in one place.'**
+  String get xdFirstRunHousingBody;
+
+  /// No description provided for @xdFirstRunMatchTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Match roommates by habits'**
+  String get xdFirstRunMatchTitle;
+
+  /// No description provided for @xdFirstRunMatchBody.
+  ///
+  /// In en, this message translates to:
+  /// **'Campus Fit scores sleep schedule, cleanliness, study vibe, budget, and same-university preference — built for student coliving, not dating or random chat.'**
+  String get xdFirstRunMatchBody;
+
+  /// No description provided for @xdFirstRunColivingTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Share chores & expenses'**
+  String get xdFirstRunColivingTitle;
+
+  /// No description provided for @xdFirstRunColivingBody.
+  ///
+  /// In en, this message translates to:
+  /// **'After you match, plan navbatchilik (chores), groceries, and shared bills with your xonadosh — tools Ikkinchi and VCall do not offer.'**
+  String get xdFirstRunColivingBody;
+
+  /// No description provided for @xdFirstRunNext.
+  ///
+  /// In en, this message translates to:
+  /// **'Next'**
+  String get xdFirstRunNext;
+
+  /// No description provided for @xdFirstRunDone.
+  ///
+  /// In en, this message translates to:
+  /// **'Continue to XonaDosh'**
+  String get xdFirstRunDone;
+
+  /// No description provided for @xdFirstRunSkip.
+  ///
+  /// In en, this message translates to:
+  /// **'Skip'**
+  String get xdFirstRunSkip;
+
+  /// No description provided for @xdFirstRunChipTashkent.
+  ///
+  /// In en, this message translates to:
+  /// **'Tashkent HEIs'**
+  String get xdFirstRunChipTashkent;
+
+  /// No description provided for @xdFirstRunChipSamarkand.
+  ///
+  /// In en, this message translates to:
+  /// **'Samarkand'**
+  String get xdFirstRunChipSamarkand;
+
+  /// No description provided for @xdFirstRunChipNearCampus.
+  ///
+  /// In en, this message translates to:
+  /// **'Near campus'**
+  String get xdFirstRunChipNearCampus;
+
+  /// No description provided for @xdFirstRunChipSleep.
+  ///
+  /// In en, this message translates to:
+  /// **'Sleep schedule'**
+  String get xdFirstRunChipSleep;
+
+  /// No description provided for @xdFirstRunChipClean.
+  ///
+  /// In en, this message translates to:
+  /// **'Cleanliness'**
+  String get xdFirstRunChipClean;
+
+  /// No description provided for @xdFirstRunChipBudget.
+  ///
+  /// In en, this message translates to:
+  /// **'Budget (UZS)'**
+  String get xdFirstRunChipBudget;
+
+  /// No description provided for @xdFirstRunChipSameUni.
+  ///
+  /// In en, this message translates to:
+  /// **'Same university'**
+  String get xdFirstRunChipSameUni;
+
+  /// No description provided for @xdFirstRunChipChores.
+  ///
+  /// In en, this message translates to:
+  /// **'Chores'**
+  String get xdFirstRunChipChores;
+
+  /// No description provided for @xdFirstRunChipGroceries.
+  ///
+  /// In en, this message translates to:
+  /// **'Groceries'**
+  String get xdFirstRunChipGroceries;
+
+  /// No description provided for @xdFirstRunChipExpenses.
+  ///
+  /// In en, this message translates to:
+  /// **'Shared expenses'**
+  String get xdFirstRunChipExpenses;
+
+  /// No description provided for @xdCampusFitTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Campus Fit'**
+  String get xdCampusFitTitle;
+
+  /// No description provided for @xdCampusFitBody.
+  ///
+  /// In en, this message translates to:
+  /// **'Unique to XonaDosh: roommate matches weighted by Uzbekistan university, sleep, cleanliness, study habits, and budget — not a generic chat inbox.'**
+  String get xdCampusFitBody;
+
+  /// No description provided for @xdCampusFitPreviewBody.
+  ///
+  /// In en, this message translates to:
+  /// **'Example: same OTM + similar sleep & budget → high Campus Fit.'**
+  String get xdCampusFitPreviewBody;
 }
 
 class _AppLocalizationsDelegate

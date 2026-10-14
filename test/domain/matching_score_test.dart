@@ -45,8 +45,24 @@ void main() {
 
   test('budget near-miss gives 10 points', () {
     final r = MatchingScore.score(
-      me: base(min: 500000, max: 800000, sleep: 'night_owl', clean: 'relaxed', study: 'group', smoke: 'yes', uni: null),
-      other: base(min: 900000, max: 1200000, sleep: 'early_bird', clean: 'strict', study: 'silent', smoke: 'no', uni: 2),
+      me: base(
+        min: 500000,
+        max: 800000,
+        sleep: 'night_owl',
+        clean: 'relaxed',
+        study: 'group',
+        smoke: 'yes',
+        uni: null,
+      ),
+      other: base(
+        min: 900000,
+        max: 1200000,
+        sleep: 'early_bird',
+        clean: 'strict',
+        study: 'silent',
+        smoke: 'no',
+        uni: 2,
+      ),
     );
     // no category exact; budget gap 100k → +10
     expect(r.rawScore, lessThan(50));

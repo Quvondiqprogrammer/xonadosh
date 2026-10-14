@@ -4,7 +4,12 @@ import 'package:xonadosh/domain/commute_math.dart';
 void main() {
   test('haversine between nearby Tashkent points is small', () {
     // Approx 1 km east of center
-    final km = CommuteMath.haversineKm(41.311081, 69.240562, 41.311081, 69.2525);
+    final km = CommuteMath.haversineKm(
+      41.311081,
+      69.240562,
+      41.311081,
+      69.2525,
+    );
     expect(km, greaterThan(0.5));
     expect(km, lessThan(2.0));
   });

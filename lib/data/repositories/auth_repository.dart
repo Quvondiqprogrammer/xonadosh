@@ -69,6 +69,34 @@ class AuthRepository {
     return res;
   }
 
+  Future<Map<String, dynamic>> loginWithGoogle({
+    required String idToken,
+    String? email,
+    String? name,
+    String? avatarUrl,
+    String? id,
+  }) async {
+    final res = await _api.loginWithGoogle(
+      idToken: idToken,
+      email: email,
+      name: name,
+      avatarUrl: avatarUrl,
+      id: id,
+    );
+    if (res['ok'] == true) {
+      final persisted = await _persistAuth(res);
+      if (!persisted) {
+        return {
+          'ok': false,
+          'error':
+              res['error'] ?? 'Google auth succeeded but session was incomplete',
+          'status': res['status'],
+        };
+      }
+    }
+    return res;
+  }
+
   Future<Map<String, dynamic>> register({
     required String fullName,
     required String username,
@@ -86,7 +114,9 @@ class AuthRepository {
       if (!persisted) {
         return {
           'ok': false,
-          'error': res['error'] ?? 'Registration succeeded but session was incomplete',
+          'error':
+              res['error'] ??
+              'Registration succeeded but session was incomplete',
           'status': res['status'],
         };
       }
@@ -120,7 +150,8 @@ class AuthRepository {
   }
 
   Future<bool> _persistAuth(Map<String, dynamic> res) async {
-    final username = (res['username'] ?? res['user']?['username'] ?? '').toString();
+    final username = (res['username'] ?? res['user']?['username'] ?? '')
+        .toString();
     final token = (res['token'] ?? '').toString().trim();
     if (username.isEmpty || token.isEmpty) return false;
     await _session.saveSession(

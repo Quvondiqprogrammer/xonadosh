@@ -19,12 +19,23 @@ Future<void> confirmAndBlockUser(
     context: context,
     builder: (ctx) => AlertDialog(
       shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
-      title: Text(l10n.blockUserTitle, style: const TextStyle(fontWeight: FontWeight.w800)),
-      content: Text(l10n.blockUserBody, style: const TextStyle(fontSize: 13, height: 1.4)),
+      title: Text(
+        l10n.blockUserTitle,
+        style: const TextStyle(fontWeight: FontWeight.w800),
+      ),
+      content: Text(
+        l10n.blockUserBody,
+        style: const TextStyle(fontSize: 13, height: 1.4),
+      ),
       actions: [
-        TextButton(onPressed: () => Navigator.pop(ctx, false), child: Text(l10n.commonCancel)),
+        TextButton(
+          onPressed: () => Navigator.pop(ctx, false),
+          child: Text(l10n.commonCancel),
+        ),
         FilledButton(
-          style: FilledButton.styleFrom(backgroundColor: const Color(0xFFEF4444)),
+          style: FilledButton.styleFrom(
+            backgroundColor: const Color(0xFFEF4444),
+          ),
           onPressed: () => Navigator.pop(ctx, true),
           child: Text(l10n.blockUser),
         ),
@@ -37,7 +48,9 @@ Future<void> confirmAndBlockUser(
   ref.invalidate(xonadoshListingsProvider);
   ref.invalidate(xonadoshMatchingRoommatesProvider);
   if (!context.mounted) return;
-  ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text(l10n.userBlocked)));
+  ScaffoldMessenger.of(
+    context,
+  ).showSnackBar(SnackBar(content: Text(l10n.userBlocked)));
   if (popAfter) {
     if (Navigator.of(context).canPop()) {
       Navigator.of(context).pop();

@@ -134,7 +134,7 @@ class _XonadoshMapScreenState extends ConsumerState<XonadoshMapScreen> {
                     ? 'https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png'
                     : 'https://tile.openstreetmap.org/{z}/{x}/{y}.png',
                 subdomains: const ['a', 'b', 'c'],
-                userAgentPackageName: 'uz.hamyon.ai',
+                userAgentPackageName: 'com.zargo.customer',
               ),
               MarkerLayer(
                 markers: [
@@ -188,7 +188,7 @@ class _XonadoshMapScreenState extends ConsumerState<XonadoshMapScreen> {
                                 color: Colors.black.withAlpha(50),
                                 blurRadius: 6,
                                 offset: const Offset(0, 3),
-                              )
+                              ),
                             ],
                           ),
                           child: const Icon(
@@ -204,8 +204,9 @@ class _XonadoshMapScreenState extends ConsumerState<XonadoshMapScreen> {
                     final isSelected = _selectedListing?.id == l.id;
                     final isRent =
                         l.type == 'rent' || l.type == 'roommate_wanted';
-                    final markerColor =
-                        isRent ? XonaDoshColors.primary : const Color(0xFFF59E0B);
+                    final markerColor = isRent
+                        ? XonaDoshColors.primary
+                        : const Color(0xFFF59E0B);
 
                     return Marker(
                       point: LatLng(l.latitude, l.longitude),
@@ -232,7 +233,7 @@ class _XonadoshMapScreenState extends ConsumerState<XonadoshMapScreen> {
                                 color: markerColor.withAlpha(120),
                                 blurRadius: isSelected ? 10 : 4,
                                 spreadRadius: isSelected ? 2 : 0,
-                              )
+                              ),
                             ],
                           ),
                           child: Icon(
@@ -270,7 +271,11 @@ class _XonadoshMapScreenState extends ConsumerState<XonadoshMapScreen> {
               bottom: 24,
               left: 16,
               right: 16,
-              child: _buildListingPreviewCard(context, _selectedListing!, isDark),
+              child: _buildListingPreviewCard(
+                context,
+                _selectedListing!,
+                isDark,
+              ),
             )
           else if (_selectedUni != null)
             Positioned(
@@ -374,13 +379,56 @@ class _XonadoshMapScreenState extends ConsumerState<XonadoshMapScreen> {
                             ),
                           ),
                         ),
+                        if (item.isNoBroker) ...[
+                          const SizedBox(width: 4),
+                          Container(
+                            padding: const EdgeInsets.symmetric(
+                              horizontal: 5,
+                              vertical: 2,
+                            ),
+                            decoration: BoxDecoration(
+                              color: const Color(0xFF059669).withAlpha(30),
+                              borderRadius: BorderRadius.circular(6),
+                            ),
+                            child: const Text(
+                              'Bez Makler',
+                              style: TextStyle(
+                                color: Color(0xFF059669),
+                                fontSize: 9,
+                                fontWeight: FontWeight.w700,
+                              ),
+                            ),
+                          ),
+                        ],
+                        if (item.utilitiesIncluded) ...[
+                          const SizedBox(width: 4),
+                          Container(
+                            padding: const EdgeInsets.symmetric(
+                              horizontal: 5,
+                              vertical: 2,
+                            ),
+                            decoration: BoxDecoration(
+                              color: const Color(0xFF0284C7).withAlpha(30),
+                              borderRadius: BorderRadius.circular(6),
+                            ),
+                            child: const Text(
+                              'Kommunal ichida',
+                              style: TextStyle(
+                                color: Color(0xFF0284C7),
+                                fontSize: 9,
+                                fontWeight: FontWeight.w700,
+                              ),
+                            ),
+                          ),
+                        ],
                         const Spacer(),
                         IconButton(
                           icon: const Icon(Icons.close, size: 18),
                           padding: EdgeInsets.zero,
                           constraints: const BoxConstraints(),
-                          onPressed: () => setState(() => _selectedListing = null),
-                        )
+                          onPressed: () =>
+                              setState(() => _selectedListing = null),
+                        ),
                       ],
                     ),
                     const SizedBox(height: 4),
@@ -517,7 +565,8 @@ class _XonadoshMapScreenState extends ConsumerState<XonadoshMapScreen> {
                 Flexible(
                   child: TextButton(
                     onPressed: () {
-                      ref.read(xonadoshSelectedUniProvider.notifier).state = uni;
+                      ref.read(xonadoshSelectedUniProvider.notifier).state =
+                          uni;
                       Navigator.pop(context);
                     },
                     style: TextButton.styleFrom(

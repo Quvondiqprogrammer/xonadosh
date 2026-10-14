@@ -61,7 +61,8 @@ class MatchingScore {
     if (me.cleanliness == other.cleanliness) {
       score += 20;
       reasons.add(me.cleanliness == 'strict' ? 'clean_strict' : 'clean_mod');
-    } else if (me.cleanliness == 'moderate' || other.cleanliness == 'moderate') {
+    } else if (me.cleanliness == 'moderate' ||
+        other.cleanliness == 'moderate') {
       score += 15;
     } else {
       score += 5;
@@ -82,10 +83,12 @@ class MatchingScore {
     }
 
     // 4. Budget overlap (20)
-    final overlapMin =
-        me.budgetMin > other.budgetMin ? me.budgetMin : other.budgetMin;
-    final overlapMax =
-        me.budgetMax < other.budgetMax ? me.budgetMax : other.budgetMax;
+    final overlapMin = me.budgetMin > other.budgetMin
+        ? me.budgetMin
+        : other.budgetMin;
+    final overlapMax = me.budgetMax < other.budgetMax
+        ? me.budgetMax
+        : other.budgetMax;
     if (overlapMin <= overlapMax) {
       score += 20;
       reasons.add('budget_exact');

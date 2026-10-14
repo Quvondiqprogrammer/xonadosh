@@ -33,7 +33,11 @@ class XonadoshOnboardingSheet extends StatelessWidget {
             const SizedBox(height: 16),
             Text(
               l10n.xonadoshOnboardingTitle,
-              style: const TextStyle(fontSize: 20, fontWeight: FontWeight.w900, letterSpacing: -0.4),
+              style: const TextStyle(
+                fontSize: 20,
+                fontWeight: FontWeight.w900,
+                letterSpacing: -0.4,
+              ),
             ),
             const SizedBox(height: 6),
             Text(
@@ -41,7 +45,9 @@ class XonadoshOnboardingSheet extends StatelessWidget {
               style: TextStyle(
                 fontSize: 13,
                 height: 1.35,
-                color: isDark ? XonaDoshColors.slate400 : XonaDoshColors.slate500,
+                color: isDark
+                    ? XonaDoshColors.slate400
+                    : XonaDoshColors.slate500,
               ),
             ),
             const SizedBox(height: 16),
@@ -97,31 +103,88 @@ class XonadoshJobsHero extends StatelessWidget {
 
     return Container(
       width: double.infinity,
-      padding: const EdgeInsets.fromLTRB(14, 12, 14, 12),
-      decoration: XonaDoshStyles.cardDecoration(isDark, hasShadow: false),
+      padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 10),
+      decoration: BoxDecoration(
+        color: isDark ? const Color(0xFF1E293B) : Colors.white,
+        borderRadius: BorderRadius.circular(16),
+        border: Border.all(
+          color: isDark
+              ? const Color(0xFF334155).withValues(alpha: 0.8)
+              : const Color(0xFFE2E8F0).withValues(alpha: 0.9),
+          width: 1,
+        ),
+        boxShadow: [
+          BoxShadow(
+            color: Colors.black.withValues(alpha: isDark ? 0.2 : 0.03),
+            blurRadius: 8,
+            offset: const Offset(0, 2),
+          ),
+        ],
+      ),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          Text(
-            l10n.xonadoshHousingHeroTitle,
-            style: const TextStyle(fontWeight: FontWeight.w800, fontSize: 14),
+          Row(
+            children: [
+              Container(
+                padding: const EdgeInsets.all(4),
+                decoration: BoxDecoration(
+                  color: XonaDoshColors.emerald.withValues(alpha: 0.12),
+                  borderRadius: BorderRadius.circular(6),
+                ),
+                child: const Icon(
+                  Icons.auto_awesome_rounded,
+                  color: XonaDoshColors.emerald,
+                  size: 14,
+                ),
+              ),
+              const SizedBox(width: 8),
+              Expanded(
+                child: Text(
+                  l10n.xonadoshHousingHeroTitle,
+                  style: const TextStyle(
+                    fontWeight: FontWeight.w800,
+                    fontSize: 13,
+                    letterSpacing: -0.2,
+                  ),
+                  maxLines: 1,
+                  overflow: TextOverflow.ellipsis,
+                ),
+              ),
+            ],
           ),
-          const SizedBox(height: 10),
+          const SizedBox(height: 8),
           Row(
             children: [
               Expanded(
                 child: FilledButton.icon(
                   onPressed: onFindRoom,
-                  icon: const Icon(Icons.home_outlined, size: 18),
+                  icon: const Icon(Icons.home_rounded, size: 16),
                   label: Text(l10n.xonadoshFindRoom),
+                  style: FilledButton.styleFrom(
+                    padding: const EdgeInsets.symmetric(vertical: 8),
+                    visualDensity: VisualDensity.compact,
+                    textStyle: const TextStyle(
+                      fontWeight: FontWeight.w700,
+                      fontSize: 13,
+                    ),
+                  ),
                 ),
               ),
               const SizedBox(width: 8),
               Expanded(
                 child: OutlinedButton.icon(
                   onPressed: onFindRoommate,
-                  icon: const Icon(Icons.group_outlined, size: 18),
+                  icon: const Icon(Icons.people_rounded, size: 16),
                   label: Text(l10n.xonadoshFindRoommate),
+                  style: OutlinedButton.styleFrom(
+                    padding: const EdgeInsets.symmetric(vertical: 8),
+                    visualDensity: VisualDensity.compact,
+                    textStyle: const TextStyle(
+                      fontWeight: FontWeight.w700,
+                      fontSize: 13,
+                    ),
+                  ),
                 ),
               ),
             ],
@@ -137,10 +200,12 @@ class XonadoshColivingUnlockTip extends StatelessWidget {
     super.key,
     required this.onFindRoom,
     required this.onFindRoommate,
+    this.onDismiss,
   });
 
   final VoidCallback onFindRoom;
   final VoidCallback onFindRoommate;
+  final VoidCallback? onDismiss;
 
   @override
   Widget build(BuildContext context) {
@@ -149,20 +214,46 @@ class XonadoshColivingUnlockTip extends StatelessWidget {
 
     return Container(
       width: double.infinity,
-      padding: const EdgeInsets.fromLTRB(12, 10, 12, 10),
+      padding: const EdgeInsets.fromLTRB(14, 10, 10, 10),
       decoration: BoxDecoration(
-        color: isDark ? const Color(0xFF1E293B) : XonaDoshColors.emeraldLight,
-        borderRadius: BorderRadius.circular(12),
+        color: isDark ? const Color(0xFF1E293B) : const Color(0xFFF0FDFA),
+        borderRadius: BorderRadius.circular(14),
         border: Border.all(
-          color: isDark ? XonaDoshColors.borderDark : XonaDoshColors.emerald.withValues(alpha: 0.25),
+          color: isDark
+              ? const Color(0xFF334155)
+              : XonaDoshColors.emerald.withValues(alpha: 0.25),
         ),
       ),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          Text(
-            l10n.xonadoshColivingUnlockTitle,
-            style: const TextStyle(fontWeight: FontWeight.w800, fontSize: 13),
+          Row(
+            crossAxisAlignment: CrossAxisAlignment.center,
+            children: [
+              const Icon(
+                Icons.tips_and_updates_outlined,
+                color: XonaDoshColors.emerald,
+                size: 16,
+              ),
+              const SizedBox(width: 6),
+              Expanded(
+                child: Text(
+                  l10n.xonadoshColivingUnlockTitle,
+                  style: const TextStyle(
+                    fontWeight: FontWeight.w800,
+                    fontSize: 13,
+                  ),
+                ),
+              ),
+              if (onDismiss != null)
+                IconButton(
+                  visualDensity: VisualDensity.compact,
+                  padding: EdgeInsets.zero,
+                  constraints: const BoxConstraints(minWidth: 28, minHeight: 28),
+                  icon: const Icon(Icons.close_rounded, size: 16),
+                  onPressed: onDismiss,
+                ),
+            ],
           ),
           const SizedBox(height: 4),
           Text(
@@ -231,14 +322,22 @@ class _JobRow extends StatelessWidget {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              Text(title, style: const TextStyle(fontWeight: FontWeight.w800, fontSize: 14)),
+              Text(
+                title,
+                style: const TextStyle(
+                  fontWeight: FontWeight.w800,
+                  fontSize: 14,
+                ),
+              ),
               const SizedBox(height: 2),
               Text(
                 body,
                 style: TextStyle(
                   fontSize: 12,
                   height: 1.35,
-                  color: isDark ? XonaDoshColors.slate400 : XonaDoshColors.slate500,
+                  color: isDark
+                      ? XonaDoshColors.slate400
+                      : XonaDoshColors.slate500,
                 ),
               ),
             ],

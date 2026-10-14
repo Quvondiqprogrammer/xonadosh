@@ -1193,7 +1193,8 @@ class AppLocalizationsRu extends AppLocalizations {
   String get loginTitle => 'Добро пожаловать в XonaDosh';
 
   @override
-  String get loginSubtitle => 'Найдите комнату. Найдите соседа. Живите вместе.';
+  String get loginSubtitle =>
+      'Студенческое жильё и подбор соседа для вузов Узбекистана.';
 
   @override
   String get registerUsername => 'Логин';
@@ -1412,11 +1413,11 @@ class AppLocalizationsRu extends AppLocalizations {
   String get xonadoshFindRoom => 'Найти жильё';
 
   @override
-  String get xonadoshOnboardingTitle => 'Что делает XonaDosh';
+  String get xonadoshOnboardingTitle => 'Для студентов Узбекистана';
 
   @override
   String get xonadoshOnboardingSubtitle =>
-      'Три простые задачи — вместо хаоса OLX и Telegram.';
+      'Жильё у кампуса, Campus Fit и совместная жизнь — не доставка, не дейтинг и не VoIP.';
 
   @override
   String get xonadoshJobHousingTitle => 'Найти жильё';
@@ -1531,4 +1532,125 @@ class AppLocalizationsRu extends AppLocalizations {
 
   @override
   String get xonadoshMoreDetails => 'Подробнее';
+
+  @override
+  String get registerSubtitle => 'Создайте аккаунт для студенческого жилья';
+
+  @override
+  String get registerFullNameHint => 'Как в студенческом билете';
+
+  @override
+  String get registerNameInvalid => 'Введите полное имя (минимум 2 символа)';
+
+  @override
+  String get registerUsernameHint => 'Буквы, цифры, подчёркивание';
+
+  @override
+  String get registerUsernameHelper => '3–24 символа, уникальный';
+
+  @override
+  String get registerPhoneCountryHint => 'Выберите страну, затем введите номер';
+
+  @override
+  String get registerPasswordHint => 'Не менее 8 символов';
+
+  @override
+  String get registerPasswordConfirm => 'Подтвердите пароль';
+
+  @override
+  String get registerPasswordMismatch => 'Пароли не совпадают';
+
+  @override
+  String get registerSelectCountry => 'Выберите страну';
+
+  @override
+  String get registerSearchCountry => 'Поиск страны';
+
+  @override
+  String get registerErrorPhoneTaken => 'Этот телефон уже зарегистрирован';
+
+  @override
+  String get registerErrorUsernameTaken => 'Этот логин уже занят';
+
+  @override
+  String get loginErrorInvalid => 'Неверный логин или пароль';
+
+  @override
+  String get loginErrorBlocked =>
+      'Аккаунт заблокирован. Обратитесь в поддержку.';
+
+  @override
+  String get errorRateLimited =>
+      'Слишком много попыток. Подождите и попробуйте снова.';
+
+  @override
+  String get xdFirstRunHousingTitle => 'Жильё рядом с университетом';
+
+  @override
+  String get xdFirstRunHousingBody =>
+      'Студенческая аренда вокруг вузов Ташкента, Самарканда и других вузов Узбекистана — цена, район и дорога до кампуса.';
+
+  @override
+  String get xdFirstRunMatchTitle => 'Подбор соседа по привычкам';
+
+  @override
+  String get xdFirstRunMatchBody =>
+      'Campus Fit учитывает сон, чистоту, учёбу, бюджет и тот же вуз — для студенческого коливинга, не для дейтинга или случайного чата.';
+
+  @override
+  String get xdFirstRunColivingTitle => 'Делите обязанности и расходы';
+
+  @override
+  String get xdFirstRunColivingBody =>
+      'После мэтча планируйте дежурства, покупки и общие счета с соседом — инструменты, которых нет в Ikkinchi и VCall.';
+
+  @override
+  String get xdFirstRunNext => 'Далее';
+
+  @override
+  String get xdFirstRunDone => 'Продолжить в XonaDosh';
+
+  @override
+  String get xdFirstRunSkip => 'Пропустить';
+
+  @override
+  String get xdFirstRunChipTashkent => 'Вузы Ташкента';
+
+  @override
+  String get xdFirstRunChipSamarkand => 'Самарканд';
+
+  @override
+  String get xdFirstRunChipNearCampus => 'Рядом с кампусом';
+
+  @override
+  String get xdFirstRunChipSleep => 'Режим сна';
+
+  @override
+  String get xdFirstRunChipClean => 'Чистота';
+
+  @override
+  String get xdFirstRunChipBudget => 'Бюджет (сум)';
+
+  @override
+  String get xdFirstRunChipSameUni => 'Тот же вуз';
+
+  @override
+  String get xdFirstRunChipChores => 'Дежурства';
+
+  @override
+  String get xdFirstRunChipGroceries => 'Продукты';
+
+  @override
+  String get xdFirstRunChipExpenses => 'Общие расходы';
+
+  @override
+  String get xdCampusFitTitle => 'Campus Fit';
+
+  @override
+  String get xdCampusFitBody =>
+      'Уникально для XonaDosh: совпадение по вузу Узбекистана, сну, чистоте, учёбе и бюджету — не обычный чат.';
+
+  @override
+  String get xdCampusFitPreviewBody =>
+      'Пример: тот же вуз + похожий сон и бюджет → высокий Campus Fit.';
 }

@@ -31,8 +31,17 @@ $pricePeriod = (string)($body['price_period'] ?? 'month');
 $city = trim((string)($body['city'] ?? 'Toshkent'));
 $district = trim((string)($body['district'] ?? ''));
 $address = trim((string)($body['address'] ?? ''));
-$ownerName = trim((string)($body['owner_name'] ?? ($sess['display_name'] ?? 'Uy egasi')));
-$phoneNumber = trim((string)($body['phone_number'] ?? ($sess['phone_number'] ?? '')));
+$ownerName = trim((string)($body['owner_name'] ?? ''));
+if ($ownerName === '') {
+    $ownerName = trim((string)($sess['display_name'] ?? ($sess['username'] ?? 'Uy egasi')));
+}
+if ($ownerName === '') {
+    $ownerName = 'Uy egasi';
+}
+$phoneNumber = trim((string)($body['phone_number'] ?? ''));
+if ($phoneNumber === '') {
+    $phoneNumber = trim((string)($sess['phone_number'] ?? ''));
+}
 $telegramHandle = trim((string)($body['telegram_handle'] ?? ''));
 $nearestUniId = isset($body['nearest_university_id']) && is_numeric($body['nearest_university_id']) ? (int)$body['nearest_university_id'] : null;
 $nearestMetro = trim((string)($body['nearest_metro'] ?? ''));
@@ -47,6 +56,19 @@ $lng = (float)($body['longitude'] ?? 69.240562);
 
 $amenities = isset($body['amenities']) && is_array($body['amenities']) ? $body['amenities'] : [];
 $photos = isset($body['photos']) && is_array($body['photos']) ? $body['photos'] : [];
+
+$isNoBroker = !empty($body['is_no_broker']) || !empty($body['no_broker']);
+if ($isNoBroker && !in_array('bez_makler', $amenities, true)) {
+    $amenities[] = 'bez_makler';
+}
+
+$utilitiesIncluded = !empty($body['utilities_included']);
+if ($utilitiesIncluded && !in_array('utilities_included', $amenities, true)) {
+    $amenities[] = 'utilities_included';
+    if (!in_array('kommunal_ichida', $amenities, true)) {
+        $amenities[] = 'kommunal_ichida';
+    }
+}
 
 if (empty($title)) {
     json_response(['ok' => false, 'error' => 'E‘lon sarlavhasi kiritilishi shart'], 400);

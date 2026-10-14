@@ -62,6 +62,8 @@ class _XonadoshHousingTabState extends ConsumerState<XonadoshHousingTab> {
     required String gender,
     required double? minPrice,
     required double? maxPrice,
+    required bool noBroker,
+    required bool utilitiesIncluded,
   }) {
     int count = 0;
     if (city != null) count++;
@@ -69,6 +71,8 @@ class _XonadoshHousingTabState extends ConsumerState<XonadoshHousingTab> {
     if (uni != null) count++;
     if (gender != 'any') count++;
     if (minPrice != null || maxPrice != null) count++;
+    if (noBroker) count++;
+    if (utilitiesIncluded) count++;
     return count;
   }
 
@@ -86,6 +90,9 @@ class _XonadoshHousingTabState extends ConsumerState<XonadoshHousingTab> {
     final selectedDistrict = ref.watch(xonadoshDistrictProvider);
     final minPrice = ref.watch(xonadoshMinPriceProvider);
     final maxPrice = ref.watch(xonadoshMaxPriceProvider);
+    final noBroker = ref.watch(xonadoshNoBrokerFilterProvider);
+    final utilitiesIncluded =
+        ref.watch(xonadoshUtilitiesIncludedFilterProvider);
 
     final activeFilterCount = _countActiveFilters(
       city: selectedCity,
@@ -94,6 +101,8 @@ class _XonadoshHousingTabState extends ConsumerState<XonadoshHousingTab> {
       gender: selectedGender,
       minPrice: minPrice,
       maxPrice: maxPrice,
+      noBroker: noBroker,
+      utilitiesIncluded: utilitiesIncluded,
     );
 
     return Scaffold(
@@ -104,7 +113,9 @@ class _XonadoshHousingTabState extends ConsumerState<XonadoshHousingTab> {
           ref.invalidate(xonadoshUniversitiesProvider);
         },
         child: CustomScrollView(
-          physics: const AlwaysScrollableScrollPhysics(parent: BouncingScrollPhysics()),
+          physics: const AlwaysScrollableScrollPhysics(
+            parent: BouncingScrollPhysics(),
+          ),
           slivers: [
             // Top App Bar / Search & Filter Section
             SliverToBoxAdapter(
@@ -119,11 +130,15 @@ class _XonadoshHousingTabState extends ConsumerState<XonadoshHousingTab> {
                         Expanded(
                           child: Container(
                             decoration: BoxDecoration(
-                              color: isDark ? const Color(0xFF1E293B) : Colors.white,
+                              color: isDark
+                                  ? const Color(0xFF1E293B)
+                                  : Colors.white,
                               borderRadius: BorderRadius.circular(16),
                               boxShadow: [
                                 BoxShadow(
-                                  color: Colors.black.withValues(alpha: isDark ? 0.2 : 0.04),
+                                  color: Colors.black.withValues(
+                                    alpha: isDark ? 0.2 : 0.04,
+                                  ),
                                   blurRadius: 10,
                                   offset: const Offset(0, 2),
                                 ),
@@ -139,8 +154,13 @@ class _XonadoshHousingTabState extends ConsumerState<XonadoshHousingTab> {
                                   const Duration(milliseconds: 400),
                                   () {
                                     if (!mounted) return;
-                                    ref.read(xonadoshSearchQueryProvider.notifier).state =
-                                        v.trim().isEmpty ? null : v.trim();
+                                    ref
+                                        .read(
+                                          xonadoshSearchQueryProvider.notifier,
+                                        )
+                                        .state = v.trim().isEmpty
+                                        ? null
+                                        : v.trim();
                                   },
                                 );
                               },
@@ -149,20 +169,38 @@ class _XonadoshHousingTabState extends ConsumerState<XonadoshHousingTab> {
                                 hintText: l10n.xonadoshSearchPlaceholder,
                                 hintStyle: TextStyle(
                                   fontSize: 13,
-                                  color: isDark ? const Color(0xFF64748B) : const Color(0xFF94A3B8),
+                                  color: isDark
+                                      ? const Color(0xFF64748B)
+                                      : const Color(0xFF94A3B8),
                                 ),
-                                prefixIcon: const Icon(Icons.search_rounded, color: XonaDoshColors.emerald, size: 22),
+                                prefixIcon: const Icon(
+                                  Icons.search_rounded,
+                                  color: XonaDoshColors.emerald,
+                                  size: 22,
+                                ),
                                 suffixIcon: _searchController.text.isNotEmpty
                                     ? IconButton(
-                                        icon: const Icon(Icons.close_rounded, size: 18),
+                                        icon: const Icon(
+                                          Icons.close_rounded,
+                                          size: 18,
+                                        ),
                                         onPressed: () {
                                           _searchController.clear();
-                                          ref.read(xonadoshSearchQueryProvider.notifier).state = null;
+                                          ref
+                                                  .read(
+                                                    xonadoshSearchQueryProvider
+                                                        .notifier,
+                                                  )
+                                                  .state =
+                                              null;
                                           setState(() {});
                                         },
                                       )
                                     : null,
-                                contentPadding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
+                                contentPadding: const EdgeInsets.symmetric(
+                                  horizontal: 16,
+                                  vertical: 12,
+                                ),
                                 border: InputBorder.none,
                                 enabledBorder: InputBorder.none,
                                 focusedBorder: InputBorder.none,
@@ -183,17 +221,25 @@ class _XonadoshHousingTabState extends ConsumerState<XonadoshHousingTab> {
                               tooltip: l10n.xonadoshSearchFiltersTitle,
                               style: IconButton.styleFrom(
                                 backgroundColor: activeFilterCount > 0
-                                    ? XonaDoshColors.emerald.withValues(alpha: 0.15)
-                                    : (isDark ? const Color(0xFF1E293B) : Colors.white),
+                                    ? XonaDoshColors.emerald.withValues(
+                                        alpha: 0.15,
+                                      )
+                                    : (isDark
+                                          ? const Color(0xFF1E293B)
+                                          : Colors.white),
                                 foregroundColor: activeFilterCount > 0
                                     ? XonaDoshColors.emeraldDark
-                                    : (isDark ? Colors.white : const Color(0xFF334155)),
+                                    : (isDark
+                                          ? Colors.white
+                                          : const Color(0xFF334155)),
                                 shape: RoundedRectangleBorder(
                                   borderRadius: BorderRadius.circular(14),
                                   side: BorderSide(
                                     color: activeFilterCount > 0
                                         ? XonaDoshColors.emerald
-                                        : (isDark ? const Color(0xFF334155) : const Color(0xFFE2E8F0)),
+                                        : (isDark
+                                              ? const Color(0xFF334155)
+                                              : const Color(0xFFE2E8F0)),
                                   ),
                                 ),
                               ),
@@ -231,7 +277,9 @@ class _XonadoshHousingTabState extends ConsumerState<XonadoshHousingTab> {
                           style: IconButton.styleFrom(
                             backgroundColor: XonaDoshColors.emerald,
                             foregroundColor: Colors.white,
-                            shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(14)),
+                            shape: RoundedRectangleBorder(
+                              borderRadius: BorderRadius.circular(14),
+                            ),
                           ),
                         ),
                       ],
@@ -242,7 +290,10 @@ class _XonadoshHousingTabState extends ConsumerState<XonadoshHousingTab> {
                     XonadoshJobsHero(
                       onFindRoom: () => _searchFocus.requestFocus(),
                       onFindRoommate: () =>
-                          ref.read(xonadoshShellTabIndexProvider.notifier).state = 1,
+                          ref
+                                  .read(xonadoshShellTabIndexProvider.notifier)
+                                  .state =
+                              1,
                     ),
 
                     const SizedBox(height: 12),
@@ -252,9 +303,19 @@ class _XonadoshHousingTabState extends ConsumerState<XonadoshHousingTab> {
                       physics: const BouncingScrollPhysics(),
                       child: Row(
                         children: [
-                          _buildTypeChip('all', l10n.commonAll, Icons.apps_rounded, selectedType),
+                          _buildTypeChip(
+                            'all',
+                            l10n.commonAll,
+                            Icons.apps_rounded,
+                            selectedType,
+                          ),
                           const SizedBox(width: 6),
-                          _buildTypeChip('rent', l10n.xonadoshTypeRent, Icons.home_rounded, selectedType),
+                          _buildTypeChip(
+                            'rent',
+                            l10n.xonadoshTypeRent,
+                            Icons.home_rounded,
+                            selectedType,
+                          ),
                           const SizedBox(width: 6),
                           _buildTypeChip(
                             'roommate_wanted',
@@ -263,9 +324,46 @@ class _XonadoshHousingTabState extends ConsumerState<XonadoshHousingTab> {
                             selectedType,
                           ),
                           const SizedBox(width: 6),
-                          _buildTypeChip('sell', l10n.xonadoshTypeSell, Icons.local_offer_rounded, selectedType),
+                          _buildFeatureToggleChip(
+                            label: 'Bez Makler',
+                            icon: Icons.verified_user_rounded,
+                            isSelected: noBroker,
+                            activeColor: const Color(0xFF059669),
+                            onTap: () =>
+                                ref
+                                    .read(
+                                      xonadoshNoBrokerFilterProvider.notifier,
+                                    )
+                                    .state = !noBroker,
+                          ),
                           const SizedBox(width: 6),
-                          _buildTypeChip('buy', l10n.xonadoshTypeBuy, Icons.search_rounded, selectedType),
+                          _buildFeatureToggleChip(
+                            label: 'Kommunal ichida',
+                            icon: Icons.bolt_rounded,
+                            isSelected: utilitiesIncluded,
+                            activeColor: const Color(0xFF0284C7),
+                            onTap: () =>
+                                ref
+                                    .read(
+                                      xonadoshUtilitiesIncludedFilterProvider
+                                          .notifier,
+                                    )
+                                    .state = !utilitiesIncluded,
+                          ),
+                          const SizedBox(width: 6),
+                          _buildTypeChip(
+                            'sell',
+                            l10n.xonadoshTypeSell,
+                            Icons.local_offer_rounded,
+                            selectedType,
+                          ),
+                          const SizedBox(width: 6),
+                          _buildTypeChip(
+                            'buy',
+                            l10n.xonadoshTypeBuy,
+                            Icons.search_rounded,
+                            selectedType,
+                          ),
                         ],
                       ),
                     ),
@@ -278,47 +376,126 @@ class _XonadoshHousingTabState extends ConsumerState<XonadoshHousingTab> {
                         physics: const BouncingScrollPhysics(),
                         child: Row(
                           children: [
+                            if (noBroker)
+                              _buildActiveFilterBadge(
+                                '🛡️ Bez Makler',
+                                () =>
+                                    ref
+                                        .read(
+                                          xonadoshNoBrokerFilterProvider
+                                              .notifier,
+                                        )
+                                        .state = false,
+                              ),
+                            if (utilitiesIncluded)
+                              _buildActiveFilterBadge(
+                                '💡 Kommunal ichida',
+                                () =>
+                                    ref
+                                        .read(
+                                          xonadoshUtilitiesIncludedFilterProvider
+                                              .notifier,
+                                        )
+                                        .state = false,
+                              ),
                             if (selectedCity != null)
                               _buildActiveFilterBadge(
                                 '📍 $selectedCity',
-                                () => ref.read(xonadoshCityProvider.notifier).state = null,
+                                () =>
+                                    ref
+                                            .read(xonadoshCityProvider.notifier)
+                                            .state =
+                                        null,
                               ),
                             if (selectedDistrict != null)
                               _buildActiveFilterBadge(
                                 '🏙️ $selectedDistrict',
-                                () => ref.read(xonadoshDistrictProvider.notifier).state = null,
+                                () =>
+                                    ref
+                                            .read(
+                                              xonadoshDistrictProvider.notifier,
+                                            )
+                                            .state =
+                                        null,
                               ),
                             if (selectedUni != null)
                               _buildActiveFilterBadge(
                                 '🎓 ${selectedUni.shortName}',
-                                () => ref.read(xonadoshSelectedUniProvider.notifier).state = null,
+                                () =>
+                                    ref
+                                            .read(
+                                              xonadoshSelectedUniProvider
+                                                  .notifier,
+                                            )
+                                            .state =
+                                        null,
                               ),
                             if (selectedGender != 'any')
                               _buildActiveFilterBadge(
-                                selectedGender == 'boys' ? '👨 Yigitlar' : '👩 Qizlar',
-                                () => ref.read(xonadoshGenderFilterProvider.notifier).state = 'any',
+                                selectedGender == 'boys'
+                                    ? '👨 Yigitlar'
+                                    : '👩 Qizlar',
+                                () =>
+                                    ref
+                                            .read(
+                                              xonadoshGenderFilterProvider
+                                                  .notifier,
+                                            )
+                                            .state =
+                                        'any',
                               ),
                             if (minPrice != null || maxPrice != null)
-                              _buildActiveFilterBadge(
-                                '💰 Narx filtri',
-                                () {
-                                  ref.read(xonadoshMinPriceProvider.notifier).state = null;
-                                  ref.read(xonadoshMaxPriceProvider.notifier).state = null;
-                                },
-                              ),
+                              _buildActiveFilterBadge('💰 Narx filtri', () {
+                                ref
+                                        .read(xonadoshMinPriceProvider.notifier)
+                                        .state =
+                                    null;
+                                ref
+                                        .read(xonadoshMaxPriceProvider.notifier)
+                                        .state =
+                                    null;
+                              }),
                             TextButton.icon(
                               onPressed: () {
-                                ref.read(xonadoshCityProvider.notifier).state = null;
-                                ref.read(xonadoshDistrictProvider.notifier).state = null;
-                                ref.read(xonadoshSelectedUniProvider.notifier).state = null;
-                                ref.read(xonadoshGenderFilterProvider.notifier).state = 'any';
-                                ref.read(xonadoshMinPriceProvider.notifier).state = null;
-                                ref.read(xonadoshMaxPriceProvider.notifier).state = null;
+                                ref.read(xonadoshCityProvider.notifier).state =
+                                    null;
+                                ref
+                                        .read(xonadoshDistrictProvider.notifier)
+                                        .state =
+                                    null;
+                                ref
+                                        .read(
+                                          xonadoshSelectedUniProvider.notifier,
+                                        )
+                                        .state =
+                                    null;
+                                ref
+                                        .read(
+                                          xonadoshGenderFilterProvider.notifier,
+                                        )
+                                        .state =
+                                    'any';
+                                ref
+                                        .read(xonadoshMinPriceProvider.notifier)
+                                        .state =
+                                    null;
+                                ref
+                                        .read(xonadoshMaxPriceProvider.notifier)
+                                        .state =
+                                    null;
                               },
-                              icon: const Icon(Icons.clear_all_rounded, size: 16, color: Color(0xFFEF4444)),
+                              icon: const Icon(
+                                Icons.clear_all_rounded,
+                                size: 16,
+                                color: Color(0xFFEF4444),
+                              ),
                               label: Text(
                                 l10n.xonadoshClearFilter,
-                                style: const TextStyle(fontSize: 12, color: Color(0xFFEF4444), fontWeight: FontWeight.w700),
+                                style: const TextStyle(
+                                  fontSize: 12,
+                                  color: Color(0xFFEF4444),
+                                  fontWeight: FontWeight.w700,
+                                ),
                               ),
                             ),
                           ],
@@ -334,7 +511,9 @@ class _XonadoshHousingTabState extends ConsumerState<XonadoshHousingTab> {
             listingsAsync.when(
               loading: () => const SliverFillRemaining(
                 child: Center(
-                  child: CircularProgressIndicator(color: XonaDoshColors.emerald),
+                  child: CircularProgressIndicator(
+                    color: XonaDoshColors.emerald,
+                  ),
                 ),
               ),
               error: (err, _) => SliverFillRemaining(
@@ -344,12 +523,20 @@ class _XonadoshHousingTabState extends ConsumerState<XonadoshHousingTab> {
                     child: Column(
                       mainAxisAlignment: MainAxisAlignment.center,
                       children: [
-                        const Icon(Icons.cloud_off_rounded, size: 48, color: Colors.grey),
+                        const Icon(
+                          Icons.cloud_off_rounded,
+                          size: 48,
+                          color: Colors.grey,
+                        ),
                         const SizedBox(height: 12),
-                        Text(context.l10n.xonadoshErrGeneric('$err'), textAlign: TextAlign.center),
+                        Text(
+                          context.l10n.xonadoshErrGeneric('$err'),
+                          textAlign: TextAlign.center,
+                        ),
                         const SizedBox(height: 14),
                         ElevatedButton(
-                          onPressed: () => ref.invalidate(xonadoshListingsProvider),
+                          onPressed: () =>
+                              ref.invalidate(xonadoshListingsProvider),
                           child: Text(context.l10n.commonRetry),
                         ),
                       ],
@@ -359,17 +546,23 @@ class _XonadoshHousingTabState extends ConsumerState<XonadoshHousingTab> {
               ),
               data: (listings) {
                 if (listings.isEmpty) {
-                  final filtered = activeFilterCount > 0 ||
+                  final filtered =
+                      activeFilterCount > 0 ||
                       selectedType != 'all' ||
                       _searchController.text.trim().isNotEmpty;
                   return SliverFillRemaining(
                     child: EmptyState(
                       icon: Icons.home_work_outlined,
                       accentColor: XonaDoshColors.emerald,
-                      title: filtered ? l10n.xonadoshNoListingsTitle : l10n.xonadoshEmptyMarketTitle,
-                      subtitle: filtered ? l10n.xonadoshNoListingsSubtitle : l10n.xonadoshEmptyMarketBody,
+                      title: filtered
+                          ? l10n.xonadoshNoListingsTitle
+                          : l10n.xonadoshEmptyMarketTitle,
+                      subtitle: filtered
+                          ? l10n.xonadoshNoListingsSubtitle
+                          : l10n.xonadoshEmptyMarketBody,
                       action: FilledButton.icon(
-                        onPressed: () => context.push(AppRoutes.xonadoshCreateListing),
+                        onPressed: () =>
+                            context.push(AppRoutes.xonadoshCreateListing),
                         icon: const Icon(Icons.add_home_rounded, size: 18),
                         label: Text(l10n.xonadoshPostListing),
                       ),
@@ -377,16 +570,49 @@ class _XonadoshHousingTabState extends ConsumerState<XonadoshHousingTab> {
                           ? TextButton.icon(
                               onPressed: () {
                                 _searchController.clear();
-                                ref.read(xonadoshSearchQueryProvider.notifier).state = null;
-                                ref.read(xonadoshCityProvider.notifier).state = null;
-                                ref.read(xonadoshDistrictProvider.notifier).state = null;
-                                ref.read(xonadoshTypeFilterProvider.notifier).state = 'all';
-                                ref.read(xonadoshGenderFilterProvider.notifier).state = 'any';
-                                ref.read(xonadoshSelectedUniProvider.notifier).state = null;
-                                ref.read(xonadoshMinPriceProvider.notifier).state = null;
-                                ref.read(xonadoshMaxPriceProvider.notifier).state = null;
+                                ref
+                                        .read(
+                                          xonadoshSearchQueryProvider.notifier,
+                                        )
+                                        .state =
+                                    null;
+                                ref.read(xonadoshCityProvider.notifier).state =
+                                    null;
+                                ref
+                                        .read(xonadoshDistrictProvider.notifier)
+                                        .state =
+                                    null;
+                                ref
+                                        .read(
+                                          xonadoshTypeFilterProvider.notifier,
+                                        )
+                                        .state =
+                                    'all';
+                                ref
+                                        .read(
+                                          xonadoshGenderFilterProvider.notifier,
+                                        )
+                                        .state =
+                                    'any';
+                                ref
+                                        .read(
+                                          xonadoshSelectedUniProvider.notifier,
+                                        )
+                                        .state =
+                                    null;
+                                ref
+                                        .read(xonadoshMinPriceProvider.notifier)
+                                        .state =
+                                    null;
+                                ref
+                                        .read(xonadoshMaxPriceProvider.notifier)
+                                        .state =
+                                    null;
                               },
-                              icon: const Icon(Icons.filter_alt_off_rounded, size: 18),
+                              icon: const Icon(
+                                Icons.filter_alt_off_rounded,
+                                size: 18,
+                              ),
                               label: Text(l10n.xonadoshViewAllListings),
                             )
                           : null,
@@ -397,37 +623,44 @@ class _XonadoshHousingTabState extends ConsumerState<XonadoshHousingTab> {
                 return SliverPadding(
                   padding: const EdgeInsets.fromLTRB(16, 4, 16, 90),
                   sliver: SliverList(
-                    delegate: SliverChildBuilderDelegate(
-                      (context, index) {
-                        final item = listings[index];
-                        return XonadoshListingCard(
-                          item: item,
-                          bookmarked: _bookmarkedIds.contains(item.id),
-                          onTap: () => context.push('${AppRoutes.shell}/listing/${item.id}'),
-                          onBookmark: () async {
-                            final next = await _bookmarkStore.toggle(item.id);
-                            if (!mounted) return;
-                            setState(() {
-                              _bookmarkedIds
-                                ..clear()
-                                ..addAll(next);
-                            });
-                          },
-                          onReport: () => showReportContentDialog(
-                            context,
-                            ref,
-                            targetType: ReportTargetType.listing,
-                            targetId: '${item.id}',
-                            subjectLabel: l10n.reportContentSubjectListing(item.title),
+                    delegate: SliverChildBuilderDelegate((context, index) {
+                      final item = listings[index];
+                      return XonadoshListingCard(
+                        item: item,
+                        bookmarked: _bookmarkedIds.contains(item.id),
+                        onTap: () => context.push(
+                          '${AppRoutes.shell}/listing/${item.id}',
+                        ),
+                        onBookmark: () async {
+                          final next = await _bookmarkStore.toggle(item.id);
+                          if (!mounted) return;
+                          setState(() {
+                            _bookmarkedIds
+                              ..clear()
+                              ..addAll(next);
+                          });
+                        },
+                        onReport: () => showReportContentDialog(
+                          context,
+                          ref,
+                          targetType: ReportTargetType.listing,
+                          targetId: '${item.id}',
+                          subjectLabel: l10n.reportContentSubjectListing(
+                            item.title,
                           ),
-                          onCall: () => ContactActions.callPhone(context, item.phoneNumber),
-                          onTelegram: item.telegramHandle != null && item.telegramHandle!.isNotEmpty
-                              ? () => ContactActions.openTelegram(context, item.telegramHandle)
-                              : null,
-                        );
-                      },
-                      childCount: listings.length,
-                    ),
+                        ),
+                        onCall: () =>
+                            ContactActions.callPhone(context, item.phoneNumber),
+                        onTelegram:
+                            item.telegramHandle != null &&
+                                item.telegramHandle!.isNotEmpty
+                            ? () => ContactActions.openTelegram(
+                                context,
+                                item.telegramHandle,
+                              )
+                            : null,
+                      );
+                    }, childCount: listings.length),
                   ),
                 );
               },
@@ -442,12 +675,20 @@ class _XonadoshHousingTabState extends ConsumerState<XonadoshHousingTab> {
         backgroundColor: XonaDoshColors.emerald,
         foregroundColor: Colors.white,
         icon: const Icon(Icons.add_home_rounded),
-        label: Text(l10n.xonadoshPostListing, style: const TextStyle(fontWeight: FontWeight.bold)),
+        label: Text(
+          l10n.xonadoshPostListing,
+          style: const TextStyle(fontWeight: FontWeight.bold),
+        ),
       ),
     );
   }
 
-  Widget _buildTypeChip(String type, String label, IconData icon, String selectedType) {
+  Widget _buildTypeChip(
+    String type,
+    String label,
+    IconData icon,
+    String selectedType,
+  ) {
     final isSelected = selectedType == type;
     final isDark = Theme.of(context).brightness == Brightness.dark;
 
@@ -455,18 +696,30 @@ class _XonadoshHousingTabState extends ConsumerState<XonadoshHousingTab> {
       onTap: () => ref.read(xonadoshTypeFilterProvider.notifier).state = type,
       child: AnimatedContainer(
         duration: const Duration(milliseconds: 150),
-        padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 7),
+        padding: const EdgeInsets.symmetric(horizontal: 13, vertical: 7.5),
         decoration: BoxDecoration(
           color: isSelected
               ? (isDark ? const Color(0xFF0F766E) : const Color(0xFF0D9488))
               : (isDark ? const Color(0xFF1E293B) : Colors.white),
-          borderRadius: BorderRadius.circular(10),
+          borderRadius: BorderRadius.circular(12),
           border: Border.all(
             color: isSelected
                 ? Colors.transparent
                 : (isDark ? const Color(0xFF334155) : const Color(0xFFE2E8F0)),
             width: 1,
           ),
+          boxShadow: isSelected
+              ? [
+                  BoxShadow(
+                    color: (isDark
+                            ? const Color(0xFF0F766E)
+                            : const Color(0xFF0D9488))
+                        .withValues(alpha: 0.28),
+                    blurRadius: 6,
+                    offset: const Offset(0, 2),
+                  ),
+                ]
+              : null,
         ),
         child: Row(
           mainAxisSize: MainAxisSize.min,
@@ -476,7 +729,9 @@ class _XonadoshHousingTabState extends ConsumerState<XonadoshHousingTab> {
               size: 15,
               color: isSelected
                   ? Colors.white
-                  : (isDark ? const Color(0xFF94A3B8) : const Color(0xFF64748B)),
+                  : (isDark
+                        ? const Color(0xFF94A3B8)
+                        : const Color(0xFF64748B)),
             ),
             const SizedBox(width: 5),
             Text(
@@ -486,7 +741,71 @@ class _XonadoshHousingTabState extends ConsumerState<XonadoshHousingTab> {
                 fontWeight: isSelected ? FontWeight.w700 : FontWeight.w600,
                 color: isSelected
                     ? Colors.white
-                    : (isDark ? const Color(0xFFE2E8F0) : const Color(0xFF334155)),
+                    : (isDark
+                          ? const Color(0xFFE2E8F0)
+                          : const Color(0xFF334155)),
+              ),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+
+  Widget _buildFeatureToggleChip({
+    required String label,
+    required IconData icon,
+    required bool isSelected,
+    required Color activeColor,
+    required VoidCallback onTap,
+  }) {
+    final isDark = Theme.of(context).brightness == Brightness.dark;
+
+    return GestureDetector(
+      onTap: onTap,
+      child: AnimatedContainer(
+        duration: const Duration(milliseconds: 150),
+        padding: const EdgeInsets.symmetric(horizontal: 11, vertical: 7),
+        decoration: BoxDecoration(
+          color: isSelected
+              ? activeColor
+              : (isDark ? const Color(0xFF1E293B) : Colors.white),
+          borderRadius: BorderRadius.circular(10),
+          border: Border.all(
+            color: isSelected
+                ? Colors.transparent
+                : activeColor.withValues(alpha: isDark ? 0.45 : 0.28),
+            width: isSelected ? 1 : 1.2,
+          ),
+          boxShadow: isSelected
+              ? [
+                  BoxShadow(
+                    color: activeColor.withValues(alpha: 0.3),
+                    blurRadius: 6,
+                    offset: const Offset(0, 2),
+                  ),
+                ]
+              : null,
+        ),
+        child: Row(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            Icon(
+              icon,
+              size: 14,
+              color: isSelected ? Colors.white : activeColor,
+            ),
+            const SizedBox(width: 5),
+            Text(
+              label,
+              style: TextStyle(
+                fontSize: 12,
+                fontWeight: FontWeight.w700,
+                color: isSelected
+                    ? Colors.white
+                    : (isDark
+                          ? const Color(0xFFE2E8F0)
+                          : const Color(0xFF1E293B)),
               ),
             ),
           ],
@@ -502,7 +821,9 @@ class _XonadoshHousingTabState extends ConsumerState<XonadoshHousingTab> {
       decoration: BoxDecoration(
         color: XonaDoshColors.emeraldLight,
         borderRadius: BorderRadius.circular(10),
-        border: Border.all(color: XonaDoshColors.emerald.withValues(alpha: 0.3)),
+        border: Border.all(
+          color: XonaDoshColors.emerald.withValues(alpha: 0.3),
+        ),
       ),
       child: Row(
         mainAxisSize: MainAxisSize.min,
@@ -518,7 +839,11 @@ class _XonadoshHousingTabState extends ConsumerState<XonadoshHousingTab> {
           const SizedBox(width: 2),
           GestureDetector(
             onTap: onRemove,
-            child: const Icon(Icons.close_rounded, size: 16, color: XonaDoshColors.emeraldDark),
+            child: const Icon(
+              Icons.close_rounded,
+              size: 16,
+              color: XonaDoshColors.emeraldDark,
+            ),
           ),
         ],
       ),
@@ -557,11 +882,15 @@ class _FilterBottomSheetState extends ConsumerState<_FilterBottomSheet> {
     final unisAsync = ref.watch(xonadoshUniversitiesProvider);
 
     final currentRegion = selectedCity != null
-        ? XonadoshLocationData.regions.where((r) => r.name == selectedCity).firstOrNull
+        ? XonadoshLocationData.regions
+              .where((r) => r.name == selectedCity)
+              .firstOrNull
         : null;
 
     return Container(
-      constraints: BoxConstraints(maxHeight: MediaQuery.sizeOf(context).height * 0.82),
+      constraints: BoxConstraints(
+        maxHeight: MediaQuery.sizeOf(context).height * 0.82,
+      ),
       decoration: BoxDecoration(
         color: isDark ? const Color(0xFF1E293B) : Colors.white,
         borderRadius: const BorderRadius.vertical(top: Radius.circular(24)),
@@ -588,20 +917,37 @@ class _FilterBottomSheetState extends ConsumerState<_FilterBottomSheet> {
                 children: [
                   Text(
                     l10n.xonadoshSearchFiltersTitle,
-                    style: const TextStyle(fontSize: 18, fontWeight: FontWeight.w800),
+                    style: const TextStyle(
+                      fontSize: 18,
+                      fontWeight: FontWeight.w800,
+                    ),
                   ),
                   TextButton(
                     onPressed: () {
                       ref.read(xonadoshCityProvider.notifier).state = null;
                       ref.read(xonadoshDistrictProvider.notifier).state = null;
-                      ref.read(xonadoshSelectedUniProvider.notifier).state = null;
-                      ref.read(xonadoshGenderFilterProvider.notifier).state = 'any';
+                      ref.read(xonadoshSelectedUniProvider.notifier).state =
+                          null;
+                      ref.read(xonadoshGenderFilterProvider.notifier).state =
+                          'any';
                       ref.read(xonadoshMinPriceProvider.notifier).state = null;
                       ref.read(xonadoshMaxPriceProvider.notifier).state = null;
+                      ref.read(xonadoshNoBrokerFilterProvider.notifier).state =
+                          false;
+                      ref
+                              .read(
+                                xonadoshUtilitiesIncludedFilterProvider
+                                    .notifier,
+                              )
+                              .state =
+                          false;
                     },
                     child: Text(
                       l10n.xonadoshClearFilter,
-                      style: const TextStyle(color: Color(0xFFEF4444), fontWeight: FontWeight.bold),
+                      style: const TextStyle(
+                        color: Color(0xFFEF4444),
+                        fontWeight: FontWeight.bold,
+                      ),
                     ),
                   ),
                 ],
@@ -615,7 +961,13 @@ class _FilterBottomSheetState extends ConsumerState<_FilterBottomSheet> {
                 padding: const EdgeInsets.all(20),
                 children: [
                   // 1. Region / Viloyat
-                  Text('📍 ${l10n.xonadoshRegionCity}', style: const TextStyle(fontWeight: FontWeight.w800, fontSize: 14)),
+                  Text(
+                    '📍 ${l10n.xonadoshRegionCity}',
+                    style: const TextStyle(
+                      fontWeight: FontWeight.w800,
+                      fontSize: 14,
+                    ),
+                  ),
                   const SizedBox(height: 8),
                   SingleChildScrollView(
                     scrollDirection: Axis.horizontal,
@@ -625,8 +977,10 @@ class _FilterBottomSheetState extends ConsumerState<_FilterBottomSheet> {
                           label: Text(l10n.xonadoshAllRegions),
                           selected: selectedCity == null,
                           onSelected: (_) {
-                            ref.read(xonadoshCityProvider.notifier).state = null;
-                            ref.read(xonadoshDistrictProvider.notifier).state = null;
+                            ref.read(xonadoshCityProvider.notifier).state =
+                                null;
+                            ref.read(xonadoshDistrictProvider.notifier).state =
+                                null;
                           },
                         ),
                         const SizedBox(width: 6),
@@ -638,8 +992,12 @@ class _FilterBottomSheetState extends ConsumerState<_FilterBottomSheet> {
                               label: Text('${r.flag} ${r.name}'),
                               selected: isSelected,
                               onSelected: (sel) {
-                                ref.read(xonadoshCityProvider.notifier).state = sel ? r.name : null;
-                                ref.read(xonadoshDistrictProvider.notifier).state = null;
+                                ref.read(xonadoshCityProvider.notifier).state =
+                                    sel ? r.name : null;
+                                ref
+                                        .read(xonadoshDistrictProvider.notifier)
+                                        .state =
+                                    null;
                               },
                             ),
                           );
@@ -651,7 +1009,13 @@ class _FilterBottomSheetState extends ConsumerState<_FilterBottomSheet> {
                   // 2. Districts (if region chosen)
                   if (currentRegion != null) ...[
                     const SizedBox(height: 16),
-                    Text('🏙️ ${l10n.xonadoshDistrictArea}', style: const TextStyle(fontWeight: FontWeight.w800, fontSize: 14)),
+                    Text(
+                      '🏙️ ${l10n.xonadoshDistrictArea}',
+                      style: const TextStyle(
+                        fontWeight: FontWeight.w800,
+                        fontSize: 14,
+                      ),
+                    ),
                     const SizedBox(height: 8),
                     SingleChildScrollView(
                       scrollDirection: Axis.horizontal,
@@ -660,7 +1024,11 @@ class _FilterBottomSheetState extends ConsumerState<_FilterBottomSheet> {
                           ChoiceChip(
                             label: Text(l10n.xonadoshAllDistricts),
                             selected: selectedDistrict == null,
-                            onSelected: (_) => ref.read(xonadoshDistrictProvider.notifier).state = null,
+                            onSelected: (_) =>
+                                ref
+                                        .read(xonadoshDistrictProvider.notifier)
+                                        .state =
+                                    null,
                           ),
                           const SizedBox(width: 6),
                           ...currentRegion.districts.map((d) {
@@ -671,7 +1039,11 @@ class _FilterBottomSheetState extends ConsumerState<_FilterBottomSheet> {
                                 label: Text(d),
                                 selected: isSel,
                                 onSelected: (sel) =>
-                                    ref.read(xonadoshDistrictProvider.notifier).state = sel ? d : null,
+                                    ref
+                                        .read(xonadoshDistrictProvider.notifier)
+                                        .state = sel
+                                    ? d
+                                    : null,
                               ),
                             );
                           }),
@@ -683,10 +1055,21 @@ class _FilterBottomSheetState extends ConsumerState<_FilterBottomSheet> {
                   const SizedBox(height: 16),
 
                   // 3. Universitet
-                  Text('🎓 ${l10n.xonadoshNearUniversity}', style: const TextStyle(fontWeight: FontWeight.w800, fontSize: 14)),
+                  Text(
+                    '🎓 ${l10n.xonadoshNearUniversity}',
+                    style: const TextStyle(
+                      fontWeight: FontWeight.w800,
+                      fontSize: 14,
+                    ),
+                  ),
                   const SizedBox(height: 8),
                   unisAsync.when(
-                    loading: () => const SizedBox(height: 36, child: Center(child: CircularProgressIndicator(strokeWidth: 2))),
+                    loading: () => const SizedBox(
+                      height: 36,
+                      child: Center(
+                        child: CircularProgressIndicator(strokeWidth: 2),
+                      ),
+                    ),
                     error: (_, _) => const SizedBox(),
                     data: (unis) {
                       return SingleChildScrollView(
@@ -696,7 +1079,14 @@ class _FilterBottomSheetState extends ConsumerState<_FilterBottomSheet> {
                             ChoiceChip(
                               label: Text(l10n.xonadoshAllUniversities),
                               selected: selectedUni == null,
-                              onSelected: (_) => ref.read(xonadoshSelectedUniProvider.notifier).state = null,
+                              onSelected: (_) =>
+                                  ref
+                                          .read(
+                                            xonadoshSelectedUniProvider
+                                                .notifier,
+                                          )
+                                          .state =
+                                      null,
                             ),
                             const SizedBox(width: 6),
                             ...unis.map((u) {
@@ -707,7 +1097,14 @@ class _FilterBottomSheetState extends ConsumerState<_FilterBottomSheet> {
                                   label: Text(u.shortName),
                                   selected: isSel,
                                   onSelected: (sel) =>
-                                      ref.read(xonadoshSelectedUniProvider.notifier).state = sel ? u : null,
+                                      ref
+                                          .read(
+                                            xonadoshSelectedUniProvider
+                                                .notifier,
+                                          )
+                                          .state = sel
+                                      ? u
+                                      : null,
                                 ),
                               );
                             }),
@@ -720,7 +1117,13 @@ class _FilterBottomSheetState extends ConsumerState<_FilterBottomSheet> {
                   const SizedBox(height: 16),
 
                   // 4. Byudjet / Narx oralig'i
-                  Text('💰 ${l10n.xonadoshBudgetFilterLabel}', style: const TextStyle(fontWeight: FontWeight.w800, fontSize: 14)),
+                  Text(
+                    '💰 ${l10n.xonadoshBudgetFilterLabel}',
+                    style: const TextStyle(
+                      fontWeight: FontWeight.w800,
+                      fontSize: 14,
+                    ),
+                  ),
                   const SizedBox(height: 8),
                   Wrap(
                     spacing: 8,
@@ -728,42 +1131,62 @@ class _FilterBottomSheetState extends ConsumerState<_FilterBottomSheet> {
                     children: [
                       ChoiceChip(
                         label: Text(l10n.xonadoshAnyPrice),
-                        selected: ref.watch(xonadoshMinPriceProvider) == null && ref.watch(xonadoshMaxPriceProvider) == null,
+                        selected:
+                            ref.watch(xonadoshMinPriceProvider) == null &&
+                            ref.watch(xonadoshMaxPriceProvider) == null,
                         onSelected: (_) {
-                          ref.read(xonadoshMinPriceProvider.notifier).state = null;
-                          ref.read(xonadoshMaxPriceProvider.notifier).state = null;
+                          ref.read(xonadoshMinPriceProvider.notifier).state =
+                              null;
+                          ref.read(xonadoshMaxPriceProvider.notifier).state =
+                              null;
                         },
                       ),
                       ChoiceChip(
                         label: const Text('1 mln gacha'),
-                        selected: ref.watch(xonadoshMinPriceProvider) == null && ref.watch(xonadoshMaxPriceProvider) == 1000000,
+                        selected:
+                            ref.watch(xonadoshMinPriceProvider) == null &&
+                            ref.watch(xonadoshMaxPriceProvider) == 1000000,
                         onSelected: (sel) {
-                          ref.read(xonadoshMinPriceProvider.notifier).state = null;
-                          ref.read(xonadoshMaxPriceProvider.notifier).state = sel ? 1000000 : null;
+                          ref.read(xonadoshMinPriceProvider.notifier).state =
+                              null;
+                          ref.read(xonadoshMaxPriceProvider.notifier).state =
+                              sel ? 1000000 : null;
                         },
                       ),
                       ChoiceChip(
                         label: const Text('1 – 2 mln'),
-                        selected: ref.watch(xonadoshMinPriceProvider) == 1000000 && ref.watch(xonadoshMaxPriceProvider) == 2000000,
+                        selected:
+                            ref.watch(xonadoshMinPriceProvider) == 1000000 &&
+                            ref.watch(xonadoshMaxPriceProvider) == 2000000,
                         onSelected: (sel) {
-                          ref.read(xonadoshMinPriceProvider.notifier).state = sel ? 1000000 : null;
-                          ref.read(xonadoshMaxPriceProvider.notifier).state = sel ? 2000000 : null;
+                          ref.read(xonadoshMinPriceProvider.notifier).state =
+                              sel ? 1000000 : null;
+                          ref.read(xonadoshMaxPriceProvider.notifier).state =
+                              sel ? 2000000 : null;
                         },
                       ),
                       ChoiceChip(
                         label: const Text('2 – 3.5 mln'),
-                        selected: ref.watch(xonadoshMinPriceProvider) == 2000000 && ref.watch(xonadoshMaxPriceProvider) == 3500000,
+                        selected:
+                            ref.watch(xonadoshMinPriceProvider) == 2000000 &&
+                            ref.watch(xonadoshMaxPriceProvider) == 3500000,
                         onSelected: (sel) {
-                          ref.read(xonadoshMinPriceProvider.notifier).state = sel ? 2000000 : null;
-                          ref.read(xonadoshMaxPriceProvider.notifier).state = sel ? 3500000 : null;
+                          ref.read(xonadoshMinPriceProvider.notifier).state =
+                              sel ? 2000000 : null;
+                          ref.read(xonadoshMaxPriceProvider.notifier).state =
+                              sel ? 3500000 : null;
                         },
                       ),
                       ChoiceChip(
                         label: const Text('3.5 mln+'),
-                        selected: ref.watch(xonadoshMinPriceProvider) == 3500000 && ref.watch(xonadoshMaxPriceProvider) == null,
+                        selected:
+                            ref.watch(xonadoshMinPriceProvider) == 3500000 &&
+                            ref.watch(xonadoshMaxPriceProvider) == null,
                         onSelected: (sel) {
-                          ref.read(xonadoshMinPriceProvider.notifier).state = sel ? 3500000 : null;
-                          ref.read(xonadoshMaxPriceProvider.notifier).state = null;
+                          ref.read(xonadoshMinPriceProvider.notifier).state =
+                              sel ? 3500000 : null;
+                          ref.read(xonadoshMaxPriceProvider.notifier).state =
+                              null;
                         },
                       ),
                     ],
@@ -772,28 +1195,94 @@ class _FilterBottomSheetState extends ConsumerState<_FilterBottomSheet> {
                   const SizedBox(height: 16),
 
                   // 5. Jins / Kimlar uchun
-                  Text('👥 ${l10n.xonadoshWhoFor}', style: const TextStyle(fontWeight: FontWeight.w800, fontSize: 14)),
+                  Text(
+                    '👥 ${l10n.xonadoshWhoFor}',
+                    style: const TextStyle(
+                      fontWeight: FontWeight.w800,
+                      fontSize: 14,
+                    ),
+                  ),
                   const SizedBox(height: 8),
                   Row(
                     children: [
                       ChoiceChip(
                         label: Text(l10n.commonAll),
                         selected: selectedGender == 'any',
-                        onSelected: (_) => ref.read(xonadoshGenderFilterProvider.notifier).state = 'any',
+                        onSelected: (_) =>
+                            ref
+                                    .read(xonadoshGenderFilterProvider.notifier)
+                                    .state =
+                                'any',
                       ),
                       const SizedBox(width: 8),
                       ChoiceChip(
                         avatar: const Icon(Icons.man_rounded, size: 16),
                         label: Text(l10n.xonadoshForBoys),
                         selected: selectedGender == 'boys',
-                        onSelected: (_) => ref.read(xonadoshGenderFilterProvider.notifier).state = 'boys',
+                        onSelected: (_) =>
+                            ref
+                                    .read(xonadoshGenderFilterProvider.notifier)
+                                    .state =
+                                'boys',
                       ),
                       const SizedBox(width: 8),
                       ChoiceChip(
                         avatar: const Icon(Icons.woman_rounded, size: 16),
                         label: Text(l10n.xonadoshForGirls),
                         selected: selectedGender == 'girls',
-                        onSelected: (_) => ref.read(xonadoshGenderFilterProvider.notifier).state = 'girls',
+                        onSelected: (_) =>
+                            ref
+                                    .read(xonadoshGenderFilterProvider.notifier)
+                                    .state =
+                                'girls',
+                      ),
+                    ],
+                  ),
+
+                  const SizedBox(height: 16),
+
+                  // 6. Maxsus imtiyozlar & shartlar
+                  const Text(
+                    '✨ Imtiyozlar va Maxsus shartlar',
+                    style: TextStyle(
+                      fontWeight: FontWeight.w800,
+                      fontSize: 14,
+                    ),
+                  ),
+                  const SizedBox(height: 8),
+                  Wrap(
+                    spacing: 8,
+                    runSpacing: 8,
+                    children: [
+                      FilterChip(
+                        avatar: const Icon(
+                          Icons.verified_user_rounded,
+                          size: 16,
+                          color: Color(0xFF059669),
+                        ),
+                        label: const Text('🛡️ Bez Makler (0% komissiya)'),
+                        selected: ref.watch(xonadoshNoBrokerFilterProvider),
+                        onSelected: (sel) =>
+                            ref
+                                .read(xonadoshNoBrokerFilterProvider.notifier)
+                                .state = sel,
+                      ),
+                      FilterChip(
+                        avatar: const Icon(
+                          Icons.bolt_rounded,
+                          size: 16,
+                          color: Color(0xFF0284C7),
+                        ),
+                        label: const Text('💡 Kommunal to‘lov ichida'),
+                        selected:
+                            ref.watch(xonadoshUtilitiesIncludedFilterProvider),
+                        onSelected: (sel) =>
+                            ref
+                                .read(
+                                  xonadoshUtilitiesIncludedFilterProvider
+                                      .notifier,
+                                )
+                                .state = sel,
                       ),
                     ],
                   ),
@@ -808,7 +1297,13 @@ class _FilterBottomSheetState extends ConsumerState<_FilterBottomSheet> {
                 width: double.infinity,
                 child: FilledButton(
                   onPressed: () => Navigator.of(context).pop(),
-                  child: Text(l10n.xonadoshSeeResults, style: const TextStyle(fontSize: 16, fontWeight: FontWeight.bold)),
+                  child: Text(
+                    l10n.xonadoshSeeResults,
+                    style: const TextStyle(
+                      fontSize: 16,
+                      fontWeight: FontWeight.bold,
+                    ),
+                  ),
                 ),
               ),
             ),

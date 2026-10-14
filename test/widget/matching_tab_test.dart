@@ -43,35 +43,44 @@ const _dummyCandidate = XonadoshProfile(
   cookingHabit: 'rotates',
   smokingHabit: 'no',
   compatibilityScore: 92,
-  matchReasons: ['🎓 Bir xil OTM', '🌙 Uyqu tartibi mos', '✨ Tozalik talabi bir xil'],
+  matchReasons: [
+    '🎓 Bir xil OTM',
+    '🌙 Uyqu tartibi mos',
+    '✨ Tozalik talabi bir xil',
+  ],
 );
 
 void main() {
-  testWidgets('matching tab renders candidate card with match score and quick actions', (tester) async {
-    tester.view.physicalSize = const Size(1200, 2400);
-    tester.view.devicePixelRatio = 1.0;
-    addTearDown(tester.view.reset);
+  testWidgets(
+    'matching tab renders candidate card with match score and quick actions',
+    (tester) async {
+      tester.view.physicalSize = const Size(1200, 2400);
+      tester.view.devicePixelRatio = 1.0;
+      addTearDown(tester.view.reset);
 
-    await tester.pumpWidget(
-      _wrap(
-        const XonadoshMatchingTab(),
-        overrides: [
-          xonadoshMyProfileProvider.overrideWith((ref) async => null),
-          xonadoshMatchingRoommatesProvider.overrideWith((ref) async => [_dummyCandidate]),
-          xonadoshUniversitiesProvider.overrideWith((ref) async => []),
-        ],
-      ),
-    );
-    await tester.pump();
-    await tester.pump(const Duration(milliseconds: 50));
+      await tester.pumpWidget(
+        _wrap(
+          const XonadoshMatchingTab(),
+          overrides: [
+            xonadoshMyProfileProvider.overrideWith((ref) async => null),
+            xonadoshMatchingRoommatesProvider.overrideWith(
+              (ref) async => [_dummyCandidate],
+            ),
+            xonadoshUniversitiesProvider.overrideWith((ref) async => []),
+          ],
+        ),
+      );
+      await tester.pump();
+      await tester.pump(const Duration(milliseconds: 50));
 
-    expect(find.text('Jasur Saidov'), findsOneWidget);
-    expect(find.text('92%'), findsOneWidget);
-    expect(find.text('Why this match'), findsWidgets);
-    expect(find.text('🎓 Bir xil OTM'), findsOneWidget);
-    expect(find.text('Who are you looking for?'), findsOneWidget);
-    expect(find.text('University'), findsOneWidget);
-    expect(find.byIcon(Icons.call_rounded), findsWidgets);
-    expect(find.byIcon(Icons.send_rounded), findsWidgets);
-  });
+      expect(find.text('Jasur Saidov'), findsOneWidget);
+      expect(find.text('92%'), findsOneWidget);
+      expect(find.text('Why this match'), findsWidgets);
+      expect(find.text('🎓 Bir xil OTM'), findsOneWidget);
+      expect(find.text('Who are you looking for?'), findsOneWidget);
+      expect(find.text('University'), findsOneWidget);
+      expect(find.byIcon(Icons.call_rounded), findsWidgets);
+      expect(find.byIcon(Icons.send_rounded), findsWidgets);
+    },
+  );
 }

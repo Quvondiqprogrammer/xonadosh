@@ -116,7 +116,7 @@ def main() -> int:
         upload_tree(BACKEND / "assets", "assets")
 
     if only in ("", "all", "root", "pitch"):
-        for root_file in ("index.html", ".htaccess"):
+        for root_file in ("index.html", ".htaccess", "robots.txt", "sitemap.xml"):
             local = BACKEND / root_file
             if local.exists():
                 try:

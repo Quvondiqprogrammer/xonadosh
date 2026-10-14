@@ -28,7 +28,13 @@ $body = json_decode($raw ?: '{}', true);
 if (!is_array($body)) {
     $body = $_POST;
 }
-$listingId = isset($body['listing_id']) ? (int) $body['listing_id'] : 0;
+$listingId = isset($body['listing_id']) && is_numeric($body['listing_id'])
+    ? (int)$body['listing_id']
+    : (isset($body['id']) && is_numeric($body['id'])
+        ? (int)$body['id']
+        : (isset($_GET['listing_id']) && is_numeric($_GET['listing_id'])
+            ? (int)$_GET['listing_id']
+            : (isset($_GET['id']) && is_numeric($_GET['id']) ? (int)$_GET['id'] : 0)));
 
 if ($listingId <= 0) {
     json_response(['ok' => false, 'error' => 'listing_id kiritilishi shart'], 400);

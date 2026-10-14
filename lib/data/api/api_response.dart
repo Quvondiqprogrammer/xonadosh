@@ -49,7 +49,7 @@ class ApiResponse {
     var ok = explicitOk
         ? isOk(map['ok'])
         : (status == null || (status >= 200 && status < 400)) &&
-            map['error'] == null;
+              map['error'] == null;
 
     if (status != null && status >= 400) {
       ok = false;
@@ -59,7 +59,8 @@ class ApiResponse {
     if (status != null) map['status'] = status;
 
     if (!ok) {
-      map['error'] = _firstNonEmpty(map, const ['error', 'message', 'msg', 'detail']) ??
+      map['error'] =
+          _firstNonEmpty(map, const ['error', 'message', 'msg', 'detail']) ??
           fallbackError;
     }
     return map;

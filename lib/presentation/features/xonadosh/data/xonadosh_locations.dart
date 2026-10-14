@@ -355,19 +355,16 @@ class XonadoshLocationData {
 
   static XonadoshRegion? findRegionByDistrict(String districtName) {
     for (final r in regions) {
-      if (r.districts.any((d) => d.toLowerCase() == districtName.toLowerCase())) {
+      if (r.districts.any(
+        (d) => d.toLowerCase() == districtName.toLowerCase(),
+      )) {
         return r;
       }
     }
     return null;
   }
 
-  static const List<String> availableCurrencies = [
-    'UZS',
-    'USD',
-    'EUR',
-    'RUB',
-  ];
+  static const List<String> availableCurrencies = ['UZS', 'USD', 'EUR', 'RUB'];
 
   static const Map<String, String> currencySymbols = {
     'UZS': 'so‘m',
@@ -376,12 +373,7 @@ class XonadoshLocationData {
     'RUB': '₽',
   };
 
-  static const List<String> pricePeriods = [
-    'month',
-    'day',
-    'year',
-    'total',
-  ];
+  static const List<String> pricePeriods = ['month', 'day', 'year', 'total'];
 
   static const Map<String, String> pricePeriodLabels = {
     'month': 'Oylik (oyiga)',
@@ -393,15 +385,18 @@ class XonadoshLocationData {
   static const List<Map<String, String>> presetPhotos = [
     {
       'title': 'Zamonaviy Kvartira',
-      'url': 'https://images.unsplash.com/photo-1522708323590-d24dbb6b0267?w=800',
+      'url':
+          'https://images.unsplash.com/photo-1522708323590-d24dbb6b0267?w=800',
     },
     {
       'title': 'Shinam Xona',
-      'url': 'https://images.unsplash.com/photo-1502672260266-1c1ef2d93688?w=800',
+      'url':
+          'https://images.unsplash.com/photo-1502672260266-1c1ef2d93688?w=800',
     },
     {
       'title': 'Yangi Hovli Uy',
-      'url': 'https://images.unsplash.com/photo-1568605114967-8130f3a36994?w=800',
+      'url':
+          'https://images.unsplash.com/photo-1568605114967-8130f3a36994?w=800',
     },
     {
       'title': 'Studiya / Kvartira',
@@ -409,11 +404,13 @@ class XonadoshLocationData {
     },
     {
       'title': 'Yorug‘ Mehmonxona',
-      'url': 'https://images.unsplash.com/photo-1512917774080-9991f1c4c750?w=800',
+      'url':
+          'https://images.unsplash.com/photo-1512917774080-9991f1c4c750?w=800',
     },
     {
       'title': 'Kottej / Villa',
-      'url': 'https://images.unsplash.com/photo-1600585154340-be6161a56a0c?w=800',
+      'url':
+          'https://images.unsplash.com/photo-1600585154340-be6161a56a0c?w=800',
     },
   ];
 }
