@@ -189,7 +189,8 @@ class AppUpdateNotifier extends StateNotifier<AppUpdateState> {
           ? store.storeUrl!
           : ((server['app_store_url'] as String?) ?? '');
 
-      final storeHasUpdate = store.hasUpdate || (server['is_update_available'] == true);
+      final storeHasUpdate =
+          store.hasUpdate || (server['is_update_available'] == true);
       final forceFlag =
           server['force_update'] == true || server['force_update'] == 1;
       final isForce = storeHasUpdate && forceFlag;
@@ -197,19 +198,25 @@ class AppUpdateNotifier extends StateNotifier<AppUpdateState> {
       final latestVersion = (store.storeVersion?.trim().isNotEmpty == true)
           ? store.storeVersion!
           : (server['latest_version']?.toString() ?? currentVersion);
-      final latestBuild = store.storeBuild ?? (int.tryParse(server['latest_build_number']?.toString() ?? '') ?? currentBuild);
+      final latestBuild =
+          store.storeBuild ??
+          (int.tryParse(server['latest_build_number']?.toString() ?? '') ??
+              currentBuild);
 
       final info = AppUpdateInfo(
         currentVersion: currentVersion,
         currentBuildNumber: currentBuild,
         latestVersion: latestVersion,
         latestBuildNumber: latestBuild,
-        minSupportedBuild: int.tryParse(server['min_supported_build']?.toString() ?? '1') ?? 1,
+        minSupportedBuild:
+            int.tryParse(server['min_supported_build']?.toString() ?? '1') ?? 1,
         forceUpdate: forceFlag,
         title: (server['title'] as String?)?.trim().isNotEmpty == true
             ? server['title'] as String
             : 'XonaDosh yangilanishi mavjud',
-        releaseNotes: (server['release_notes'] as String?) ?? 'Yangi imkoniyatlar va yaxshilanishlar',
+        releaseNotes:
+            (server['release_notes'] as String?) ??
+            'Yangi imkoniyatlar va yaxshilanishlar',
         playStoreUrl: playStoreUrl,
         appStoreUrl: appStoreUrl,
         directApkUrl: server['direct_apk_url']?.toString(),

@@ -65,9 +65,9 @@ $navGroups = [
             <?php endforeach; ?>
         </nav>
         <div class="side-foot">
-            <a class="btn btn-ghost btn-sm" href="/" target="_blank" rel="noopener">Sayt</a>
-            <a class="btn btn-ghost btn-sm" href="/app/" target="_blank" rel="noopener">Web ilova</a>
-            <a class="btn btn-danger btn-sm" href="login.php?logout=1">Chiqish</a>
+            <a class="btn btn-ghost btn-sm" href="/" target="_blank" rel="noopener">🌐 Sayt</a>
+            <a class="btn btn-ghost btn-sm" href="/app/" target="_blank" rel="noopener">📱 Ilova</a>
+            <a class="btn btn-danger btn-sm" href="login.php?logout=1&lock=1" title="Sessiyani yakunlab, admin panelni 404 holatiga qulflash">🔒 Chiqish & Qulf</a>
         </div>
     </aside>
     <main class="main">

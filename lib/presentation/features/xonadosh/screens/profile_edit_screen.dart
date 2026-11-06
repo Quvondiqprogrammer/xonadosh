@@ -2,12 +2,14 @@ import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:go_router/go_router.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 import 'package:xonadosh/config/theme.dart';
 import 'package:xonadosh/data/models/xonadosh_models.dart';
 import 'package:xonadosh/l10n/l10n_ext.dart';
 import 'package:xonadosh/presentation/providers/xonadosh_providers.dart';
+import 'package:xonadosh/presentation/router/app_routes.dart';
 
 /// Alohida to'liq ekranli Xonadoshlik Anketasi
 /// Ma'lumotlar yo'qolmasligi uchun PopScope va qoralama (draft) kesh tizimi bilan himoyalangan.
@@ -545,10 +547,13 @@ class _XonadoshProfileEditScreenState
       canPop: !_hasUnsavedChanges,
       onPopInvokedWithResult: (didPop, result) async {
         if (didPop) return;
-        final navigator = Navigator.of(context);
         final ok = await _onWillPop();
-        if (ok) {
-          navigator.pop();
+        if (ok && context.mounted) {
+          if (Navigator.of(context).canPop()) {
+            Navigator.of(context).pop();
+          } else {
+            context.go(AppRoutes.shell);
+          }
         }
       },
       child: Scaffold(
@@ -559,10 +564,13 @@ class _XonadoshProfileEditScreenState
             icon: const Icon(Icons.arrow_back_rounded),
             tooltip: context.l10n.commonBack,
             onPressed: () async {
-              final navigator = Navigator.of(context);
               final ok = await _onWillPop();
-              if (ok) {
-                navigator.pop();
+              if (ok && context.mounted) {
+                if (Navigator.of(context).canPop()) {
+                  Navigator.of(context).pop();
+                } else {
+                  context.go(AppRoutes.shell);
+                }
               }
             },
           ),
@@ -1452,8 +1460,8 @@ class _XonadoshProfileEditScreenState
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           _buildSectionHeader(
-            title: context.l10n.xonadoshLookingFor,
-            subtitle: context.l10n.xonadoshAboutSelf,
+            title: context.l10n.xonadoshSurveyStepReqs,
+            subtitle: context.l10n.xonadoshLookingForRoommateHint,
             icon: Icons.rate_review_rounded,
           ),
           const SizedBox(height: 16),
@@ -1464,8 +1472,7 @@ class _XonadoshProfileEditScreenState
             maxLines: 3,
             decoration: InputDecoration(
               labelText: context.l10n.xonadoshAboutSelf,
-              hintText:
-                  'Qiziqishlaringiz, xarakteringiz, bo‘sh vaqtingiz haqida...',
+              hintText: context.l10n.xonadoshAboutSelfHint,
               alignLabelWithHint: true,
               border: OutlineInputBorder(
                 borderRadius: BorderRadius.circular(14),
@@ -1480,8 +1487,7 @@ class _XonadoshProfileEditScreenState
             maxLines: 3,
             decoration: InputDecoration(
               labelText: context.l10n.xonadoshLookingFor,
-              hintText:
-                  'Masalan: Tartibli, TATUda o‘qiydigan, IT sohasidagi yigitlar bo‘lsa yaxshi...',
+              hintText: context.l10n.xonadoshLookingForRoommateHint,
               alignLabelWithHint: true,
               border: OutlineInputBorder(
                 borderRadius: BorderRadius.circular(14),
@@ -1665,104 +1671,103 @@ class _UniversityPickerSheetState extends State<_UniversityPickerSheet> {
           u.district.toLowerCase().contains(q);
     }).toList();
 
-    return Padding(
-      padding: EdgeInsets.only(
-        top: 16,
-        left: 16,
-        right: 16,
-        bottom: MediaQuery.of(context).viewInsets.bottom + 16,
-      ),
-      child: Column(
-        mainAxisSize: MainAxisSize.min,
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Center(
-            child: Container(
-              width: 40,
-              height: 4,
-              decoration: BoxDecoration(
-                color: Colors.grey.withAlpha(80),
-                borderRadius: BorderRadius.circular(4),
+    return SafeArea(
+      child: Padding(
+        padding: EdgeInsets.only(
+          top: 16,
+          left: 16,
+          right: 16,
+          bottom: MediaQuery.of(context).viewInsets.bottom + 12,
+        ),
+        child: SizedBox(
+          height: MediaQuery.sizeOf(context).height * 0.75,
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Text(
+                context.l10n.xonadoshSelectUniversity,
+                style: const TextStyle(
+                  fontWeight: FontWeight.w800,
+                  fontSize: 18,
+                ),
               ),
-            ),
-          ),
-          const SizedBox(height: 14),
-          Text(
-            context.l10n.xonadoshSelectUniversity,
-            style: const TextStyle(fontWeight: FontWeight.w800, fontSize: 18),
-          ),
-          const SizedBox(height: 12),
-          TextField(
-            autofocus: true,
-            onChanged: (v) => setState(() => _query = v),
-            decoration: InputDecoration(
-              hintText: 'OTM nomi, qisqartmasi yoki tumani bo‘yicha...',
-              prefixIcon: const Icon(Icons.search_rounded),
-              contentPadding: const EdgeInsets.symmetric(
-                horizontal: 16,
-                vertical: 12,
-              ),
-              border: OutlineInputBorder(
-                borderRadius: BorderRadius.circular(14),
-              ),
-            ),
-          ),
-          const SizedBox(height: 12),
-          ConstrainedBox(
-            constraints: BoxConstraints(
-              maxHeight: MediaQuery.of(context).size.height * 0.55,
-            ),
-            child: ListView.separated(
-              shrinkWrap: true,
-              itemCount: filtered.length,
-              separatorBuilder: (_, _) => const Divider(height: 1),
-              itemBuilder: (ctx, i) {
-                final u = filtered[i];
-                final isSelected = widget.selectedId == u.id;
-                return ListTile(
+              const SizedBox(height: 12),
+              TextField(
+                autofocus: true,
+                onChanged: (v) => setState(() => _query = v),
+                decoration: InputDecoration(
+                  hintText: 'OTM nomi, qisqartmasi yoki tumani bo‘yicha...',
+                  prefixIcon: const Icon(Icons.search_rounded),
                   contentPadding: const EdgeInsets.symmetric(
-                    horizontal: 8,
-                    vertical: 4,
+                    horizontal: 16,
+                    vertical: 12,
                   ),
-                  leading: Container(
-                    padding: const EdgeInsets.all(8),
-                    decoration: BoxDecoration(
-                      color: isSelected
-                          ? XonaDoshColors.primary
-                          : XonaDoshColors.primary.withAlpha(20),
-                      shape: BoxShape.circle,
-                    ),
-                    child: Icon(
-                      Icons.school_rounded,
-                      size: 18,
-                      color: isSelected ? Colors.white : XonaDoshColors.primary,
-                    ),
+                  border: OutlineInputBorder(
+                    borderRadius: BorderRadius.circular(14),
                   ),
-                  title: Text(
-                    u.nameUz,
-                    style: TextStyle(
-                      fontWeight: isSelected
-                          ? FontWeight.w800
-                          : FontWeight.w600,
-                      fontSize: 14,
-                    ),
-                  ),
-                  subtitle: Text(
-                    '${u.district} • ${u.shortName}',
-                    style: const TextStyle(fontSize: 12, color: Colors.grey),
-                  ),
-                  trailing: isSelected
-                      ? const Icon(
-                          Icons.check_circle_rounded,
-                          color: XonaDoshColors.primary,
-                        )
-                      : null,
-                  onTap: () => widget.onSelected(u),
-                );
-              },
-            ),
+                ),
+              ),
+              const SizedBox(height: 12),
+              Expanded(
+                child: ListView.separated(
+                  keyboardDismissBehavior:
+                      ScrollViewKeyboardDismissBehavior.onDrag,
+                  itemCount: filtered.length,
+                  separatorBuilder: (_, _) => const Divider(height: 1),
+                  itemBuilder: (ctx, i) {
+                    final u = filtered[i];
+                    final isSelected = widget.selectedId == u.id;
+                    return ListTile(
+                      contentPadding: const EdgeInsets.symmetric(
+                        horizontal: 8,
+                        vertical: 4,
+                      ),
+                      leading: Container(
+                        padding: const EdgeInsets.all(8),
+                        decoration: BoxDecoration(
+                          color: isSelected
+                              ? XonaDoshColors.primary
+                              : XonaDoshColors.primary.withAlpha(20),
+                          shape: BoxShape.circle,
+                        ),
+                        child: Icon(
+                          Icons.school_rounded,
+                          size: 18,
+                          color: isSelected
+                              ? Colors.white
+                              : XonaDoshColors.primary,
+                        ),
+                      ),
+                      title: Text(
+                        u.nameUz,
+                        style: TextStyle(
+                          fontWeight: isSelected
+                              ? FontWeight.w800
+                              : FontWeight.w600,
+                          fontSize: 14,
+                        ),
+                      ),
+                      subtitle: Text(
+                        '${u.district} • ${u.shortName}',
+                        style: const TextStyle(
+                          fontSize: 12,
+                          color: Colors.grey,
+                        ),
+                      ),
+                      trailing: isSelected
+                          ? const Icon(
+                              Icons.check_circle_rounded,
+                              color: XonaDoshColors.primary,
+                            )
+                          : null,
+                      onTap: () => widget.onSelected(u),
+                    );
+                  },
+                ),
+              ),
+            ],
           ),
-        ],
+        ),
       ),
     );
   }

@@ -5,6 +5,7 @@ import 'package:go_router/go_router.dart';
 import 'package:xonadosh/config/theme.dart';
 import 'package:xonadosh/l10n/l10n_ext.dart';
 import 'package:xonadosh/domain/uz_phone.dart';
+import 'package:xonadosh/presentation/auth/apple_sign_in_button.dart';
 import 'package:xonadosh/presentation/auth/auth_error.dart';
 import 'package:xonadosh/presentation/auth/google_sign_in_button.dart';
 import 'package:xonadosh/presentation/common/xonadosh_logo.dart';
@@ -264,8 +265,8 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
                             context.l10n.localeName.startsWith('ru')
                                 ? 'или'
                                 : context.l10n.localeName.startsWith('en')
-                                    ? 'or'
-                                    : 'yoki',
+                                ? 'or'
+                                : 'yoki',
                             style: TextStyle(
                               fontSize: 13,
                               color: isDark
@@ -285,6 +286,8 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
                     ),
                     const SizedBox(height: 16),
                     const GoogleSignInButton(),
+                    const SizedBox(height: 10),
+                    const AppleSignInButton(),
                     const SizedBox(height: 14),
                     TextButton(
                       onPressed: () => context.go(AppRoutes.register),

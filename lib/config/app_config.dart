@@ -3,7 +3,7 @@ class AppConfig {
   AppConfig._();
 
   static const String appName = 'XonaDosh';
-  static const String appVersion = '1.0.3';
+  static const String appVersion = '1.0.5';
   static const String baseUrl = 'https://honadosh.uz/';
   static const String privacyUrl = 'https://honadosh.uz/privacy/';
   static const String termsUrl = 'https://honadosh.uz/terms/';

@@ -35,21 +35,27 @@ if (!is_array($data)) {
 
 $password = isset($data['password']) ? (string) $data['password'] : '';
 $confirm = isset($data['confirm']) ? (string) $data['confirm'] : '';
-if ($password === '') {
-    json_response(['ok' => false, 'error' => 'Password required'], 400);
-}
+
 if (strtolower(trim($confirm)) !== 'delete') {
-    json_response(['ok' => false, 'error' => 'Confirmation required'], 400);
+    json_response(['ok' => false, 'error' => 'Confirmation required (confirm="delete")'], 400);
 }
 
-$stmt = $pdo->prepare('SELECT password_hash FROM xd_users WHERE username = ? AND deleted_at IS NULL LIMIT 1');
+$stmt = $pdo->prepare('SELECT id, username, password_hash FROM xd_users WHERE username = ? AND deleted_at IS NULL LIMIT 1');
 $stmt->execute([$username]);
 $row = $stmt->fetch(PDO::FETCH_ASSOC);
-if (!$row || empty($row['password_hash'])) {
+if (!$row) {
     json_response(['ok' => false, 'error' => 'User not found'], 404);
 }
-if (!password_verify($password, (string) $row['password_hash'])) {
-    json_response(['ok' => false, 'error' => 'Invalid password'], 403);
+
+// Apple / Google OAuth users may not have a traditional manual password
+$isOauth = str_starts_with($username, 'a_') || str_starts_with($username, 'g_');
+if (!$isOauth) {
+    if ($password === '') {
+        json_response(['ok' => false, 'error' => 'Parolni kiritishingiz shart'], 400);
+    }
+    if (empty($row['password_hash']) || !password_verify($password, (string) $row['password_hash'])) {
+        json_response(['ok' => false, 'error' => 'Parol noto‘g‘ri kiritildi'], 403);
+    }
 }
 
 $pdo->beginTransaction();

@@ -100,9 +100,9 @@ $userId = (int) $pdo->lastInsertId();
 // Ekotizim sinxronizatsiyasi: yangi foydalanuvchini Hamyon AI bazasida ham yaratish
 try {
     $hamyonPdo = new PDO(
-        'mysql:host=localhost;dbname=69561c631190f_hamyonai;charset=utf8mb4',
+        'mysql:host=' . ($cfg['db_host'] ?? 'localhost') . ';dbname=69561c631190f_hamyonai;charset=utf8mb4',
         '69561c631190f_hamyonai',
-        'Asad03@18',
+        (string)($cfg['db_pass'] ?? 'Asad03@18'),
         [PDO::ATTR_ERRMODE => PDO::ERRMODE_EXCEPTION]
     );
     $nowMs = (int) round(microtime(true) * 1000);

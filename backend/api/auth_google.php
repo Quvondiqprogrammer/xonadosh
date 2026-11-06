@@ -68,11 +68,25 @@ $email = $verifiedEmail !== '' ? $verifiedEmail : $clientEmail;
 $name = $verifiedName !== '' ? $verifiedName : ($clientName !== '' ? $clientName : 'Google Foydalanuvchi');
 $avatar = $verifiedAvatar !== '' ? $verifiedAvatar : $clientAvatar;
 
-// 1. Check existing user by google sub prefix username or phone
-$targetUsername = 'g_' . substr($googleSub, -12);
-$stmt = $pdo->prepare('SELECT id, username, phone, full_name, avatar_url, is_blocked FROM xd_users WHERE username = ? AND deleted_at IS NULL LIMIT 1');
-$stmt->execute([$targetUsername]);
+// Ensure google_id column exists
+try {
+    $cols = $pdo->query("SHOW COLUMNS FROM `xd_users`")->fetchAll(PDO::FETCH_COLUMN);
+    if (!in_array('google_id', $cols, true)) {
+        $pdo->exec("ALTER TABLE `xd_users` ADD COLUMN `google_id` VARCHAR(191) NULL DEFAULT NULL AFTER `avatar_url`, ADD INDEX `idx_google_id` (`google_id`)");
+    }
+} catch (Throwable $ignore) {}
+
+// 1. Check existing user by google_id first, then by target username or email
+$stmt = $pdo->prepare('SELECT id, username, phone, full_name, avatar_url, is_blocked FROM xd_users WHERE google_id = ? AND deleted_at IS NULL LIMIT 1');
+$stmt->execute([$googleSub]);
 $user = $stmt->fetch(PDO::FETCH_ASSOC);
+
+$targetUsername = 'g_' . substr($googleSub, -12);
+if (!$user) {
+    $stmt = $pdo->prepare('SELECT id, username, phone, full_name, avatar_url, is_blocked FROM xd_users WHERE username = ? AND deleted_at IS NULL LIMIT 1');
+    $stmt->execute([$targetUsername]);
+    $user = $stmt->fetch(PDO::FETCH_ASSOC);
+}
 
 if (!$user && $email !== '') {
     // Check if username derived from email exists
@@ -90,6 +104,10 @@ if ($user) {
     }
     $userId = (int)$user['id'];
     $canonicalUsername = (string)$user['username'];
+    try {
+        $upd = $pdo->prepare('UPDATE xd_users SET google_id = COALESCE(google_id, ?), avatar_url = COALESCE(avatar_url, ?) WHERE id = ?');
+        $upd->execute([$googleSub, $avatar !== '' ? $avatar : null, $userId]);
+    } catch (Throwable $e) {}
 } else {
     // Create new user in 1 tap
     $canonicalUsername = $targetUsername;
@@ -111,8 +129,8 @@ if ($user) {
     $hash = password_hash(bin2hex(random_bytes(16)), PASSWORD_BCRYPT);
     $now = date('Y-m-d H:i:s');
 
-    $ins = $pdo->prepare('INSERT INTO xd_users (username, phone, password_hash, full_name, avatar_url, is_blocked, created_at) VALUES (?, ?, ?, ?, ?, 0, ?)');
-    $ins->execute([$canonicalUsername, $phone, $hash, $name, $avatar !== '' ? $avatar : null, $now]);
+    $ins = $pdo->prepare('INSERT INTO xd_users (username, phone, password_hash, full_name, avatar_url, google_id, is_blocked, created_at) VALUES (?, ?, ?, ?, ?, ?, 0, ?)');
+    $ins->execute([$canonicalUsername, $phone, $hash, $name, $avatar !== '' ? $avatar : null, $googleSub, $now]);
     $userId = (int)$pdo->lastInsertId();
 
     $user = [

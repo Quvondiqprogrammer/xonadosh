@@ -4,8 +4,10 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 
 import 'package:xonadosh/config/theme.dart';
+import 'package:xonadosh/core/services/xonadosh_retention_notification_service.dart';
 import 'package:xonadosh/domain/uz_phone.dart';
 import 'package:xonadosh/l10n/l10n_ext.dart';
+import 'package:xonadosh/presentation/auth/apple_sign_in_button.dart';
 import 'package:xonadosh/presentation/auth/auth_error.dart';
 import 'package:xonadosh/presentation/auth/country_picker_sheet.dart';
 import 'package:xonadosh/presentation/auth/google_sign_in_button.dart';
@@ -83,6 +85,12 @@ class _RegisterScreenState extends ConsumerState<RegisterScreen> {
     setState(() => _loading = false);
     if (res['ok'] == true) {
       ref.invalidate(authBootstrapProvider);
+      ref
+          .read(xonadoshRetentionNotificationServiceProvider)
+          .sendWelcomeNotification();
+      ref
+          .read(xonadoshRetentionNotificationServiceProvider)
+          .setupAllRetentionHooks();
       if (context.mounted) context.go(AppRoutes.shell);
     } else {
       setState(() => _error = localizedAuthError(context.l10n, res));
@@ -498,8 +506,8 @@ class _RegisterScreenState extends ConsumerState<RegisterScreen> {
                             context.l10n.localeName.startsWith('ru')
                                 ? 'или'
                                 : context.l10n.localeName.startsWith('en')
-                                    ? 'or'
-                                    : 'yoki',
+                                ? 'or'
+                                : 'yoki',
                             style: TextStyle(
                               fontSize: 13,
                               color: isDark
@@ -519,7 +527,9 @@ class _RegisterScreenState extends ConsumerState<RegisterScreen> {
                     ),
                     const SizedBox(height: 16),
                     const GoogleSignInButton(),
-                    const SizedBox(height: 8),
+                    const SizedBox(height: 10),
+                    const AppleSignInButton(),
+                    const SizedBox(height: 10),
                     TextButton(
                       onPressed: _loading
                           ? null

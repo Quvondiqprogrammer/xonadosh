@@ -38,13 +38,15 @@ GoRouter createAppRouter(Ref ref) {
       if (ssoToken != null && ssoToken.isNotEmpty) {
         final session = ref.read(sessionManagerProvider);
         if (!session.isAuthenticated) {
-          final effectiveUser =
-              ssoUserId != null ? 'user_$ssoUserId' : 'hamyon_user';
+          final effectiveUser = ssoUserId != null
+              ? 'user_$ssoUserId'
+              : 'hamyon_user';
           session.saveSession(
             username: effectiveUser,
             token: ssoToken,
-            expiresAt:
-                DateTime.now().add(const Duration(days: 30)).millisecondsSinceEpoch,
+            expiresAt: DateTime.now()
+                .add(const Duration(days: 30))
+                .millisecondsSinceEpoch,
           );
           ref.invalidate(authBootstrapProvider);
           return AppRoutes.shell;
@@ -60,7 +62,8 @@ GoRouter createAppRouter(Ref ref) {
         return onSplash ? null : AppRoutes.splash;
       }
 
-      final loggedIn = (boot.asData?.value == true) ||
+      final loggedIn =
+          (boot.asData?.value == true) ||
           ref.read(sessionManagerProvider).isAuthenticated;
       final seenFirstRun = firstRun.asData?.value ?? true;
 
@@ -70,10 +73,22 @@ GoRouter createAppRouter(Ref ref) {
         return AppRoutes.onboarding;
       }
 
+      // Guest Mode (Lazy Auth): Allow guests to browse Housing Feed, Map & Listing Details
       if (!loggedIn) {
         if (onLogin || onRegister) return null;
-        if (onOnboarding && seenFirstRun) return AppRoutes.login;
-        return AppRoutes.login;
+        if (onSplash || onOnboarding) return AppRoutes.shell;
+
+        // Protected actions require login
+        final isProtected =
+            loc == AppRoutes.xonadoshCreateListing ||
+            loc == AppRoutes.xonadoshProfileEdit ||
+            loc == AppRoutes.settings;
+        if (isProtected) {
+          return AppRoutes.login;
+        }
+
+        // Guest browsing permitted for /app, /app/map, /app/listing/:id
+        return null;
       }
 
       if (onLogin || onRegister || onSplash || onOnboarding) {

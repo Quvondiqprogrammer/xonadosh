@@ -7,8 +7,14 @@ import io.flutter.embedding.android.FlutterFragmentActivity
 
 class MainActivity : FlutterFragmentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
-        enableEdgeToEdge()
         super.onCreate(savedInstanceState)
-        WindowCompat.setDecorFitsSystemWindows(window, false)
+        try {
+            enableEdgeToEdge()
+        } catch (_: Throwable) {
+            // Guard for older OEM ROMs / MIUI on Android 9/10/Redmi Note 8
+        }
+        try {
+            WindowCompat.setDecorFitsSystemWindows(window, false)
+        } catch (_: Throwable) {}
     }
 }

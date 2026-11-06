@@ -66,6 +66,10 @@ class XonadoshApiClient {
     int? listingId,
     bool? noBroker,
     bool? utilitiesIncluded,
+    bool? subsidyOnly,
+    bool? womenOnly,
+    double? maxDistanceKm,
+    int? maxCommuteMin,
     int limit = 30,
     int offset = 0,
   }) => _get('api/xonadosh_listings_get.php', {
@@ -80,6 +84,10 @@ class XonadoshApiClient {
     if (query != null && query.isNotEmpty) 'q': query,
     if (noBroker == true) 'no_broker': 1,
     if (utilitiesIncluded == true) 'utilities_included': 1,
+    if (subsidyOnly == true) 'subsidy_only': 1,
+    if (womenOnly == true) 'women_only': 1,
+    'max_distance_km': ?maxDistanceKm,
+    'max_commute_min': ?maxCommuteMin,
     'id': ?listingId,
     'limit': limit,
     'offset': offset,
@@ -328,5 +336,98 @@ class XonadoshApiClient {
   }) => _post(
     'api/report.php',
     data: {'target_type': targetType, 'target_id': targetId, 'reason': reason},
+  );
+
+  /// 15. Kraud-moderatsiya: Yashirin makler haqida 1-tap xabar berish
+  Future<Map<String, dynamic>> reportBroker({
+    required int listingId,
+    String? reason,
+  }) => _post(
+    'api/xonadosh_report_broker.php',
+    data: {
+      'listing_id': listingId,
+      if (reason != null && reason.isNotEmpty) 'reason': reason,
+    },
+  );
+
+  /// 16. E'lonni 1 bosishda yana 72 soatga uzaytirish (fresh TTL)
+  Future<Map<String, dynamic>> renewListing({required int listingId}) =>
+      _post('api/xonadosh_listing_renew.php', data: {'listing_id': listingId});
+
+  /// 17. Raqamli Xonadoshlik Kodeksi (House Rules)
+  Future<Map<String, dynamic>> getHouseRulesAgreement({
+    String groupCode = 'home_default',
+  }) => _get('api/xonadosh_house_rules.php', {'group_code': groupCode});
+
+  Future<Map<String, dynamic>> saveHouseRulesAgreement({
+    required String groupCode,
+    required String quietHoursStart,
+    required int rentDueDay,
+    required String guestPolicy,
+    required String commonGroceries,
+    required int moveOutNoticeDays,
+    bool confirm = false,
+  }) => _post(
+    'api/xonadosh_house_rules.php',
+    data: {
+      'group_code': groupCode,
+      'quiet_hours_start': quietHoursStart,
+      'rent_due_day': rentDueDay,
+      'guest_policy': guestPolicy,
+      'common_groceries': commonGroceries,
+      'move_out_notice_days': moveOutNoticeDays,
+      'confirm': confirm ? 1 : 0,
+    },
+  );
+
+  /// 18. Xonadosh Jamoasi (Coliving Squads)
+  Future<Map<String, dynamic>> getSquads({
+    int? universityId,
+    String? gender,
+    String? district,
+    String status = 'recruiting',
+  }) => _get('api/xonadosh_squads.php', {
+    'target_university_id': ?universityId,
+    if (gender != null && gender.isNotEmpty) 'gender': gender,
+    if (district != null && district.isNotEmpty) 'district': district,
+    'status': status,
+  });
+
+  Future<Map<String, dynamic>> createSquad({
+    required String name,
+    int? targetUniversityId,
+    String? targetUniversityName,
+    String? targetDistrict,
+    required double myBudgetUzs,
+    String targetGender = 'any',
+    int lookingForCount = 3,
+    String? description,
+    String? phone,
+  }) => _post(
+    'api/xonadosh_squads.php',
+    data: {
+      'action': 'create',
+      'name': name,
+      'target_university_id': ?targetUniversityId,
+      'target_university_name': ?targetUniversityName,
+      'target_district': ?targetDistrict,
+      'my_budget_uzs': myBudgetUzs,
+      'target_gender': targetGender,
+      'looking_for_count': lookingForCount,
+      'description': ?description,
+      'phone': ?phone,
+    },
+  );
+
+  Future<Map<String, dynamic>> joinSquad({
+    required int squadId,
+    required double memberBudgetUzs,
+  }) => _post(
+    'api/xonadosh_squads.php',
+    data: {
+      'action': 'join',
+      'squad_id': squadId,
+      'member_budget_uzs': memberBudgetUzs,
+    },
   );
 }

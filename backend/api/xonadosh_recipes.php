@@ -5,15 +5,19 @@ declare(strict_types=1);
  */
 require_once dirname(__DIR__) . '/includes/bootstrap.php';
 require_once dirname(__DIR__) . '/includes/db.php';
+require_once dirname(__DIR__) . '/includes/xonadosh_lib.php';
 try { $pdo = db_connect($cfg); }
 catch (Throwable $e) { json_response(['ok'=>false,'error'=>'Database connection failed: '.$e->getMessage()],500); }
 
-$groupCode = isset($_GET['group_code']) ? trim($_GET['group_code']) : 'home_default';
+$raw = file_get_contents('php://input');
+$body = json_decode($raw ?: '{}', true);
+if (!is_array($body)) {
+    $body = $_POST;
+}
+$groupCode = xonadosh_get_group_code($body['group_code'] ?? ($_GET['group_code'] ?? null));
 $method = $_SERVER['REQUEST_METHOD'] ?? 'GET';
 
 if ($method === 'POST') {
-    $raw = file_get_contents('php://input');
-    $body = json_decode($raw, true) ?? $_POST;
     $action = $body['action'] ?? 'set_plan';
 
     if ($action === 'set_plan') {

@@ -71,11 +71,7 @@ class AuthApiClient {
     if (name != null) payload['name'] = name;
     if (avatarUrl != null) payload['avatar_url'] = avatarUrl;
     if (id != null) payload['id'] = id;
-    return _post(
-      'api/auth_google.php',
-      data: payload,
-      skipAuth: true,
-    );
+    return _post('api/auth_google.php', data: payload, skipAuth: true);
   }
 
   Future<Map<String, dynamic>> loginWithApple({
@@ -88,22 +84,7 @@ class AuthApiClient {
     if (email != null) payload['email'] = email;
     if (name != null) payload['name'] = name;
     if (appleId != null) payload['apple_id'] = appleId;
-    try {
-      return await _post(
-        'api/auth_apple.php',
-        data: payload,
-        skipAuth: true,
-      );
-    } catch (_) {
-      final res = await Dio().post(
-        'https://hamyon-ai.uz/api/apple_auth.php',
-        data: payload,
-      );
-      if (res.data is Map && res.data['ok'] == true) {
-        return Map<String, dynamic>.from(res.data as Map);
-      }
-      rethrow;
-    }
+    return _post('api/auth_apple.php', data: payload, skipAuth: true);
   }
 
   Future<Map<String, dynamic>> refresh(String refreshToken) async {
@@ -122,11 +103,12 @@ class AuthApiClient {
     return _get('api/auth_me.php');
   }
 
-  Future<Map<String, dynamic>> deleteAccount({required String password}) async {
-    return _post(
-      'api/account_delete.php',
-      data: {'password': password, 'confirm': 'delete'},
-    );
+  Future<Map<String, dynamic>> deleteAccount({String? password}) async {
+    final payload = <String, dynamic>{'confirm': 'delete'};
+    if (password != null && password.isNotEmpty) {
+      payload['password'] = password;
+    }
+    return _post('api/account_delete.php', data: payload);
   }
 
   Future<Map<String, dynamic>> _get(String path) async {

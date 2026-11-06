@@ -17,21 +17,24 @@ if (hasReleaseKeystore) {
 
 android {
     namespace = "com.zargo.customer"
-    compileSdk = 36
+    compileSdk = 37
     ndkVersion = flutter.ndkVersion
 
     compileOptions {
         sourceCompatibility = JavaVersion.VERSION_17
         targetCompatibility = JavaVersion.VERSION_17
+        isCoreLibraryDesugaringEnabled = true
     }
 
     defaultConfig {
-        // Dedicated package ID for XonaDosh on Google Play
-        applicationId = "uz.zargo.xonadosh"
+        // Dedicated package ID for XonaDosh on Google Play (supports override via -PappId=com.zargo.customer)
+        val overrideAppId = project.findProperty("appId") as String?
+        applicationId = overrideAppId ?: "uz.zargo.xonadosh"
         minSdk = maxOf(21, flutter.minSdkVersion)
         targetSdk = 36
         versionCode = flutter.versionCode
         versionName = flutter.versionName
+        multiDexEnabled = true
     }
 
     signingConfigs {
@@ -63,6 +66,7 @@ kotlin {
 }
 
 dependencies {
+    coreLibraryDesugaring("com.android.tools:desugar_jdk_libs:2.1.4")
     implementation("androidx.activity:activity-ktx:1.9.3")
     implementation("androidx.core:core-ktx:1.15.0")
 }

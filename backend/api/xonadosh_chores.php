@@ -31,8 +31,8 @@ if ($method === 'POST') {
         $choreId = (int)($body['chore_id'] ?? 0);
         $isCompleted = !empty($body['is_completed']) ? 1 : 0;
 
-        $stmt = $pdo->prepare("UPDATE `xonadosh_chores` SET `is_completed` = ? WHERE `id` = ?");
-        $stmt->execute([$isCompleted, $choreId]);
+        $stmt = $pdo->prepare("UPDATE `xonadosh_chores` SET `is_completed` = ?, `completed_at` = ? WHERE `id` = ?");
+        $stmt->execute([$isCompleted, $isCompleted ? date('Y-m-d H:i:s') : null, $choreId]);
 
         json_response([
             'ok' => true,
@@ -97,11 +97,11 @@ if (empty($rows)) {
     // Seed default schedule so users don't see an empty schedule initially
     $seedSchedule = [
         ['day' => 'dushanba', 'type' => 'cleaning', 'title' => 'Oshxona va zalni tozalash', 'name' => 'Jasur', 'notes' => 'Idish-tovoqlar va pol yuvish'],
-        ['day' => 'seshanba', 'type' => 'grocery', 'title' => 'Bozorlik va non-choy olish', 'name' => 'Azizbek', 'notes' => 'Non, sut va sabzavotlar'],
+        ['day' => 'seshanba', 'type' => 'shopping', 'title' => 'Bozorlik va non-choy olish', 'name' => 'Azizbek', 'notes' => 'Non, sut va sabzavotlar'],
         ['day' => 'chorshanba', 'type' => 'trash', 'title' => 'Chiqindilarni olib chiqish', 'name' => 'Bekzod', 'notes' => 'Kechqurun soat 21:00 gacha'],
         ['day' => 'payshanba', 'type' => 'cooking', 'title' => 'Kechki ovqat tayyorlash (Osh)', 'name' => 'Sardor', 'notes' => 'Besh kishilik palov'],
         ['day' => 'juma', 'type' => 'cleaning', 'title' => 'Hammom va sanuzelni tozalash', 'name' => 'Jasur', 'notes' => 'Tozalash vositalari shkafda'],
-        ['day' => 'shanba', 'type' => 'grocery', 'title' => 'Haftalik katta bozorlik', 'name' => 'Azizbek', 'notes' => 'Chorsu bozoridan go‘sht va meva'],
+        ['day' => 'shanba', 'type' => 'shopping', 'title' => 'Haftalik katta bozorlik', 'name' => 'Azizbek', 'notes' => 'Chorsu bozoridan go‘sht va meva'],
         ['day' => 'yakshanba', 'type' => 'cleaning', 'title' => 'Umumiy xona tozaligi va changlar', 'name' => 'Hamma birga', 'notes' => 'Haftalik umumiy tozalash kuni'],
     ];
     foreach ($seedSchedule as $idx => $s) {

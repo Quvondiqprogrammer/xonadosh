@@ -249,7 +249,10 @@ class XonadoshColivingUnlockTip extends StatelessWidget {
                 IconButton(
                   visualDensity: VisualDensity.compact,
                   padding: EdgeInsets.zero,
-                  constraints: const BoxConstraints(minWidth: 28, minHeight: 28),
+                  constraints: const BoxConstraints(
+                    minWidth: 28,
+                    minHeight: 28,
+                  ),
                   icon: const Icon(Icons.close_rounded, size: 16),
                   onPressed: onDismiss,
                 ),

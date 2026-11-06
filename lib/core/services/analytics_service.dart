@@ -7,8 +7,9 @@ class AnalyticsService {
 
   FirebaseAnalytics? _analytics;
 
-  FirebaseAnalyticsObserver get observer =>
-      FirebaseAnalyticsObserver(analytics: _analytics ?? FirebaseAnalytics.instance);
+  FirebaseAnalyticsObserver get observer => FirebaseAnalyticsObserver(
+    analytics: _analytics ?? FirebaseAnalytics.instance,
+  );
 
   Future<void> initialize() async {
     try {

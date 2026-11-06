@@ -363,6 +363,246 @@ class _XonadoshListingDetailScreenState
                       ],
                     ),
 
+                    const SizedBox(height: 12),
+
+                    // Owner Renewal Banner (72h Fresh TTL)
+                    if (ref.watch(sessionManagerProvider).username ==
+                        item.username) ...[
+                      Container(
+                        padding: const EdgeInsets.all(12),
+                        decoration: BoxDecoration(
+                          color: isDark
+                              ? const Color(0xFF451A03)
+                              : const Color(0xFFFEF3C7),
+                          borderRadius: BorderRadius.circular(12),
+                          border: Border.all(color: const Color(0xFFF59E0B)),
+                        ),
+                        child: Row(
+                          children: [
+                            const Icon(
+                              Icons.timer_outlined,
+                              color: Color(0xFFD97706),
+                            ),
+                            const SizedBox(width: 10),
+                            Expanded(
+                              child: Column(
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: [
+                                  Text(
+                                    'E‘loningiz yangiligi: ${item.hoursLeft} soat qoldi',
+                                    style: TextStyle(
+                                      fontWeight: FontWeight.bold,
+                                      fontSize: 13,
+                                      color: isDark
+                                          ? const Color(0xFFFDE68A)
+                                          : const Color(0xFF92400E),
+                                    ),
+                                  ),
+                                  Text(
+                                    'E‘lon 72 soatda avtomatik o‘chadi. Uy hali bo‘sh bo‘lsa uzaytiring.',
+                                    style: TextStyle(
+                                      fontSize: 11,
+                                      color: isDark
+                                          ? const Color(0xFFFCD34D)
+                                          : const Color(0xFFB45309),
+                                    ),
+                                  ),
+                                ],
+                              ),
+                            ),
+                            ElevatedButton(
+                              onPressed: () => _handleRenew(context, item),
+                              style: ElevatedButton.styleFrom(
+                                backgroundColor: const Color(0xFFD97706),
+                                foregroundColor: Colors.white,
+                                padding: const EdgeInsets.symmetric(
+                                  horizontal: 10,
+                                  vertical: 6,
+                                ),
+                                elevation: 0,
+                              ),
+                              child: const Text(
+                                'Uy hali bo‘sh',
+                                style: TextStyle(
+                                  fontSize: 12,
+                                  fontWeight: FontWeight.bold,
+                                ),
+                              ),
+                            ),
+                          ],
+                        ),
+                      ),
+                      const SizedBox(height: 12),
+                    ],
+
+                    // Haqiqiy Oylik Xarajat Card (True Monthly Cost)
+                    Container(
+                      padding: const EdgeInsets.symmetric(
+                        horizontal: 12,
+                        vertical: 10,
+                      ),
+                      decoration: BoxDecoration(
+                        color: isDark
+                            ? const Color(0xFF064E3B).withValues(alpha: 0.3)
+                            : const Color(0xFFECFDF5),
+                        borderRadius: BorderRadius.circular(12),
+                        border: Border.all(
+                          color: const Color(0xFF10B981).withValues(alpha: 0.5),
+                        ),
+                      ),
+                      child: Row(
+                        children: [
+                          const Icon(
+                            Icons.calculate_outlined,
+                            color: Color(0xFF059669),
+                            size: 22,
+                          ),
+                          const SizedBox(width: 10),
+                          Expanded(
+                            child: Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                Text(
+                                  'Haqiqiy Oylik Xarajat: ~${_formatMoney(item.trueMonthlyCostUzs ?? (item.price + 1700 * 44))} ${item.currency}',
+                                  style: TextStyle(
+                                    fontWeight: FontWeight.w800,
+                                    fontSize: 13,
+                                    color: isDark
+                                        ? const Color(0xFF34D399)
+                                        : const Color(0xFF065F46),
+                                  ),
+                                ),
+                                Text(
+                                  'Ijara narxi (${_formatMoney(item.price)}) + 22 kunlik talabalar metro qatnovi (~74 800 so‘m)',
+                                  style: TextStyle(
+                                    fontSize: 11,
+                                    color: isDark
+                                        ? Colors.white70
+                                        : const Color(0xFF047857),
+                                  ),
+                                ),
+                              ],
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
+
+                    const SizedBox(height: 12),
+
+                    // Subsidiya & Ayollar Rejimi Badges
+                    if (item.hasSubsidyContract || item.isWomenOnly) ...[
+                      Row(
+                        children: [
+                          if (item.hasSubsidyContract)
+                            Expanded(
+                              child: Container(
+                                padding: const EdgeInsets.symmetric(
+                                  horizontal: 12,
+                                  vertical: 10,
+                                ),
+                                decoration: BoxDecoration(
+                                  color: const Color(
+                                    0xFFFEF3C7,
+                                  ).withValues(alpha: isDark ? 0.2 : 0.6),
+                                  borderRadius: BorderRadius.circular(12),
+                                  border: Border.all(
+                                    color: const Color(0xFFF59E0B),
+                                  ),
+                                ),
+                                child: const Row(
+                                  children: [
+                                    Icon(
+                                      Icons.description_rounded,
+                                      color: Color(0xFFD97706),
+                                      size: 20,
+                                    ),
+                                    SizedBox(width: 8),
+                                    Expanded(
+                                      child: Column(
+                                        crossAxisAlignment:
+                                            CrossAxisAlignment.start,
+                                        children: [
+                                          Text(
+                                            'Subsidiya bor',
+                                            style: TextStyle(
+                                              fontWeight: FontWeight.w800,
+                                              fontSize: 13,
+                                              color: Color(0xFFD97706),
+                                            ),
+                                          ),
+                                          Text(
+                                            'Shartnoma rasmiylashtiriladi',
+                                            style: TextStyle(
+                                              fontSize: 11,
+                                              color: Color(0xFF92400E),
+                                            ),
+                                          ),
+                                        ],
+                                      ),
+                                    ),
+                                  ],
+                                ),
+                              ),
+                            ),
+                          if (item.hasSubsidyContract && item.isWomenOnly)
+                            const SizedBox(width: 8),
+                          if (item.isWomenOnly)
+                            Expanded(
+                              child: Container(
+                                padding: const EdgeInsets.symmetric(
+                                  horizontal: 12,
+                                  vertical: 10,
+                                ),
+                                decoration: BoxDecoration(
+                                  color: const Color(
+                                    0xFFFCE7F3,
+                                  ).withValues(alpha: isDark ? 0.2 : 0.6),
+                                  borderRadius: BorderRadius.circular(12),
+                                  border: Border.all(
+                                    color: const Color(0xFFEC4899),
+                                  ),
+                                ),
+                                child: const Row(
+                                  children: [
+                                    Icon(
+                                      Icons.female_rounded,
+                                      color: Color(0xFFE11D48),
+                                      size: 20,
+                                    ),
+                                    SizedBox(width: 8),
+                                    Expanded(
+                                      child: Column(
+                                        crossAxisAlignment:
+                                            CrossAxisAlignment.start,
+                                        children: [
+                                          Text(
+                                            'Faqat qizlar',
+                                            style: TextStyle(
+                                              fontWeight: FontWeight.w800,
+                                              fontSize: 13,
+                                              color: Color(0xFFE11D48),
+                                            ),
+                                          ),
+                                          Text(
+                                            'Xavfsiz va tinch muhit',
+                                            style: TextStyle(
+                                              fontSize: 11,
+                                              color: Color(0xFF9D174D),
+                                            ),
+                                          ),
+                                        ],
+                                      ),
+                                    ),
+                                  ],
+                                ),
+                              ),
+                            ),
+                        ],
+                      ),
+                      const SizedBox(height: 12),
+                    ],
+
                     const SizedBox(height: 16),
 
                     if (item.isNoBroker || item.utilitiesIncluded) ...[
@@ -621,6 +861,82 @@ class _XonadoshListingDetailScreenState
                           fontSize: 14,
                           height: 1.5,
                           color: isDark ? Colors.grey[300] : Colors.grey[800],
+                        ),
+                      ),
+                      const SizedBox(height: 20),
+                    ],
+
+                    // Hozirgi xonadoshlar
+                    if (item.currentRoommates.isNotEmpty) ...[
+                      Text(
+                        '👥 Hozirgi xonadoshlar (${item.currentRoommates.length} kishi)',
+                        style: theme.textTheme.titleMedium?.copyWith(
+                          fontWeight: FontWeight.w800,
+                        ),
+                      ),
+                      const SizedBox(height: 10),
+                      Container(
+                        padding: const EdgeInsets.all(12),
+                        decoration: BoxDecoration(
+                          color: isDark
+                              ? const Color(0xFF1E293B)
+                              : const Color(0xFFF8FAFC),
+                          borderRadius: BorderRadius.circular(12),
+                          border: Border.all(
+                            color: isDark
+                                ? const Color(0xFF334155)
+                                : const Color(0xFFE2E8F0),
+                          ),
+                        ),
+                        child: Column(
+                          children: item.currentRoommates.map((rm) {
+                            final name =
+                                (rm is Map ? (rm['name'] ?? 'Xonadosh') : rm)
+                                    .toString();
+                            final info = rm is Map
+                                ? (rm['info'] ?? rm['course'] ?? '')
+                                : '';
+                            return Padding(
+                              padding: const EdgeInsets.symmetric(vertical: 4),
+                              child: Row(
+                                children: [
+                                  CircleAvatar(
+                                    radius: 14,
+                                    backgroundColor: XonaDoshColors.primary
+                                        .withAlpha(30),
+                                    child: Text(
+                                      name.isNotEmpty ? name[0] : 'X',
+                                      style: const TextStyle(
+                                        fontWeight: FontWeight.bold,
+                                        fontSize: 12,
+                                        color: XonaDoshColors.primary,
+                                      ),
+                                    ),
+                                  ),
+                                  const SizedBox(width: 10),
+                                  Text(
+                                    name,
+                                    style: const TextStyle(
+                                      fontWeight: FontWeight.w700,
+                                      fontSize: 13,
+                                    ),
+                                  ),
+                                  if (info.toString().isNotEmpty) ...[
+                                    const SizedBox(width: 6),
+                                    Text(
+                                      '($info)',
+                                      style: TextStyle(
+                                        fontSize: 12,
+                                        color: isDark
+                                            ? Colors.grey[400]
+                                            : Colors.grey[600],
+                                      ),
+                                    ),
+                                  ],
+                                ],
+                              ),
+                            );
+                          }).toList(),
                         ),
                       ),
                       const SizedBox(height: 20),
@@ -1052,8 +1368,7 @@ class _XonadoshListingDetailScreenState
             Expanded(
               flex: 3,
               child: FilledButton.icon(
-                onPressed: () =>
-                    ContactActions.callPhone(context, item.phoneNumber),
+                onPressed: () => _handleCall(context, item),
                 onLongPress: () => ContactActions.showContactSheet(
                   context,
                   phone: item.phoneNumber,
@@ -1257,5 +1572,194 @@ class _XonadoshListingDetailScreenState
           RegExp(r'(\d{1,3})(?=(\d{3})+(?!\d))'),
           (Match m) => '${m[1]} ',
         );
+  }
+
+  void _handleCall(BuildContext context, XonadoshListing item) {
+    ContactActions.callPhone(context, item.phoneNumber);
+    // Post-call prompt: "Bu makler emasmi?"
+    Future.delayed(const Duration(milliseconds: 1200), () {
+      if (!context.mounted) return;
+      showModalBottomSheet(
+        context: context,
+        backgroundColor: Colors.transparent,
+        isScrollControlled: true,
+        builder: (ctx) => _BrokerModerationSheet(
+          listing: item,
+          onReportBroker: (reason) async {
+            Navigator.of(ctx).pop();
+            try {
+              final res = await ref
+                  .read(xonadoshRepositoryProvider)
+                  .reportBroker(item.id, reason: reason);
+              if (context.mounted) {
+                ref.invalidate(xonadoshListingsProvider);
+                ScaffoldMessenger.of(context).showSnackBar(
+                  SnackBar(
+                    content: Text(
+                      res['message']?.toString() ??
+                          'Rahmat! Xabaringiz qabul qilindi.',
+                    ),
+                    backgroundColor: const Color(0xFFD97706),
+                  ),
+                );
+              }
+            } catch (e) {
+              if (context.mounted) {
+                ScaffoldMessenger.of(
+                  context,
+                ).showSnackBar(SnackBar(content: Text('Xatolik: $e')));
+              }
+            }
+          },
+        ),
+      );
+    });
+  }
+
+  Future<void> _handleRenew(BuildContext context, XonadoshListing item) async {
+    try {
+      final res = await ref
+          .read(xonadoshRepositoryProvider)
+          .renewListing(item.id);
+      if (context.mounted) {
+        ref.invalidate(xonadoshListingDetailProvider(item.id));
+        ref.invalidate(xonadoshListingsProvider);
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            content: Text(
+              res['message']?.toString() ?? 'E‘lon 72 soatga uzaytirildi!',
+            ),
+            backgroundColor: const Color(0xFF059669),
+          ),
+        );
+      }
+    } catch (e) {
+      if (context.mounted) {
+        ScaffoldMessenger.of(
+          context,
+        ).showSnackBar(SnackBar(content: Text('Xatolik: $e')));
+      }
+    }
+  }
+}
+
+class _BrokerModerationSheet extends StatelessWidget {
+  const _BrokerModerationSheet({
+    required this.listing,
+    required this.onReportBroker,
+  });
+
+  final XonadoshListing listing;
+  final ValueChanged<String> onReportBroker;
+
+  @override
+  Widget build(BuildContext context) {
+    final isDark = Theme.of(context).brightness == Brightness.dark;
+
+    return Container(
+      decoration: BoxDecoration(
+        color: isDark ? const Color(0xFF1E293B) : Colors.white,
+        borderRadius: const BorderRadius.vertical(top: Radius.circular(24)),
+      ),
+      padding: const EdgeInsets.fromLTRB(20, 12, 20, 30),
+      child: Column(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          Container(
+            width: 40,
+            height: 4,
+            decoration: BoxDecoration(
+              color: Colors.grey.withAlpha(80),
+              borderRadius: BorderRadius.circular(2),
+            ),
+          ),
+          const SizedBox(height: 16),
+          Row(
+            children: [
+              Container(
+                padding: const EdgeInsets.all(10),
+                decoration: BoxDecoration(
+                  color: const Color(0xFF059669).withAlpha(30),
+                  shape: BoxShape.circle,
+                ),
+                child: const Icon(
+                  Icons.shield_outlined,
+                  color: Color(0xFF059669),
+                  size: 24,
+                ),
+              ),
+              const SizedBox(width: 12),
+              const Expanded(
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text(
+                      'Bu makler emasmi?',
+                      style: TextStyle(
+                        fontSize: 17,
+                        fontWeight: FontWeight.w800,
+                      ),
+                    ),
+                    Text(
+                      'XonaDosh 100% maklersiz bo‘lishiga hissa qo‘shing',
+                      style: TextStyle(fontSize: 12, color: Colors.grey),
+                    ),
+                  ],
+                ),
+              ),
+            ],
+          ),
+          const SizedBox(height: 14),
+          Text(
+            'Siz "${listing.ownerName}" (${listing.phoneNumber}) ga qo‘ng‘iroq qildingiz. Suhbatdosh sizdan maklerlik komissiyasi yoki behuda to‘lov so‘radimi?',
+            style: const TextStyle(fontSize: 13, height: 1.4),
+          ),
+          const SizedBox(height: 20),
+          Row(
+            children: [
+              Expanded(
+                child: OutlinedButton(
+                  onPressed: () => Navigator.of(context).pop(),
+                  style: OutlinedButton.styleFrom(
+                    padding: const EdgeInsets.symmetric(vertical: 13),
+                    side: BorderSide(
+                      color: isDark ? Colors.grey[700]! : Colors.grey[300]!,
+                    ),
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(12),
+                    ),
+                  ),
+                  child: const Text(
+                    '✓ Yo‘q, uy egasi',
+                    style: TextStyle(
+                      fontWeight: FontWeight.w700,
+                      color: Color(0xFF059669),
+                    ),
+                  ),
+                ),
+              ),
+              const SizedBox(width: 10),
+              Expanded(
+                child: FilledButton(
+                  onPressed: () =>
+                      onReportBroker('Yashirin makler / komissiya so‘radi'),
+                  style: FilledButton.styleFrom(
+                    backgroundColor: const Color(0xFFEF4444),
+                    padding: const EdgeInsets.symmetric(vertical: 13),
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(12),
+                    ),
+                  ),
+                  child: const Text(
+                    '⚠️ Ha, makler!',
+                    style: TextStyle(fontWeight: FontWeight.w700),
+                  ),
+                ),
+              ),
+            ],
+          ),
+        ],
+      ),
+    );
   }
 }

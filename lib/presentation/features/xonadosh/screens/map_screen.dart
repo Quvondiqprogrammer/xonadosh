@@ -130,12 +130,25 @@ class _XonadoshMapScreenState extends ConsumerState<XonadoshMapScreen> {
             ),
             children: [
               TileLayer(
-                urlTemplate: isDark
-                    ? 'https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png'
-                    : 'https://tile.openstreetmap.org/{z}/{x}/{y}.png',
-                subdomains: const ['a', 'b', 'c'],
-                userAgentPackageName: 'com.zargo.customer',
+                urlTemplate: 'https://tile.openstreetmap.org/{z}/{x}/{y}.png',
+                userAgentPackageName: 'uz.zargo.xonadosh',
               ),
+              if (_selectedUni != null)
+                CircleLayer(
+                  circles: [
+                    CircleMarker(
+                      point: LatLng(
+                        _selectedUni!.latitude,
+                        _selectedUni!.longitude,
+                      ),
+                      radius: 1200,
+                      useRadiusInMeter: true,
+                      color: const Color(0xFF10B981).withValues(alpha: 0.15),
+                      borderColor: const Color(0xFF10B981),
+                      borderStrokeWidth: 2,
+                    ),
+                  ],
+                ),
               MarkerLayer(
                 markers: [
                   if (_myLocation != null)
@@ -210,8 +223,8 @@ class _XonadoshMapScreenState extends ConsumerState<XonadoshMapScreen> {
 
                     return Marker(
                       point: LatLng(l.latitude, l.longitude),
-                      width: isSelected ? 52 : 40,
-                      height: isSelected ? 52 : 40,
+                      width: isSelected ? 86 : 74,
+                      height: isSelected ? 36 : 30,
                       child: GestureDetector(
                         onTap: () {
                           setState(() {
@@ -221,27 +234,47 @@ class _XonadoshMapScreenState extends ConsumerState<XonadoshMapScreen> {
                         },
                         child: AnimatedContainer(
                           duration: const Duration(milliseconds: 200),
+                          padding: const EdgeInsets.symmetric(
+                            horizontal: 6,
+                            vertical: 3,
+                          ),
                           decoration: BoxDecoration(
                             color: markerColor,
-                            shape: BoxShape.circle,
+                            borderRadius: BorderRadius.circular(16),
                             border: Border.all(
                               color: Colors.white,
-                              width: isSelected ? 3 : 2,
+                              width: isSelected ? 2.5 : 1.5,
                             ),
                             boxShadow: [
                               BoxShadow(
                                 color: markerColor.withAlpha(120),
-                                blurRadius: isSelected ? 10 : 4,
-                                spreadRadius: isSelected ? 2 : 0,
+                                blurRadius: isSelected ? 8 : 4,
+                                spreadRadius: isSelected ? 1 : 0,
+                                offset: const Offset(0, 2),
                               ),
                             ],
                           ),
-                          child: Icon(
-                            l.type == 'roommate_wanted'
-                                ? Icons.group_rounded
-                                : Icons.home_rounded,
-                            color: Colors.white,
-                            size: isSelected ? 26 : 20,
+                          child: Row(
+                            mainAxisSize: MainAxisSize.min,
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            children: [
+                              Icon(
+                                l.type == 'roommate_wanted'
+                                    ? Icons.group_rounded
+                                    : Icons.home_rounded,
+                                color: Colors.white,
+                                size: isSelected ? 15 : 13,
+                              ),
+                              const SizedBox(width: 3),
+                              Text(
+                                _formatShortPrice(l.price),
+                                style: TextStyle(
+                                  color: Colors.white,
+                                  fontSize: isSelected ? 11 : 10,
+                                  fontWeight: FontWeight.w800,
+                                ),
+                              ),
+                            ],
                           ),
                         ),
                       ),
@@ -596,5 +629,14 @@ class _XonadoshMapScreenState extends ConsumerState<XonadoshMapScreen> {
       color: isDark ? const Color(0xFF1E293B) : const Color(0xFFE2E8F0),
       child: const Icon(Icons.apartment_rounded, size: 36, color: Colors.grey),
     );
+  }
+
+  String _formatShortPrice(double p) {
+    if (p >= 1000000) {
+      final mln = p / 1000000.0;
+      return '${mln.toStringAsFixed(1).replaceAll('.0', '')} mln';
+    }
+    final ming = p / 1000.0;
+    return '${ming.toStringAsFixed(0)} ming';
   }
 }

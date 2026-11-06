@@ -197,6 +197,14 @@ class XonadoshListing {
     required this.targetTenant,
     this.isNoBroker = false,
     this.utilitiesIncluded = false,
+    this.hasSubsidyContract = false,
+    this.isWomenOnly = false,
+    this.trueMonthlyCostUzs,
+    this.crowdBrokerReports = 0,
+    this.expiresAt,
+    this.hoursLeft = 72,
+    this.daysLeft = 3,
+    this.currentRoommates = const [],
     required this.amenities,
     required this.photos,
     required this.status,
@@ -235,6 +243,14 @@ class XonadoshListing {
   final String targetTenant;
   final bool isNoBroker;
   final bool utilitiesIncluded;
+  final bool hasSubsidyContract;
+  final bool isWomenOnly;
+  final double? trueMonthlyCostUzs;
+  final int crowdBrokerReports;
+  final String? expiresAt;
+  final int hoursLeft;
+  final int daysLeft;
+  final List<dynamic> currentRoommates;
   final List<String> amenities;
   final List<String> photos;
   final String status;
@@ -263,20 +279,63 @@ class XonadoshListing {
       return s == '1' || s == 'true' || s == 'yes';
     }
 
-    final amenitiesList = parseList(json['amenities'] ?? json['amenities_json']);
-    final isNoBroker = parseBool(json['is_no_broker']) ||
+    final amenitiesList = parseList(
+      json['amenities'] ?? json['amenities_json'],
+    );
+    final isNoBroker =
+        parseBool(json['is_no_broker']) ||
         parseBool(json['no_broker']) ||
         amenitiesList.contains('bez_makler') ||
         amenitiesList.contains('no_broker') ||
         (json['type']?.toString() == 'roommate_wanted') ||
-        (json['title']?.toString().toLowerCase().contains('bez makler') ?? false) ||
-        (json['title']?.toString().toLowerCase().contains('maklersiz') ?? false);
+        (json['title']?.toString().toLowerCase().contains('bez makler') ??
+            false) ||
+        (json['title']?.toString().toLowerCase().contains('maklersiz') ??
+            false);
 
-    final utilitiesIncluded = parseBool(json['utilities_included']) ||
+    final utilitiesIncluded =
+        parseBool(json['utilities_included']) ||
         amenitiesList.contains('utilities_included') ||
         amenitiesList.contains('kommunal_ichida') ||
-        (json['description']?.toString().toLowerCase().contains('kommunal ichida') ?? false) ||
-        (json['title']?.toString().toLowerCase().contains('kommunal ichida') ?? false);
+        (json['description']?.toString().toLowerCase().contains(
+              'kommunal ichida',
+            ) ??
+            false) ||
+        (json['title']?.toString().toLowerCase().contains('kommunal ichida') ??
+            false);
+
+    final hasSubsidy =
+        parseBool(json['has_subsidy_contract']) ||
+        amenitiesList.contains('subsidy_contract') ||
+        amenitiesList.contains('subsidiya') ||
+        (json['description']?.toString().toLowerCase().contains('subsidiya') ??
+            false) ||
+        (json['title']?.toString().toLowerCase().contains('subsidiya') ??
+            false);
+
+    final isWomenOnly =
+        parseBool(json['is_women_only']) ||
+        (json['target_gender']?.toString() == 'girls') ||
+        amenitiesList.contains('faqat_qizlar') ||
+        amenitiesList.contains('women_only');
+
+    final crowdBrokerReports = _numToInt(json['crowd_broker_reports'], 0);
+    final expiresAt = json['expires_at']?.toString();
+    final hoursLeft = _numToInt(json['hours_left'], 72);
+    final daysLeft = _numToInt(json['days_left'], 3);
+    final trueMonthlyCostUzs = json['true_monthly_cost_uzs'] != null
+        ? _numToDouble(json['true_monthly_cost_uzs'])
+        : null;
+
+    List<dynamic> currentRoommates = [];
+    if (json['current_roommates'] is List) {
+      currentRoommates = json['current_roommates'] as List;
+    } else if (json['current_roommates_json'] != null) {
+      try {
+        final dec = jsonDecode(json['current_roommates_json'].toString());
+        if (dec is List) currentRoommates = dec;
+      } catch (_) {}
+    }
 
     return XonadoshListing(
       id: _numToInt(json['id']),
@@ -289,6 +348,7 @@ class XonadoshListing {
       title: (json['title'] ?? '').toString(),
       description: (json['description'] ?? '').toString(),
       price: _numToDouble(json['price']),
+      trueMonthlyCostUzs: trueMonthlyCostUzs,
       currency: (json['currency'] ?? 'UZS').toString(),
       pricePeriod: (json['price_period'] ?? 'month').toString(),
       city: (json['city'] ?? 'Toshkent').toString(),
@@ -313,6 +373,13 @@ class XonadoshListing {
       targetTenant: (json['target_tenant'] ?? 'Talabalar uchun').toString(),
       isNoBroker: isNoBroker,
       utilitiesIncluded: utilitiesIncluded,
+      hasSubsidyContract: hasSubsidy,
+      isWomenOnly: isWomenOnly,
+      crowdBrokerReports: crowdBrokerReports,
+      expiresAt: expiresAt,
+      hoursLeft: hoursLeft,
+      daysLeft: daysLeft,
+      currentRoommates: currentRoommates,
       amenities: amenitiesList,
       photos: parseList(json['photos'] ?? json['photos_json']),
       status: (json['status'] ?? 'active').toString(),
@@ -335,6 +402,7 @@ class XonadoshListing {
     String? title,
     String? description,
     double? price,
+    double? trueMonthlyCostUzs,
     String? currency,
     String? pricePeriod,
     String? city,
@@ -355,6 +423,13 @@ class XonadoshListing {
     String? targetTenant,
     bool? isNoBroker,
     bool? utilitiesIncluded,
+    bool? hasSubsidyContract,
+    bool? isWomenOnly,
+    int? crowdBrokerReports,
+    String? expiresAt,
+    int? hoursLeft,
+    int? daysLeft,
+    List<dynamic>? currentRoommates,
     List<String>? amenities,
     List<String>? photos,
     String? status,
@@ -373,6 +448,7 @@ class XonadoshListing {
       title: title ?? this.title,
       description: description ?? this.description,
       price: price ?? this.price,
+      trueMonthlyCostUzs: trueMonthlyCostUzs ?? this.trueMonthlyCostUzs,
       currency: currency ?? this.currency,
       pricePeriod: pricePeriod ?? this.pricePeriod,
       city: city ?? this.city,
@@ -396,6 +472,13 @@ class XonadoshListing {
       targetTenant: targetTenant ?? this.targetTenant,
       isNoBroker: isNoBroker ?? this.isNoBroker,
       utilitiesIncluded: utilitiesIncluded ?? this.utilitiesIncluded,
+      hasSubsidyContract: hasSubsidyContract ?? this.hasSubsidyContract,
+      isWomenOnly: isWomenOnly ?? this.isWomenOnly,
+      crowdBrokerReports: crowdBrokerReports ?? this.crowdBrokerReports,
+      expiresAt: expiresAt ?? this.expiresAt,
+      hoursLeft: hoursLeft ?? this.hoursLeft,
+      daysLeft: daysLeft ?? this.daysLeft,
+      currentRoommates: currentRoommates ?? this.currentRoommates,
       amenities: amenities ?? this.amenities,
       photos: photos ?? this.photos,
       status: status ?? this.status,
@@ -1150,19 +1233,30 @@ class XonadoshPoll {
   bool get isRejected => status == 'rejected';
 
   factory XonadoshPoll.fromJson(Map<String, dynamic> json) {
+    final yes = _numToInt(json['votes_yes'], 0);
+    final no = _numToInt(json['votes_no'], 0);
+    final neutral = _numToInt(json['votes_neutral'], 0);
+    final sum = yes + no + neutral;
+    final total = json.containsKey('total_votes')
+        ? _numToInt(json['total_votes'], sum)
+        : sum;
+    final calcYes = total > 0 ? ((yes / total) * 100).round() : 0;
+    final calcNo = total > 0 ? ((no / total) * 100).round() : 0;
+    final calcNeu = total > 0 ? ((neutral / total) * 100).round() : 0;
+
     return XonadoshPoll(
       id: _numToInt(json['id'], 0),
       title: (json['title'] ?? '').toString(),
       description: (json['description'] ?? '').toString(),
       category: (json['category'] ?? 'rules').toString(),
       status: (json['status'] ?? 'active').toString(),
-      votesYes: _numToInt(json['votes_yes'], 0),
-      votesNo: _numToInt(json['votes_no'], 0),
-      votesNeutral: _numToInt(json['votes_neutral'], 0),
-      totalVotes: _numToInt(json['total_votes'], 0),
-      yesPercent: _numToInt(json['yes_percent'], 0),
-      noPercent: _numToInt(json['no_percent'], 0),
-      neutralPercent: _numToInt(json['neutral_percent'], 0),
+      votesYes: yes,
+      votesNo: no,
+      votesNeutral: neutral,
+      totalVotes: total,
+      yesPercent: _numToInt(json['yes_percent'], calcYes),
+      noPercent: _numToInt(json['no_percent'], calcNo),
+      neutralPercent: _numToInt(json['neutral_percent'], calcNeu),
       createdAt: (json['created_at'] ?? '').toString(),
     );
   }
@@ -1390,7 +1484,8 @@ class XonadoshHouseRule {
   final String id;
   final String title;
   final String description;
-  final String category; // quiet_hours, guests, cleanliness, smoking, finances, safety, general
+  final String
+  category; // quiet_hours, guests, cleanliness, smoking, finances, safety, general
   final String icon;
   final bool isActive;
   final bool isCustom;
@@ -1434,6 +1529,140 @@ class XonadoshHouseRule {
       icon: icon ?? this.icon,
       isActive: isActive ?? this.isActive,
       isCustom: isCustom ?? this.isCustom,
+    );
+  }
+}
+
+/// 5 savolli Raqamli Xonadoshlik Kodeksi (House Rules Agreement)
+class XonadoshHouseRulesAgreement {
+  const XonadoshHouseRulesAgreement({
+    this.id,
+    required this.groupCode,
+    required this.quietHoursStart,
+    required this.rentDueDay,
+    required this.guestPolicy,
+    required this.commonGroceries,
+    required this.moveOutNoticeDays,
+    required this.confirmedBy,
+    this.isAgreed = false,
+  });
+
+  final int? id;
+  final String groupCode;
+  final String quietHoursStart;
+  final int rentDueDay;
+  final String guestPolicy;
+  final String commonGroceries;
+  final int moveOutNoticeDays;
+  final List<String> confirmedBy;
+  final bool isAgreed;
+
+  factory XonadoshHouseRulesAgreement.fromJson(Map<String, dynamic> json) {
+    List<String> parseConfirmed(dynamic val) {
+      if (val is List) return val.map((e) => e.toString()).toList();
+      return [];
+    }
+
+    return XonadoshHouseRulesAgreement(
+      id: json['id'] != null ? _numToInt(json['id']) : null,
+      groupCode: (json['group_code'] ?? 'home_default').toString(),
+      quietHoursStart: (json['quiet_hours_start'] ?? '23:00').toString(),
+      rentDueDay: _numToInt(json['rent_due_day'], 5),
+      guestPolicy:
+          (json['guest_policy'] ??
+                  'Oldindan guruhda ogohlantirish sharti bilan')
+              .toString(),
+      commonGroceries:
+          (json['common_groceries'] ?? 'Non, choy, yog‘, shakar va vositalar')
+              .toString(),
+      moveOutNoticeDays: _numToInt(json['move_out_notice_days'], 15),
+      confirmedBy: parseConfirmed(json['confirmed_by']),
+      isAgreed:
+          json['is_agreed'] == true ||
+          (parseConfirmed(json['confirmed_by']).length >= 2),
+    );
+  }
+
+  Map<String, dynamic> toJson() => {
+    'group_code': groupCode,
+    'quiet_hours_start': quietHoursStart,
+    'rent_due_day': rentDueDay,
+    'guest_policy': guestPolicy,
+    'common_groceries': commonGroceries,
+    'move_out_notice_days': moveOutNoticeDays,
+    'confirmed_by': confirmedBy,
+  };
+}
+
+/// Xonadosh Jamoasi (Coliving Squad)
+class XonadoshSquad {
+  const XonadoshSquad({
+    required this.id,
+    required this.name,
+    this.targetUniversityId,
+    required this.targetUniversityName,
+    required this.targetDistrict,
+    required this.totalBudgetUzs,
+    required this.targetGender,
+    required this.creatorUsername,
+    required this.creatorPhone,
+    required this.members,
+    required this.membersCount,
+    required this.lookingForCount,
+    required this.spotsLeft,
+    required this.description,
+    required this.status,
+    this.createdAt,
+  });
+
+  final int id;
+  final String name;
+  final int? targetUniversityId;
+  final String targetUniversityName;
+  final String targetDistrict;
+  final double totalBudgetUzs;
+  final String targetGender; // boys, girls, any
+  final String creatorUsername;
+  final String creatorPhone;
+  final List<dynamic> members;
+  final int membersCount;
+  final int lookingForCount;
+  final int spotsLeft;
+  final String description;
+  final String status; // recruiting, ready, closed
+  final String? createdAt;
+
+  factory XonadoshSquad.fromJson(Map<String, dynamic> json) {
+    List<dynamic> membersList = [];
+    if (json['members'] is List) {
+      membersList = json['members'] as List;
+    } else if (json['members_json'] != null) {
+      try {
+        final dec = jsonDecode(json['members_json'].toString());
+        if (dec is List) membersList = dec;
+      } catch (_) {}
+    }
+
+    return XonadoshSquad(
+      id: _numToInt(json['id']),
+      name: (json['name'] ?? 'Xonadosh Jamoasi').toString(),
+      targetUniversityId: json['target_university_id'] != null
+          ? _numToInt(json['target_university_id'])
+          : null,
+      targetUniversityName: (json['target_university_name'] ?? 'OTM')
+          .toString(),
+      targetDistrict: (json['target_district'] ?? 'Toshkent').toString(),
+      totalBudgetUzs: _numToDouble(json['total_budget_uzs']),
+      targetGender: (json['target_gender'] ?? 'any').toString(),
+      creatorUsername: (json['creator_username'] ?? '').toString(),
+      creatorPhone: (json['creator_phone'] ?? '').toString(),
+      members: membersList,
+      membersCount: _numToInt(json['members_count'], membersList.length),
+      lookingForCount: _numToInt(json['looking_for_count'], 3),
+      spotsLeft: _numToInt(json['spots_left'], 1),
+      description: (json['description'] ?? '').toString(),
+      status: (json['status'] ?? 'recruiting').toString(),
+      createdAt: json['created_at']?.toString(),
     );
   }
 }

@@ -63,7 +63,13 @@ final blockedUsernamesProvider = FutureProvider<Set<String>>((ref) async {
 });
 
 final xonadoshNoBrokerFilterProvider = StateProvider<bool>((ref) => false);
-final xonadoshUtilitiesIncludedFilterProvider = StateProvider<bool>((ref) => false);
+final xonadoshUtilitiesIncludedFilterProvider = StateProvider<bool>(
+  (ref) => false,
+);
+final xonadoshSubsidyFilterProvider = StateProvider<bool>((ref) => false);
+final xonadoshWomenOnlyFilterProvider = StateProvider<bool>((ref) => false);
+final xonadoshNearUniFilterProvider = StateProvider<bool>((ref) => false);
+final xonadoshMaxCommuteFilterProvider = StateProvider<int?>((ref) => null);
 
 final xonadoshListingsProvider =
     FutureProvider.autoDispose<List<XonadoshListing>>((ref) async {
@@ -77,8 +83,13 @@ final xonadoshListingsProvider =
       final minPrice = ref.watch(xonadoshMinPriceProvider);
       final maxPrice = ref.watch(xonadoshMaxPriceProvider);
       final noBroker = ref.watch(xonadoshNoBrokerFilterProvider);
-      final utilitiesIncluded =
-          ref.watch(xonadoshUtilitiesIncludedFilterProvider);
+      final utilitiesIncluded = ref.watch(
+        xonadoshUtilitiesIncludedFilterProvider,
+      );
+      final subsidyOnly = ref.watch(xonadoshSubsidyFilterProvider);
+      final womenOnly = ref.watch(xonadoshWomenOnlyFilterProvider);
+      final nearUniOnly = ref.watch(xonadoshNearUniFilterProvider);
+      final maxCommute = ref.watch(xonadoshMaxCommuteFilterProvider);
       final blocked = await ref.watch(blockedUsernamesProvider.future);
 
       final listings = await repo.getListings(
@@ -92,6 +103,10 @@ final xonadoshListingsProvider =
         maxPrice: maxPrice,
         noBroker: noBroker ? true : null,
         utilitiesIncluded: utilitiesIncluded ? true : null,
+        subsidyOnly: subsidyOnly ? true : null,
+        womenOnly: womenOnly ? true : null,
+        maxDistanceKm: nearUniOnly ? 2.0 : null,
+        maxCommuteMin: maxCommute,
         limit: 50,
       );
 
@@ -101,6 +116,17 @@ final xonadoshListingsProvider =
       }
       if (utilitiesIncluded) {
         filtered = filtered.where((e) => e.utilitiesIncluded).toList();
+      }
+      if (subsidyOnly) {
+        filtered = filtered.where((e) => e.hasSubsidyContract).toList();
+      }
+      if (womenOnly) {
+        filtered = filtered.where((e) => e.isWomenOnly).toList();
+      }
+      if (nearUniOnly) {
+        filtered = filtered
+            .where((e) => (e.distanceToUniversityKm ?? 999) <= 2.0)
+            .toList();
       }
       if (blocked.isNotEmpty) {
         filtered = filtered
@@ -216,3 +242,19 @@ final xonadoshFinancesProvider =
     FutureProvider.autoDispose<XonadoshFinancesData>((ref) async {
       return ref.watch(xonadoshRepositoryProvider).getFinances();
     });
+
+final xonadoshHouseRulesAgreementProvider = FutureProvider.autoDispose
+    .family<XonadoshHouseRulesAgreement, String>((ref, groupCode) async {
+      return ref
+          .watch(xonadoshRepositoryProvider)
+          .getHouseRulesAgreement(groupCode: groupCode);
+    });
+
+final xonadoshSquadsProvider = FutureProvider.autoDispose<List<XonadoshSquad>>((
+  ref,
+) async {
+  final selectedUni = ref.watch(xonadoshSelectedUniProvider);
+  return ref
+      .watch(xonadoshRepositoryProvider)
+      .getSquads(universityId: selectedUni?.id);
+});

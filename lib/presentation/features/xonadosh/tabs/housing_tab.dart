@@ -64,6 +64,10 @@ class _XonadoshHousingTabState extends ConsumerState<XonadoshHousingTab> {
     required double? maxPrice,
     required bool noBroker,
     required bool utilitiesIncluded,
+    required bool subsidyOnly,
+    required bool womenOnly,
+    required bool nearUniOnly,
+    required int? maxCommute,
   }) {
     int count = 0;
     if (city != null) count++;
@@ -73,6 +77,10 @@ class _XonadoshHousingTabState extends ConsumerState<XonadoshHousingTab> {
     if (minPrice != null || maxPrice != null) count++;
     if (noBroker) count++;
     if (utilitiesIncluded) count++;
+    if (subsidyOnly) count++;
+    if (womenOnly) count++;
+    if (nearUniOnly) count++;
+    if (maxCommute != null) count++;
     return count;
   }
 
@@ -91,8 +99,13 @@ class _XonadoshHousingTabState extends ConsumerState<XonadoshHousingTab> {
     final minPrice = ref.watch(xonadoshMinPriceProvider);
     final maxPrice = ref.watch(xonadoshMaxPriceProvider);
     final noBroker = ref.watch(xonadoshNoBrokerFilterProvider);
-    final utilitiesIncluded =
-        ref.watch(xonadoshUtilitiesIncludedFilterProvider);
+    final utilitiesIncluded = ref.watch(
+      xonadoshUtilitiesIncludedFilterProvider,
+    );
+    final subsidyOnly = ref.watch(xonadoshSubsidyFilterProvider);
+    final womenOnly = ref.watch(xonadoshWomenOnlyFilterProvider);
+    final nearUniOnly = ref.watch(xonadoshNearUniFilterProvider);
+    final maxCommute = ref.watch(xonadoshMaxCommuteFilterProvider);
 
     final activeFilterCount = _countActiveFilters(
       city: selectedCity,
@@ -103,6 +116,10 @@ class _XonadoshHousingTabState extends ConsumerState<XonadoshHousingTab> {
       maxPrice: maxPrice,
       noBroker: noBroker,
       utilitiesIncluded: utilitiesIncluded,
+      subsidyOnly: subsidyOnly,
+      womenOnly: womenOnly,
+      nearUniOnly: nearUniOnly,
+      maxCommute: maxCommute,
     );
 
     return Scaffold(
@@ -331,10 +348,12 @@ class _XonadoshHousingTabState extends ConsumerState<XonadoshHousingTab> {
                             activeColor: const Color(0xFF059669),
                             onTap: () =>
                                 ref
-                                    .read(
-                                      xonadoshNoBrokerFilterProvider.notifier,
-                                    )
-                                    .state = !noBroker,
+                                        .read(
+                                          xonadoshNoBrokerFilterProvider
+                                              .notifier,
+                                        )
+                                        .state =
+                                    !noBroker,
                           ),
                           const SizedBox(width: 6),
                           _buildFeatureToggleChip(
@@ -344,11 +363,72 @@ class _XonadoshHousingTabState extends ConsumerState<XonadoshHousingTab> {
                             activeColor: const Color(0xFF0284C7),
                             onTap: () =>
                                 ref
+                                        .read(
+                                          xonadoshUtilitiesIncludedFilterProvider
+                                              .notifier,
+                                        )
+                                        .state =
+                                    !utilitiesIncluded,
+                          ),
+                          const SizedBox(width: 6),
+                          _buildFeatureToggleChip(
+                            label: 'OTM yonida (<2 km)',
+                            icon: Icons.directions_walk_rounded,
+                            isSelected: nearUniOnly,
+                            activeColor: const Color(0xFF10B981),
+                            onTap: () =>
+                                ref
+                                        .read(
+                                          xonadoshNearUniFilterProvider
+                                              .notifier,
+                                        )
+                                        .state =
+                                    !nearUniOnly,
+                          ),
+                          const SizedBox(width: 6),
+                          _buildFeatureToggleChip(
+                            label: 'Subsidiya bor',
+                            icon: Icons.description_rounded,
+                            isSelected: subsidyOnly,
+                            activeColor: const Color(0xFFD97706),
+                            onTap: () =>
+                                ref
+                                        .read(
+                                          xonadoshSubsidyFilterProvider
+                                              .notifier,
+                                        )
+                                        .state =
+                                    !subsidyOnly,
+                          ),
+                          const SizedBox(width: 6),
+                          _buildFeatureToggleChip(
+                            label: 'Faqat qizlar',
+                            icon: Icons.female_rounded,
+                            isSelected: womenOnly,
+                            activeColor: const Color(0xFFE11D48),
+                            onTap: () =>
+                                ref
+                                        .read(
+                                          xonadoshWomenOnlyFilterProvider
+                                              .notifier,
+                                        )
+                                        .state =
+                                    !womenOnly,
+                          ),
+                          const SizedBox(width: 6),
+                          _buildFeatureToggleChip(
+                            label: '30 daqiqa zona',
+                            icon: Icons.timer_outlined,
+                            isSelected: maxCommute != null,
+                            activeColor: const Color(0xFF8B5CF6),
+                            onTap: () =>
+                                ref
                                     .read(
-                                      xonadoshUtilitiesIncludedFilterProvider
-                                          .notifier,
+                                      xonadoshMaxCommuteFilterProvider.notifier,
                                     )
-                                    .state = !utilitiesIncluded,
+                                    .state = (maxCommute == null
+                                ? 30
+                                : null),
                           ),
                           const SizedBox(width: 6),
                           _buildTypeChip(
@@ -381,22 +461,72 @@ class _XonadoshHousingTabState extends ConsumerState<XonadoshHousingTab> {
                                 '🛡️ Bez Makler',
                                 () =>
                                     ref
-                                        .read(
-                                          xonadoshNoBrokerFilterProvider
-                                              .notifier,
-                                        )
-                                        .state = false,
+                                            .read(
+                                              xonadoshNoBrokerFilterProvider
+                                                  .notifier,
+                                            )
+                                            .state =
+                                        false,
                               ),
                             if (utilitiesIncluded)
                               _buildActiveFilterBadge(
                                 '💡 Kommunal ichida',
                                 () =>
                                     ref
-                                        .read(
-                                          xonadoshUtilitiesIncludedFilterProvider
-                                              .notifier,
-                                        )
-                                        .state = false,
+                                            .read(
+                                              xonadoshUtilitiesIncludedFilterProvider
+                                                  .notifier,
+                                            )
+                                            .state =
+                                        false,
+                              ),
+                            if (subsidyOnly)
+                              _buildActiveFilterBadge(
+                                '📜 Subsidiya',
+                                () =>
+                                    ref
+                                            .read(
+                                              xonadoshSubsidyFilterProvider
+                                                  .notifier,
+                                            )
+                                            .state =
+                                        false,
+                              ),
+                            if (womenOnly)
+                              _buildActiveFilterBadge(
+                                '🌸 Faqat qizlar',
+                                () =>
+                                    ref
+                                            .read(
+                                              xonadoshWomenOnlyFilterProvider
+                                                  .notifier,
+                                            )
+                                            .state =
+                                        false,
+                              ),
+                            if (nearUniOnly)
+                              _buildActiveFilterBadge(
+                                '🚶 OTM yonida',
+                                () =>
+                                    ref
+                                            .read(
+                                              xonadoshNearUniFilterProvider
+                                                  .notifier,
+                                            )
+                                            .state =
+                                        false,
+                              ),
+                            if (maxCommute != null)
+                              _buildActiveFilterBadge(
+                                '⏱️ 30 daqiqa',
+                                () =>
+                                    ref
+                                            .read(
+                                              xonadoshMaxCommuteFilterProvider
+                                                  .notifier,
+                                            )
+                                            .state =
+                                        null,
                               ),
                             if (selectedCity != null)
                               _buildActiveFilterBadge(
@@ -454,6 +584,48 @@ class _XonadoshHousingTabState extends ConsumerState<XonadoshHousingTab> {
                                         .read(xonadoshMaxPriceProvider.notifier)
                                         .state =
                                     null;
+                                ref
+                                        .read(
+                                          xonadoshNoBrokerFilterProvider
+                                              .notifier,
+                                        )
+                                        .state =
+                                    false;
+                                ref
+                                        .read(
+                                          xonadoshUtilitiesIncludedFilterProvider
+                                              .notifier,
+                                        )
+                                        .state =
+                                    false;
+                                ref
+                                        .read(
+                                          xonadoshSubsidyFilterProvider
+                                              .notifier,
+                                        )
+                                        .state =
+                                    false;
+                                ref
+                                        .read(
+                                          xonadoshWomenOnlyFilterProvider
+                                              .notifier,
+                                        )
+                                        .state =
+                                    false;
+                                ref
+                                        .read(
+                                          xonadoshNearUniFilterProvider
+                                              .notifier,
+                                        )
+                                        .state =
+                                    false;
+                                ref
+                                        .read(
+                                          xonadoshMaxCommuteFilterProvider
+                                              .notifier,
+                                        )
+                                        .state =
+                                    null;
                               }),
                             TextButton.icon(
                               onPressed: () {
@@ -481,6 +653,48 @@ class _XonadoshHousingTabState extends ConsumerState<XonadoshHousingTab> {
                                     null;
                                 ref
                                         .read(xonadoshMaxPriceProvider.notifier)
+                                        .state =
+                                    null;
+                                ref
+                                        .read(
+                                          xonadoshNoBrokerFilterProvider
+                                              .notifier,
+                                        )
+                                        .state =
+                                    false;
+                                ref
+                                        .read(
+                                          xonadoshUtilitiesIncludedFilterProvider
+                                              .notifier,
+                                        )
+                                        .state =
+                                    false;
+                                ref
+                                        .read(
+                                          xonadoshSubsidyFilterProvider
+                                              .notifier,
+                                        )
+                                        .state =
+                                    false;
+                                ref
+                                        .read(
+                                          xonadoshWomenOnlyFilterProvider
+                                              .notifier,
+                                        )
+                                        .state =
+                                    false;
+                                ref
+                                        .read(
+                                          xonadoshNearUniFilterProvider
+                                              .notifier,
+                                        )
+                                        .state =
+                                    false;
+                                ref
+                                        .read(
+                                          xonadoshMaxCommuteFilterProvider
+                                              .notifier,
+                                        )
                                         .state =
                                     null;
                               },
@@ -608,6 +822,48 @@ class _XonadoshHousingTabState extends ConsumerState<XonadoshHousingTab> {
                                         .read(xonadoshMaxPriceProvider.notifier)
                                         .state =
                                     null;
+                                ref
+                                        .read(
+                                          xonadoshNoBrokerFilterProvider
+                                              .notifier,
+                                        )
+                                        .state =
+                                    false;
+                                ref
+                                        .read(
+                                          xonadoshUtilitiesIncludedFilterProvider
+                                              .notifier,
+                                        )
+                                        .state =
+                                    false;
+                                ref
+                                        .read(
+                                          xonadoshSubsidyFilterProvider
+                                              .notifier,
+                                        )
+                                        .state =
+                                    false;
+                                ref
+                                        .read(
+                                          xonadoshWomenOnlyFilterProvider
+                                              .notifier,
+                                        )
+                                        .state =
+                                    false;
+                                ref
+                                        .read(
+                                          xonadoshNearUniFilterProvider
+                                              .notifier,
+                                        )
+                                        .state =
+                                    false;
+                                ref
+                                        .read(
+                                          xonadoshMaxCommuteFilterProvider
+                                              .notifier,
+                                        )
+                                        .state =
+                                    null;
                               },
                               icon: const Icon(
                                 Icons.filter_alt_off_rounded,
@@ -668,16 +924,19 @@ class _XonadoshHousingTabState extends ConsumerState<XonadoshHousingTab> {
           ],
         ),
       ),
-      floatingActionButton: FloatingActionButton.extended(
-        onPressed: () {
-          context.push(AppRoutes.xonadoshCreateListing);
-        },
-        backgroundColor: XonaDoshColors.emerald,
-        foregroundColor: Colors.white,
-        icon: const Icon(Icons.add_home_rounded),
-        label: Text(
-          l10n.xonadoshPostListing,
-          style: const TextStyle(fontWeight: FontWeight.bold),
+      floatingActionButton: Padding(
+        padding: const EdgeInsets.only(bottom: 74),
+        child: FloatingActionButton.extended(
+          onPressed: () {
+            context.push(AppRoutes.xonadoshCreateListing);
+          },
+          backgroundColor: XonaDoshColors.emerald,
+          foregroundColor: Colors.white,
+          icon: const Icon(Icons.add_home_rounded),
+          label: Text(
+            l10n.xonadoshPostListing,
+            style: const TextStyle(fontWeight: FontWeight.bold),
+          ),
         ),
       ),
     );
@@ -711,10 +970,11 @@ class _XonadoshHousingTabState extends ConsumerState<XonadoshHousingTab> {
           boxShadow: isSelected
               ? [
                   BoxShadow(
-                    color: (isDark
-                            ? const Color(0xFF0F766E)
-                            : const Color(0xFF0D9488))
-                        .withValues(alpha: 0.28),
+                    color:
+                        (isDark
+                                ? const Color(0xFF0F766E)
+                                : const Color(0xFF0D9488))
+                            .withValues(alpha: 0.28),
                     blurRadius: 6,
                     offset: const Offset(0, 2),
                   ),
@@ -1244,10 +1504,7 @@ class _FilterBottomSheetState extends ConsumerState<_FilterBottomSheet> {
                   // 6. Maxsus imtiyozlar & shartlar
                   const Text(
                     '✨ Imtiyozlar va Maxsus shartlar',
-                    style: TextStyle(
-                      fontWeight: FontWeight.w800,
-                      fontSize: 14,
-                    ),
+                    style: TextStyle(fontWeight: FontWeight.w800, fontSize: 14),
                   ),
                   const SizedBox(height: 8),
                   Wrap(
@@ -1264,8 +1521,11 @@ class _FilterBottomSheetState extends ConsumerState<_FilterBottomSheet> {
                         selected: ref.watch(xonadoshNoBrokerFilterProvider),
                         onSelected: (sel) =>
                             ref
-                                .read(xonadoshNoBrokerFilterProvider.notifier)
-                                .state = sel,
+                                    .read(
+                                      xonadoshNoBrokerFilterProvider.notifier,
+                                    )
+                                    .state =
+                                sel,
                       ),
                       FilterChip(
                         avatar: const Icon(
@@ -1274,15 +1534,17 @@ class _FilterBottomSheetState extends ConsumerState<_FilterBottomSheet> {
                           color: Color(0xFF0284C7),
                         ),
                         label: const Text('💡 Kommunal to‘lov ichida'),
-                        selected:
-                            ref.watch(xonadoshUtilitiesIncludedFilterProvider),
+                        selected: ref.watch(
+                          xonadoshUtilitiesIncludedFilterProvider,
+                        ),
                         onSelected: (sel) =>
                             ref
-                                .read(
-                                  xonadoshUtilitiesIncludedFilterProvider
-                                      .notifier,
-                                )
-                                .state = sel,
+                                    .read(
+                                      xonadoshUtilitiesIncludedFilterProvider
+                                          .notifier,
+                                    )
+                                    .state =
+                                sel,
                       ),
                     ],
                   ),

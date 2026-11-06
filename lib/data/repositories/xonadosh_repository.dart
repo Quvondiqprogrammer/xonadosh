@@ -41,6 +41,10 @@ class XonadoshRepository {
     String? query,
     bool? noBroker,
     bool? utilitiesIncluded,
+    bool? subsidyOnly,
+    bool? womenOnly,
+    double? maxDistanceKm,
+    int? maxCommuteMin,
     int limit = 30,
     int offset = 0,
   }) async {
@@ -56,6 +60,10 @@ class XonadoshRepository {
       query: query,
       noBroker: noBroker,
       utilitiesIncluded: utilitiesIncluded,
+      subsidyOnly: subsidyOnly,
+      womenOnly: womenOnly,
+      maxDistanceKm: maxDistanceKm,
+      maxCommuteMin: maxCommuteMin,
       limit: limit,
       offset: offset,
     );
@@ -1666,15 +1674,16 @@ class XonadoshRepository {
     } catch (_) {}
     _houseRulesCache = _defaultHouseRules();
     await _saveHouseRules();
-    return _houseRulesCache!
-        .map((e) => XonadoshHouseRule.fromJson(e))
-        .toList();
+    return _houseRulesCache!.map((e) => XonadoshHouseRule.fromJson(e)).toList();
   }
 
   Future<void> _saveHouseRules() async {
     try {
       final prefs = await SharedPreferences.getInstance();
-      await prefs.setString(_kHouseRulesPref, jsonEncode(_houseRulesCache ?? []));
+      await prefs.setString(
+        _kHouseRulesPref,
+        jsonEncode(_houseRulesCache ?? []),
+      );
     } catch (_) {}
   }
 
@@ -1707,5 +1716,118 @@ class XonadoshRepository {
   Future<void> resetHouseRules() async {
     _houseRulesCache = _defaultHouseRules();
     await _saveHouseRules();
+  }
+
+  /// Kraud-moderatsiya: Yashirin makler haqida xabar berish
+  Future<Map<String, dynamic>> reportBroker(
+    int listingId, {
+    String? reason,
+  }) async {
+    return await _api.reportBroker(listingId: listingId, reason: reason);
+  }
+
+  /// 72 soatlik fresh TTL: e'lonni uzaytirish
+  Future<Map<String, dynamic>> renewListing(int listingId) async {
+    return await _api.renewListing(listingId: listingId);
+  }
+
+  /// Raqamli Xonadoshlik Kodeksi (House Rules Agreement)
+  Future<XonadoshHouseRulesAgreement> getHouseRulesAgreement({
+    String groupCode = 'home_default',
+  }) async {
+    final res = await _api.getHouseRulesAgreement(groupCode: groupCode);
+    if (res['ok'] == true && res['rules'] is Map) {
+      return XonadoshHouseRulesAgreement.fromJson(
+        Map<String, dynamic>.from(res['rules'] as Map),
+      );
+    }
+    return XonadoshHouseRulesAgreement(
+      groupCode: groupCode,
+      quietHoursStart: '23:00',
+      rentDueDay: 5,
+      guestPolicy: 'Oldindan guruhda ogohlantirish sharti bilan',
+      commonGroceries: 'Non, choy, yog‘, shakar va vositalar',
+      moveOutNoticeDays: 15,
+      confirmedBy: const [],
+      isAgreed: false,
+    );
+  }
+
+  Future<Map<String, dynamic>> saveHouseRulesAgreement({
+    required String groupCode,
+    required String quietHoursStart,
+    required int rentDueDay,
+    required String guestPolicy,
+    required String commonGroceries,
+    required int moveOutNoticeDays,
+    bool confirm = false,
+  }) async {
+    return await _api.saveHouseRulesAgreement(
+      groupCode: groupCode,
+      quietHoursStart: quietHoursStart,
+      rentDueDay: rentDueDay,
+      guestPolicy: guestPolicy,
+      commonGroceries: commonGroceries,
+      moveOutNoticeDays: moveOutNoticeDays,
+      confirm: confirm,
+    );
+  }
+
+  /// Xonadosh Jamoasi (Coliving Squads)
+  Future<List<XonadoshSquad>> getSquads({
+    int? universityId,
+    String? gender,
+    String? district,
+    String status = 'recruiting',
+  }) async {
+    final res = await _api.getSquads(
+      universityId: universityId,
+      gender: gender,
+      district: district,
+      status: status,
+    );
+    if (res['ok'] == true && res['squads'] is List) {
+      final list = res['squads'] as List;
+      return list
+          .map(
+            (e) => XonadoshSquad.fromJson(Map<String, dynamic>.from(e as Map)),
+          )
+          .toList();
+    }
+    return [];
+  }
+
+  Future<Map<String, dynamic>> createSquad({
+    required String name,
+    int? targetUniversityId,
+    String? targetUniversityName,
+    String? targetDistrict,
+    required double myBudgetUzs,
+    String targetGender = 'any',
+    int lookingForCount = 3,
+    String? description,
+    String? phone,
+  }) async {
+    return await _api.createSquad(
+      name: name,
+      targetUniversityId: targetUniversityId,
+      targetUniversityName: targetUniversityName,
+      targetDistrict: targetDistrict,
+      myBudgetUzs: myBudgetUzs,
+      targetGender: targetGender,
+      lookingForCount: lookingForCount,
+      description: description,
+      phone: phone,
+    );
+  }
+
+  Future<Map<String, dynamic>> joinSquad({
+    required int squadId,
+    required double memberBudgetUzs,
+  }) async {
+    return await _api.joinSquad(
+      squadId: squadId,
+      memberBudgetUzs: memberBudgetUzs,
+    );
   }
 }

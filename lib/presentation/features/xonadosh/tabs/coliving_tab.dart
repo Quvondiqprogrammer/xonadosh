@@ -141,10 +141,11 @@ class _XonadoshColivingTabState extends ConsumerState<XonadoshColivingTab> {
           boxShadow: isSelected
               ? [
                   BoxShadow(
-                    color: (isDark
-                            ? const Color(0xFF0F766E)
-                            : const Color(0xFF0D9488))
-                        .withValues(alpha: 0.28),
+                    color:
+                        (isDark
+                                ? const Color(0xFF0F766E)
+                                : const Color(0xFF0D9488))
+                            .withValues(alpha: 0.28),
                     blurRadius: 6,
                     offset: const Offset(0, 2),
                   ),
@@ -225,6 +226,9 @@ class _XonadoshColivingTabState extends ConsumerState<XonadoshColivingTab> {
           child: ListView(
             padding: const EdgeInsets.fromLTRB(16, 8, 16, 80),
             children: [
+              // Raqamli Xonadoshlik Kodeksi (Pinned Agreement Card)
+              _buildHouseRulesPinnedCard(context, isDark),
+
               // Today Duty Banner Card
               Container(
                 padding: const EdgeInsets.all(14),
@@ -560,6 +564,367 @@ class _XonadoshColivingTabState extends ConsumerState<XonadoshColivingTab> {
         ],
       ),
     );
+  }
+
+  Widget _buildHouseRulesPinnedCard(BuildContext context, bool isDark) {
+    final rulesAsync = ref.watch(
+      xonadoshHouseRulesAgreementProvider('home_default'),
+    );
+    final session = ref.watch(sessionManagerProvider);
+    final myUsername = session.username ?? '';
+
+    return rulesAsync.when(
+      loading: () => const SizedBox.shrink(),
+      error: (_, _) => const SizedBox.shrink(),
+      data: (rules) {
+        final alreadyConfirmed = rules.confirmedBy.contains(myUsername);
+
+        return Container(
+          margin: const EdgeInsets.only(bottom: 12),
+          padding: const EdgeInsets.all(14),
+          decoration: BoxDecoration(
+            color: isDark ? const Color(0xFF1E293B) : Colors.white,
+            borderRadius: BorderRadius.circular(16),
+            border: Border.all(
+              color: rules.isAgreed
+                  ? const Color(0xFF10B981)
+                  : (isDark
+                        ? const Color(0xFF334155)
+                        : const Color(0xFFE2E8F0)),
+              width: rules.isAgreed ? 1.5 : 1,
+            ),
+            boxShadow: [
+              BoxShadow(
+                color: Colors.black.withValues(alpha: isDark ? 0.2 : 0.04),
+                blurRadius: 8,
+                offset: const Offset(0, 2),
+              ),
+            ],
+          ),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  const Row(
+                    children: [
+                      Text('📜', style: TextStyle(fontSize: 16)),
+                      SizedBox(width: 8),
+                      Text(
+                        'Raqamli Xonadoshlik Kodeksi',
+                        style: TextStyle(
+                          fontWeight: FontWeight.w800,
+                          fontSize: 14,
+                        ),
+                      ),
+                    ],
+                  ),
+                  Container(
+                    padding: const EdgeInsets.symmetric(
+                      horizontal: 8,
+                      vertical: 3,
+                    ),
+                    decoration: BoxDecoration(
+                      color: rules.isAgreed
+                          ? const Color(0xFF10B981).withAlpha(25)
+                          : const Color(0xFFF59E0B).withAlpha(25),
+                      borderRadius: BorderRadius.circular(8),
+                    ),
+                    child: Text(
+                      rules.isAgreed
+                          ? '✓ Tasdiqlangan'
+                          : 'Kelishilmoqda (${rules.confirmedBy.length} kishi)',
+                      style: TextStyle(
+                        fontSize: 11,
+                        fontWeight: FontWeight.w800,
+                        color: rules.isAgreed
+                            ? const Color(0xFF059669)
+                            : const Color(0xFFD97706),
+                      ),
+                    ),
+                  ),
+                ],
+              ),
+              const SizedBox(height: 10),
+              _buildRuleRow(
+                '🌙 Sokinlik soati',
+                '${rules.quietHoursStart} dan boshlab',
+                isDark,
+              ),
+              _buildRuleRow(
+                '💳 Ijara to‘lovi',
+                'Har oyning ${rules.rentDueDay}-sanasigacha',
+                isDark,
+              ),
+              _buildRuleRow('👥 Mehmonlar', rules.guestPolicy, isDark),
+              _buildRuleRow('🛒 Umumiy xarid', rules.commonGroceries, isDark),
+              _buildRuleRow(
+                '📦 Ko‘chish haqida',
+                'Kamida ${rules.moveOutNoticeDays} kun oldin ogohlantirish',
+                isDark,
+              ),
+              const SizedBox(height: 8),
+              Row(
+                mainAxisAlignment: MainAxisAlignment.end,
+                children: [
+                  TextButton.icon(
+                    onPressed: () => _showEditHouseRulesDialog(context, rules),
+                    icon: const Icon(Icons.edit_note_rounded, size: 16),
+                    label: const Text(
+                      'Tahrirlash',
+                      style: TextStyle(fontSize: 12),
+                    ),
+                  ),
+                  if (!alreadyConfirmed && myUsername.isNotEmpty) ...[
+                    const SizedBox(width: 8),
+                    FilledButton.icon(
+                      onPressed: () async {
+                        try {
+                          await ref
+                              .read(xonadoshRepositoryProvider)
+                              .saveHouseRulesAgreement(
+                                groupCode: 'home_default',
+                                quietHoursStart: rules.quietHoursStart,
+                                rentDueDay: rules.rentDueDay,
+                                guestPolicy: rules.guestPolicy,
+                                commonGroceries: rules.commonGroceries,
+                                moveOutNoticeDays: rules.moveOutNoticeDays,
+                                confirm: true,
+                              );
+                          ref.invalidate(
+                            xonadoshHouseRulesAgreementProvider('home_default'),
+                          );
+                          if (context.mounted) {
+                            ScaffoldMessenger.of(context).showSnackBar(
+                              const SnackBar(
+                                content: Text(
+                                  '✓ Qoidalar qabul qilindi va tasdiqlandi!',
+                                ),
+                                backgroundColor: Color(0xFF059669),
+                              ),
+                            );
+                          }
+                        } catch (e) {
+                          if (context.mounted) {
+                            ScaffoldMessenger.of(context).showSnackBar(
+                              SnackBar(content: Text('Xatolik: $e')),
+                            );
+                          }
+                        }
+                      },
+                      icon: const Icon(Icons.check_rounded, size: 15),
+                      label: const Text(
+                        'Qabul qilish',
+                        style: TextStyle(
+                          fontSize: 12,
+                          fontWeight: FontWeight.bold,
+                        ),
+                      ),
+                      style: FilledButton.styleFrom(
+                        backgroundColor: const Color(0xFF059669),
+                        visualDensity: VisualDensity.compact,
+                      ),
+                    ),
+                  ],
+                ],
+              ),
+            ],
+          ),
+        );
+      },
+    );
+  }
+
+  Widget _buildRuleRow(String label, String value, bool isDark) {
+    return Padding(
+      padding: const EdgeInsets.symmetric(vertical: 3),
+      child: Row(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          SizedBox(
+            width: 120,
+            child: Text(
+              label,
+              style: TextStyle(
+                fontSize: 12,
+                fontWeight: FontWeight.w700,
+                color: isDark
+                    ? const Color(0xFF94A3B8)
+                    : const Color(0xFF64748B),
+              ),
+            ),
+          ),
+          Expanded(
+            child: Text(
+              value,
+              style: TextStyle(
+                fontSize: 12,
+                fontWeight: FontWeight.w600,
+                color: isDark ? Colors.white : const Color(0xFF0F172A),
+              ),
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+
+  void _showEditHouseRulesDialog(
+    BuildContext context,
+    XonadoshHouseRulesAgreement rules,
+  ) {
+    final quietCtrl = TextEditingController(text: rules.quietHoursStart);
+    final rentCtrl = TextEditingController(text: rules.rentDueDay.toString());
+    final guestCtrl = TextEditingController(text: rules.guestPolicy);
+    final groceriesCtrl = TextEditingController(text: rules.commonGroceries);
+    final noticeCtrl = TextEditingController(
+      text: rules.moveOutNoticeDays.toString(),
+    );
+
+    showDialog(
+      context: context,
+      builder: (ctx) => AlertDialog(
+        title: const Text(
+          '📜 Xonadoshlik Kodeksini tahrirlash',
+          style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
+        ),
+        content: SingleChildScrollView(
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              TextField(
+                controller: quietCtrl,
+                decoration: const InputDecoration(
+                  labelText: '1. Sokinlik soati (boshlanishi)',
+                  hintText: '23:00',
+                ),
+              ),
+              const SizedBox(height: 8),
+              TextField(
+                controller: rentCtrl,
+                keyboardType: TextInputType.number,
+                decoration: const InputDecoration(
+                  labelText: '2. Ijara to‘lov sanasi (oy kuni)',
+                  hintText: '5',
+                ),
+              ),
+              const SizedBox(height: 8),
+              TextField(
+                controller: guestCtrl,
+                decoration: const InputDecoration(
+                  labelText: '3. Mehmon kelishi tartibi',
+                  hintText: 'Oldindan guruhda ogohlantirish',
+                ),
+              ),
+              const SizedBox(height: 8),
+              TextField(
+                controller: groceriesCtrl,
+                decoration: const InputDecoration(
+                  labelText: '4. Umumiy bozorlik mahsulotlari',
+                  hintText: 'Non, choy, shakar, yog‘',
+                ),
+              ),
+              const SizedBox(height: 8),
+              TextField(
+                controller: noticeCtrl,
+                keyboardType: TextInputType.number,
+                decoration: const InputDecoration(
+                  labelText: '5. Ko‘chib ketish ogohlantirish (kun)',
+                  hintText: '15',
+                ),
+              ),
+            ],
+          ),
+        ),
+        actions: [
+          TextButton(
+            onPressed: () => Navigator.pop(ctx),
+            child: const Text('Bekor qilish'),
+          ),
+          FilledButton(
+            onPressed: () async {
+              Navigator.pop(ctx);
+              try {
+                await ref
+                    .read(xonadoshRepositoryProvider)
+                    .saveHouseRulesAgreement(
+                      groupCode: 'home_default',
+                      quietHoursStart: quietCtrl.text.trim(),
+                      rentDueDay: int.tryParse(rentCtrl.text.trim()) ?? 5,
+                      guestPolicy: guestCtrl.text.trim(),
+                      commonGroceries: groceriesCtrl.text.trim(),
+                      moveOutNoticeDays:
+                          int.tryParse(noticeCtrl.text.trim()) ?? 15,
+                      confirm: true,
+                    );
+                ref.invalidate(
+                  xonadoshHouseRulesAgreementProvider('home_default'),
+                );
+                if (context.mounted) {
+                  ScaffoldMessenger.of(context).showSnackBar(
+                    const SnackBar(
+                      content: Text('✓ Kodeks muvaffaqiyatli saqlandi!'),
+                      backgroundColor: Color(0xFF059669),
+                    ),
+                  );
+                }
+              } catch (e) {
+                if (context.mounted) {
+                  ScaffoldMessenger.of(
+                    context,
+                  ).showSnackBar(SnackBar(content: Text('Xatolik: $e')));
+                }
+              }
+            },
+            child: const Text('Saqlash'),
+          ),
+        ],
+      ),
+    );
+  }
+
+  Future<void> _handleInstantGroceryExpense(
+    BuildContext context,
+    XonadoshGroceryCalculation calc,
+  ) async {
+    final session = ref.read(sessionManagerProvider);
+    final myName = session.user?.displayName ?? session.username ?? 'Navbatchi';
+    final amount = calc.perPersonDailyUzs > 0
+        ? calc.perPersonDailyUzs.toDouble()
+        : 68000.0;
+
+    try {
+      await ref.read(xonadoshRepositoryProvider).addFinance({
+        'title': 'Kunlik umumiy bozorlik',
+        'type': 'expense_split',
+        'amount': amount,
+        'paid_by': myName,
+        'roommates': [myName, 'Xonadoshlar'],
+        'splits': [
+          {'name': myName, 'amount': amount / 2, 'paid': 1},
+          {'name': 'Xonadoshlar', 'amount': amount / 2, 'paid': 0},
+        ],
+        'group_code': 'home_default',
+      });
+      ref.invalidate(xonadoshFinancesProvider);
+      if (context.mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            content: Text(
+              '✓ ${_formatMoney(amount)} so‘m bozorlik xarajati umumiy hisob-kitobga kiritildi!',
+            ),
+            backgroundColor: const Color(0xFF059669),
+          ),
+        );
+      }
+    } catch (e) {
+      if (context.mounted) {
+        ScaffoldMessenger.of(
+          context,
+        ).showSnackBar(SnackBar(content: Text('Xatolik: $e')));
+      }
+    }
   }
 
   // ==========================================
@@ -1018,6 +1383,32 @@ class _XonadoshColivingTabState extends ConsumerState<XonadoshColivingTab> {
                       ),
                     ),
                   ],
+                ),
+              ),
+
+              // 1-Tap Bozorlik to Finance Button
+              Container(
+                margin: const EdgeInsets.symmetric(vertical: 8),
+                width: double.infinity,
+                child: FilledButton.icon(
+                  onPressed: () => _handleInstantGroceryExpense(context, calc),
+                  icon: const Icon(Icons.add_shopping_cart_rounded, size: 18),
+                  label: Text(
+                    '🛒 Bozorlik qildim (${_formatMoney(calc.perPersonDailyUzs.toDouble())} so‘m xarajatga yozish)',
+                    style: const TextStyle(
+                      fontWeight: FontWeight.w800,
+                      fontSize: 13,
+                    ),
+                  ),
+                  style: FilledButton.styleFrom(
+                    backgroundColor: const Color(0xFF059669),
+                    foregroundColor: Colors.white,
+                    padding: const EdgeInsets.symmetric(vertical: 12),
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(12),
+                    ),
+                    elevation: 0,
+                  ),
                 ),
               ),
 
@@ -3458,8 +3849,9 @@ class _XonadoshColivingTabState extends ConsumerState<XonadoshColivingTab> {
               ),
               decoration: BoxDecoration(
                 color: isDark ? const Color(0xFF1E293B) : Colors.white,
-                borderRadius:
-                    const BorderRadius.vertical(top: Radius.circular(24)),
+                borderRadius: const BorderRadius.vertical(
+                  top: Radius.circular(24),
+                ),
               ),
               child: SafeArea(
                 child: Column(
@@ -3486,8 +3878,9 @@ class _XonadoshColivingTabState extends ConsumerState<XonadoshColivingTab> {
                               Container(
                                 padding: const EdgeInsets.all(8),
                                 decoration: BoxDecoration(
-                                  color: XonaDoshColors.accentPurple
-                                      .withValues(alpha: 0.15),
+                                  color: XonaDoshColors.accentPurple.withValues(
+                                    alpha: 0.15,
+                                  ),
                                   borderRadius: BorderRadius.circular(10),
                                 ),
                                 child: const Icon(
@@ -3533,9 +3926,8 @@ class _XonadoshColivingTabState extends ConsumerState<XonadoshColivingTab> {
                             color: XonaDoshColors.emerald,
                           ),
                         ),
-                        error: (err, _) => Center(
-                          child: Text('Qoidalar yuklanmadi: $err'),
-                        ),
+                        error: (err, _) =>
+                            Center(child: Text('Qoidalar yuklanmadi: $err')),
                         data: (rules) {
                           return ListView(
                             padding: const EdgeInsets.all(16),
@@ -3556,8 +3948,8 @@ class _XonadoshColivingTabState extends ConsumerState<XonadoshColivingTab> {
                                               alpha: isDark ? 0.35 : 0.2,
                                             )
                                           : (isDark
-                                              ? const Color(0xFF334155)
-                                              : const Color(0xFFE2E8F0)),
+                                                ? const Color(0xFF334155)
+                                                : const Color(0xFFE2E8F0)),
                                       width: rule.isActive ? 1.4 : 1,
                                     ),
                                   ),
@@ -3571,8 +3963,9 @@ class _XonadoshColivingTabState extends ConsumerState<XonadoshColivingTab> {
                                           color: color.withValues(
                                             alpha: isDark ? 0.25 : 0.12,
                                           ),
-                                          borderRadius:
-                                              BorderRadius.circular(10),
+                                          borderRadius: BorderRadius.circular(
+                                            10,
+                                          ),
                                         ),
                                         child: Icon(
                                           _ruleCategoryIcon(rule.category),
@@ -3601,14 +3994,15 @@ class _XonadoshColivingTabState extends ConsumerState<XonadoshColivingTab> {
                                                       decoration: rule.isActive
                                                           ? null
                                                           : TextDecoration
-                                                              .lineThrough,
+                                                                .lineThrough,
                                                     ),
                                                   ),
                                                 ),
                                                 if (rule.isCustom)
                                                   IconButton(
                                                     icon: const Icon(
-                                                      Icons.delete_outline_rounded,
+                                                      Icons
+                                                          .delete_outline_rounded,
                                                       size: 18,
                                                       color: Colors.red,
                                                     ),
@@ -3650,9 +4044,7 @@ class _XonadoshColivingTabState extends ConsumerState<XonadoshColivingTab> {
                                         activeThumbColor: Colors.white,
                                         onChanged: (val) async {
                                           await ref
-                                              .read(
-                                                xonadoshRepositoryProvider,
-                                              )
+                                              .read(xonadoshRepositoryProvider)
                                               .toggleHouseRule(rule.id, val);
                                           ref.invalidate(
                                             xonadoshHouseRulesProvider,
@@ -3674,16 +4066,15 @@ class _XonadoshColivingTabState extends ConsumerState<XonadoshColivingTab> {
                                         Icons.add_rounded,
                                         size: 18,
                                       ),
-                                      label: const Text(
-                                        'Yangi qoida qo‘shish',
-                                      ),
+                                      label: const Text('Yangi qoida qo‘shish'),
                                       style: OutlinedButton.styleFrom(
                                         padding: const EdgeInsets.symmetric(
                                           vertical: 12,
                                         ),
                                         shape: RoundedRectangleBorder(
-                                          borderRadius:
-                                              BorderRadius.circular(12),
+                                          borderRadius: BorderRadius.circular(
+                                            12,
+                                          ),
                                         ),
                                       ),
                                     ),
@@ -3797,7 +4188,9 @@ class _XonadoshColivingTabState extends ConsumerState<XonadoshColivingTab> {
                     const SizedBox(height: 12),
                     DropdownButtonFormField<String>(
                       initialValue: category,
-                      decoration: const InputDecoration(labelText: 'Kategoriya'),
+                      decoration: const InputDecoration(
+                        labelText: 'Kategoriya',
+                      ),
                       items: const [
                         DropdownMenuItem(
                           value: 'cleanliness',
@@ -4032,8 +4425,9 @@ class _XonadoshColivingTabState extends ConsumerState<XonadoshColivingTab> {
               ),
               decoration: BoxDecoration(
                 color: isDark ? const Color(0xFF1E293B) : Colors.white,
-                borderRadius:
-                    const BorderRadius.vertical(top: Radius.circular(24)),
+                borderRadius: const BorderRadius.vertical(
+                  top: Radius.circular(24),
+                ),
               ),
               child: SafeArea(
                 child: Column(
@@ -4105,9 +4499,8 @@ class _XonadoshColivingTabState extends ConsumerState<XonadoshColivingTab> {
                                   child: ChoiceChip(
                                     label: Text('$n kishi'),
                                     selected: isSel,
-                                    onSelected: (_) => setSplitState(
-                                      () => roommateCount = n,
-                                    ),
+                                    onSelected: (_) =>
+                                        setSplitState(() => roommateCount = n),
                                   ),
                                 );
                               }).toList(),
@@ -4125,8 +4518,8 @@ class _XonadoshColivingTabState extends ConsumerState<XonadoshColivingTab> {
                           ...utilities.map((item) {
                             final selected = item['selected'] == true;
                             final amount = item['amount'] as int;
-                            final itemPerPerson =
-                                (amount / roommateCount).round();
+                            final itemPerPerson = (amount / roommateCount)
+                                .round();
 
                             return Container(
                               margin: const EdgeInsets.only(bottom: 8),
@@ -4141,8 +4534,8 @@ class _XonadoshColivingTabState extends ConsumerState<XonadoshColivingTab> {
                                           alpha: 0.4,
                                         )
                                       : (isDark
-                                          ? const Color(0xFF334155)
-                                          : const Color(0xFFE2E8F0)),
+                                            ? const Color(0xFF334155)
+                                            : const Color(0xFFE2E8F0)),
                                 ),
                               ),
                               child: CheckboxListTile(
@@ -4258,14 +4651,15 @@ class _XonadoshColivingTabState extends ConsumerState<XonadoshColivingTab> {
                                 ),
                               ),
                               onPressed: () async {
-                                final selectedRoommates =
-                                    roommates.take(roommateCount).toList();
+                                final selectedRoommates = roommates
+                                    .take(roommateCount)
+                                    .toList();
 
                                 for (final item in utilities) {
                                   if (item['selected'] != true) continue;
                                   final amount = item['amount'] as int;
-                                  final splitAmt =
-                                      (amount / roommateCount).round();
+                                  final splitAmt = (amount / roommateCount)
+                                      .round();
                                   final splits = selectedRoommates
                                       .map(
                                         (r) => {

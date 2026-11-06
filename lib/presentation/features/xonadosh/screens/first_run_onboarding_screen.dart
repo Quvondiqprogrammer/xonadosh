@@ -3,6 +3,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 
 import 'package:xonadosh/config/theme.dart';
+import 'package:xonadosh/core/services/xonadosh_retention_notification_service.dart';
 import 'package:xonadosh/l10n/l10n_ext.dart';
 import 'package:xonadosh/presentation/common/xonadosh_logo.dart';
 import 'package:xonadosh/presentation/providers/xonadosh_providers.dart';
@@ -47,16 +48,23 @@ class _FirstRunOnboardingScreenState
     super.dispose();
   }
 
-  Future<void> _finish() async {
+  Future<void> _finish({bool enableNotifications = false}) async {
     await ref.read(onboardingStoreProvider).markSeen();
     ref.invalidate(firstRunSeenProvider);
+
+    if (enableNotifications) {
+      final retention = ref.read(xonadoshRetentionNotificationServiceProvider);
+      await retention.requestPermission();
+      await retention.setupAllRetentionHooks();
+    }
+
     if (!mounted) return;
     context.go(AppRoutes.login);
   }
 
   void _next() {
     if (_index >= _pages.length - 1) {
-      _finish();
+      _finish(enableNotifications: true);
       return;
     }
     _pageController.nextPage(

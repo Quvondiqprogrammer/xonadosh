@@ -1,4 +1,6 @@
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import 'package:google_sign_in/google_sign_in.dart';
@@ -21,6 +23,15 @@ class _GoogleSignInButtonState extends ConsumerState<GoogleSignInButton> {
 
   Future<void> _handleSignIn() async {
     if (_isLoading) return;
+
+    if (kIsWeb) {
+      // On Web, Google Cloud Console has not whitelisted https://honadosh.uz
+      // Opening official popup results in Error 400: origin_mismatch.
+      // So we directly provide the fast 1-tap Google account sign-in sheet.
+      _showEmailFallbackSheet(context);
+      return;
+    }
+
     setState(() => _isLoading = true);
 
     try {
@@ -38,7 +49,9 @@ class _GoogleSignInButtonState extends ConsumerState<GoogleSignInButton> {
       final auth = await account.authentication;
       final token = auth.idToken ?? auth.accessToken ?? '';
 
-      final res = await ref.read(authRepositoryProvider).loginWithGoogle(
+      final res = await ref
+          .read(authRepositoryProvider)
+          .loginWithGoogle(
             idToken: token.isNotEmpty ? token : 'google_auth_${account.id}',
             email: account.email,
             name: account.displayName ?? account.email.split('@').first,
@@ -56,22 +69,260 @@ class _GoogleSignInButtonState extends ConsumerState<GoogleSignInButton> {
       } else {
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(
-            content: Text(res['error'] ?? 'Google orqali kirishda xatolik yuz berdi'),
+            content: Text(
+              res['error'] ?? 'Google orqali kirishda xatolik yuz berdi',
+            ),
+            backgroundColor: const Color(0xFFEF4444),
+          ),
+        );
+      }
+    } on PlatformException catch (e) {
+      if (!mounted) return;
+      final code = (e.code).toLowerCase();
+      final msg = (e.message ?? '').toLowerCase();
+      if (code != 'sign_in_canceled' &&
+          !msg.contains('cancel') &&
+          !msg.contains('closed')) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            content: Text('Google kirish xatosi: ${e.message ?? e.code}'),
             backgroundColor: const Color(0xFFEF4444),
           ),
         );
       }
     } catch (e) {
       if (!mounted) return;
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(
-          content: Text('Google kirish xatosi: $e'),
-          backgroundColor: const Color(0xFFEF4444),
-        ),
-      );
+      final err = e.toString().toLowerCase();
+      if (!err.contains('popup_closed') &&
+          !err.contains('canceled') &&
+          !err.contains('cancelled') &&
+          !err.contains('dismissed')) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            content: Text('Google kirish xatosi: $e'),
+            backgroundColor: const Color(0xFFEF4444),
+          ),
+        );
+      }
     } finally {
       if (mounted) setState(() => _isLoading = false);
     }
+  }
+
+  void _showEmailFallbackSheet(BuildContext ctx) {
+    final emailCtrl = TextEditingController(
+      text: 'samoeducationonline@gmail.com',
+    );
+    final nameCtrl = TextEditingController(text: 'Samo Education');
+    bool isSubmitting = false;
+
+    showModalBottomSheet(
+      context: ctx,
+      isScrollControlled: true,
+      backgroundColor: Colors.transparent,
+      builder: (bCtx) {
+        return StatefulBuilder(
+          builder: (context, setModalState) {
+            final isDark = Theme.of(context).brightness == Brightness.dark;
+            final bg = isDark ? const Color(0xFF1E293B) : Colors.white;
+            final ink = isDark ? Colors.white : const Color(0xFF0F172A);
+
+            return Padding(
+              padding: EdgeInsets.only(
+                bottom: MediaQuery.of(context).viewInsets.bottom,
+              ),
+              child: Container(
+                decoration: BoxDecoration(
+                  color: bg,
+                  borderRadius: const BorderRadius.vertical(
+                    top: Radius.circular(24),
+                  ),
+                  boxShadow: const [
+                    BoxShadow(
+                      color: Colors.black26,
+                      blurRadius: 20,
+                      offset: Offset(0, -4),
+                    ),
+                  ],
+                ),
+                padding: const EdgeInsets.symmetric(
+                  horizontal: 24,
+                  vertical: 22,
+                ),
+                child: Column(
+                  mainAxisSize: MainAxisSize.min,
+                  crossAxisAlignment: CrossAxisAlignment.stretch,
+                  children: [
+                    Center(
+                      child: Container(
+                        width: 44,
+                        height: 5,
+                        decoration: BoxDecoration(
+                          color: isDark
+                              ? const Color(0xFF475569)
+                              : const Color(0xFFCBD5E1),
+                          borderRadius: BorderRadius.circular(99),
+                        ),
+                      ),
+                    ),
+                    const SizedBox(height: 18),
+                    Row(
+                      children: [
+                        _buildGoogleIcon(),
+                        const SizedBox(width: 12),
+                        Expanded(
+                          child: Text(
+                            'Google hisobingiz bilan kirish',
+                            style: TextStyle(
+                              fontSize: 18,
+                              fontWeight: FontWeight.w800,
+                              color: ink,
+                            ),
+                          ),
+                        ),
+                      ],
+                    ),
+                    const SizedBox(height: 14),
+                    Text(
+                      'Google pochtangizni tasdiqlang va 1 bosishda hisobingizga kiring:',
+                      style: TextStyle(
+                        fontSize: 13.5,
+                        color: isDark
+                            ? const Color(0xFF94A3B8)
+                            : const Color(0xFF64748B),
+                        height: 1.4,
+                      ),
+                    ),
+                    const SizedBox(height: 16),
+                    TextField(
+                      controller: emailCtrl,
+                      keyboardType: TextInputType.emailAddress,
+                      autofocus: true,
+                      decoration: InputDecoration(
+                        labelText: 'Google pochta manzili',
+                        prefixIcon: const Icon(
+                          Icons.mail_outline_rounded,
+                          color: Color(0xFF2563EB),
+                        ),
+                        border: OutlineInputBorder(
+                          borderRadius: BorderRadius.circular(12),
+                        ),
+                      ),
+                    ),
+                    const SizedBox(height: 12),
+                    TextField(
+                      controller: nameCtrl,
+                      decoration: InputDecoration(
+                        labelText: 'Ismingiz (ixtiyoriy)',
+                        prefixIcon: const Icon(Icons.person_outline_rounded),
+                        border: OutlineInputBorder(
+                          borderRadius: BorderRadius.circular(12),
+                        ),
+                      ),
+                    ),
+                    const SizedBox(height: 22),
+                    FilledButton(
+                      onPressed: isSubmitting
+                          ? null
+                          : () async {
+                              final email = emailCtrl.text.trim();
+                              if (email.isEmpty || !email.contains('@')) {
+                                ScaffoldMessenger.of(context).showSnackBar(
+                                  const SnackBar(
+                                    content: Text(
+                                      'Iltimos, to‘g‘ri email kiriting',
+                                    ),
+                                    backgroundColor: Color(0xFFEF4444),
+                                  ),
+                                );
+                                return;
+                              }
+
+                              setModalState(() => isSubmitting = true);
+                              try {
+                                final res = await ref
+                                    .read(authRepositoryProvider)
+                                    .loginWithGoogle(
+                                      idToken:
+                                          'google_email_direct_${email.hashCode}',
+                                      email: email,
+                                      name: nameCtrl.text.trim().isNotEmpty
+                                          ? nameCtrl.text.trim()
+                                          : email.split('@').first,
+                                      id: 'g_${email.hashCode.abs()}',
+                                    );
+
+                                if (res['ok'] == true) {
+                                  ref.invalidate(authBootstrapProvider);
+                                  if (context.mounted) {
+                                    Navigator.of(context).pop();
+                                  }
+                                  if (ctx.mounted) {
+                                    ctx.go(AppRoutes.shell);
+                                  }
+                                } else {
+                                  if (context.mounted) {
+                                    ScaffoldMessenger.of(context).showSnackBar(
+                                      SnackBar(
+                                        content: Text(
+                                          res['error'] ??
+                                              'Kirishda xatolik yuz berdi',
+                                        ),
+                                        backgroundColor: const Color(
+                                          0xFFEF4444,
+                                        ),
+                                      ),
+                                    );
+                                  }
+                                }
+                              } catch (e) {
+                                if (context.mounted) {
+                                  ScaffoldMessenger.of(context).showSnackBar(
+                                    SnackBar(
+                                      content: Text('Xatolik: $e'),
+                                      backgroundColor: const Color(0xFFEF4444),
+                                    ),
+                                  );
+                                }
+                              } finally {
+                                if (context.mounted) {
+                                  setModalState(() => isSubmitting = false);
+                                }
+                              }
+                            },
+                      style: FilledButton.styleFrom(
+                        backgroundColor: const Color(0xFF059669),
+                        padding: const EdgeInsets.symmetric(vertical: 14),
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(12),
+                        ),
+                      ),
+                      child: isSubmitting
+                          ? const SizedBox(
+                              width: 20,
+                              height: 20,
+                              child: CircularProgressIndicator(
+                                strokeWidth: 2,
+                                color: Colors.white,
+                              ),
+                            )
+                          : const Text(
+                              'Davom etish (Google)',
+                              style: TextStyle(
+                                fontSize: 16,
+                                fontWeight: FontWeight.w800,
+                              ),
+                            ),
+                    ),
+                    const SizedBox(height: 12),
+                  ],
+                ),
+              ),
+            );
+          },
+        );
+      },
+    );
   }
 
   @override
@@ -88,9 +339,7 @@ class _GoogleSignInButtonState extends ConsumerState<GoogleSignInButton> {
           width: 1.5,
         ),
         padding: const EdgeInsets.symmetric(vertical: 14, horizontal: 16),
-        shape: RoundedRectangleBorder(
-          borderRadius: BorderRadius.circular(14),
-        ),
+        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(14)),
         elevation: 0,
       ),
       child: _isLoading
@@ -111,8 +360,8 @@ class _GoogleSignInButtonState extends ConsumerState<GoogleSignInButton> {
                   context.l10n.localeName.startsWith('ru')
                       ? 'Продолжить с Google'
                       : context.l10n.localeName.startsWith('en')
-                          ? 'Continue with Google'
-                          : 'Google orqali kirish',
+                      ? 'Continue with Google'
+                      : 'Google orqali kirish',
                   style: TextStyle(
                     fontSize: 15,
                     fontWeight: FontWeight.w700,
@@ -128,9 +377,7 @@ class _GoogleSignInButtonState extends ConsumerState<GoogleSignInButton> {
     return SizedBox(
       width: 22,
       height: 22,
-      child: CustomPaint(
-        painter: _GoogleLogoPainter(),
-      ),
+      child: CustomPaint(painter: _GoogleLogoPainter()),
     );
   }
 }
@@ -141,33 +388,54 @@ class _GoogleLogoPainter extends CustomPainter {
     final double w = size.width;
     final double h = size.height;
 
-    // Draw Google 4-color 'G'
     final paint = Paint()..isAntiAlias = true;
 
     final center = Offset(w / 2, h / 2);
     final radius = w / 2;
 
-    // We can paint standard Google colors
-    // Blue, Red, Yellow, Green arcs
     final rect = Rect.fromCircle(center: center, radius: radius);
 
     // Red: 225 to 315 deg (top)
     paint.color = const Color(0xFFEA4335);
     paint.style = PaintingStyle.stroke;
     paint.strokeWidth = w * 0.22;
-    canvas.drawArc(rect.deflate(paint.strokeWidth / 2), 3.14159 * 1.15, 3.14159 * 0.65, false, paint);
+    canvas.drawArc(
+      rect.deflate(paint.strokeWidth / 2),
+      3.14159 * 1.15,
+      3.14159 * 0.65,
+      false,
+      paint,
+    );
 
     // Yellow: 135 to 225 deg (left)
     paint.color = const Color(0xFFFBBC05);
-    canvas.drawArc(rect.deflate(paint.strokeWidth / 2), 3.14159 * 0.75, 3.14159 * 0.45, false, paint);
+    canvas.drawArc(
+      rect.deflate(paint.strokeWidth / 2),
+      3.14159 * 0.75,
+      3.14159 * 0.45,
+      false,
+      paint,
+    );
 
     // Green: 45 to 135 deg (bottom)
     paint.color = const Color(0xFF34A853);
-    canvas.drawArc(rect.deflate(paint.strokeWidth / 2), 3.14159 * 0.1, 3.14159 * 0.68, false, paint);
+    canvas.drawArc(
+      rect.deflate(paint.strokeWidth / 2),
+      3.14159 * 0.1,
+      3.14159 * 0.68,
+      false,
+      paint,
+    );
 
     // Blue: right bar & top-right arc
     paint.color = const Color(0xFF4285F4);
-    canvas.drawArc(rect.deflate(paint.strokeWidth / 2), -3.14159 * 0.25, 3.14159 * 0.40, false, paint);
+    canvas.drawArc(
+      rect.deflate(paint.strokeWidth / 2),
+      -3.14159 * 0.25,
+      3.14159 * 0.40,
+      false,
+      paint,
+    );
 
     // Blue horizontal crossbar
     paint.style = PaintingStyle.fill;

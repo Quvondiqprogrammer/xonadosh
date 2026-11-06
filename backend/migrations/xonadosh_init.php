@@ -34,12 +34,27 @@ $pdo->exec("CREATE TABLE IF NOT EXISTS `xd_users` (
     `password_hash` VARCHAR(255) NOT NULL,
     `full_name` VARCHAR(150) NOT NULL,
     `avatar_url` VARCHAR(255) NULL,
+    `apple_id` VARCHAR(191) NULL DEFAULT NULL,
+    `google_id` VARCHAR(191) NULL DEFAULT NULL,
     `is_blocked` TINYINT NOT NULL DEFAULT 0,
     `created_at` DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
     `deleted_at` DATETIME NULL,
     UNIQUE KEY `uq_username` (`username`),
-    UNIQUE KEY `uq_phone` (`phone`)
+    UNIQUE KEY `uq_phone` (`phone`),
+    INDEX `idx_apple_id` (`apple_id`),
+    INDEX `idx_google_id` (`google_id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;");
+
+// Safe column migrations for existing xd_users tables
+try {
+    $cols = $pdo->query("SHOW COLUMNS FROM `xd_users`")->fetchAll(PDO::FETCH_COLUMN);
+    if (!in_array('apple_id', $cols, true)) {
+        $pdo->exec("ALTER TABLE `xd_users` ADD COLUMN `apple_id` VARCHAR(191) NULL DEFAULT NULL AFTER `avatar_url`, ADD INDEX `idx_apple_id` (`apple_id`)");
+    }
+    if (!in_array('google_id', $cols, true)) {
+        $pdo->exec("ALTER TABLE `xd_users` ADD COLUMN `google_id` VARCHAR(191) NULL DEFAULT NULL AFTER `apple_id`, ADD INDEX `idx_google_id` (`google_id`)");
+    }
+} catch (Throwable $e) {}
 
 $pdo->exec("CREATE TABLE IF NOT EXISTS `xd_sessions` (
     `token` CHAR(64) NOT NULL PRIMARY KEY,
@@ -271,6 +286,90 @@ $pdo->exec("CREATE TABLE IF NOT EXISTS `xonadosh_finances` (
     `created_at` DATETIME DEFAULT CURRENT_TIMESTAMP,
     INDEX `idx_group_type` (`group_code`, `type`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;");
+
+// --- Raqamli Xonadoshlik Kodeksi (House Rules) ---
+$pdo->exec("CREATE TABLE IF NOT EXISTS `xonadosh_house_rules` (
+    `id` INT AUTO_INCREMENT PRIMARY KEY,
+    `group_code` VARCHAR(50) NOT NULL UNIQUE,
+    `quiet_hours_start` VARCHAR(10) NOT NULL DEFAULT '23:30',
+    `rent_due_day` INT NOT NULL DEFAULT 5,
+    `guest_policy` VARCHAR(150) NOT NULL DEFAULT 'Oldindan ogohlantirish sharti bilan',
+    `common_groceries` TEXT NULL,
+    `move_out_notice_days` INT NOT NULL DEFAULT 15,
+    `confirmed_by_json` JSON NULL,
+    `updated_at` DATETIME DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;");
+
+// --- Xonadosh Jamoasi (Coliving Squads) ---
+$pdo->exec("CREATE TABLE IF NOT EXISTS `xonadosh_squads` (
+    `id` INT AUTO_INCREMENT PRIMARY KEY,
+    `name` VARCHAR(150) NOT NULL,
+    `target_university_id` INT NULL,
+    `target_university_name` VARCHAR(200) NULL,
+    `target_district` VARCHAR(100) NULL,
+    `total_budget_uzs` DECIMAL(15,2) NOT NULL DEFAULT 0,
+    `target_gender` ENUM('boys','girls','any') NOT NULL DEFAULT 'any',
+    `creator_username` VARCHAR(100) NOT NULL,
+    `creator_phone` VARCHAR(30) NOT NULL,
+    `members_json` JSON NOT NULL,
+    `looking_for_count` INT NOT NULL DEFAULT 2,
+    `description` TEXT NULL,
+    `status` ENUM('recruiting','ready','closed') NOT NULL DEFAULT 'recruiting',
+    `created_at` DATETIME DEFAULT CURRENT_TIMESTAMP,
+    INDEX `idx_status` (`status`),
+    INDEX `idx_uni` (`target_university_id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;");
+
+// --- Kraud-moderatsiya (Maklerlarni 1-tap bloklash) ---
+$pdo->exec("CREATE TABLE IF NOT EXISTS `xonadosh_broker_reports` (
+    `id` INT AUTO_INCREMENT PRIMARY KEY,
+    `listing_id` INT NOT NULL,
+    `reporter_username` VARCHAR(100) NOT NULL,
+    `reporter_phone` VARCHAR(30) NULL,
+    `reason` VARCHAR(255) NOT NULL DEFAULT 'Yashirin makler / komissiya so‘radi',
+    `created_at` DATETIME DEFAULT CURRENT_TIMESTAMP,
+    UNIQUE KEY `uk_listing_reporter` (`listing_id`, `reporter_username`),
+    INDEX `idx_listing` (`listing_id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;");
+
+// Safe column migrations for xonadosh_listings, xd_users and xonadosh_profiles
+try {
+    $colsList = $pdo->query("SHOW COLUMNS FROM `xonadosh_listings`")->fetchAll(PDO::FETCH_COLUMN);
+    if (!in_array('has_subsidy_contract', $colsList, true)) {
+        $pdo->exec("ALTER TABLE `xonadosh_listings` ADD COLUMN `has_subsidy_contract` TINYINT(1) NOT NULL DEFAULT 0 AFTER `amenities_json`");
+    }
+    if (!in_array('is_women_only', $colsList, true)) {
+        $pdo->exec("ALTER TABLE `xonadosh_listings` ADD COLUMN `is_women_only` TINYINT(1) NOT NULL DEFAULT 0 AFTER `target_gender`");
+    }
+    if (!in_array('crowd_broker_reports', $colsList, true)) {
+        $pdo->exec("ALTER TABLE `xonadosh_listings` ADD COLUMN `crowd_broker_reports` INT NOT NULL DEFAULT 0 AFTER `views_count`");
+    }
+    if (!in_array('expires_at', $colsList, true)) {
+        $pdo->exec("ALTER TABLE `xonadosh_listings` ADD COLUMN `expires_at` DATETIME NULL AFTER `created_at`");
+        $pdo->exec("UPDATE `xonadosh_listings` SET `expires_at` = DATE_ADD(NOW(), INTERVAL 30 DAY) WHERE `expires_at` IS NULL");
+    }
+    if (!in_array('current_roommates_json', $colsList, true)) {
+        $pdo->exec("ALTER TABLE `xonadosh_listings` ADD COLUMN `current_roommates_json` JSON NULL AFTER `amenities_json`");
+    }
+} catch (Throwable $e) {}
+
+try {
+    $colsUsers = $pdo->query("SHOW COLUMNS FROM `xd_users`")->fetchAll(PDO::FETCH_COLUMN);
+    if (!in_array('is_hemis_verified', $colsUsers, true)) {
+        $pdo->exec("ALTER TABLE `xd_users` ADD COLUMN `is_hemis_verified` TINYINT(1) NOT NULL DEFAULT 0 AFTER `is_blocked`");
+        $pdo->exec("ALTER TABLE `xd_users` ADD COLUMN `hemis_university` VARCHAR(150) NULL AFTER `is_hemis_verified`");
+        $pdo->exec("ALTER TABLE `xd_users` ADD COLUMN `hemis_faculty` VARCHAR(150) NULL AFTER `hemis_university`");
+        $pdo->exec("ALTER TABLE `xd_users` ADD COLUMN `gender` VARCHAR(20) NOT NULL DEFAULT 'male' AFTER `avatar_url`");
+    }
+} catch (Throwable $e) {}
+
+try {
+    $colsProf = $pdo->query("SHOW COLUMNS FROM `xonadosh_profiles`")->fetchAll(PDO::FETCH_COLUMN);
+    if (!in_array('is_hemis_verified', $colsProf, true)) {
+        $pdo->exec("ALTER TABLE `xonadosh_profiles` ADD COLUMN `is_hemis_verified` TINYINT(1) NOT NULL DEFAULT 0 AFTER `course_year`");
+        $pdo->exec("ALTER TABLE `xonadosh_profiles` ADD COLUMN `is_women_only_mode` TINYINT(1) NOT NULL DEFAULT 0 AFTER `status`");
+    }
+} catch (Throwable $e) {}
 
 // Clear meal plans before reseed (idempotent re-run safe for plans)
 try { $pdo->exec("DELETE FROM `xonadosh_meal_plans` WHERE `group_code`='home_default'"); } catch (Throwable $e) {}

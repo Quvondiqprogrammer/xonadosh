@@ -89,7 +89,34 @@ class AuthRepository {
         return {
           'ok': false,
           'error':
-              res['error'] ?? 'Google auth succeeded but session was incomplete',
+              res['error'] ??
+              'Google auth succeeded but session was incomplete',
+          'status': res['status'],
+        };
+      }
+    }
+    return res;
+  }
+
+  Future<Map<String, dynamic>> loginWithApple({
+    required String identityToken,
+    String? email,
+    String? name,
+    String? appleId,
+  }) async {
+    final res = await _api.loginWithApple(
+      identityToken: identityToken,
+      email: email,
+      name: name,
+      appleId: appleId,
+    );
+    if (res['ok'] == true) {
+      final persisted = await _persistAuth(res);
+      if (!persisted) {
+        return {
+          'ok': false,
+          'error':
+              res['error'] ?? 'Apple auth succeeded but session was incomplete',
           'status': res['status'],
         };
       }
@@ -132,7 +159,7 @@ class AuthRepository {
     await _onSessionCleared?.call();
   }
 
-  Future<Map<String, dynamic>> deleteAccount({required String password}) async {
+  Future<Map<String, dynamic>> deleteAccount({String? password}) async {
     final res = await _api.deleteAccount(password: password);
     if (res['ok'] == true) {
       await _session.clearSession();

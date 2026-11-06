@@ -1,9 +1,16 @@
+import 'package:firebase_core/firebase_core.dart';
+import 'package:firebase_messaging/firebase_messaging.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import 'package:xonadosh/config/theme.dart';
+import 'package:xonadosh/core/services/analytics_service.dart';
+import 'package:xonadosh/core/services/fcm_service.dart';
+import 'package:xonadosh/core/services/xonadosh_retention_notification_service.dart';
+import 'package:xonadosh/firebase_options.dart';
 import 'package:xonadosh/l10n/app_localizations.dart';
 import 'package:xonadosh/presentation/common/app_viewport.dart';
 import 'package:xonadosh/presentation/providers/app_providers.dart';
@@ -11,9 +18,26 @@ import 'package:xonadosh/presentation/router/app_router.dart';
 
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
-  SystemChrome.setEnabledSystemUIMode(SystemUiMode.edgeToEdge);
-  // Hash URL strategy (#/) — /app/ subdirectory deploy uchun ishonchli
-  // (path strategy bilan /login domen ildiziga chiqib ketadi).
+  if (!kIsWeb) {
+    SystemChrome.setEnabledSystemUIMode(SystemUiMode.edgeToEdge);
+  }
+
+  try {
+    await Firebase.initializeApp(
+      options: DefaultFirebaseOptions.currentPlatform,
+    );
+    if (!kIsWeb) {
+      FirebaseMessaging.onBackgroundMessage(
+        xonadoshFirebaseMessagingBackgroundHandler,
+      );
+      await XonaDoshFcmService.instance.initialize();
+      await AnalyticsService.instance.initialize();
+      await XonaDoshRetentionNotificationService.instance.initialize();
+    }
+  } catch (e) {
+    debugPrint('[Firebase Init Error]: $e');
+  }
+
   runApp(const ProviderScope(child: XonaDoshApp()));
 }
 

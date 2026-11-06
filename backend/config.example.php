@@ -16,4 +16,6 @@ return [
     'admin_user' => 'admin',
     // Generate with: php -r "echo password_hash('your-password', PASSWORD_BCRYPT);"
     'admin_pass_hash' => '$2y$10$REPLACE_WITH_password_hash_OUTPUT',
+    // Secret gate key required in URL (?key=...) to access /admin/ entrance
+    'admin_gate_key' => 'CHANGE_ME_SECRET_GATE',
 ];

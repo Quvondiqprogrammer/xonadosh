@@ -16,6 +16,9 @@ FileETag MTime Size
 <IfModule mod_rewrite.c>
   RewriteEngine On
   RewriteRule .* - [E=HTTP_AUTHORIZATION:%{HTTP:Authorization}]
+
+  RewriteRule ^uylar/([^/]+)/?$ uylar/index.php?slug=$1 [L,QSA]
+  RewriteRule ^uylar/?$ uylar/index.php [L,QSA]
 </IfModule>
 
 <IfModule mod_headers.c>

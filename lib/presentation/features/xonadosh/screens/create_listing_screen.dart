@@ -54,6 +54,8 @@ class _XonadoshCreateListingScreenState
   double? _longitude;
   bool _isNoBroker = true;
   bool _utilitiesIncluded = false;
+  bool _hasSubsidyContract = false;
+  bool _isWomenOnly = false;
 
   final List<String> _selectedAmenities = [
     'Wi-Fi',
@@ -145,6 +147,60 @@ class _XonadoshCreateListingScreenState
     });
   }
 
+  void _generateAIDescription() {
+    final district = _isCustomDistrict
+        ? _customDistrictController.text.trim()
+        : _selectedDistrict;
+    final rooms = _roomsController.text.trim();
+    final amenitiesText = _selectedAmenities.join(', ');
+    final price = _priceController.text.trim();
+    final uniName = _selectedUni?.shortName ?? 'OTM';
+
+    final buf = StringBuffer();
+    buf.writeln(
+      '$district tumanida $rooms xonali shinam va barcha qulayliklarga ega xonadon ijaraga beriladi.',
+    );
+    if (_selectedUni != null) {
+      buf.writeln('🎓 Yaqin joylashgan OTM: $uniName (qatnash juda qulay).');
+    }
+    if (_isNoBroker) {
+      buf.writeln(
+        '🛡️ E‘lon bevosita uy egasidan (maklersiz, ortiqcha to‘lovsiz).',
+      );
+    }
+    if (_hasSubsidyContract) {
+      buf.writeln(
+        '📜 Talabalar uchun davlat subsidiyasi va rasmiy ijara shartnomasi rasmiylashtirib beriladi.',
+      );
+    }
+    if (_isWomenOnly || _targetGender == 'girls') {
+      buf.writeln('🌸 Faqat qizlar / talaba qizlar uchun.');
+    } else if (_targetGender == 'boys') {
+      buf.writeln('👨 Tartibli talaba yigitlar uchun.');
+    }
+    if (_utilitiesIncluded) {
+      buf.writeln('💡 Kommunal to‘lovlar (gaz, svet, suv) ijara narxi ichida.');
+    }
+    if (amenitiesText.isNotEmpty) {
+      buf.writeln('✨ Mavjud sharoitlar: $amenitiesText.');
+    }
+    if (price.isNotEmpty) {
+      buf.writeln('💰 Oylik ijara: $price $_currency.');
+    }
+    buf.writeln('Iltimos, faqat jiddiy va tartibli talabalar murojaat qilsin.');
+
+    setState(() {
+      _descController.text = buf.toString().trim();
+    });
+    ScaffoldMessenger.of(context).showSnackBar(
+      const SnackBar(
+        content: Text('✨ AI yordamida tavsif yaratildi!'),
+        backgroundColor: XonaDoshColors.primary,
+        duration: Duration(seconds: 2),
+      ),
+    );
+  }
+
   Future<void> _submit() async {
     if (!_formKey.currentState!.validate()) {
       ScaffoldMessenger.of(context).showSnackBar(
@@ -186,6 +242,8 @@ class _XonadoshCreateListingScreenState
       'target_gender': _targetGender,
       'is_no_broker': _isNoBroker,
       'utilities_included': _utilitiesIncluded,
+      'has_subsidy_contract': _hasSubsidyContract,
+      'is_women_only': _isWomenOnly || _targetGender == 'girls',
       'amenities': _selectedAmenities,
       'photos': _photos.isNotEmpty
           ? _photos
@@ -361,39 +419,22 @@ class _XonadoshCreateListingScreenState
         ),
         elevation: 0,
         actions: [
-          Container(
-            margin: const EdgeInsets.only(right: 12),
-            padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 4),
-            decoration: BoxDecoration(
-              color: XonaDoshColors.primary.withAlpha(20),
-              borderRadius: BorderRadius.circular(8),
-              border: Border.all(color: XonaDoshColors.primary.withAlpha(50)),
+          IconButton(
+            icon: const Icon(
+              Icons.public_rounded,
+              color: XonaDoshColors.primary,
             ),
-            child: Row(
-              mainAxisSize: MainAxisSize.min,
-              children: [
-                const Icon(
-                  Icons.public_rounded,
-                  size: 14,
-                  color: XonaDoshColors.primary,
+            tooltip: context.l10n.xonadoshGlobalUzbekistan,
+            onPressed: () {
+              ScaffoldMessenger.of(context).showSnackBar(
+                SnackBar(
+                  content: Text(context.l10n.xonadoshGlobalUzbekistan),
+                  duration: const Duration(seconds: 2),
                 ),
-                const SizedBox(width: 4),
-                ConstrainedBox(
-                  constraints: const BoxConstraints(maxWidth: 140),
-                  child: Text(
-                    context.l10n.xonadoshGlobalUzbekistan,
-                    style: const TextStyle(
-                      fontSize: 11,
-                      fontWeight: FontWeight.w800,
-                      color: XonaDoshColors.primary,
-                    ),
-                    maxLines: 1,
-                    overflow: TextOverflow.ellipsis,
-                  ),
-                ),
-              ],
-            ),
+              );
+            },
           ),
+          const SizedBox(width: 4),
         ],
       ),
       body: Form(
@@ -1141,6 +1182,67 @@ class _XonadoshCreateListingScreenState
                       onChanged: (val) =>
                           setState(() => _utilitiesIncluded = val),
                     ),
+                    const Divider(height: 1),
+                    SwitchListTile.adaptive(
+                      value: _hasSubsidyContract,
+                      activeTrackColor: const Color(0xFFD97706),
+                      activeThumbColor: Colors.white,
+                      secondary: Container(
+                        padding: const EdgeInsets.all(8),
+                        decoration: BoxDecoration(
+                          color: const Color(0xFFD97706).withAlpha(25),
+                          borderRadius: BorderRadius.circular(8),
+                        ),
+                        child: const Icon(
+                          Icons.description_rounded,
+                          color: Color(0xFFD97706),
+                          size: 20,
+                        ),
+                      ),
+                      title: const Text(
+                        'Ijara shartnomasi / Subsidiya beriladi',
+                        style: TextStyle(
+                          fontWeight: FontWeight.w700,
+                          fontSize: 14,
+                        ),
+                      ),
+                      subtitle: const Text(
+                        'Talabalar uchun 50% davlat subsidiyasi rasmiylashtiriladi (e‘loningizga katta ustunlik beradi)',
+                        style: TextStyle(fontSize: 12),
+                      ),
+                      onChanged: (val) =>
+                          setState(() => _hasSubsidyContract = val),
+                    ),
+                    const Divider(height: 1),
+                    SwitchListTile.adaptive(
+                      value: _isWomenOnly,
+                      activeTrackColor: const Color(0xFFE11D48),
+                      activeThumbColor: Colors.white,
+                      secondary: Container(
+                        padding: const EdgeInsets.all(8),
+                        decoration: BoxDecoration(
+                          color: const Color(0xFFE11D48).withAlpha(25),
+                          borderRadius: BorderRadius.circular(8),
+                        ),
+                        child: const Icon(
+                          Icons.female_rounded,
+                          color: Color(0xFFE11D48),
+                          size: 20,
+                        ),
+                      ),
+                      title: const Text(
+                        'Faqat qizlar uchun (Ayollar maxfiylik rejimi)',
+                        style: TextStyle(
+                          fontWeight: FontWeight.w700,
+                          fontSize: 14,
+                        ),
+                      ),
+                      subtitle: const Text(
+                        'Qizlar va ota-onalar uchun xavfsiz va tinch muhit kafolatlangan',
+                        style: TextStyle(fontSize: 12),
+                      ),
+                      onChanged: (val) => setState(() => _isWomenOnly = val),
+                    ),
                   ],
                 ),
               ),
@@ -1192,6 +1294,33 @@ class _XonadoshCreateListingScreenState
                 ],
               ),
               const SizedBox(height: 14),
+
+              Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  Text(
+                    context.l10n.xonadoshDetailedDesc,
+                    style: const TextStyle(fontWeight: FontWeight.w700),
+                  ),
+                  TextButton.icon(
+                    onPressed: _generateAIDescription,
+                    icon: const Icon(
+                      Icons.auto_awesome_rounded,
+                      size: 16,
+                      color: XonaDoshColors.primary,
+                    ),
+                    label: const Text(
+                      'AI tavsif yaratish',
+                      style: TextStyle(
+                        fontWeight: FontWeight.bold,
+                        fontSize: 13,
+                        color: XonaDoshColors.primary,
+                      ),
+                    ),
+                  ),
+                ],
+              ),
+              const SizedBox(height: 6),
 
               TextFormField(
                 controller: _descController,

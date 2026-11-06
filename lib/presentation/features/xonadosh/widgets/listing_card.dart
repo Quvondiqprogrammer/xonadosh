@@ -202,6 +202,78 @@ class XonadoshListingCard extends StatelessWidget {
                               ],
                             ),
                           ),
+                        if (item.hasSubsidyContract)
+                          Container(
+                            padding: const EdgeInsets.symmetric(
+                              horizontal: 8,
+                              vertical: 4.5,
+                            ),
+                            decoration: BoxDecoration(
+                              color: const Color(0xFFD97706),
+                              borderRadius: BorderRadius.circular(8),
+                              boxShadow: [
+                                BoxShadow(
+                                  color: Colors.black.withValues(alpha: 0.2),
+                                  blurRadius: 4,
+                                ),
+                              ],
+                            ),
+                            child: const Row(
+                              mainAxisSize: MainAxisSize.min,
+                              children: [
+                                Icon(
+                                  Icons.description_rounded,
+                                  color: Colors.white,
+                                  size: 12,
+                                ),
+                                SizedBox(width: 3),
+                                Text(
+                                  'Subsidiya bor',
+                                  style: TextStyle(
+                                    color: Colors.white,
+                                    fontSize: 11,
+                                    fontWeight: FontWeight.w800,
+                                  ),
+                                ),
+                              ],
+                            ),
+                          ),
+                        if (item.isWomenOnly)
+                          Container(
+                            padding: const EdgeInsets.symmetric(
+                              horizontal: 8,
+                              vertical: 4.5,
+                            ),
+                            decoration: BoxDecoration(
+                              color: const Color(0xFFE11D48),
+                              borderRadius: BorderRadius.circular(8),
+                              boxShadow: [
+                                BoxShadow(
+                                  color: Colors.black.withValues(alpha: 0.2),
+                                  blurRadius: 4,
+                                ),
+                              ],
+                            ),
+                            child: const Row(
+                              mainAxisSize: MainAxisSize.min,
+                              children: [
+                                Icon(
+                                  Icons.female_rounded,
+                                  color: Colors.white,
+                                  size: 12,
+                                ),
+                                SizedBox(width: 3),
+                                Text(
+                                  'Faqat qizlar',
+                                  style: TextStyle(
+                                    color: Colors.white,
+                                    fontSize: 11,
+                                    fontWeight: FontWeight.w800,
+                                  ),
+                                ),
+                              ],
+                            ),
+                          ),
                       ],
                     ),
                   ),
@@ -230,6 +302,40 @@ class XonadoshListingCard extends StatelessWidget {
                       ],
                     ),
                   ),
+                  if (item.photos.length > 1)
+                    Positioned(
+                      bottom: 8,
+                      right: 10,
+                      child: Container(
+                        padding: const EdgeInsets.symmetric(
+                          horizontal: 7,
+                          vertical: 3,
+                        ),
+                        decoration: BoxDecoration(
+                          color: Colors.black.withValues(alpha: 0.6),
+                          borderRadius: BorderRadius.circular(10),
+                        ),
+                        child: Row(
+                          mainAxisSize: MainAxisSize.min,
+                          children: [
+                            const Icon(
+                              Icons.photo_camera_rounded,
+                              size: 11,
+                              color: Colors.white,
+                            ),
+                            const SizedBox(width: 3),
+                            Text(
+                              '${item.photos.length}',
+                              style: const TextStyle(
+                                color: Colors.white,
+                                fontSize: 10,
+                                fontWeight: FontWeight.w700,
+                              ),
+                            ),
+                          ],
+                        ),
+                      ),
+                    ),
                 ],
               ),
             ),
@@ -297,6 +403,68 @@ class XonadoshListingCard extends StatelessWidget {
                       ),
                     ],
                   ),
+                  const SizedBox(height: 5),
+                  // Haqiqiy Oylik Xarajat (Ijara + 22 kunlik yo'l xarajati)
+                  Container(
+                    padding: const EdgeInsets.symmetric(
+                      horizontal: 8,
+                      vertical: 3.5,
+                    ),
+                    decoration: BoxDecoration(
+                      color: isDark
+                          ? const Color(0xFF064E3B).withValues(alpha: 0.5)
+                          : const Color(0xFFECFDF5),
+                      borderRadius: BorderRadius.circular(6),
+                      border: Border.all(
+                        color: isDark
+                            ? const Color(0xFF059669).withValues(alpha: 0.4)
+                            : const Color(0xFFA7F3D0),
+                        width: 0.8,
+                      ),
+                    ),
+                    child: Row(
+                      mainAxisSize: MainAxisSize.min,
+                      children: [
+                        const Icon(
+                          Icons.calculate_outlined,
+                          size: 13,
+                          color: Color(0xFF059669),
+                        ),
+                        const SizedBox(width: 4),
+                        Text(
+                          'Haqiqiy oylik: ~${formatListingMoney(item.trueMonthlyCostUzs ?? (item.price + 1700 * 44))} $currSymbol (yo‘l bilan)',
+                          style: TextStyle(
+                            fontSize: 11,
+                            fontWeight: FontWeight.w700,
+                            color: isDark
+                                ? const Color(0xFF34D399)
+                                : const Color(0xFF047857),
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
+                  if (item.currentRoommates.isNotEmpty) ...[
+                    const SizedBox(height: 5),
+                    Row(
+                      children: [
+                        Icon(
+                          Icons.group_outlined,
+                          size: 13,
+                          color: isDark ? Colors.white70 : Colors.black54,
+                        ),
+                        const SizedBox(width: 4),
+                        Text(
+                          'Hozirgi xonadoshlar: ${item.currentRoommates.length} kishi yashamoqda',
+                          style: TextStyle(
+                            fontSize: 11,
+                            fontWeight: FontWeight.w600,
+                            color: isDark ? Colors.white70 : Colors.black87,
+                          ),
+                        ),
+                      ],
+                    ),
+                  ],
                   const SizedBox(height: 8),
                   // Title
                   Text(
@@ -309,6 +477,17 @@ class XonadoshListingCard extends StatelessWidget {
                       letterSpacing: -0.2,
                     ),
                   ),
+                  if (item.amenities.isNotEmpty) ...[
+                    const SizedBox(height: 8),
+                    Wrap(
+                      spacing: 5,
+                      runSpacing: 4,
+                      children: item.amenities
+                          .take(4)
+                          .map((a) => _buildAmenityBadge(a, isDark))
+                          .toList(),
+                    ),
+                  ],
                   const SizedBox(height: 10),
                   // Location, Metro & University info chips
                   Wrap(
@@ -373,9 +552,9 @@ class XonadoshListingCard extends StatelessWidget {
                           icon: const Icon(Icons.send_rounded, size: 14),
                           label: Text(l10n.xonadoshTelegram),
                           style: FilledButton.styleFrom(
-                            backgroundColor: const Color(0xFF0284C7).withValues(
-                              alpha: isDark ? 0.2 : 0.12,
-                            ),
+                            backgroundColor: const Color(
+                              0xFF0284C7,
+                            ).withValues(alpha: isDark ? 0.2 : 0.12),
                             foregroundColor: isDark
                                 ? const Color(0xFF38BDF8)
                                 : const Color(0xFF0284C7),
@@ -520,6 +699,52 @@ class XonadoshListingCard extends StatelessWidget {
             ),
           ],
         ),
+      ),
+    );
+  }
+
+  Widget _buildAmenityBadge(String code, bool isDark) {
+    final (icon, label) = switch (code.toLowerCase()) {
+      'wifi' => (Icons.wifi_rounded, 'Wi-Fi'),
+      'ac' || 'conditioner' => (Icons.ac_unit_rounded, 'Konditsioner'),
+      'washer' ||
+      'washing_machine' => (Icons.local_laundry_service_rounded, 'Kir yuvish'),
+      'fridge' || 'refrigerator' => (Icons.kitchen_rounded, 'Muzlatgich'),
+      'tv' => (Icons.tv_rounded, 'TV'),
+      'heating' => (Icons.fireplace_rounded, 'Isitish'),
+      'furniture' => (Icons.chair_rounded, 'Mebel'),
+      'balcony' => (Icons.balcony_rounded, 'Balkon'),
+      'parking' => (Icons.local_parking_rounded, 'Parkovka'),
+      _ => (Icons.check_circle_outline_rounded, code),
+    };
+
+    return Container(
+      padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 3),
+      decoration: BoxDecoration(
+        color: isDark ? const Color(0xFF1E293B) : const Color(0xFFF1F5F9),
+        borderRadius: BorderRadius.circular(6),
+        border: Border.all(
+          color: isDark ? const Color(0xFF334155) : const Color(0xFFE2E8F0),
+        ),
+      ),
+      child: Row(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          Icon(
+            icon,
+            size: 11,
+            color: isDark ? const Color(0xFF2DD4BF) : XonaDoshColors.emerald,
+          ),
+          const SizedBox(width: 3),
+          Text(
+            label,
+            style: TextStyle(
+              fontSize: 10,
+              fontWeight: FontWeight.w600,
+              color: isDark ? const Color(0xFFCBD5E1) : const Color(0xFF475569),
+            ),
+          ),
+        ],
       ),
     );
   }

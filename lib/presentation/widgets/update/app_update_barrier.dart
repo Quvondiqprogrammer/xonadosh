@@ -68,8 +68,9 @@ class AppUpdateBarrier extends ConsumerWidget {
                           borderRadius: BorderRadius.circular(14),
                         ),
                       ),
-                      onPressed: () =>
-                          ref.read(appUpdateNotifierProvider.notifier).startUpdate(),
+                      onPressed: () => ref
+                          .read(appUpdateNotifierProvider.notifier)
+                          .startUpdate(),
                       child: Text(
                         updateState.isUpdating
                             ? updateState.statusMessage

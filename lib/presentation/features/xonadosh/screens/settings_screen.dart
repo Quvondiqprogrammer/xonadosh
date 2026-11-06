@@ -366,6 +366,14 @@ class SettingsScreen extends ConsumerWidget {
                       ),
                       onTap: () async {
                         final passwordCtrl = TextEditingController();
+                        final sessionMgr = ref.read(sessionManagerProvider);
+                        final currentUsername =
+                            sessionMgr.username ??
+                            sessionMgr.user?.username ??
+                            '';
+                        final isOauth =
+                            currentUsername.startsWith('a_') ||
+                            currentUsername.startsWith('g_');
                         try {
                           final ok = await showDialog<bool>(
                             context: context,
@@ -381,19 +389,22 @@ class SettingsScreen extends ConsumerWidget {
                               ),
                               content: Column(
                                 mainAxisSize: MainAxisSize.min,
+                                crossAxisAlignment: CrossAxisAlignment.start,
                                 children: [
                                   Text(
                                     l10n.accountDeleteBody,
                                     style: const TextStyle(fontSize: 13),
                                   ),
-                                  const SizedBox(height: 12),
-                                  TextField(
-                                    controller: passwordCtrl,
-                                    obscureText: true,
-                                    decoration: InputDecoration(
-                                      labelText: l10n.loginPassword,
+                                  if (!isOauth) ...[
+                                    const SizedBox(height: 12),
+                                    TextField(
+                                      controller: passwordCtrl,
+                                      obscureText: true,
+                                      decoration: InputDecoration(
+                                        labelText: l10n.loginPassword,
+                                      ),
                                     ),
-                                  ),
+                                  ],
                                 ],
                               ),
                               actions: [
@@ -412,7 +423,7 @@ class SettingsScreen extends ConsumerWidget {
                             ),
                           );
                           if (ok == true && context.mounted) {
-                            if (passwordCtrl.text.isEmpty) {
+                            if (!isOauth && passwordCtrl.text.isEmpty) {
                               ScaffoldMessenger.of(context).showSnackBar(
                                 SnackBar(
                                   content: Text(
@@ -424,7 +435,9 @@ class SettingsScreen extends ConsumerWidget {
                             }
                             final res = await ref
                                 .read(authRepositoryProvider)
-                                .deleteAccount(password: passwordCtrl.text);
+                                .deleteAccount(
+                                  password: isOauth ? null : passwordCtrl.text,
+                                );
                             if (!context.mounted) return;
                             if (res['ok'] == true) {
                               ref.invalidate(authBootstrapProvider);

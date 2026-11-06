@@ -109,6 +109,27 @@ if ($q !== null && $q !== '') {
 
 $noBroker = isset($_GET['no_broker']) && ($_GET['no_broker'] === '1' || $_GET['no_broker'] === 'true' || $_GET['no_broker'] === 1);
 $utilitiesIncluded = isset($_GET['utilities_included']) && ($_GET['utilities_included'] === '1' || $_GET['utilities_included'] === 'true' || $_GET['utilities_included'] === 1);
+$subsidyOnly = isset($_GET['subsidy_only']) && ($_GET['subsidy_only'] === '1' || $_GET['subsidy_only'] === 'true' || $_GET['subsidy_only'] === 1);
+$womenOnly = isset($_GET['women_only']) && ($_GET['women_only'] === '1' || $_GET['women_only'] === 'true' || $_GET['women_only'] === 1);
+$includeExpired = isset($_GET['include_expired']) && ($_GET['include_expired'] === '1' || $_GET['include_expired'] === 'true' || $_GET['include_expired'] === 1);
+$maxDistanceKm = isset($_GET['max_distance_km']) && is_numeric($_GET['max_distance_km']) ? (float)$_GET['max_distance_km'] : null;
+$maxCommuteMin = isset($_GET['max_commute_min']) && is_numeric($_GET['max_commute_min']) ? (int)$_GET['max_commute_min'] : null;
+
+// Filter out listings auto-hidden due to >= 3 crowd broker reports
+$sql .= " AND (l.crowd_broker_reports < 3 OR l.crowd_broker_reports IS NULL)";
+
+// Filter out expired (TTL 72h / stale) listings unless explicitly asked
+if (!$includeExpired) {
+    $sql .= " AND (l.expires_at IS NULL OR l.expires_at > NOW())";
+}
+
+if ($subsidyOnly) {
+    $sql .= " AND l.has_subsidy_contract = 1";
+}
+
+if ($womenOnly) {
+    $sql .= " AND (l.is_women_only = 1 OR l.target_gender = 'girls')";
+}
 
 if ($noBroker) {
     $sql .= " AND (l.amenities_json LIKE '%bez_makler%' OR l.amenities_json LIKE '%no_broker%' OR l.title LIKE '%bez makler%' OR l.title LIKE '%maklersiz%' OR l.description LIKE '%bez makler%' OR l.description LIKE '%maklersiz%' OR l.type = 'roommate_wanted')";
@@ -163,6 +184,15 @@ try {
         $monthlyBus = $busFare * 44;
         $monthlyTaxi = $taxiFare * 44;
 
+        if ($maxDistanceKm !== null && $dist > $maxDistanceKm) {
+            continue;
+        }
+
+        $minCommute = min($metroTime, $busTime, $walkTime);
+        if ($maxCommuteMin !== null && $minCommute > $maxCommuteMin) {
+            continue;
+        }
+
         $amenities = [];
         if (!empty($r['amenities_json'])) {
             $decoded = json_decode($r['amenities_json'], true);
@@ -175,6 +205,16 @@ try {
             if (is_array($decoded)) $photos = $decoded;
         }
 
+        $currentRoommates = [];
+        if (!empty($r['current_roommates_json'])) {
+            $decodedRm = json_decode($r['current_roommates_json'], true);
+            if (is_array($decodedRm)) $currentRoommates = $decodedRm;
+        }
+
+        $expiresTs = !empty($r['expires_at']) ? strtotime($r['expires_at']) : null;
+        $hoursLeft = $expiresTs ? max(0, (int)round(($expiresTs - time()) / 3600)) : 72;
+        $daysLeft = (int)ceil($hoursLeft / 24);
+
         $isNoBroker = in_array('bez_makler', $amenities, true) ||
                       in_array('no_broker', $amenities, true) ||
                       $r['type'] === 'roommate_wanted' ||
@@ -185,6 +225,9 @@ try {
                                in_array('kommunal_ichida', $amenities, true) ||
                                stripos($r['title'] . ' ' . ($r['description'] ?? ''), 'kommunal ichida') !== false ||
                                stripos($r['title'] . ' ' . ($r['description'] ?? ''), 'kommunal to‘lov ichida') !== false;
+
+        $hasSubsidy = !empty($r['has_subsidy_contract']);
+        $isWomenOnly = !empty($r['is_women_only']) || ($r['target_gender'] === 'girls');
 
         $listings[] = [
             'id' => (int)$r['id'],
@@ -197,6 +240,7 @@ try {
             'title' => $r['title'],
             'description' => $r['description'] ?? '',
             'price' => (float)$r['price'],
+            'true_monthly_cost_uzs' => (float)$r['price'] + (float)$monthlyMetro,
             'currency' => $r['currency'],
             'price_period' => $r['price_period'],
             'city' => $r['city'],
@@ -217,6 +261,13 @@ try {
             'target_tenant' => $r['target_tenant'],
             'is_no_broker' => (bool)$isNoBroker,
             'utilities_included' => (bool)$isUtilitiesIncluded,
+            'has_subsidy_contract' => (bool)$hasSubsidy,
+            'is_women_only' => (bool)$isWomenOnly,
+            'crowd_broker_reports' => (int)($r['crowd_broker_reports'] ?? 0),
+            'expires_at' => $r['expires_at'] ?? null,
+            'hours_left' => $hoursLeft,
+            'days_left' => $daysLeft,
+            'current_roommates' => $currentRoommates,
             'amenities' => $amenities,
             'photos' => $photos,
             'status' => $r['status'],

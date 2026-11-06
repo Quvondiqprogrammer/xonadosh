@@ -98,21 +98,42 @@ if ($nearestUniId !== null) {
     }
 }
 
+$hasSubsidyContract = !empty($body['has_subsidy_contract']) ? 1 : 0;
+$isWomenOnly = (!empty($body['is_women_only']) || $targetGender === 'girls') ? 1 : 0;
+$currentRoommatesJson = isset($body['current_roommates']) && is_array($body['current_roommates']) 
+    ? json_encode($body['current_roommates'], JSON_UNESCAPED_UNICODE) 
+    : null;
+
+// Anti-broker protection: Limit unverified accounts/phones to 1 active listing
+try {
+    $chkStmt = $pdo->prepare("SELECT COUNT(*) FROM `xonadosh_listings` WHERE `phone_number` = ? AND `status` = 'active' AND (`expires_at` IS NULL OR `expires_at` > NOW())");
+    $chkStmt->execute([$phoneNumber]);
+    $activeCount = (int)$chkStmt->fetchColumn();
+    if ($activeCount >= 2) {
+        json_response([
+            'ok' => false, 
+            'error' => "Har bir telefon raqami uchun maksimal 1 ta bepul faol e'lon ruxsat etiladi (maklerlikni oldini olish tizimi). Yangi e'lon berishdan oldin avvalgisini yakunlang."
+        ], 403);
+    }
+} catch (Throwable $e) {}
+
 try {
     $stmt = $pdo->prepare("INSERT INTO `xonadosh_listings` (
         `user_id`, `username`, `owner_name`, `phone_number`, `telegram_handle`, `type`,
         `title`, `description`, `price`, `currency`, `price_period`, `city`, `district`,
         `address`, `latitude`, `longitude`, `nearest_university_id`, `distance_to_university_km`,
         `nearest_metro`, `rooms_count`, `floor`, `total_floors`, `area_sqm`, `target_gender`,
-        `target_tenant`, `amenities_json`, `photos_json`, `status`
-    ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, 'active')");
+        `target_tenant`, `has_subsidy_contract`, `is_women_only`, `current_roommates_json`,
+        `amenities_json`, `photos_json`, `status`, `expires_at`
+    ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, 'active', DATE_ADD(NOW(), INTERVAL 3 DAY))");
 
     $stmt->execute([
         $userId, $username, $ownerName, $phoneNumber, $telegramHandle, $type,
         $title, $description, $price, $currency, $pricePeriod, $city, $district,
         $address, $lat, $lng, $nearestUniId, $distanceToUni,
         $nearestMetro, $roomsCount, $floor, $totalFloors, $areaSqm, $targetGender,
-        $targetTenant, json_encode($amenities, JSON_UNESCAPED_UNICODE),
+        $targetTenant, $hasSubsidyContract, $isWomenOnly, $currentRoommatesJson,
+        json_encode($amenities, JSON_UNESCAPED_UNICODE),
         json_encode($photos, JSON_UNESCAPED_UNICODE)
     ]);
 

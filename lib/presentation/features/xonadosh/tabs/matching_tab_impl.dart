@@ -71,6 +71,14 @@ class XonadoshMatchingTab extends ConsumerWidget {
               ),
             ),
 
+            // 2. Xonadosh Jamoasi (Coliving Squads)
+            SliverToBoxAdapter(
+              child: Padding(
+                padding: const EdgeInsets.fromLTRB(16, 0, 16, 12),
+                child: _ColivingSquadsSection(isDark: isDark),
+              ),
+            ),
+
             SliverToBoxAdapter(
               child: Padding(
                 padding: const EdgeInsets.fromLTRB(16, 4, 16, 8),
@@ -634,8 +642,7 @@ class XonadoshMatchingTab extends ConsumerWidget {
                                 overflow: TextOverflow.ellipsis,
                               ),
                             ),
-                            if (item.age > 0) ...[
-                              const SizedBox(width: 4),
+                            if (item.age > 0)
                               Text(
                                 ', ${item.age}',
                                 style: TextStyle(
@@ -646,7 +653,6 @@ class XonadoshMatchingTab extends ConsumerWidget {
                                   fontWeight: FontWeight.w600,
                                 ),
                               ),
-                            ],
                           ],
                         ),
                         const SizedBox(height: 2),
@@ -666,38 +672,7 @@ class XonadoshMatchingTab extends ConsumerWidget {
                   ),
 
                   // Match Score Pill
-                  Container(
-                    padding: const EdgeInsets.symmetric(
-                      horizontal: 8,
-                      vertical: 4,
-                    ),
-                    decoration: BoxDecoration(
-                      color: XonaDoshColors.primary.withValues(alpha: 0.1),
-                      borderRadius: BorderRadius.circular(8),
-                    ),
-                    child: Row(
-                      mainAxisSize: MainAxisSize.min,
-                      children: [
-                        Text(
-                          '$score%',
-                          style: const TextStyle(
-                            color: XonaDoshColors.primaryDark,
-                            fontWeight: FontWeight.w800,
-                            fontSize: 12,
-                          ),
-                        ),
-                        const SizedBox(width: 3),
-                        Text(
-                          l10n.xonadoshMatchLabel,
-                          style: const TextStyle(
-                            color: XonaDoshColors.primaryDark,
-                            fontWeight: FontWeight.w600,
-                            fontSize: 11,
-                          ),
-                        ),
-                      ],
-                    ),
-                  ),
+                  _buildMatchScoreBadge(score, isDark),
                 ],
               ),
 
@@ -751,9 +726,9 @@ class XonadoshMatchingTab extends ConsumerWidget {
                             l10n: l10n,
                           )
                           .map(
-                            (reason) => _buildHabitPill(
-                              Icons.check_rounded,
-                              reason,
+                            (r) => _buildHabitPill(
+                              Icons.check_circle_outline,
+                              r,
                               isDark,
                             ),
                           )
@@ -767,11 +742,39 @@ class XonadoshMatchingTab extends ConsumerWidget {
               Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
-                  Text(
-                    '~${(item.budgetMax / 1000).toStringAsFixed(0)}k ${l10n.currencyUzsSuffix}',
-                    style: const TextStyle(
-                      fontWeight: FontWeight.w700,
-                      fontSize: 13,
+                  Container(
+                    padding: const EdgeInsets.symmetric(
+                      horizontal: 8,
+                      vertical: 4,
+                    ),
+                    decoration: BoxDecoration(
+                      color: isDark
+                          ? const Color(0xFF0F172A)
+                          : const Color(0xFFF1F5F9),
+                      borderRadius: BorderRadius.circular(8),
+                      border: Border.all(
+                        color: isDark
+                            ? const Color(0xFF334155)
+                            : const Color(0xFFE2E8F0),
+                      ),
+                    ),
+                    child: Row(
+                      mainAxisSize: MainAxisSize.min,
+                      children: [
+                        const Icon(
+                          Icons.payments_outlined,
+                          size: 13,
+                          color: Color(0xFF10B981),
+                        ),
+                        const SizedBox(width: 4),
+                        Text(
+                          '~${(item.budgetMax / 1000).toStringAsFixed(0)}k ${l10n.currencyUzsSuffix}',
+                          style: const TextStyle(
+                            fontWeight: FontWeight.w800,
+                            fontSize: 12,
+                          ),
+                        ),
+                      ],
                     ),
                   ),
                   Row(
@@ -847,6 +850,48 @@ class XonadoshMatchingTab extends ConsumerWidget {
             ],
           ),
         ),
+      ),
+    );
+  }
+
+  Widget _buildMatchScoreBadge(int score, bool isDark) {
+    final isHigh = score >= 80;
+    final isMed = score >= 60;
+    final gradColors = isHigh
+        ? const [Color(0xFF059669), Color(0xFF10B981)]
+        : (isMed
+              ? const [Color(0xFFD97706), Color(0xFFF59E0B)]
+              : const [Color(0xFF64748B), Color(0xFF94A3B8)]);
+    final icon = isHigh ? '🔥' : (isMed ? '⚡' : '✨');
+
+    return Container(
+      padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
+      decoration: BoxDecoration(
+        gradient: LinearGradient(colors: gradColors),
+        borderRadius: BorderRadius.circular(8),
+        boxShadow: [
+          BoxShadow(
+            color: gradColors.first.withValues(alpha: 0.35),
+            blurRadius: 4,
+            offset: const Offset(0, 1.5),
+          ),
+        ],
+      ),
+      child: Row(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          Text(icon, style: const TextStyle(fontSize: 11)),
+          const SizedBox(width: 3),
+          Text(
+            '$score%',
+            style: const TextStyle(
+              color: Colors.white,
+              fontWeight: FontWeight.w900,
+              fontSize: 11,
+              letterSpacing: 0.2,
+            ),
+          ),
+        ],
       ),
     );
   }
@@ -978,26 +1023,7 @@ class XonadoshMatchingTab extends ConsumerWidget {
                             ],
                           ),
                         ),
-                        Container(
-                          padding: const EdgeInsets.symmetric(
-                            horizontal: 8,
-                            vertical: 4,
-                          ),
-                          decoration: BoxDecoration(
-                            color: XonaDoshColors.primary.withValues(
-                              alpha: 0.1,
-                            ),
-                            borderRadius: BorderRadius.circular(8),
-                          ),
-                          child: Text(
-                            '$score% ${l10n.xonadoshMatchLabel}',
-                            style: const TextStyle(
-                              color: XonaDoshColors.primaryDark,
-                              fontWeight: FontWeight.w800,
-                              fontSize: 12,
-                            ),
-                          ),
-                        ),
+                        _buildMatchScoreBadge(score, isDark),
                       ],
                     ),
 
@@ -1028,9 +1054,9 @@ class XonadoshMatchingTab extends ConsumerWidget {
                                   limit: 5,
                                 )
                                 .map(
-                                  (reason) => _buildHabitPill(
+                                  (r) => _buildHabitPill(
                                     Icons.check_circle_outline,
-                                    reason,
+                                    r,
                                     isDark,
                                   ),
                                 )
@@ -1279,6 +1305,7 @@ class XonadoshMatchingTab extends ConsumerWidget {
     String value,
     bool isDark,
   ) {
+    final cleanLabel = label.trim().replaceAll(RegExp(r'[:\s]+$'), '');
     return Container(
       padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 7),
       decoration: BoxDecoration(
@@ -1294,7 +1321,7 @@ class XonadoshMatchingTab extends ConsumerWidget {
           Icon(icon, size: 14, color: XonaDoshColors.primary),
           const SizedBox(width: 6),
           Text(
-            '$label: ',
+            '$cleanLabel: ',
             style: TextStyle(
               fontSize: 11,
               color: isDark ? const Color(0xFF94A3B8) : const Color(0xFF64748B),
@@ -1318,33 +1345,33 @@ class XonadoshMatchingTab extends ConsumerWidget {
   String _sleepLabel(String val, AppLocalizations l10n) {
     switch (val) {
       case 'early_bird':
-        return l10n.xonadoshSleepEarlyHours;
+        return '🌅 Erta turadi';
       case 'night_owl':
-        return l10n.xonadoshSleepNightHours;
+        return '🌙 Tungi qush';
       default:
-        return l10n.xonadoshHabitFlexible;
+        return '⏱️ Erkin rejim';
     }
   }
 
   String _cleanLabel(String val, AppLocalizations l10n) {
     switch (val) {
       case 'strict':
-        return l10n.xonadoshHabitStrictClean;
+        return '✨ O‘ta ozoda';
       case 'moderate':
-        return l10n.xonadoshHabitAverageClean;
+        return '🧹 Tartibli';
       default:
-        return l10n.xonadoshHabitRelaxedClean;
+        return '😌 Erkin tartib';
     }
   }
 
   String _studyLabel(String val, AppLocalizations l10n) {
     switch (val) {
       case 'silent':
-        return l10n.xonadoshHabitSilentStudy;
+        return '🤫 Sokin dars';
       case 'music':
-        return l10n.xonadoshHabitMusicStudy;
+        return '🎧 Musiqada';
       default:
-        return l10n.xonadoshHabitGroupStudy;
+        return '👥 Guruhda';
     }
   }
 
@@ -1352,12 +1379,12 @@ class XonadoshMatchingTab extends ConsumerWidget {
     switch (val) {
       case 'cooks_often':
       case 'rotates':
-        return l10n.xonadoshHabitCookRotates;
+        return '🍳 Navbat bilan';
       case 'cooks_rarely':
       case 'cooks_self':
-        return l10n.xonadoshHabitCookSelf;
+        return '👨‍🍳 O‘zi pishiradi';
       default:
-        return l10n.xonadoshHabitEatOut;
+        return '🍽️ Tashqarida';
     }
   }
 
@@ -1365,12 +1392,12 @@ class XonadoshMatchingTab extends ConsumerWidget {
     switch (val) {
       case 'smoker':
       case 'yes':
-        return l10n.xonadoshHabitSmoker;
+        return '🚬 Chekadi';
       case 'outdoor_only':
       case 'balcony':
-        return l10n.xonadoshHabitBalconySmoke;
+        return '💨 Balkonda';
       default:
-        return l10n.xonadoshHabitIDontSmoke;
+        return '🚭 Chekmaydi';
     }
   }
 }
@@ -1410,9 +1437,7 @@ class _CampusFitFeatureCardState extends State<_CampusFitFeatureCard> {
           ),
           boxShadow: [
             BoxShadow(
-              color: Colors.black.withValues(
-                alpha: widget.isDark ? 0.2 : 0.04,
-              ),
+              color: Colors.black.withValues(alpha: widget.isDark ? 0.2 : 0.04),
               blurRadius: 6,
               offset: const Offset(0, 2),
             ),
@@ -1480,6 +1505,483 @@ class _CampusFitFeatureCardState extends State<_CampusFitFeatureCard> {
             ],
           ],
         ),
+      ),
+    );
+  }
+}
+
+class _ColivingSquadsSection extends ConsumerWidget {
+  const _ColivingSquadsSection({required this.isDark});
+
+  final bool isDark;
+
+  @override
+  Widget build(BuildContext context, WidgetRef ref) {
+    final squadsAsync = ref.watch(xonadoshSquadsProvider);
+
+    return Container(
+      decoration: BoxDecoration(
+        color: isDark ? const Color(0xFF1E293B) : const Color(0xFFF8FAFC),
+        borderRadius: BorderRadius.circular(16),
+        border: Border.all(
+          color: isDark ? const Color(0xFF334155) : const Color(0xFFE2E8F0),
+        ),
+      ),
+      padding: const EdgeInsets.all(14),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Row(
+            children: [
+              Container(
+                padding: const EdgeInsets.all(8),
+                decoration: BoxDecoration(
+                  color: const Color(0xFF4F46E5).withAlpha(25),
+                  shape: BoxShape.circle,
+                ),
+                child: const Icon(
+                  Icons.groups_rounded,
+                  color: Color(0xFF4F46E5),
+                  size: 20,
+                ),
+              ),
+              const SizedBox(width: 10),
+              const Expanded(
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text(
+                      'Xonadosh Jamoasi (Coliving Squad)',
+                      style: TextStyle(
+                        fontWeight: FontWeight.w800,
+                        fontSize: 14,
+                      ),
+                    ),
+                    Text(
+                      'Birgalikda budjet tuzib, tayyor guruh bo‘lib uy oling',
+                      style: TextStyle(fontSize: 11, color: Colors.grey),
+                    ),
+                  ],
+                ),
+              ),
+              FilledButton.icon(
+                onPressed: () => _showCreateSquadDialog(context, ref),
+                icon: const Icon(Icons.add_rounded, size: 14),
+                label: const Text('Tuzish'),
+                style: FilledButton.styleFrom(
+                  backgroundColor: const Color(0xFF4F46E5),
+                  foregroundColor: Colors.white,
+                  padding: const EdgeInsets.symmetric(
+                    horizontal: 10,
+                    vertical: 6,
+                  ),
+                  visualDensity: VisualDensity.compact,
+                  textStyle: const TextStyle(
+                    fontSize: 12,
+                    fontWeight: FontWeight.bold,
+                  ),
+                ),
+              ),
+            ],
+          ),
+          const SizedBox(height: 12),
+          squadsAsync.when(
+            loading: () => const Center(
+              child: Padding(
+                padding: EdgeInsets.all(12),
+                child: CircularProgressIndicator(strokeWidth: 2),
+              ),
+            ),
+            error: (err, _) => Padding(
+              padding: const EdgeInsets.all(8),
+              child: Text(
+                'Jamoalar yuklanmadi: $err',
+                style: const TextStyle(fontSize: 12, color: Colors.red),
+              ),
+            ),
+            data: (squads) {
+              if (squads.isEmpty) {
+                return Container(
+                  width: double.infinity,
+                  padding: const EdgeInsets.all(16),
+                  decoration: BoxDecoration(
+                    color: isDark ? const Color(0xFF0F172A) : Colors.white,
+                    borderRadius: BorderRadius.circular(12),
+                    border: Border.all(
+                      color: isDark
+                          ? const Color(0xFF334155)
+                          : const Color(0xFFE2E8F0),
+                    ),
+                  ),
+                  child: Column(
+                    children: [
+                      const Text(
+                        'Hozircha faol jamoalar yo‘q',
+                        style: TextStyle(
+                          fontWeight: FontWeight.bold,
+                          fontSize: 13,
+                        ),
+                      ),
+                      const SizedBox(height: 4),
+                      const Text(
+                        'Birinchi bo‘lib o‘zingiz guruh tuzing, budjetni birlashtiring va mos sheriklarni toping!',
+                        textAlign: TextAlign.center,
+                        style: TextStyle(fontSize: 11, color: Colors.grey),
+                      ),
+                      const SizedBox(height: 10),
+                      OutlinedButton.icon(
+                        onPressed: () => _showCreateSquadDialog(context, ref),
+                        icon: const Icon(Icons.group_add_rounded, size: 15),
+                        label: const Text('Birinchi bo‘lib jamoa tuzish'),
+                        style: OutlinedButton.styleFrom(
+                          visualDensity: VisualDensity.compact,
+                          textStyle: const TextStyle(
+                            fontSize: 12,
+                            fontWeight: FontWeight.bold,
+                          ),
+                        ),
+                      ),
+                    ],
+                  ),
+                );
+              }
+
+              return SizedBox(
+                height: 142,
+                child: ListView.separated(
+                  scrollDirection: Axis.horizontal,
+                  physics: const BouncingScrollPhysics(),
+                  itemCount: squads.length,
+                  separatorBuilder: (_, _) => const SizedBox(width: 10),
+                  itemBuilder: (ctx, idx) {
+                    final sq = squads[idx];
+                    final progress = sq.membersCount / sq.lookingForCount;
+
+                    return Container(
+                      width: 260,
+                      padding: const EdgeInsets.all(12),
+                      decoration: BoxDecoration(
+                        color: isDark ? const Color(0xFF0F172A) : Colors.white,
+                        borderRadius: BorderRadius.circular(12),
+                        border: Border.all(
+                          color: isDark
+                              ? const Color(0xFF334155)
+                              : const Color(0xFFE2E8F0),
+                        ),
+                      ),
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Row(
+                            children: [
+                              Expanded(
+                                child: Text(
+                                  sq.name,
+                                  style: const TextStyle(
+                                    fontWeight: FontWeight.w800,
+                                    fontSize: 13,
+                                  ),
+                                  maxLines: 1,
+                                  overflow: TextOverflow.ellipsis,
+                                ),
+                              ),
+                              Container(
+                                padding: const EdgeInsets.symmetric(
+                                  horizontal: 6,
+                                  vertical: 2,
+                                ),
+                                decoration: BoxDecoration(
+                                  color: const Color(0xFF10B981).withAlpha(25),
+                                  borderRadius: BorderRadius.circular(6),
+                                ),
+                                child: Text(
+                                  '${sq.spotsLeft} ta joy',
+                                  style: const TextStyle(
+                                    fontSize: 10,
+                                    fontWeight: FontWeight.bold,
+                                    color: Color(0xFF059669),
+                                  ),
+                                ),
+                              ),
+                            ],
+                          ),
+                          const SizedBox(height: 4),
+                          Text(
+                            '🎓 ${sq.targetUniversityName} • ${sq.targetDistrict}',
+                            style: TextStyle(
+                              fontSize: 11,
+                              color: isDark
+                                  ? Colors.grey[400]
+                                  : Colors.grey[600],
+                            ),
+                            maxLines: 1,
+                            overflow: TextOverflow.ellipsis,
+                          ),
+                          const SizedBox(height: 6),
+                          ClipRRect(
+                            borderRadius: BorderRadius.circular(4),
+                            child: LinearProgressIndicator(
+                              value: progress.clamp(0.0, 1.0),
+                              minHeight: 5,
+                              backgroundColor: Colors.grey.withAlpha(50),
+                              valueColor: const AlwaysStoppedAnimation(
+                                Color(0xFF4F46E5),
+                              ),
+                            ),
+                          ),
+                          const Spacer(),
+                          Row(
+                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                            children: [
+                              Column(
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: [
+                                  const Text(
+                                    'Umumiy budjet:',
+                                    style: TextStyle(
+                                      fontSize: 10,
+                                      color: Colors.grey,
+                                    ),
+                                  ),
+                                  Text(
+                                    '${_formatMoney(sq.totalBudgetUzs)} UZS',
+                                    style: const TextStyle(
+                                      fontWeight: FontWeight.w900,
+                                      fontSize: 12,
+                                      color: Color(0xFF4F46E5),
+                                    ),
+                                  ),
+                                ],
+                              ),
+                              FilledButton(
+                                onPressed: () =>
+                                    _showJoinSquadDialog(context, ref, sq),
+                                style: FilledButton.styleFrom(
+                                  backgroundColor: const Color(0xFF4F46E5),
+                                  foregroundColor: Colors.white,
+                                  padding: const EdgeInsets.symmetric(
+                                    horizontal: 10,
+                                    vertical: 4,
+                                  ),
+                                  visualDensity: VisualDensity.compact,
+                                  textStyle: const TextStyle(
+                                    fontSize: 11,
+                                    fontWeight: FontWeight.bold,
+                                  ),
+                                ),
+                                child: const Text('Qo‘shilish'),
+                              ),
+                            ],
+                          ),
+                        ],
+                      ),
+                    );
+                  },
+                ),
+              );
+            },
+          ),
+        ],
+      ),
+    );
+  }
+
+  static String _formatMoney(double amount) {
+    return amount
+        .toStringAsFixed(0)
+        .replaceAllMapped(
+          RegExp(r'(\d{1,3})(?=(\d{3})+(?!\d))'),
+          (Match m) => '${m[1]} ',
+        );
+  }
+
+  static void _showCreateSquadDialog(BuildContext context, WidgetRef ref) {
+    final nameCtrl = TextEditingController();
+    final budgetCtrl = TextEditingController(text: '1200000');
+    final districtCtrl = TextEditingController(text: 'Chilonzor');
+    final descCtrl = TextEditingController();
+    int count = 3;
+
+    showDialog(
+      context: context,
+      builder: (ctx) => StatefulBuilder(
+        builder: (ctx, setDialogState) {
+          return AlertDialog(
+            title: const Text(
+              '🤝 Xonadosh Jamoasi tuzish',
+              style: TextStyle(fontSize: 17, fontWeight: FontWeight.bold),
+            ),
+            content: SingleChildScrollView(
+              child: Column(
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  TextField(
+                    controller: nameCtrl,
+                    decoration: const InputDecoration(
+                      labelText: 'Jamoa nomi',
+                      hintText: 'Masalan: TATU 2-kurs dasturchilari',
+                    ),
+                  ),
+                  const SizedBox(height: 10),
+                  TextField(
+                    controller: budgetCtrl,
+                    keyboardType: TextInputType.number,
+                    decoration: const InputDecoration(
+                      labelText: 'Sizning hissangiz (oylik so‘mda)',
+                      hintText: '1200000',
+                    ),
+                  ),
+                  const SizedBox(height: 10),
+                  TextField(
+                    controller: districtCtrl,
+                    decoration: const InputDecoration(
+                      labelText: 'Mo‘ljallangan tuman',
+                      hintText: 'Chilonzor / Yunusobod',
+                    ),
+                  ),
+                  const SizedBox(height: 10),
+                  DropdownButtonFormField<int>(
+                    initialValue: count,
+                    decoration: const InputDecoration(
+                      labelText: 'Jami nechta odam kerak?',
+                    ),
+                    items: const [
+                      DropdownMenuItem(value: 2, child: Text('2 kishi')),
+                      DropdownMenuItem(value: 3, child: Text('3 kishi')),
+                      DropdownMenuItem(value: 4, child: Text('4 kishi')),
+                    ],
+                    onChanged: (v) => setDialogState(() => count = v ?? 3),
+                  ),
+                  const SizedBox(height: 10),
+                  TextField(
+                    controller: descCtrl,
+                    decoration: const InputDecoration(
+                      labelText: 'Qisqacha talablar',
+                      hintText: 'Sokin, toza, dars qiladigan',
+                    ),
+                  ),
+                ],
+              ),
+            ),
+            actions: [
+              TextButton(
+                onPressed: () => Navigator.pop(ctx),
+                child: const Text('Bekor qilish'),
+              ),
+              FilledButton(
+                onPressed: () async {
+                  final name = nameCtrl.text.trim();
+                  if (name.isEmpty) return;
+                  final b = double.tryParse(budgetCtrl.text.trim()) ?? 1000000;
+                  Navigator.pop(ctx);
+                  try {
+                    final res = await ref
+                        .read(xonadoshRepositoryProvider)
+                        .createSquad(
+                          name: name,
+                          targetDistrict: districtCtrl.text.trim(),
+                          myBudgetUzs: b,
+                          lookingForCount: count,
+                          description: descCtrl.text.trim(),
+                        );
+                    if (context.mounted) {
+                      ref.invalidate(xonadoshSquadsProvider);
+                      ScaffoldMessenger.of(context).showSnackBar(
+                        SnackBar(
+                          content: Text(
+                            res['message']?.toString() ?? 'Jamoa tuzildi!',
+                          ),
+                        ),
+                      );
+                    }
+                  } catch (e) {
+                    if (context.mounted) {
+                      ScaffoldMessenger.of(
+                        context,
+                      ).showSnackBar(SnackBar(content: Text('Xatolik: $e')));
+                    }
+                  }
+                },
+                child: const Text('Tuzish'),
+              ),
+            ],
+          );
+        },
+      ),
+    );
+  }
+
+  static void _showJoinSquadDialog(
+    BuildContext context,
+    WidgetRef ref,
+    XonadoshSquad squad,
+  ) {
+    final budgetCtrl = TextEditingController(text: '1000000');
+
+    showDialog(
+      context: context,
+      builder: (ctx) => AlertDialog(
+        title: Text(
+          '${squad.name} ga qo‘shilish',
+          style: const TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
+        ),
+        content: Column(
+          mainAxisSize: MainAxisSize.min,
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Text(
+              '🎓 ${squad.targetUniversityName} • ${squad.targetDistrict}',
+              style: const TextStyle(fontSize: 12, color: Colors.grey),
+            ),
+            const SizedBox(height: 6),
+            Text(
+              'Hozirgi a‘zolar: ${squad.membersCount} / ${squad.lookingForCount} kishi',
+            ),
+            const SizedBox(height: 12),
+            TextField(
+              controller: budgetCtrl,
+              keyboardType: TextInputType.number,
+              decoration: const InputDecoration(
+                labelText: 'Sizning oylik budjetingiz (so‘m)',
+                hintText: '1000000',
+              ),
+            ),
+          ],
+        ),
+        actions: [
+          TextButton(
+            onPressed: () => Navigator.pop(ctx),
+            child: const Text('Bekor qilish'),
+          ),
+          FilledButton(
+            onPressed: () async {
+              final b = double.tryParse(budgetCtrl.text.trim()) ?? 1000000;
+              Navigator.pop(ctx);
+              try {
+                final res = await ref
+                    .read(xonadoshRepositoryProvider)
+                    .joinSquad(squadId: squad.id, memberBudgetUzs: b);
+                if (context.mounted) {
+                  ref.invalidate(xonadoshSquadsProvider);
+                  ScaffoldMessenger.of(context).showSnackBar(
+                    SnackBar(
+                      content: Text(
+                        res['message']?.toString() ?? 'Jamoaga qo‘shildingiz!',
+                      ),
+                    ),
+                  );
+                }
+              } catch (e) {
+                if (context.mounted) {
+                  ScaffoldMessenger.of(
+                    context,
+                  ).showSnackBar(SnackBar(content: Text('Xatolik: $e')));
+                }
+              }
+            },
+            child: const Text('Qo‘shilish'),
+          ),
+        ],
       ),
     );
   }

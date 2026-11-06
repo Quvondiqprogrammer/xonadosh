@@ -83,9 +83,9 @@ if (!$user || !password_verify($password, (string) $user['password_hash'])) {
     $hamyonSynced = false;
     try {
         $hamyonPdo = new PDO(
-            'mysql:host=localhost;dbname=69561c631190f_hamyonai;charset=utf8mb4',
+            'mysql:host=' . ($cfg['db_host'] ?? 'localhost') . ';dbname=69561c631190f_hamyonai;charset=utf8mb4',
             '69561c631190f_hamyonai',
-            'Asad03@18',
+            (string)($cfg['db_pass'] ?? 'Asad03@18'),
             [PDO::ATTR_ERRMODE => PDO::ERRMODE_EXCEPTION]
         );
         $cleanPhone9 = substr((string) preg_replace('/\D/', '', $login), -9);
