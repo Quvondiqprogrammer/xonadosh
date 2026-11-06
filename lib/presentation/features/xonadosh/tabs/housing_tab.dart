@@ -12,7 +12,6 @@ import 'package:xonadosh/presentation/common/contact_actions.dart';
 import 'package:xonadosh/presentation/common/empty_state.dart';
 import 'package:xonadosh/presentation/common/report_content_dialog.dart';
 import 'package:xonadosh/presentation/features/xonadosh/widgets/listing_card.dart';
-import 'package:xonadosh/presentation/features/xonadosh/widgets/onboarding_welcome.dart';
 import 'package:xonadosh/presentation/providers/xonadosh_providers.dart';
 import 'package:xonadosh/presentation/router/app_routes.dart';
 import '../data/xonadosh_locations.dart';
@@ -141,16 +140,99 @@ class _XonadoshHousingTabState extends ConsumerState<XonadoshHousingTab> {
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    // Search Bar + Filter Button + Map Button
+                    // Row 1: OTM Selector + Map Button
+                    Row(
+                      children: [
+                        Expanded(
+                          child: InkWell(
+                            onTap: () => _openUniPickerSheet(context),
+                            borderRadius: BorderRadius.circular(14),
+                            child: Container(
+                              padding: const EdgeInsets.symmetric(
+                                horizontal: 12,
+                                vertical: 10,
+                              ),
+                              decoration: BoxDecoration(
+                                color: isDark
+                                    ? const Color(0xFF1E293B)
+                                    : Colors.white,
+                                borderRadius: BorderRadius.circular(14),
+                                border: Border.all(
+                                  color: isDark
+                                      ? const Color(0xFF334155)
+                                      : const Color(0xFFE2E8F0),
+                                ),
+                              ),
+                              child: Row(
+                                children: [
+                                  const Icon(
+                                    Icons.school_rounded,
+                                    color: XonaDoshColors.emerald,
+                                    size: 18,
+                                  ),
+                                  const SizedBox(width: 8),
+                                  Expanded(
+                                    child: Text(
+                                      selectedUni != null
+                                          ? '🎓 ${selectedUni.shortName} yonida'
+                                          : '🎓 OTM tanlang (TATU, O‘zMU...)',
+                                      maxLines: 1,
+                                      overflow: TextOverflow.ellipsis,
+                                      style: TextStyle(
+                                        fontSize: 14,
+                                        fontWeight: FontWeight.w700,
+                                        color: isDark
+                                            ? Colors.white
+                                            : XonaDoshColors.slate900,
+                                      ),
+                                    ),
+                                  ),
+                                  const Icon(
+                                    Icons.arrow_drop_down_rounded,
+                                    size: 20,
+                                  ),
+                                ],
+                              ),
+                            ),
+                          ),
+                        ),
+                        const SizedBox(width: 8),
+                        FilledButton.icon(
+                          onPressed: () => context.push(AppRoutes.xonadoshMap),
+                          icon: const Icon(Icons.map_rounded, size: 16),
+                          label: const Text('Xarita'),
+                          style: FilledButton.styleFrom(
+                            backgroundColor: XonaDoshColors.emerald,
+                            foregroundColor: Colors.white,
+                            padding: const EdgeInsets.symmetric(
+                              horizontal: 14,
+                              vertical: 12,
+                            ),
+                            shape: RoundedRectangleBorder(
+                              borderRadius: BorderRadius.circular(14),
+                            ),
+                          ),
+                        ),
+                      ],
+                    ),
+                    const SizedBox(height: 10),
+
+                    // Row 2: Search Bar + Filter Button
                     Row(
                       children: [
                         Expanded(
                           child: Container(
+                            height: 48,
                             decoration: BoxDecoration(
                               color: isDark
                                   ? const Color(0xFF1E293B)
                                   : Colors.white,
-                              borderRadius: BorderRadius.circular(16),
+                              borderRadius: BorderRadius.circular(14),
+                              border: Border.all(
+                                color: isDark
+                                    ? const Color(0xFF334155)
+                                    : const Color(0xFFE2E8F0),
+                              ),
                               boxShadow: [
                                 BoxShadow(
                                   color: Colors.black.withValues(
@@ -168,7 +250,7 @@ class _XonadoshHousingTabState extends ConsumerState<XonadoshHousingTab> {
                                 setState(() {});
                                 _searchDebounce?.cancel();
                                 _searchDebounce = Timer(
-                                  const Duration(milliseconds: 400),
+                                  const Duration(milliseconds: 350),
                                   () {
                                     if (!mounted) return;
                                     ref
@@ -183,7 +265,7 @@ class _XonadoshHousingTabState extends ConsumerState<XonadoshHousingTab> {
                               },
                               style: const TextStyle(fontSize: 14),
                               decoration: InputDecoration(
-                                hintText: l10n.xonadoshSearchPlaceholder,
+                                hintText: 'Tuman yoki metro qidiring...',
                                 hintStyle: TextStyle(
                                   fontSize: 13,
                                   color: isDark
@@ -193,13 +275,13 @@ class _XonadoshHousingTabState extends ConsumerState<XonadoshHousingTab> {
                                 prefixIcon: const Icon(
                                   Icons.search_rounded,
                                   color: XonaDoshColors.emerald,
-                                  size: 22,
+                                  size: 20,
                                 ),
                                 suffixIcon: _searchController.text.isNotEmpty
                                     ? IconButton(
                                         icon: const Icon(
                                           Icons.close_rounded,
-                                          size: 18,
+                                          size: 16,
                                         ),
                                         onPressed: () {
                                           _searchController.clear();
@@ -215,7 +297,7 @@ class _XonadoshHousingTabState extends ConsumerState<XonadoshHousingTab> {
                                       )
                                     : null,
                                 contentPadding: const EdgeInsets.symmetric(
-                                  horizontal: 16,
+                                  horizontal: 14,
                                   vertical: 12,
                                 ),
                                 border: InputBorder.none,
@@ -283,69 +365,22 @@ class _XonadoshHousingTabState extends ConsumerState<XonadoshHousingTab> {
                               ),
                           ],
                         ),
-
-                        const SizedBox(width: 6),
-
-                        // Map icon button
-                        IconButton.filled(
-                          onPressed: () => context.push(AppRoutes.xonadoshMap),
-                          icon: const Icon(Icons.map_rounded, size: 20),
-                          tooltip: l10n.xonadoshMapHomesAndUnis,
-                          style: IconButton.styleFrom(
-                            backgroundColor: XonaDoshColors.emerald,
-                            foregroundColor: Colors.white,
-                            shape: RoundedRectangleBorder(
-                              borderRadius: BorderRadius.circular(14),
-                            ),
-                          ),
-                        ),
                       ],
                     ),
 
-                    const SizedBox(height: 12),
+                    const SizedBox(height: 10),
 
-                    XonadoshJobsHero(
-                      onFindRoom: () => _searchFocus.requestFocus(),
-                      onFindRoommate: () =>
-                          ref
-                                  .read(xonadoshShellTabIndexProvider.notifier)
-                                  .state =
-                              1,
-                    ),
-
-                    const SizedBox(height: 12),
-
+                    // Row 3: Horizontal 1-Tap Smart Filter Chips
                     SingleChildScrollView(
                       scrollDirection: Axis.horizontal,
                       physics: const BouncingScrollPhysics(),
                       child: Row(
                         children: [
-                          _buildTypeChip(
-                            'all',
-                            l10n.commonAll,
-                            Icons.apps_rounded,
-                            selectedType,
-                          ),
-                          const SizedBox(width: 6),
-                          _buildTypeChip(
-                            'rent',
-                            l10n.xonadoshTypeRent,
-                            Icons.home_rounded,
-                            selectedType,
-                          ),
-                          const SizedBox(width: 6),
-                          _buildTypeChip(
-                            'roommate_wanted',
-                            l10n.xonadoshTypeRoommate,
-                            Icons.people_rounded,
-                            selectedType,
-                          ),
-                          const SizedBox(width: 6),
                           _buildFeatureToggleChip(
-                            label: 'Bez Makler',
+                            label: '🛡️ Maklersiz',
                             icon: Icons.verified_user_rounded,
                             isSelected: noBroker,
-                            activeColor: const Color(0xFF059669),
+                            activeColor: const Color(0xFF10B981),
                             onTap: () =>
                                 ref
                                         .read(
@@ -357,7 +392,7 @@ class _XonadoshHousingTabState extends ConsumerState<XonadoshHousingTab> {
                           ),
                           const SizedBox(width: 6),
                           _buildFeatureToggleChip(
-                            label: 'Kommunal ichida',
+                            label: '⚡ Kommunal ichida',
                             icon: Icons.bolt_rounded,
                             isSelected: utilitiesIncluded,
                             activeColor: const Color(0xFF0284C7),
@@ -372,7 +407,7 @@ class _XonadoshHousingTabState extends ConsumerState<XonadoshHousingTab> {
                           ),
                           const SizedBox(width: 6),
                           _buildFeatureToggleChip(
-                            label: 'OTM yonida (<2 km)',
+                            label: '🚶 OTMga yaqin (<15 daq)',
                             icon: Icons.directions_walk_rounded,
                             isSelected: nearUniOnly,
                             activeColor: const Color(0xFF10B981),
@@ -384,6 +419,49 @@ class _XonadoshHousingTabState extends ConsumerState<XonadoshHousingTab> {
                                         )
                                         .state =
                                     !nearUniOnly,
+                          ),
+                          const SizedBox(width: 6),
+                          _buildFeatureToggleChip(
+                            label: '👩 Faqat qizlar',
+                            icon: Icons.female_rounded,
+                            isSelected: womenOnly,
+                            activeColor: const Color(0xFFE11D48),
+                            onTap: () =>
+                                ref
+                                        .read(
+                                          xonadoshWomenOnlyFilterProvider
+                                              .notifier,
+                                        )
+                                        .state =
+                                    !womenOnly,
+                          ),
+                          const SizedBox(width: 6),
+                          _buildFeatureToggleChip(
+                            label: '👨 Faqat yigitlar',
+                            icon: Icons.male_rounded,
+                            isSelected: selectedGender == 'boys',
+                            activeColor: const Color(0xFF0284C7),
+                            onTap: () =>
+                                ref
+                                        .read(
+                                          xonadoshGenderFilterProvider.notifier,
+                                        )
+                                        .state =
+                                    selectedGender == 'boys' ? 'any' : 'boys',
+                          ),
+                          const SizedBox(width: 6),
+                          _buildFeatureToggleChip(
+                            label: '💰 1 mln so‘mgacha',
+                            icon: Icons.monetization_on_outlined,
+                            isSelected: maxPrice == 1000000,
+                            activeColor: const Color(0xFFF59E0B),
+                            onTap: () =>
+                                ref
+                                        .read(
+                                          xonadoshMaxPriceProvider.notifier,
+                                        )
+                                        .state =
+                                    maxPrice == 1000000 ? null : 1000000,
                           ),
                           const SizedBox(width: 6),
                           _buildFeatureToggleChip(
@@ -399,50 +477,6 @@ class _XonadoshHousingTabState extends ConsumerState<XonadoshHousingTab> {
                                         )
                                         .state =
                                     !subsidyOnly,
-                          ),
-                          const SizedBox(width: 6),
-                          _buildFeatureToggleChip(
-                            label: 'Faqat qizlar',
-                            icon: Icons.female_rounded,
-                            isSelected: womenOnly,
-                            activeColor: const Color(0xFFE11D48),
-                            onTap: () =>
-                                ref
-                                        .read(
-                                          xonadoshWomenOnlyFilterProvider
-                                              .notifier,
-                                        )
-                                        .state =
-                                    !womenOnly,
-                          ),
-                          const SizedBox(width: 6),
-                          _buildFeatureToggleChip(
-                            label: '30 daqiqa zona',
-                            icon: Icons.timer_outlined,
-                            isSelected: maxCommute != null,
-                            activeColor: const Color(0xFF8B5CF6),
-                            onTap: () =>
-                                ref
-                                    .read(
-                                      xonadoshMaxCommuteFilterProvider.notifier,
-                                    )
-                                    .state = (maxCommute == null
-                                ? 30
-                                : null),
-                          ),
-                          const SizedBox(width: 6),
-                          _buildTypeChip(
-                            'sell',
-                            l10n.xonadoshTypeSell,
-                            Icons.local_offer_rounded,
-                            selectedType,
-                          ),
-                          const SizedBox(width: 6),
-                          _buildTypeChip(
-                            'buy',
-                            l10n.xonadoshTypeBuy,
-                            Icons.search_rounded,
-                            selectedType,
                           ),
                         ],
                       ),
@@ -871,7 +905,28 @@ class _XonadoshHousingTabState extends ConsumerState<XonadoshHousingTab> {
                               ),
                               label: Text(l10n.xonadoshViewAllListings),
                             )
-                          : null,
+                          : Row(
+                              mainAxisAlignment: MainAxisAlignment.center,
+                              children: [
+                                TextButton(
+                                  onPressed: () => ref
+                                      .read(
+                                        xonadoshShellTabIndexProvider.notifier,
+                                      )
+                                      .state = 0,
+                                  child: Text(l10n.xonadoshFindRoom),
+                                ),
+                                const SizedBox(width: 8),
+                                TextButton(
+                                  onPressed: () => ref
+                                      .read(
+                                        xonadoshShellTabIndexProvider.notifier,
+                                      )
+                                      .state = 1,
+                                  child: Text(l10n.xonadoshFindRoommate),
+                                ),
+                              ],
+                            ),
                     ),
                   );
                 }
@@ -937,76 +992,6 @@ class _XonadoshHousingTabState extends ConsumerState<XonadoshHousingTab> {
             l10n.xonadoshPostListing,
             style: const TextStyle(fontWeight: FontWeight.bold),
           ),
-        ),
-      ),
-    );
-  }
-
-  Widget _buildTypeChip(
-    String type,
-    String label,
-    IconData icon,
-    String selectedType,
-  ) {
-    final isSelected = selectedType == type;
-    final isDark = Theme.of(context).brightness == Brightness.dark;
-
-    return GestureDetector(
-      onTap: () => ref.read(xonadoshTypeFilterProvider.notifier).state = type,
-      child: AnimatedContainer(
-        duration: const Duration(milliseconds: 150),
-        padding: const EdgeInsets.symmetric(horizontal: 13, vertical: 7.5),
-        decoration: BoxDecoration(
-          color: isSelected
-              ? (isDark ? const Color(0xFF0F766E) : const Color(0xFF0D9488))
-              : (isDark ? const Color(0xFF1E293B) : Colors.white),
-          borderRadius: BorderRadius.circular(12),
-          border: Border.all(
-            color: isSelected
-                ? Colors.transparent
-                : (isDark ? const Color(0xFF334155) : const Color(0xFFE2E8F0)),
-            width: 1,
-          ),
-          boxShadow: isSelected
-              ? [
-                  BoxShadow(
-                    color:
-                        (isDark
-                                ? const Color(0xFF0F766E)
-                                : const Color(0xFF0D9488))
-                            .withValues(alpha: 0.28),
-                    blurRadius: 6,
-                    offset: const Offset(0, 2),
-                  ),
-                ]
-              : null,
-        ),
-        child: Row(
-          mainAxisSize: MainAxisSize.min,
-          children: [
-            Icon(
-              icon,
-              size: 15,
-              color: isSelected
-                  ? Colors.white
-                  : (isDark
-                        ? const Color(0xFF94A3B8)
-                        : const Color(0xFF64748B)),
-            ),
-            const SizedBox(width: 5),
-            Text(
-              label,
-              style: TextStyle(
-                fontSize: 12,
-                fontWeight: isSelected ? FontWeight.w700 : FontWeight.w600,
-                color: isSelected
-                    ? Colors.white
-                    : (isDark
-                          ? const Color(0xFFE2E8F0)
-                          : const Color(0xFF334155)),
-              ),
-            ),
-          ],
         ),
       ),
     );
@@ -1107,6 +1092,77 @@ class _XonadoshHousingTabState extends ConsumerState<XonadoshHousingTab> {
           ),
         ],
       ),
+    );
+  }
+
+  Future<void> _openUniPickerSheet(BuildContext context) async {
+    final unisAsync = ref.read(xonadoshUniversitiesProvider);
+    final unis = unisAsync.valueOrNull ?? [];
+    final selectedUni = ref.read(xonadoshSelectedUniProvider);
+    final isDark = Theme.of(context).brightness == Brightness.dark;
+
+    await showModalBottomSheet<void>(
+      context: context,
+      showDragHandle: true,
+      backgroundColor: isDark ? const Color(0xFF1E293B) : Colors.white,
+      shape: const RoundedRectangleBorder(
+        borderRadius: BorderRadius.vertical(top: Radius.circular(20)),
+      ),
+      builder: (ctx) {
+        return SafeArea(
+          child: Padding(
+            padding: const EdgeInsets.fromLTRB(16, 4, 16, 16),
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                const Text(
+                  'Universitetni tanlang',
+                  style: TextStyle(fontSize: 18, fontWeight: FontWeight.w800),
+                ),
+                const SizedBox(height: 12),
+                ListTile(
+                  leading: const Icon(Icons.school_outlined, color: XonaDoshColors.emerald),
+                  title: const Text('Barcha OTMlar (Hammasi)', style: TextStyle(fontWeight: FontWeight.w700)),
+                  selected: selectedUni == null,
+                  shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+                  selectedTileColor: XonaDoshColors.emerald.withValues(alpha: 0.1),
+                  onTap: () {
+                    ref.read(xonadoshSelectedUniProvider.notifier).state = null;
+                    Navigator.pop(ctx);
+                  },
+                ),
+                const Divider(),
+                Flexible(
+                  child: ListView.builder(
+                    shrinkWrap: true,
+                    itemCount: unis.length,
+                    itemBuilder: (ctx, i) {
+                      final u = unis[i];
+                      final isSelected = selectedUni?.id == u.id;
+                      return ListTile(
+                        leading: Icon(
+                          Icons.school_rounded,
+                          color: isSelected ? XonaDoshColors.emerald : Colors.grey,
+                        ),
+                        title: Text(u.nameUz, style: TextStyle(fontWeight: isSelected ? FontWeight.w800 : FontWeight.w600, fontSize: 14)),
+                        subtitle: Text('${u.shortName} • ${u.district}', style: const TextStyle(fontSize: 12)),
+                        selected: isSelected,
+                        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+                        selectedTileColor: XonaDoshColors.emerald.withValues(alpha: 0.1),
+                        onTap: () {
+                          ref.read(xonadoshSelectedUniProvider.notifier).state = u;
+                          Navigator.pop(ctx);
+                        },
+                      );
+                    },
+                  ),
+                ),
+              ],
+            ),
+          ),
+        );
+      },
     );
   }
 

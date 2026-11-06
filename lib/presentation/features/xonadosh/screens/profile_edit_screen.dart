@@ -1324,71 +1324,76 @@ class _XonadoshProfileEditScreenState
 
           // Uyqu tartibi
           _buildHabitOptionGroup(
-            title: context.l10n.xonadoshSleepSchedule,
+            isDark: isDark,
+            title: 'Uyqu tartibi',
             icon: Icons.bedtime_rounded,
             currentValue: _sleep,
             options: [
-              ('early_bird', context.l10n.xonadoshSleepEarlyHours),
-              ('night_owl', context.l10n.xonadoshSleepNightHours),
-              ('flexible', context.l10n.xonadoshHabitFlexible),
+              ('early_bird', '🌅 Erta turaman (06:00)'),
+              ('night_owl', '🦉 Kech yotaman (01:00)'),
+              ('flexible', '⚡ Moslashuvchan rejim'),
             ],
             onChanged: (v) => setState(() => _sleep = v),
           ),
-          const SizedBox(height: 16),
+          const SizedBox(height: 18),
 
           // Tozalik & Tartib
           _buildHabitOptionGroup(
-            title: context.l10n.xonadoshCleanliness,
+            isDark: isDark,
+            title: 'Tozalik va tartib',
             icon: Icons.cleaning_services_rounded,
             currentValue: _cleanliness,
             options: [
-              ('strict', context.l10n.xonadoshHabitStrictClean),
-              ('moderate', context.l10n.xonadoshHabitAverageClean),
-              ('relaxed', context.l10n.xonadoshHabitRelaxedClean),
+              ('strict', '✨ Har kuni tartib'),
+              ('moderate', '👌 O‘rtacha erkin'),
+              ('relaxed', '😌 Muhimi xotirjamlik'),
             ],
             onChanged: (v) => setState(() => _cleanliness = v),
           ),
-          const SizedBox(height: 16),
+          const SizedBox(height: 18),
 
           // Dars qilish
           _buildHabitOptionGroup(
-            title: context.l10n.xonadoshStudyEnvironment,
+            isDark: isDark,
+            title: 'Dars qilish muhiti',
             icon: Icons.menu_book_rounded,
             currentValue: _study,
             options: [
-              ('silent', context.l10n.xonadoshHabitSilentStudy),
-              ('music', context.l10n.xonadoshHabitMusicStudy),
-              ('group', context.l10n.xonadoshHabitGroupStudy),
+              ('silent', '🤫 Tinch sukunatda'),
+              ('music', '🎧 Musiqa / Suhbat bilan'),
+              ('group', '👥 Birgalikda guruh bilan'),
             ],
             onChanged: (v) => setState(() => _study = v),
           ),
-          const SizedBox(height: 16),
-
-          // Ovqat pishirish
-          _buildHabitOptionGroup(
-            title: context.l10n.xonadoshCooking,
-            icon: Icons.soup_kitchen_rounded,
-            currentValue: _cooking,
-            options: [
-              ('rotates', context.l10n.xonadoshHabitCookRotates),
-              ('cooks_self', context.l10n.xonadoshHabitCookSelf),
-              ('eats_out', context.l10n.xonadoshHabitEatOut),
-            ],
-            onChanged: (v) => setState(() => _cooking = v),
-          ),
-          const SizedBox(height: 16),
+          const SizedBox(height: 18),
 
           // Chekish
           _buildHabitOptionGroup(
-            title: context.l10n.xonadoshSmoking,
+            isDark: isDark,
+            title: 'Chekishga munosabat',
             icon: Icons.smoke_free_rounded,
             currentValue: _smoking,
             options: [
-              ('no', context.l10n.xonadoshHabitIDontSmoke),
-              ('balcony', context.l10n.xonadoshHabitBalconySmoke),
-              ('yes', context.l10n.xonadoshHabitSmoker),
+              ('no', '🚭 Umuman chekmayman'),
+              ('balcony', '💨 Faqat balkonda'),
+              ('yes', '🚬 Chekaman'),
             ],
             onChanged: (v) => setState(() => _smoking = v),
+          ),
+          const SizedBox(height: 18),
+
+          // Ovqat pishirish
+          _buildHabitOptionGroup(
+            isDark: isDark,
+            title: 'Oshxona va ovqatlanish',
+            icon: Icons.soup_kitchen_rounded,
+            currentValue: _cooking,
+            options: [
+              ('rotates', '🍲 Birga navbat bilan'),
+              ('cooks_self', '🍳 Har kim o‘zi uchun'),
+              ('eats_out', '🍽️ Oshxona yoki kafeda'),
+            ],
+            onChanged: (v) => setState(() => _cooking = v),
           ),
         ],
       ),
@@ -1396,6 +1401,7 @@ class _XonadoshProfileEditScreenState
   }
 
   Widget _buildHabitOptionGroup({
+    required bool isDark,
     required String title,
     required IconData icon,
     required String currentValue,
@@ -1414,35 +1420,87 @@ class _XonadoshProfileEditScreenState
                 title,
                 style: const TextStyle(
                   fontWeight: FontWeight.w700,
-                  fontSize: 13,
+                  fontSize: 14,
                 ),
-                maxLines: 2,
+                maxLines: 1,
                 overflow: TextOverflow.ellipsis,
               ),
             ),
           ],
         ),
-        const SizedBox(height: 8),
-        Wrap(
-          spacing: 8,
-          runSpacing: 8,
+        const SizedBox(height: 10),
+        Column(
           children: options.map((opt) {
             final isSelected = currentValue == opt.$1;
-            return ChoiceChip(
-              label: Text(opt.$2),
-              selected: isSelected,
-              selectedColor: XonaDoshColors.primary.withAlpha(35),
-              labelStyle: TextStyle(
-                fontWeight: isSelected ? FontWeight.w700 : FontWeight.normal,
-                color: isSelected ? XonaDoshColors.primary : null,
-              ),
-              onSelected: (sel) {
-                if (sel) {
+            return Padding(
+              padding: const EdgeInsets.only(bottom: 8),
+              child: InkWell(
+                onTap: () {
                   HapticFeedback.selectionClick();
                   onChanged(opt.$1);
                   _markChanged();
-                }
-              },
+                },
+                borderRadius: BorderRadius.circular(12),
+                child: AnimatedContainer(
+                  duration: const Duration(milliseconds: 150),
+                  padding: const EdgeInsets.symmetric(
+                    horizontal: 14,
+                    vertical: 12,
+                  ),
+                  decoration: BoxDecoration(
+                    color: isSelected
+                        ? XonaDoshColors.primary.withValues(alpha: 0.1)
+                        : (isDark
+                            ? const Color(0xFF1E293B)
+                            : const Color(0xFFF8FAFC)),
+                    borderRadius: BorderRadius.circular(12),
+                    border: Border.all(
+                      color: isSelected
+                          ? XonaDoshColors.primary
+                          : (isDark
+                              ? const Color(0xFF334155)
+                              : const Color(0xFFE2E8F0)),
+                      width: isSelected ? 1.5 : 1,
+                    ),
+                  ),
+                  child: Row(
+                    children: [
+                      Expanded(
+                        child: Text(
+                          opt.$2,
+                          style: TextStyle(
+                            fontSize: 13,
+                            fontWeight: isSelected
+                                ? FontWeight.w700
+                                : FontWeight.w500,
+                            color: isSelected
+                                ? (isDark
+                                    ? const Color(0xFF5EEAD4)
+                                    : XonaDoshColors.primaryDark)
+                                : (isDark
+                                    ? Colors.white
+                                    : const Color(0xFF1E293B)),
+                          ),
+                        ),
+                      ),
+                      if (isSelected)
+                        const Icon(
+                          Icons.check_circle_rounded,
+                          size: 18,
+                          color: XonaDoshColors.primary,
+                        )
+                      else
+                        Icon(
+                          Icons.circle_outlined,
+                          size: 18,
+                          color: isDark
+                              ? const Color(0xFF475569)
+                              : const Color(0xFFCBD5E1),
+                        ),
+                    ],
+                  ),
+                ),
+              ),
             );
           }).toList(),
         ),

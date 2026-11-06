@@ -215,11 +215,6 @@ class _XonadoshMapScreenState extends ConsumerState<XonadoshMapScreen> {
                   }),
                   ...listings.map((l) {
                     final isSelected = _selectedListing?.id == l.id;
-                    final isRent =
-                        l.type == 'rent' || l.type == 'roommate_wanted';
-                    final markerColor = isRent
-                        ? XonaDoshColors.primary
-                        : const Color(0xFFF59E0B);
 
                     return Marker(
                       point: LatLng(l.latitude, l.longitude),
@@ -235,21 +230,22 @@ class _XonadoshMapScreenState extends ConsumerState<XonadoshMapScreen> {
                         child: AnimatedContainer(
                           duration: const Duration(milliseconds: 200),
                           padding: const EdgeInsets.symmetric(
-                            horizontal: 6,
-                            vertical: 3,
+                            horizontal: 8,
+                            vertical: 4,
                           ),
                           decoration: BoxDecoration(
-                            color: markerColor,
+                            color: isSelected
+                                ? XonaDoshColors.emerald
+                                : (isDark ? const Color(0xFF1E293B) : Colors.white),
                             borderRadius: BorderRadius.circular(16),
                             border: Border.all(
-                              color: Colors.white,
+                              color: XonaDoshColors.emerald,
                               width: isSelected ? 2.5 : 1.5,
                             ),
                             boxShadow: [
                               BoxShadow(
-                                color: markerColor.withAlpha(120),
+                                color: Colors.black.withValues(alpha: isDark ? 0.35 : 0.12),
                                 blurRadius: isSelected ? 8 : 4,
-                                spreadRadius: isSelected ? 1 : 0,
                                 offset: const Offset(0, 2),
                               ),
                             ],
@@ -262,15 +258,19 @@ class _XonadoshMapScreenState extends ConsumerState<XonadoshMapScreen> {
                                 l.type == 'roommate_wanted'
                                     ? Icons.group_rounded
                                     : Icons.home_rounded,
-                                color: Colors.white,
-                                size: isSelected ? 15 : 13,
+                                color: isSelected
+                                    ? Colors.white
+                                    : XonaDoshColors.emerald,
+                                size: isSelected ? 13 : 11,
                               ),
-                              const SizedBox(width: 3),
+                              const SizedBox(width: 4),
                               Text(
                                 _formatShortPrice(l.price),
                                 style: TextStyle(
-                                  color: Colors.white,
-                                  fontSize: isSelected ? 11 : 10,
+                                  color: isSelected
+                                      ? Colors.white
+                                      : (isDark ? Colors.white : const Color(0xFF0F172A)),
+                                  fontSize: 11,
                                   fontWeight: FontWeight.w800,
                                 ),
                               ),
@@ -474,13 +474,36 @@ class _XonadoshMapScreenState extends ConsumerState<XonadoshMapScreen> {
                       ),
                     ),
                     const SizedBox(height: 4),
-                    Text(
-                      '${item.price.toStringAsFixed(0)} ${item.currency}/${item.pricePeriod == 'month' ? 'oy' : 'jami'}',
-                      style: const TextStyle(
-                        color: XonaDoshColors.primary,
-                        fontWeight: FontWeight.w800,
-                        fontSize: 14,
-                      ),
+                    Row(
+                      children: [
+                        Text(
+                          '${_formatShortPrice(item.price)} ${item.currency}',
+                          style: const TextStyle(
+                            color: XonaDoshColors.emerald,
+                            fontWeight: FontWeight.w900,
+                            fontSize: 15,
+                          ),
+                        ),
+                        const Spacer(),
+                        FilledButton(
+                          onPressed: () {
+                            context.push('${AppRoutes.shell}/listing/${item.id}');
+                          },
+                          style: FilledButton.styleFrom(
+                            backgroundColor: XonaDoshColors.emerald,
+                            foregroundColor: Colors.white,
+                            padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 4),
+                            visualDensity: VisualDensity.compact,
+                            shape: RoundedRectangleBorder(
+                              borderRadius: BorderRadius.circular(8),
+                            ),
+                          ),
+                          child: const Text(
+                            'Ko‘rish →',
+                            style: TextStyle(fontSize: 11, fontWeight: FontWeight.w700),
+                          ),
+                        ),
+                      ],
                     ),
                     const SizedBox(height: 4),
                     Row(

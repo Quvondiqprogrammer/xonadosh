@@ -7,7 +7,6 @@ import 'package:xonadosh/l10n/app_localizations.dart';
 import 'package:xonadosh/l10n/l10n_ext.dart';
 import 'package:xonadosh/presentation/common/block_user_action.dart';
 import 'package:xonadosh/presentation/common/contact_actions.dart';
-import 'package:xonadosh/presentation/common/empty_state.dart';
 import 'package:xonadosh/presentation/common/report_content_dialog.dart';
 import 'package:go_router/go_router.dart';
 import 'package:xonadosh/presentation/features/xonadosh/widgets/match_reasons.dart';
@@ -250,50 +249,100 @@ class XonadoshMatchingTab extends ConsumerWidget {
                   final filtersOn =
                       selectedGender != 'any' || selectedUni != null;
                   return SliverFillRemaining(
-                    child: EmptyState(
-                      icon: Icons.group_off_rounded,
-                      accentColor: XonaDoshColors.primary,
-                      title: l10n.xonadoshNoMatchesTitle,
-                      subtitle: !profileReady
-                          ? l10n.xonadoshEmptyMatchesNeedProfile
-                          : (filtersOn
-                                ? l10n.xonadoshEmptyMatchesFiltered
-                                : l10n.xonadoshNoMatchesBody),
-                      action: FilledButton.icon(
-                        onPressed: () =>
-                            _openProfileScreen(context, ref, myProf),
-                        icon: const Icon(Icons.edit_note_rounded, size: 18),
-                        label: Text(l10n.xonadoshFillProfile),
-                      ),
-                      secondaryAction: filtersOn
-                          ? TextButton(
-                              onPressed: () {
-                                ref
-                                        .read(
-                                          xonadoshMatchGenderFilterProvider
-                                              .notifier,
-                                        )
-                                        .state =
-                                    'any';
-                                ref
-                                        .read(xonadoshMatchUniProvider.notifier)
-                                        .state =
-                                    null;
-                              },
-                              child: Text(l10n.xonadoshClearFilters),
-                            )
-                          : TextButton.icon(
-                              onPressed: () =>
-                                  ref
-                                          .read(
-                                            xonadoshShellTabIndexProvider
-                                                .notifier,
-                                          )
-                                          .state =
-                                      0,
-                              icon: const Icon(Icons.home_outlined, size: 18),
-                              label: Text(l10n.xonadoshFindRoom),
+                    hasScrollBody: false,
+                    child: Padding(
+                      padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 32),
+                      child: Center(
+                        child: Column(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          children: [
+                            Container(
+                              width: 88,
+                              height: 88,
+                              decoration: BoxDecoration(
+                                color: const Color(0xFF10B981).withValues(alpha: 0.12),
+                                shape: BoxShape.circle,
+                              ),
+                              alignment: Alignment.center,
+                              child: const Text('🤝', style: TextStyle(fontSize: 44)),
                             ),
+                            const SizedBox(height: 20),
+                            Text(
+                              !profileReady
+                                  ? "O'zingizga 95% mos xonadosh toping!"
+                                  : (filtersOn
+                                      ? l10n.xonadoshEmptyMatchesFiltered
+                                      : l10n.xonadoshNoMatchesTitle),
+                              textAlign: TextAlign.center,
+                              style: XonaDoshTypography.h1.copyWith(fontSize: 20),
+                            ),
+                            const SizedBox(height: 8),
+                            Text(
+                              !profileReady
+                                  ? "5 ta tezkor savolga javob bering (30 soniya)."
+                                  : (filtersOn
+                                      ? l10n.xonadoshClearFilters
+                                      : l10n.xonadoshNoMatchesBody),
+                              textAlign: TextAlign.center,
+                              style: XonaDoshTypography.body(isDark).copyWith(fontSize: 14),
+                            ),
+                            const SizedBox(height: 24),
+                            if (!profileReady)
+                              SizedBox(
+                                width: double.infinity,
+                                child: FilledButton(
+                                  onPressed: () =>
+                                      _openProfileScreen(context, ref, myProf),
+                                  style: FilledButton.styleFrom(
+                                    backgroundColor: XonaDoshColors.primary,
+                                    foregroundColor: Colors.white,
+                                    padding: const EdgeInsets.symmetric(vertical: 14),
+                                    shape: RoundedRectangleBorder(
+                                      borderRadius: BorderRadius.circular(14),
+                                    ),
+                                  ),
+                                  child: const Text(
+                                    '🚀 Boshlash',
+                                    style: TextStyle(
+                                      fontWeight: FontWeight.w800,
+                                      fontSize: 15,
+                                    ),
+                                  ),
+                                ),
+                              )
+                            else if (filtersOn)
+                              OutlinedButton(
+                                onPressed: () {
+                                  ref
+                                      .read(
+                                        xonadoshMatchGenderFilterProvider
+                                            .notifier,
+                                      )
+                                      .state = 'any';
+                                  ref
+                                      .read(xonadoshMatchUniProvider.notifier)
+                                      .state = null;
+                                },
+                                style: OutlinedButton.styleFrom(
+                                  shape: RoundedRectangleBorder(
+                                    borderRadius: BorderRadius.circular(12),
+                                  ),
+                                ),
+                                child: Text(l10n.xonadoshClearFilters),
+                              )
+                            else
+                              TextButton.icon(
+                                onPressed: () => ref
+                                    .read(
+                                      xonadoshShellTabIndexProvider.notifier,
+                                    )
+                                    .state = 0,
+                                icon: const Icon(Icons.home_outlined, size: 18),
+                                label: Text(l10n.xonadoshFindRoom),
+                              ),
+                          ],
+                        ),
+                      ),
                     ),
                   );
                 }
@@ -428,67 +477,74 @@ class XonadoshMatchingTab extends ConsumerWidget {
     WidgetRef ref,
     XonadoshProfile? myProfile,
   ) {
-    final l10n = context.l10n;
     final isDark = Theme.of(context).brightness == Brightness.dark;
     return Container(
-      padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 12),
+      padding: const EdgeInsets.all(16),
       decoration: BoxDecoration(
         color: isDark ? const Color(0xFF1E293B) : Colors.white,
-        borderRadius: BorderRadius.circular(12),
+        borderRadius: BorderRadius.circular(16),
         border: Border.all(
           color: isDark ? const Color(0xFF334155) : const Color(0xFFE2E8F0),
         ),
+        boxShadow: [
+          BoxShadow(
+            color: Colors.black.withValues(alpha: isDark ? 0.2 : 0.04),
+            blurRadius: 6,
+            offset: const Offset(0, 2),
+          ),
+        ],
       ),
-      child: Row(
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          Container(
-            padding: const EdgeInsets.all(8),
-            decoration: BoxDecoration(
-              color: XonaDoshColors.primary.withValues(alpha: 0.1),
-              borderRadius: BorderRadius.circular(10),
-            ),
-            child: const Icon(
-              Icons.assignment_ind_outlined,
-              color: XonaDoshColors.primary,
-              size: 20,
-            ),
-          ),
-          const SizedBox(width: 12),
-          Expanded(
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Text(
-                  l10n.xonadoshSurveyTitle,
-                  style: const TextStyle(
-                    fontWeight: FontWeight.w700,
-                    fontSize: 14,
-                  ),
+          Row(
+            children: [
+              Container(
+                width: 44,
+                height: 44,
+                decoration: BoxDecoration(
+                  color: const Color(0xFF10B981).withValues(alpha: 0.12),
+                  shape: BoxShape.circle,
                 ),
-                Text(
-                  l10n.xonadoshEmptyMatchesNeedProfile,
-                  style: TextStyle(
-                    fontSize: 12,
-                    color: isDark
-                        ? const Color(0xFF94A3B8)
-                        : const Color(0xFF64748B),
-                  ),
-                ),
-              ],
-            ),
-          ),
-          const SizedBox(width: 8),
-          FilledButton.tonal(
-            onPressed: () => _openProfileScreen(context, ref, myProfile),
-            style: FilledButton.styleFrom(
-              padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
-              shape: RoundedRectangleBorder(
-                borderRadius: BorderRadius.circular(10),
+                alignment: Alignment.center,
+                child: const Text('🤝', style: TextStyle(fontSize: 22)),
               ),
-            ),
-            child: Text(
-              l10n.xonadoshFillProfile,
-              style: const TextStyle(fontWeight: FontWeight.w700, fontSize: 12),
+              const SizedBox(width: 12),
+              Expanded(
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text(
+                      "O'zingizga 95% mos xonadosh toping!",
+                      style: XonaDoshTypography.title.copyWith(fontSize: 14),
+                    ),
+                    const SizedBox(height: 2),
+                    Text(
+                      "5 ta tezkor savolga javob bering (30 soniya)",
+                      style: XonaDoshTypography.body(isDark).copyWith(fontSize: 12),
+                    ),
+                  ],
+                ),
+              ),
+            ],
+          ),
+          const SizedBox(height: 12),
+          SizedBox(
+            width: double.infinity,
+            child: FilledButton(
+              onPressed: () => _openProfileScreen(context, ref, myProfile),
+              style: FilledButton.styleFrom(
+                backgroundColor: XonaDoshColors.primary,
+                foregroundColor: Colors.white,
+                padding: const EdgeInsets.symmetric(vertical: 10),
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(10),
+                ),
+              ),
+              child: const Text(
+                '🚀 Boshlash',
+                style: TextStyle(fontWeight: FontWeight.w700, fontSize: 13),
+              ),
             ),
           ),
         ],
@@ -575,6 +631,40 @@ class XonadoshMatchingTab extends ConsumerWidget {
     );
   }
 
+  List<String> _extractWhyMatchChips({
+    required XonadoshProfile item,
+    required XonadoshProfile? myProfile,
+    required AppLocalizations l10n,
+  }) {
+    final reasons = visibleMatchReasons(
+      candidate: item,
+      me: myProfile,
+      l10n: l10n,
+      limit: 3,
+    );
+    if (reasons.isNotEmpty) {
+      return reasons;
+    }
+    final list = <String>[];
+    if (item.sleepSchedule == 'early_bird') {
+      list.add('✓ Erta turadi (06:00)');
+    } else if (item.sleepSchedule == 'night_owl') {
+      list.add('✓ Kech yotadi (01:00)');
+    } else {
+      list.add('✓ Moslashuvchan rejim');
+    }
+    if (item.smokingHabit == 'no' || item.smokingHabit == 'never') {
+      list.add('✓ Chekmaydi');
+    } else {
+      list.add('✓ Chekadi');
+    }
+    if (item.budgetMax > 0) {
+      final b = (item.budgetMax / 1000).toStringAsFixed(0);
+      list.add('✓ Byudjet: ${b}k so\'m');
+    }
+    return list.take(3).toList();
+  }
+
   Widget _buildRoommateCard(
     BuildContext context,
     WidgetRef ref,
@@ -584,10 +674,28 @@ class XonadoshMatchingTab extends ConsumerWidget {
   ) {
     final l10n = context.l10n;
     final score = item.compatibilityScore ?? 85;
+    final whyMatchChips = _extractWhyMatchChips(
+      item: item,
+      myProfile: myProfile,
+      l10n: l10n,
+    );
 
     return Container(
       margin: const EdgeInsets.only(bottom: 14),
-      decoration: XonaDoshStyles.cardDecoration(isDark, radius: 16),
+      decoration: BoxDecoration(
+        color: isDark ? const Color(0xFF1E293B) : Colors.white,
+        borderRadius: BorderRadius.circular(16),
+        border: Border.all(
+          color: isDark ? const Color(0xFF334155) : const Color(0xFFE2E8F0),
+        ),
+        boxShadow: [
+          BoxShadow(
+            color: Colors.black.withValues(alpha: isDark ? 0.2 : 0.04),
+            blurRadius: 6,
+            offset: const Offset(0, 2),
+          ),
+        ],
+      ),
       child: InkWell(
         onTap: () =>
             _showRoommateDetailSheet(context, ref, item, myProfile, isDark),
@@ -597,25 +705,26 @@ class XonadoshMatchingTab extends ConsumerWidget {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              // Header: Avatar, Name & Age, Uni & Course, Match Score Pill
+              // Top Row: Avatar + Name/Age + Uni, and Match Score Circle
               Row(
+                crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   CircleAvatar(
-                    radius: 22,
+                    radius: 26,
                     backgroundColor: isDark
                         ? const Color(0xFF334155)
                         : const Color(0xFFF1F5F9),
                     backgroundImage:
                         item.avatarUrl != null && item.avatarUrl!.isNotEmpty
-                        ? NetworkImage(item.avatarUrl!)
-                        : null,
+                            ? NetworkImage(item.avatarUrl!)
+                            : null,
                     child: item.avatarUrl == null || item.avatarUrl!.isEmpty
                         ? Text(
                             item.fullName.isNotEmpty
                                 ? item.fullName[0].toUpperCase()
-                                : 'T',
+                                : 'X',
                             style: TextStyle(
-                              fontSize: 16,
+                              fontSize: 18,
                               fontWeight: FontWeight.w800,
                               color: isDark
                                   ? Colors.white
@@ -624,7 +733,7 @@ class XonadoshMatchingTab extends ConsumerWidget {
                           )
                         : null,
                   ),
-                  const SizedBox(width: 10),
+                  const SizedBox(width: 12),
                   Expanded(
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
@@ -634,9 +743,8 @@ class XonadoshMatchingTab extends ConsumerWidget {
                             Flexible(
                               child: Text(
                                 item.fullName,
-                                style: const TextStyle(
-                                  fontWeight: FontWeight.w700,
-                                  fontSize: 14,
+                                style: XonaDoshTypography.title.copyWith(
+                                  fontSize: 15,
                                 ),
                                 maxLines: 1,
                                 overflow: TextOverflow.ellipsis,
@@ -655,195 +763,193 @@ class XonadoshMatchingTab extends ConsumerWidget {
                               ),
                           ],
                         ),
-                        const SizedBox(height: 2),
-                        Text(
-                          '${_uniLabel(item.universityShort, l10n)} · ${l10n.xonadoshCourseYearSuffix(item.courseYear)}',
-                          style: TextStyle(
-                            color: isDark
-                                ? const Color(0xFF94A3B8)
-                                : const Color(0xFF64748B),
-                            fontSize: 12,
+                        const SizedBox(height: 3),
+                        Container(
+                          padding: const EdgeInsets.symmetric(
+                            horizontal: 7,
+                            vertical: 2,
                           ),
-                          maxLines: 1,
-                          overflow: TextOverflow.ellipsis,
+                          decoration: BoxDecoration(
+                            color:
+                                const Color(0xFF0284C7).withValues(alpha: 0.1),
+                            borderRadius: BorderRadius.circular(6),
+                          ),
+                          child: Text(
+                            '🎓 ${_uniLabel(item.universityShort, l10n)}, ${l10n.xonadoshCourseYearSuffix(item.courseYear)}',
+                            style: const TextStyle(
+                              fontSize: 11,
+                              fontWeight: FontWeight.w700,
+                              color: Color(0xFF0284C7),
+                            ),
+                            maxLines: 1,
+                            overflow: TextOverflow.ellipsis,
+                          ),
                         ),
                       ],
                     ),
                   ),
-
-                  // Match Score Pill
-                  _buildMatchScoreBadge(score, isDark),
-                ],
-              ),
-
-              const SizedBox(height: 10),
-
-              Wrap(
-                spacing: 6,
-                runSpacing: 4,
-                children: [
-                  _buildHabitPill(
-                    Icons.bedtime_outlined,
-                    _sleepLabel(item.sleepSchedule, l10n),
-                    isDark,
-                  ),
-                  _buildHabitPill(
-                    Icons.cleaning_services_outlined,
-                    _cleanLabel(item.cleanliness, l10n),
-                    isDark,
-                  ),
-                  _buildHabitPill(
-                    Icons.smoke_free_outlined,
-                    _smokeLabel(item.smokingHabit, l10n),
-                    isDark,
-                  ),
-                ],
-              ),
-              if (visibleMatchReasons(
-                candidate: item,
-                me: myProfile,
-                l10n: l10n,
-              ).isNotEmpty) ...[
-                const SizedBox(height: 8),
-                Text(
-                  l10n.xonadoshWhyMatch,
-                  style: TextStyle(
-                    fontSize: 11,
-                    fontWeight: FontWeight.w700,
-                    color: isDark
-                        ? const Color(0xFF94A3B8)
-                        : const Color(0xFF64748B),
-                  ),
-                ),
-                const SizedBox(height: 4),
-                Wrap(
-                  spacing: 6,
-                  runSpacing: 4,
-                  children:
-                      visibleMatchReasons(
-                            candidate: item,
-                            me: myProfile,
-                            l10n: l10n,
-                          )
-                          .map(
-                            (r) => _buildHabitPill(
-                              Icons.check_circle_outline,
-                              r,
-                              isDark,
-                            ),
-                          )
-                          .toList(),
-                ),
-              ],
-
-              const SizedBox(height: 10),
-
-              // Footer: Budget & Quick Actions
-              Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: [
+                  const SizedBox(width: 8),
+                  // Katta yashil moslik aylanasi
                   Container(
                     padding: const EdgeInsets.symmetric(
-                      horizontal: 8,
-                      vertical: 4,
+                      horizontal: 10,
+                      vertical: 6,
                     ),
                     decoration: BoxDecoration(
-                      color: isDark
-                          ? const Color(0xFF0F172A)
-                          : const Color(0xFFF1F5F9),
-                      borderRadius: BorderRadius.circular(8),
+                      color: const Color(0xFF10B981).withValues(alpha: 0.12),
+                      borderRadius: BorderRadius.circular(20),
                       border: Border.all(
-                        color: isDark
-                            ? const Color(0xFF334155)
-                            : const Color(0xFFE2E8F0),
+                        color: const Color(0xFF10B981),
+                        width: 1.5,
                       ),
                     ),
                     child: Row(
                       mainAxisSize: MainAxisSize.min,
                       children: [
                         const Icon(
-                          Icons.payments_outlined,
+                          Icons.favorite_rounded,
                           size: 13,
                           color: Color(0xFF10B981),
                         ),
                         const SizedBox(width: 4),
                         Text(
-                          '~${(item.budgetMax / 1000).toStringAsFixed(0)}k ${l10n.currencyUzsSuffix}',
+                          '$score%',
                           style: const TextStyle(
+                            color: Color(0xFF059669),
                             fontWeight: FontWeight.w800,
                             fontSize: 12,
+                          ),
+                        ),
+                        const SizedBox(width: 2),
+                        const Text(
+                          ' mos',
+                          style: TextStyle(
+                            color: Color(0xFF059669),
+                            fontWeight: FontWeight.w700,
+                            fontSize: 11,
                           ),
                         ),
                       ],
                     ),
                   ),
-                  Row(
-                    children: [
-                      IconButton.filledTonal(
-                        onPressed: () =>
-                            ContactActions.callPhone(context, item.phoneNumber),
-                        tooltip: l10n.xonadoshCallShort,
-                        icon: const Icon(Icons.call_rounded, size: 16),
-                        style: IconButton.styleFrom(
-                          backgroundColor: XonaDoshColors.primary.withValues(
-                            alpha: 0.1,
-                          ),
-                          foregroundColor: XonaDoshColors.primaryDark,
-                          shape: RoundedRectangleBorder(
-                            borderRadius: BorderRadius.circular(8),
-                          ),
-                          minimumSize: const Size(32, 32),
-                        ),
+                ],
+              ),
+
+              const SizedBox(height: 10),
+
+              // Nega mos keladi?
+              Text(
+                l10n.xonadoshWhyMatch,
+                style: TextStyle(
+                  fontSize: 11,
+                  fontWeight: FontWeight.w700,
+                  color: isDark
+                      ? const Color(0xFF94A3B8)
+                      : const Color(0xFF64748B),
+                ),
+              ),
+              const SizedBox(height: 4),
+              Wrap(
+                spacing: 6,
+                runSpacing: 4,
+                children: whyMatchChips.map((chipText) {
+                  return Container(
+                    padding: const EdgeInsets.symmetric(
+                      horizontal: 8,
+                      vertical: 3,
+                    ),
+                    decoration: BoxDecoration(
+                      color: const Color(0xFF10B981).withValues(alpha: 0.08),
+                      borderRadius: BorderRadius.circular(6),
+                      border: Border.all(
+                        color: const Color(0xFF10B981).withValues(alpha: 0.25),
                       ),
-                      if (item.telegramHandle != null &&
-                          item.telegramHandle!.isNotEmpty) ...[
-                        const SizedBox(width: 6),
-                        IconButton.filledTonal(
-                          onPressed: () => ContactActions.openTelegram(
-                            context,
-                            item.telegramHandle,
-                          ),
-                          tooltip: l10n.xonadoshTelegram,
-                          icon: const Icon(Icons.send_rounded, size: 14),
-                          style: IconButton.styleFrom(
-                            backgroundColor: const Color(
-                              0xFF0284C7,
-                            ).withValues(alpha: 0.1),
-                            foregroundColor: const Color(0xFF0284C7),
-                            shape: RoundedRectangleBorder(
-                              borderRadius: BorderRadius.circular(8),
-                            ),
-                            minimumSize: const Size(32, 32),
-                          ),
+                    ),
+                    child: Text(
+                      chipText,
+                      style: const TextStyle(
+                        fontSize: 11,
+                        fontWeight: FontWeight.w700,
+                        color: Color(0xFF065F46),
+                      ),
+                    ),
+                  );
+                }).toList(),
+              ),
+
+              const SizedBox(height: 12),
+
+              // Quick Actions Row: Call, Telegram, Tanishish
+              Row(
+                children: [
+                  IconButton.filledTonal(
+                    onPressed: () =>
+                        ContactActions.callPhone(context, item.phoneNumber),
+                    icon: const Icon(Icons.call_rounded, size: 16),
+                    tooltip: 'Qo‘ng‘iroq',
+                    style: IconButton.styleFrom(
+                      backgroundColor: XonaDoshColors.primary.withValues(
+                        alpha: 0.1,
+                      ),
+                      foregroundColor: XonaDoshColors.primaryDark,
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(10),
+                      ),
+                      minimumSize: const Size(40, 40),
+                    ),
+                  ),
+                  if (item.telegramHandle != null &&
+                      item.telegramHandle!.isNotEmpty) ...[
+                    const SizedBox(width: 8),
+                    IconButton.filledTonal(
+                      onPressed: () => ContactActions.openTelegram(
+                        context,
+                        item.telegramHandle,
+                      ),
+                      icon: const Icon(Icons.send_rounded, size: 15),
+                      tooltip: 'Telegram',
+                      style: IconButton.styleFrom(
+                        backgroundColor: const Color(
+                          0xFF0284C7,
+                        ).withValues(alpha: 0.1),
+                        foregroundColor: const Color(0xFF0284C7),
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(10),
                         ),
-                      ],
-                      const SizedBox(width: 6),
-                      FilledButton.tonal(
-                        onPressed: () => _showRoommateDetailSheet(
+                        minimumSize: const Size(40, 40),
+                      ),
+                    ),
+                  ],
+                  const SizedBox(width: 8),
+                  Expanded(
+                    child: FilledButton.icon(
+                      onPressed: () {
+                        ContactActions.showContactSheet(
                           context,
-                          ref,
-                          item,
-                          myProfile,
-                          isDark,
-                        ),
-                        style: FilledButton.styleFrom(
-                          padding: const EdgeInsets.symmetric(
-                            horizontal: 10,
-                            vertical: 6,
-                          ),
-                          shape: RoundedRectangleBorder(
-                            borderRadius: BorderRadius.circular(8),
-                          ),
-                        ),
-                        child: Text(
-                          l10n.xonadoshMoreDetails,
-                          style: const TextStyle(
-                            fontWeight: FontWeight.w700,
-                            fontSize: 12,
-                          ),
+                          phone: item.phoneNumber,
+                          telegramHandle: item.telegramHandle,
+                        );
+                      },
+                      icon: const Icon(
+                        Icons.chat_bubble_outline_rounded,
+                        size: 15,
+                      ),
+                      label: const Text(
+                        '💬 Tanishish',
+                        style: TextStyle(
+                          fontWeight: FontWeight.w700,
+                          fontSize: 13,
                         ),
                       ),
-                    ],
+                      style: FilledButton.styleFrom(
+                        backgroundColor: XonaDoshColors.primary,
+                        foregroundColor: Colors.white,
+                        padding: const EdgeInsets.symmetric(vertical: 10),
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(10),
+                        ),
+                      ),
+                    ),
                   ),
                 ],
               ),

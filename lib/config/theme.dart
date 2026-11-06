@@ -56,6 +56,40 @@ class XonaDoshColors {
 class XonaDoshStyles {
   XonaDoshStyles._();
 
+  // Typography Constants (8pt Grid & Progressive Disclosure)
+  static const TextStyle h1 = TextStyle(
+    fontSize: 22,
+    fontWeight: FontWeight.w800,
+    height: 1.2,
+    letterSpacing: -0.4,
+  );
+
+  static const TextStyle h2 = TextStyle(
+    fontSize: 17,
+    fontWeight: FontWeight.w700,
+    height: 1.3,
+    letterSpacing: -0.2,
+  );
+
+  static const TextStyle title = TextStyle(
+    fontSize: 16,
+    fontWeight: FontWeight.w700,
+    letterSpacing: -0.2,
+  );
+
+  static TextStyle body(bool isDark) => TextStyle(
+        fontSize: 14,
+        fontWeight: FontWeight.w400,
+        height: 1.4,
+        color: isDark ? XonaDoshColors.slate400 : XonaDoshColors.slate600,
+      );
+
+  static const TextStyle chip = TextStyle(
+    fontSize: 12,
+    fontWeight: FontWeight.w600,
+    letterSpacing: 0.1,
+  );
+
   static BoxDecoration cardDecoration(
     bool isDark, {
     Color? color,
@@ -100,6 +134,70 @@ class XonaDoshStyles {
       ),
     ];
   }
+
+  /// Compact visual badge (e.g., [🛡️ Maklersiz], [⚡ Kommunal ichida])
+  static Widget visualBadge({
+    required Widget icon,
+    required String label,
+    required Color color,
+    Color textColor = Colors.white,
+    double radius = 8,
+  }) {
+    return Container(
+      padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
+      decoration: BoxDecoration(
+        color: color,
+        borderRadius: BorderRadius.circular(radius),
+      ),
+      child: Row(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          icon,
+          const SizedBox(width: 4),
+          Text(
+            label,
+            style: TextStyle(
+              color: textColor,
+              fontSize: 11,
+              fontWeight: FontWeight.w700,
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+}
+
+class XonaDoshTypography {
+  XonaDoshTypography._();
+
+  static const TextStyle h1 = TextStyle(
+    fontSize: 22,
+    fontWeight: FontWeight.w800,
+    height: 1.2,
+  );
+
+  static const TextStyle h2 = TextStyle(
+    fontSize: 17,
+    fontWeight: FontWeight.w700,
+    height: 1.3,
+  );
+
+  static const TextStyle title = TextStyle(
+    fontSize: 16,
+    fontWeight: FontWeight.w700,
+  );
+
+  static TextStyle body(bool isDark) => TextStyle(
+    fontSize: 14,
+    fontWeight: FontWeight.w400,
+    color: isDark ? const Color(0xFF94A3B8) : const Color(0xFF475569),
+  );
+
+  static const TextStyle chip = TextStyle(
+    fontSize: 12,
+    fontWeight: FontWeight.w600,
+  );
 }
 
 ThemeData buildLightTheme() {

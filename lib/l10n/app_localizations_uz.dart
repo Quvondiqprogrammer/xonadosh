@@ -322,7 +322,7 @@ class AppLocalizationsUz extends AppLocalizations {
       'Navbatchilik, menyu & bozorlik hisobi';
 
   @override
-  String get xonadoshColivingTab => 'Birga';
+  String get xonadoshColivingTab => 'Bizning uy';
 
   @override
   String get xonadoshContactMethods => 'Aloqa vositalari';
@@ -627,7 +627,7 @@ class AppLocalizationsUz extends AppLocalizations {
   String get xonadoshHousingSubtitle => 'Uy-joy, ijara va OTM masofasi';
 
   @override
-  String get xonadoshHousingTab => 'Uy';
+  String get xonadoshHousingTab => 'Uy topish';
 
   @override
   String get xonadoshIngredientAmount => 'Miqdor';
@@ -721,7 +721,7 @@ class AppLocalizationsUz extends AppLocalizations {
   String get xonadoshMatchingSubtitle => 'AI moslik & Harakter tahlili';
 
   @override
-  String get xonadoshMatchingTab => 'Xonadosh';
+  String get xonadoshMatchingTab => 'Sherik topish';
 
   @override
   String get xonadoshMaxBudget => 'Maksimal byudjet';

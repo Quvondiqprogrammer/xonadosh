@@ -173,9 +173,9 @@ class _XonadoshShellState extends ConsumerState<XonadoshShell> {
                     label: l10n.xonadoshMatchingTab,
                   ),
                   NavigationDestination(
-                    icon: const Icon(Icons.checklist_rounded),
+                    icon: const Icon(Icons.other_houses_outlined),
                     selectedIcon: const Icon(
-                      Icons.checklist_rounded,
+                      Icons.other_houses_rounded,
                       color: XonaDoshColors.primary,
                     ),
                     label: l10n.xonadoshColivingTab,

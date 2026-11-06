@@ -84,6 +84,7 @@ class _XonadoshCreateListingScreenState
   ];
 
   final List<String> _photos = [];
+  int _currentStep = 0;
 
   @override
   void initState() {
@@ -418,40 +419,28 @@ class _XonadoshCreateListingScreenState
           overflow: TextOverflow.ellipsis,
         ),
         elevation: 0,
-        actions: [
-          IconButton(
-            icon: const Icon(
-              Icons.public_rounded,
-              color: XonaDoshColors.primary,
-            ),
-            tooltip: context.l10n.xonadoshGlobalUzbekistan,
-            onPressed: () {
-              ScaffoldMessenger.of(context).showSnackBar(
-                SnackBar(
-                  content: Text(context.l10n.xonadoshGlobalUzbekistan),
-                  duration: const Duration(seconds: 2),
-                ),
-              );
-            },
-          ),
-          const SizedBox(width: 4),
-        ],
       ),
-      body: Form(
-        key: _formKey,
-        child: SingleChildScrollView(
-          padding: const EdgeInsets.all(18),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.stretch,
-            children: [
-              // ==========================================
-              // 1. E'LON TURI (CATEGORY / TYPE)
-              // ==========================================
-              _buildSectionHeader(
-                title: context.l10n.xonadoshStep1Title,
-                subtitle: context.l10n.xonadoshStep1Subtitle,
-                icon: Icons.category_rounded,
-              ),
+      bottomNavigationBar: _buildBottomWizardBar(isDark),
+      body: Column(
+        children: [
+          _buildStepProgressHeader(isDark),
+          Expanded(
+            child: Form(
+              key: _formKey,
+              child: SingleChildScrollView(
+                padding: const EdgeInsets.all(18),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.stretch,
+                  children: [
+                    if (_currentStep == 0) ...[
+                      // ==========================================
+                      // 1. E'LON TURI (CATEGORY / TYPE)
+                      // ==========================================
+                      _buildSectionHeader(
+                        title: context.l10n.xonadoshStep1Title,
+                        subtitle: context.l10n.xonadoshStep1Subtitle,
+                        icon: Icons.category_rounded,
+                      ),
               const SizedBox(height: 12),
               Row(
                 children: [
@@ -652,8 +641,8 @@ class _XonadoshCreateListingScreenState
                 ),
                 const SizedBox(height: 14),
               ],
-              const SizedBox(height: 10),
-
+              _buildPhotosSection(context, isDark),
+            ] else if (_currentStep == 1) ...[
               // ==========================================
               // 3. SARLAVHA, NARX VA VALYUTA
               // ==========================================
@@ -881,194 +870,7 @@ class _XonadoshCreateListingScreenState
               ),
               const SizedBox(height: 20),
 
-              // ==========================================
-              // 5. SURATLAR (PHOTOS & PRESETS)
-              // ==========================================
-              _buildSectionHeader(
-                title: context.l10n.xonadoshStep5Title,
-                subtitle: context.l10n.xonadoshStep5Subtitle,
-                icon: Icons.photo_library_rounded,
-              ),
-              const SizedBox(height: 12),
-
-              // Presets Carousel
-              SizedBox(
-                height: 105,
-                child: ListView.builder(
-                  scrollDirection: Axis.horizontal,
-                  itemCount: XonadoshLocationData.presetPhotos.length,
-                  itemBuilder: (context, idx) {
-                    final item = XonadoshLocationData.presetPhotos[idx];
-                    final isSelected = _photos.contains(item['url']);
-                    return GestureDetector(
-                      onTap: () {
-                        HapticFeedback.selectionClick();
-                        setState(() {
-                          if (isSelected) {
-                            _photos.remove(item['url']);
-                          } else {
-                            _photos.add(item['url']!);
-                          }
-                        });
-                      },
-                      child: Container(
-                        width: 130,
-                        margin: const EdgeInsets.only(right: 10),
-                        decoration: BoxDecoration(
-                          borderRadius: BorderRadius.circular(10),
-                          border: Border.all(
-                            color: isSelected
-                                ? XonaDoshColors.primary
-                                : Colors.transparent,
-                            width: 2,
-                          ),
-                        ),
-                        child: ClipRRect(
-                          borderRadius: BorderRadius.circular(8),
-                          child: Stack(
-                            fit: StackFit.expand,
-                            children: [
-                              Image.network(
-                                item['url']!,
-                                fit: BoxFit.cover,
-                                errorBuilder: (_, _, _) => Container(
-                                  color: const Color(0xFF1E293B),
-                                  child: const Icon(
-                                    Icons.apartment_rounded,
-                                    color: Colors.white54,
-                                  ),
-                                ),
-                              ),
-                              Container(
-                                decoration: const BoxDecoration(
-                                  gradient: LinearGradient(
-                                    colors: [
-                                      Colors.transparent,
-                                      Colors.black87,
-                                    ],
-                                    begin: Alignment.topCenter,
-                                    end: Alignment.bottomCenter,
-                                  ),
-                                ),
-                              ),
-                              if (isSelected)
-                                const Positioned(
-                                  top: 6,
-                                  right: 6,
-                                  child: CircleAvatar(
-                                    radius: 11,
-                                    backgroundColor: XonaDoshColors.primary,
-                                    child: Icon(
-                                      Icons.check,
-                                      size: 14,
-                                      color: Colors.white,
-                                    ),
-                                  ),
-                                ),
-                              Positioned(
-                                bottom: 6,
-                                left: 6,
-                                right: 6,
-                                child: Text(
-                                  item['title']!,
-                                  style: const TextStyle(
-                                    color: Colors.white,
-                                    fontSize: 10,
-                                    fontWeight: FontWeight.bold,
-                                  ),
-                                  maxLines: 1,
-                                  overflow: TextOverflow.ellipsis,
-                                ),
-                              ),
-                            ],
-                          ),
-                        ),
-                      ),
-                    );
-                  },
-                ),
-              ),
-              const SizedBox(height: 12),
-
-              // Galereya / kamera (web + mobil)
-              Row(
-                children: [
-                  Expanded(
-                    child: OutlinedButton.icon(
-                      onPressed: _uploadingPhoto
-                          ? null
-                          : () => _pickAndUploadPhoto(ImageSource.gallery),
-                      icon: _uploadingPhoto
-                          ? const SizedBox(
-                              width: 16,
-                              height: 16,
-                              child: CircularProgressIndicator(strokeWidth: 2),
-                            )
-                          : const Icon(Icons.photo_library_outlined, size: 18),
-                      label: Text(
-                        _uploadingPhoto
-                            ? context.l10n.xonadoshUploadingPhoto
-                            : context.l10n.xonadoshPickFromGallery,
-                      ),
-                    ),
-                  ),
-                  const SizedBox(width: 8),
-                  Expanded(
-                    child: OutlinedButton.icon(
-                      onPressed: _uploadingPhoto
-                          ? null
-                          : () => _pickAndUploadPhoto(ImageSource.camera),
-                      icon: const Icon(Icons.photo_camera_outlined, size: 18),
-                      label: Text(context.l10n.xonadoshTakePhoto),
-                    ),
-                  ),
-                ],
-              ),
-              const SizedBox(height: 10),
-              Align(
-                alignment: Alignment.centerLeft,
-                child: TextButton.icon(
-                  onPressed: _useMyLocation,
-                  icon: const Icon(Icons.my_location_rounded, size: 18),
-                  label: Text(
-                    _latitude != null
-                        ? '${context.l10n.xonadoshUseMyLocation} ✓'
-                        : context.l10n.xonadoshUseMyLocation,
-                  ),
-                ),
-              ),
-              const SizedBox(height: 12),
-
-              // Rasm URL kiritish
-              Row(
-                children: [
-                  Expanded(
-                    child: TextFormField(
-                      controller: _photoUrlController,
-                      decoration: InputDecoration(
-                        labelText: context.l10n.xonadoshPhotoUrlOptional,
-                        hintText: 'https://...',
-                        prefixIcon: const Icon(Icons.link_rounded),
-                        border: OutlineInputBorder(
-                          borderRadius: BorderRadius.circular(14),
-                        ),
-                      ),
-                    ),
-                  ),
-                  const SizedBox(width: 8),
-                  IconButton.filled(
-                    onPressed: _addCustomPhotoUrl,
-                    tooltip: context.l10n.xonadoshAdd,
-                    icon: const Icon(Icons.add_photo_alternate_rounded),
-                    style: IconButton.styleFrom(
-                      backgroundColor: XonaDoshColors.primary,
-                      foregroundColor: Colors.white,
-                    ),
-                  ),
-                ],
-              ),
-              const SizedBox(height: 20),
-
+            ] else ...[
               // ==========================================
               // 6. QULAYLIKLAR & JIXOZLAR (AMENITIES)
               // ==========================================
@@ -1336,53 +1138,361 @@ class _XonadoshCreateListingScreenState
               ),
               const SizedBox(height: 28),
 
-              // ==========================================
-              // JOYLASH TUGMASI
-              // ==========================================
-              ElevatedButton(
-                onPressed: _isLoading ? null : _submit,
-                style: ElevatedButton.styleFrom(
-                  backgroundColor: XonaDoshColors.primary,
-                  foregroundColor: Colors.white,
-                  padding: const EdgeInsets.symmetric(vertical: 16),
-                  elevation: 0,
-                  shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(12),
-                  ),
+                    ],
+                  ],
                 ),
-                child: _isLoading
-                    ? const SizedBox(
-                        height: 22,
-                        width: 22,
-                        child: CircularProgressIndicator(
-                          color: Colors.white,
-                          strokeWidth: 2.5,
-                        ),
-                      )
-                    : Row(
+              ),
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+
+  Widget _buildStepProgressHeader(bool isDark) {
+    const steps = ['1. Manzil & Rasm', '2. Narx & Shartlar', '3. Tavsif & Aloqa'];
+    return Container(
+      padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
+      decoration: BoxDecoration(
+        color: isDark ? const Color(0xFF1E293B) : Colors.white,
+        border: Border(
+          bottom: BorderSide(
+            color: isDark ? const Color(0xFF334155) : const Color(0xFFE2E8F0),
+          ),
+        ),
+      ),
+      child: Row(
+        children: List.generate(steps.length, (i) {
+          final isCurrent = _currentStep == i;
+          final isDone = _currentStep > i;
+          return Expanded(
+            child: Row(
+              children: [
+                Expanded(
+                  child: Column(
+                    children: [
+                      Row(
                         mainAxisAlignment: MainAxisAlignment.center,
                         children: [
-                          const Icon(Icons.add_home_rounded, size: 20),
-                          const SizedBox(width: 8),
+                          CircleAvatar(
+                            radius: 10,
+                            backgroundColor: isCurrent
+                                ? XonaDoshColors.emerald
+                                : (isDone
+                                    ? const Color(0xFF10B981)
+                                    : (isDark ? Colors.white24 : Colors.black12)),
+                            child: isDone
+                                ? const Icon(Icons.check, size: 12, color: Colors.white)
+                                : Text(
+                                    '${i + 1}',
+                                    style: TextStyle(
+                                      fontSize: 10,
+                                      fontWeight: FontWeight.w800,
+                                      color: (isCurrent || isDone) ? Colors.white : Colors.grey,
+                                    ),
+                                  ),
+                          ),
+                          const SizedBox(width: 6),
                           Flexible(
                             child: Text(
-                              context.l10n.xonadoshPublishListing,
-                              style: const TextStyle(
-                                fontWeight: FontWeight.w800,
-                                fontSize: 16,
-                              ),
+                              steps[i].split('. ').last,
                               maxLines: 1,
                               overflow: TextOverflow.ellipsis,
+                              style: TextStyle(
+                                fontSize: 11,
+                                fontWeight: isCurrent ? FontWeight.w800 : FontWeight.w600,
+                                color: isCurrent
+                                    ? XonaDoshColors.emerald
+                                    : (isDark ? Colors.white70 : Colors.black54),
+                              ),
                             ),
                           ),
                         ],
                       ),
-              ),
-              const SizedBox(height: 40),
-            ],
+                      const SizedBox(height: 6),
+                      Container(
+                        height: 3,
+                        decoration: BoxDecoration(
+                          color: (isCurrent || isDone)
+                              ? XonaDoshColors.emerald
+                              : (isDark ? const Color(0xFF334155) : const Color(0xFFE2E8F0)),
+                          borderRadius: BorderRadius.circular(2),
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+                if (i < steps.length - 1) const SizedBox(width: 8),
+              ],
+            ),
+          );
+        }),
+      ),
+    );
+  }
+
+  Widget _buildBottomWizardBar(bool isDark) {
+    return Container(
+      padding: const EdgeInsets.fromLTRB(16, 12, 16, 16),
+      decoration: BoxDecoration(
+        color: isDark ? const Color(0xFF1E293B) : Colors.white,
+        border: Border(
+          top: BorderSide(
+            color: isDark ? const Color(0xFF334155) : const Color(0xFFE2E8F0),
           ),
         ),
       ),
+      child: SafeArea(
+        top: false,
+        child: Row(
+          children: [
+            if (_currentStep > 0) ...[
+              OutlinedButton.icon(
+                onPressed: () => setState(() => _currentStep--),
+                icon: const Icon(Icons.arrow_back_rounded, size: 16),
+                label: const Text('Orqaga'),
+                style: OutlinedButton.styleFrom(
+                  padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
+                  shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+                ),
+              ),
+              const SizedBox(width: 12),
+            ],
+            Expanded(
+              child: FilledButton(
+                onPressed: _isLoading
+                    ? null
+                    : () {
+                        if (_currentStep < 2) {
+                          if (_currentStep == 0 && _photos.isEmpty) {
+                            ScaffoldMessenger.of(context).showSnackBar(
+                              const SnackBar(content: Text('Kamida 1 ta rasm tanlang yoki yuklang')),
+                            );
+                            return;
+                          }
+                          if (_currentStep == 1 && _priceController.text.trim().isEmpty) {
+                            ScaffoldMessenger.of(context).showSnackBar(
+                              const SnackBar(content: Text('Ijara narxini kiriting')),
+                            );
+                            return;
+                          }
+                          setState(() => _currentStep++);
+                        } else {
+                          _submit();
+                        }
+                      },
+                style: FilledButton.styleFrom(
+                  backgroundColor: XonaDoshColors.emerald,
+                  foregroundColor: Colors.white,
+                  padding: const EdgeInsets.symmetric(vertical: 14),
+                  shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+                ),
+                child: _isLoading
+                    ? const SizedBox(
+                        height: 20,
+                        width: 20,
+                        child: CircularProgressIndicator(strokeWidth: 2, color: Colors.white),
+                      )
+                    : Row(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: [
+                          Text(
+                            _currentStep < 2 ? 'Davom etish →' : 'E‘lonni joylash 🚀',
+                            style: const TextStyle(fontWeight: FontWeight.w800, fontSize: 15),
+                          ),
+                        ],
+                      ),
+              ),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+
+  Widget _buildPhotosSection(BuildContext context, bool isDark) {
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.stretch,
+      children: [
+        _buildSectionHeader(
+          title: context.l10n.xonadoshStep5Title,
+          subtitle: context.l10n.xonadoshStep5Subtitle,
+          icon: Icons.photo_library_rounded,
+        ),
+        const SizedBox(height: 12),
+        SizedBox(
+          height: 105,
+          child: ListView.builder(
+            scrollDirection: Axis.horizontal,
+            itemCount: XonadoshLocationData.presetPhotos.length,
+            itemBuilder: (context, idx) {
+              final item = XonadoshLocationData.presetPhotos[idx];
+              final isSelected = _photos.contains(item['url']);
+              return GestureDetector(
+                onTap: () {
+                  HapticFeedback.selectionClick();
+                  setState(() {
+                    if (isSelected) {
+                      _photos.remove(item['url']);
+                    } else {
+                      _photos.add(item['url']!);
+                    }
+                  });
+                },
+                child: Container(
+                  width: 130,
+                  margin: const EdgeInsets.only(right: 10),
+                  decoration: BoxDecoration(
+                    borderRadius: BorderRadius.circular(10),
+                    border: Border.all(
+                      color: isSelected
+                          ? XonaDoshColors.primary
+                          : Colors.transparent,
+                      width: 2,
+                    ),
+                  ),
+                  child: ClipRRect(
+                    borderRadius: BorderRadius.circular(8),
+                    child: Stack(
+                      fit: StackFit.expand,
+                      children: [
+                        Image.network(
+                          item['url']!,
+                          fit: BoxFit.cover,
+                          errorBuilder: (_, _, _) => Container(
+                            color: const Color(0xFF1E293B),
+                            child: const Icon(
+                              Icons.apartment_rounded,
+                              color: Colors.white54,
+                            ),
+                          ),
+                        ),
+                        Container(
+                          decoration: const BoxDecoration(
+                            gradient: LinearGradient(
+                              colors: [
+                                Colors.transparent,
+                                Colors.black87,
+                              ],
+                              begin: Alignment.topCenter,
+                              end: Alignment.bottomCenter,
+                            ),
+                          ),
+                        ),
+                        if (isSelected)
+                          const Positioned(
+                            top: 6,
+                            right: 6,
+                            child: CircleAvatar(
+                              radius: 11,
+                              backgroundColor: XonaDoshColors.primary,
+                              child: Icon(
+                                Icons.check,
+                                size: 14,
+                                color: Colors.white,
+                              ),
+                            ),
+                          ),
+                        Positioned(
+                          bottom: 6,
+                          left: 6,
+                          right: 6,
+                          child: Text(
+                            item['title']!,
+                            style: const TextStyle(
+                              color: Colors.white,
+                              fontSize: 10,
+                              fontWeight: FontWeight.bold,
+                            ),
+                            maxLines: 1,
+                            overflow: TextOverflow.ellipsis,
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
+                ),
+              );
+            },
+          ),
+        ),
+        const SizedBox(height: 12),
+        Row(
+          children: [
+            Expanded(
+              child: OutlinedButton.icon(
+                onPressed: _uploadingPhoto
+                    ? null
+                    : () => _pickAndUploadPhoto(ImageSource.gallery),
+                icon: _uploadingPhoto
+                    ? const SizedBox(
+                        width: 16,
+                        height: 16,
+                        child: CircularProgressIndicator(strokeWidth: 2),
+                      )
+                    : const Icon(Icons.photo_library_outlined, size: 18),
+                label: Text(
+                  _uploadingPhoto
+                      ? context.l10n.xonadoshUploadingPhoto
+                      : context.l10n.xonadoshPickFromGallery,
+                ),
+              ),
+            ),
+            const SizedBox(width: 8),
+            Expanded(
+              child: OutlinedButton.icon(
+                onPressed: _uploadingPhoto
+                    ? null
+                    : () => _pickAndUploadPhoto(ImageSource.camera),
+                icon: const Icon(Icons.photo_camera_outlined, size: 18),
+                label: Text(context.l10n.xonadoshTakePhoto),
+              ),
+            ),
+          ],
+        ),
+        const SizedBox(height: 10),
+        Align(
+          alignment: Alignment.centerLeft,
+          child: TextButton.icon(
+            onPressed: _useMyLocation,
+            icon: const Icon(Icons.my_location_rounded, size: 18),
+            label: Text(
+              _latitude != null
+                  ? '${context.l10n.xonadoshUseMyLocation} ✓'
+                  : context.l10n.xonadoshUseMyLocation,
+            ),
+          ),
+        ),
+        const SizedBox(height: 12),
+        Row(
+          children: [
+            Expanded(
+              child: TextFormField(
+                controller: _photoUrlController,
+                decoration: InputDecoration(
+                  labelText: context.l10n.xonadoshPhotoUrlOptional,
+                  hintText: 'https://...',
+                  prefixIcon: const Icon(Icons.link_rounded),
+                  border: OutlineInputBorder(
+                    borderRadius: BorderRadius.circular(14),
+                  ),
+                ),
+              ),
+            ),
+            const SizedBox(width: 8),
+            IconButton.filled(
+              onPressed: _addCustomPhotoUrl,
+              tooltip: context.l10n.xonadoshAdd,
+              icon: const Icon(Icons.add_photo_alternate_rounded),
+              style: IconButton.styleFrom(
+                backgroundColor: XonaDoshColors.primary,
+                foregroundColor: Colors.white,
+              ),
+            ),
+          ],
+        ),
+        const SizedBox(height: 20),
+      ],
     );
   }
 

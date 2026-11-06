@@ -25,6 +25,7 @@ class _XonadoshListingDetailScreenState
     extends ConsumerState<XonadoshListingDetailScreen> {
   int _currentPhotoIndex = 0;
   XonadoshUniversity? _selectedUni;
+  bool _isDescExpanded = false;
 
   @override
   Widget build(BuildContext context) {
@@ -798,55 +799,72 @@ class _XonadoshListingDetailScreenState
 
                     const SizedBox(height: 20),
 
-                    // Amenities
+                    // Amenities: Clean 2-column grid (icon + 2 words)
                     if (item.amenities.isNotEmpty) ...[
                       Text(
-                        context.l10n.xonadoshAmenitiesTitle,
+                        'Qulayliklar',
                         style: theme.textTheme.titleMedium?.copyWith(
                           fontWeight: FontWeight.w800,
                         ),
                       ),
                       const SizedBox(height: 10),
-                      Wrap(
-                        spacing: 8,
-                        runSpacing: 8,
-                        children: item.amenities.map((a) {
+                      GridView.builder(
+                        shrinkWrap: true,
+                        physics: const NeverScrollableScrollPhysics(),
+                        itemCount: item.amenities.length,
+                        gridDelegate:
+                            const SliverGridDelegateWithFixedCrossAxisCount(
+                          crossAxisCount: 2,
+                          crossAxisSpacing: 8,
+                          mainAxisSpacing: 8,
+                          childAspectRatio: 3.2,
+                        ),
+                        itemBuilder: (ctx, i) {
+                          final a = item.amenities[i];
                           return Container(
                             padding: const EdgeInsets.symmetric(
                               horizontal: 12,
-                              vertical: 8,
+                              vertical: 6,
                             ),
                             decoration: BoxDecoration(
                               color: isDark
                                   ? const Color(0xFF1E293B)
                                   : const Color(0xFFF1F5F9),
                               borderRadius: BorderRadius.circular(12),
+                              border: Border.all(
+                                color: isDark
+                                    ? const Color(0xFF334155)
+                                    : const Color(0xFFE2E8F0),
+                              ),
                             ),
                             child: Row(
-                              mainAxisSize: MainAxisSize.min,
                               children: [
                                 Icon(
                                   _getAmenityIcon(a),
-                                  size: 16,
-                                  color: XonaDoshColors.primary,
+                                  size: 18,
+                                  color: XonaDoshColors.emerald,
                                 ),
-                                const SizedBox(width: 6),
-                                Text(
-                                  a,
-                                  style: const TextStyle(
-                                    fontSize: 12,
-                                    fontWeight: FontWeight.w600,
+                                const SizedBox(width: 8),
+                                Expanded(
+                                  child: Text(
+                                    a,
+                                    maxLines: 1,
+                                    overflow: TextOverflow.ellipsis,
+                                    style: const TextStyle(
+                                      fontSize: 13,
+                                      fontWeight: FontWeight.w600,
+                                    ),
                                   ),
                                 ),
                               ],
                             ),
                           );
-                        }).toList(),
+                        },
                       ),
                       const SizedBox(height: 20),
                     ],
 
-                    // Description
+                    // Description with 3 lines + "To'liq o'qish ▾" expander
                     if (item.description.isNotEmpty) ...[
                       Text(
                         context.l10n.xonadoshDescriptionTitle,
@@ -857,12 +875,34 @@ class _XonadoshListingDetailScreenState
                       const SizedBox(height: 8),
                       Text(
                         item.description,
+                        maxLines: _isDescExpanded ? null : 3,
+                        overflow: _isDescExpanded
+                            ? TextOverflow.visible
+                            : TextOverflow.ellipsis,
                         style: TextStyle(
                           fontSize: 14,
                           height: 1.5,
                           color: isDark ? Colors.grey[300] : Colors.grey[800],
                         ),
                       ),
+                      if (item.description.length > 120) ...[
+                        const SizedBox(height: 4),
+                        InkWell(
+                          onTap: () => setState(
+                            () => _isDescExpanded = !_isDescExpanded,
+                          ),
+                          child: Text(
+                            _isDescExpanded
+                                ? 'Qisqartirish ▴'
+                                : 'To‘liq o‘qish ▾',
+                            style: const TextStyle(
+                              color: XonaDoshColors.emerald,
+                              fontWeight: FontWeight.w700,
+                              fontSize: 13,
+                            ),
+                          ),
+                        ),
+                      ],
                       const SizedBox(height: 20),
                     ],
 
@@ -1067,29 +1107,49 @@ class _XonadoshListingDetailScreenState
             const SizedBox(height: 14),
           ],
 
-          // Modes Breakdown List
+          // Visual 4 Mini-Cards Commute Grid (1 Row / 2x2 on mobile)
           if (commute != null) ...[
-            _buildModeItem(
-              icon: Icons.directions_subway_rounded,
-              iconColor: const Color(0xFF3B82F6),
-              title: context.l10n.xonadoshMetro,
-              subtitle:
-                  commute.metro.station ?? context.l10n.xonadoshNearbyStop,
-              timeMin: commute.metro.timeMin,
-              singleFare: commute.metro.fareUzs,
-              monthlyBudget: commute.metro.monthlyBudgetUzs,
-              isDark: isDark,
-            ),
-            const SizedBox(height: 10),
-            _buildModeItem(
-              icon: Icons.directions_bus_rounded,
-              iconColor: const Color(0xFFF59E0B),
-              title: context.l10n.xonadoshBus,
-              subtitle: context.l10n.xonadoshPublicTransit,
-              timeMin: commute.bus.timeMin,
-              singleFare: commute.bus.fareUzs,
-              monthlyBudget: commute.bus.monthlyBudgetUzs,
-              isDark: isDark,
+            GridView.count(
+              crossAxisCount: 2,
+              crossAxisSpacing: 8,
+              mainAxisSpacing: 8,
+              childAspectRatio: 2.2,
+              shrinkWrap: true,
+              physics: const NeverScrollableScrollPhysics(),
+              children: [
+                _buildCommuteMiniCard(
+                  icon: Icons.directions_subway_rounded,
+                  title: '🚇 Metro',
+                  time: '${commute.metro.timeMin} daq',
+                  fare: '${_formatMoney(commute.metro.fareUzs.toDouble())} so‘m',
+                  color: const Color(0xFF0284C7),
+                  isDark: isDark,
+                ),
+                _buildCommuteMiniCard(
+                  icon: Icons.directions_bus_rounded,
+                  title: '🚌 Avtobus',
+                  time: '${commute.bus.timeMin} daq',
+                  fare: '${_formatMoney(commute.bus.fareUzs.toDouble())} so‘m',
+                  color: const Color(0xFFF59E0B),
+                  isDark: isDark,
+                ),
+                _buildCommuteMiniCard(
+                  icon: Icons.directions_walk_rounded,
+                  title: '🚶 Piyoda',
+                  time: '${commute.walk.timeMin} daq',
+                  fare: '0 so‘m',
+                  color: const Color(0xFF10B981),
+                  isDark: isDark,
+                ),
+                _buildCommuteMiniCard(
+                  icon: Icons.local_taxi_rounded,
+                  title: '🚕 Taksi',
+                  time: '${commute.taxi.timeMin} daq',
+                  fare: '~${_formatMoney(commute.taxi.fareUzs.toDouble())} so‘m',
+                  color: const Color(0xFF8B5CF6),
+                  isDark: isDark,
+                ),
+              ],
             ),
           ],
         ],
@@ -1097,120 +1157,52 @@ class _XonadoshListingDetailScreenState
     );
   }
 
-  Widget _buildModeItem({
+  Widget _buildCommuteMiniCard({
     required IconData icon,
-    required Color iconColor,
     required String title,
-    required String subtitle,
-    required int timeMin,
-    required int singleFare,
-    required int monthlyBudget,
+    required String time,
+    required String fare,
+    required Color color,
     required bool isDark,
-    bool highlight = false,
   }) {
     return Container(
-      padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 10),
+      padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 8),
       decoration: BoxDecoration(
-        color: isDark ? const Color(0xFF334155).withAlpha(120) : Colors.white,
-        borderRadius: BorderRadius.circular(10),
+        color: isDark ? const Color(0xFF334155).withValues(alpha: 0.6) : Colors.white,
+        borderRadius: BorderRadius.circular(12),
         border: Border.all(
-          color: highlight
-              ? XonaDoshColors.primary.withAlpha(80)
-              : (isDark ? const Color(0xFF334155) : const Color(0xFFE2E8F0)),
-          width: highlight ? 1.5 : 1,
+          color: isDark ? const Color(0xFF475569) : const Color(0xFFE2E8F0),
         ),
       ),
-      child: Row(
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        mainAxisAlignment: MainAxisAlignment.center,
         children: [
-          Container(
-            padding: const EdgeInsets.all(8),
-            decoration: BoxDecoration(
-              color: iconColor.withAlpha(25),
-              shape: BoxShape.circle,
-            ),
-            child: Icon(icon, color: iconColor, size: 20),
-          ),
-          const SizedBox(width: 12),
-          Expanded(
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Row(
-                  children: [
-                    Flexible(
-                      child: Text(
-                        title,
-                        style: const TextStyle(
-                          fontWeight: FontWeight.w700,
-                          fontSize: 13,
-                        ),
-                        maxLines: 1,
-                        overflow: TextOverflow.ellipsis,
-                      ),
-                    ),
-                    if (highlight) ...[
-                      const SizedBox(width: 6),
-                      Container(
-                        padding: const EdgeInsets.symmetric(
-                          horizontal: 6,
-                          vertical: 1,
-                        ),
-                        decoration: BoxDecoration(
-                          color: XonaDoshColors.primary,
-                          borderRadius: BorderRadius.circular(6),
-                        ),
-                        child: Text(
-                          context.l10n.xonadoshRecommendBadge,
-                          style: const TextStyle(
-                            color: Colors.white,
-                            fontSize: 9,
-                            fontWeight: FontWeight.bold,
-                          ),
-                        ),
-                      ),
-                    ],
-                  ],
-                ),
-                Text(
-                  subtitle,
-                  style: TextStyle(color: Colors.grey[500], fontSize: 11),
-                  maxLines: 1,
-                  overflow: TextOverflow.ellipsis,
-                ),
-              ],
-            ),
-          ),
-          const SizedBox(width: 8),
-          Column(
-            crossAxisAlignment: CrossAxisAlignment.end,
+          Row(
             children: [
               Text(
-                '~ $timeMin ${context.l10n.xonadoshEstimatedTimeMinutes}',
-                style: const TextStyle(
-                  fontWeight: FontWeight.w800,
-                  fontSize: 13,
-                ),
+                title,
+                style: const TextStyle(fontWeight: FontWeight.w700, fontSize: 12),
               ),
+              const Spacer(),
               Text(
-                singleFare > 0
-                    ? context.l10n.xonadoshFareMonthly(
-                        _formatMoney(singleFare.toDouble()),
-                        context.l10n.currencyUzsSuffix,
-                        _formatMoney(monthlyBudget.toDouble()),
-                      )
-                    : context.l10n.xonadoshFree,
+                time,
                 style: TextStyle(
-                  color: singleFare > 0
-                      ? (isDark ? Colors.grey[400] : Colors.grey[700])
-                      : XonaDoshColors.primary,
-                  fontSize: 11,
-                  fontWeight: FontWeight.w600,
+                  fontWeight: FontWeight.w800,
+                  fontSize: 12,
+                  color: color,
                 ),
-                maxLines: 2,
-                overflow: TextOverflow.ellipsis,
-                textAlign: TextAlign.end,
               ),
             ],
+          ),
+          const SizedBox(height: 3),
+          Text(
+            fare,
+            style: TextStyle(
+              fontSize: 11,
+              fontWeight: FontWeight.w600,
+              color: isDark ? Colors.white70 : Colors.black54,
+            ),
           ),
         ],
       ),

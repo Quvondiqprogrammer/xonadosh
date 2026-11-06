@@ -461,6 +461,69 @@ h1, h2, h3, h4 {
   margin-bottom: 2.2rem;
 }
 
+.hero-search-box {
+  display: flex;
+  align-items: center;
+  background: #ffffff;
+  border: 1.5px solid var(--line);
+  box-shadow: 0 10px 25px -5px rgba(15, 23, 42, 0.08);
+  border-radius: var(--radius-md);
+  padding: 6px;
+  gap: 8px;
+  margin-bottom: 1.25rem;
+  max-width: 520px;
+}
+.search-select-wrap {
+  display: flex;
+  align-items: center;
+  flex: 1;
+  padding: 4px 10px;
+  gap: 8px;
+}
+.search-icon {
+  font-size: 1.25rem;
+}
+.hero-uni-select {
+  border: none;
+  background: transparent;
+  width: 100%;
+  font-family: inherit;
+  font-size: 0.95rem;
+  font-weight: 600;
+  color: var(--ink-800);
+  outline: none;
+  cursor: pointer;
+}
+.hero-search-btn {
+  padding: 0.65rem 1.2rem;
+  white-space: nowrap;
+  font-weight: 700;
+  border-radius: 12px;
+}
+
+.hero-trust-badges {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.85rem;
+  margin-bottom: 1.6rem;
+}
+.trust-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  background: #ffffff;
+  border: 1px solid var(--line);
+  padding: 6px 12px;
+  border-radius: var(--radius-full);
+  font-size: 0.82rem;
+  color: var(--ink-700);
+  box-shadow: 0 1px 3px rgba(0,0,0,0.03);
+}
+.trust-badge strong {
+  color: var(--primary);
+  font-weight: 800;
+}
+
 .play-badge-sub {
   font-size: 0.7rem;
   font-weight: 500;
@@ -1397,11 +1460,51 @@ h1, h2, h3, h4 {
             <span data-i18n="heroBadge">O‘zbekistondagi 1-raqamli talabalar platformasi</span>
           </div>
           <h1 class="hero-title" id="heroHeadline">
-            Universitet yonida arzon uy va <span class="gradient-text">mos xonadosh</span>
+            Talabalar uchun <span class="gradient-text">maklersiz uy</span> va mos xonadosh
           </h1>
           <p class="hero-desc" id="heroDesc">
-            Ortiqcha makler to‘lovlarsiz, odatlaringiz va byudjetingizga 90%+ mos xonadosh toping, birga yashang va ijarani teng bo‘lishing.
+            OTM yonidan arzon turar-joy va xarakteringizga mos xonadoshni 3 daqiqada toping.
           </p>
+
+          <!-- Interaktiv Qidiruv Qutisi -->
+          <div class="hero-search-box">
+            <div class="search-select-wrap">
+              <span class="search-icon">🎓</span>
+              <select id="heroUniSelect" class="hero-uni-select" aria-label="OTM tanlash">
+                <option value="">OTMni tanlang (TATU, O‘zMU, Inha...)</option>
+                <option value="tatu">TATU (Muhammad al-Xorazmiy)</option>
+                <option value="ozmu">O‘zMU (Mirzo Ulug‘bek)</option>
+                <option value="tdtu">TDTU (Islom Karimov)</option>
+                <option value="inha">Inha Universiteti</option>
+                <option value="webster">Webster Universiteti</option>
+                <option value="mdis">MDIS (Singapur)</option>
+                <option value="tsue">TDIU (Iqtisodiyot)</option>
+                <option value="tsul">TDYU (Yuridik)</option>
+                <option value="tma">TTA (Tibbiyot)</option>
+              </select>
+            </div>
+            <button class="btn btn-primary hero-search-btn" onclick="goToAppWithUni()">
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><circle cx="11" cy="11" r="8"></circle><line x1="21" y1="21" x2="16.65" y2="16.65"></line></svg>
+              <span>Uylarni ko‘rish</span>
+            </button>
+          </div>
+
+          <!-- 3 ta ishonch ko'rsatkichi (Trust badges) -->
+          <div class="hero-trust-badges">
+            <div class="trust-badge">
+              <span>🛡️</span>
+              <span><strong>0%</strong> Makler komissiyasi</span>
+            </div>
+            <div class="trust-badge">
+              <span>🤝</span>
+              <span><strong>94%</strong> Xonadosh mosligi</span>
+            </div>
+            <div class="trust-badge">
+              <span>🎓</span>
+              <span><strong>10+</strong> OTM klasterlari</span>
+            </div>
+          </div>
+
           <div class="hero-cta-group">
             <a class="btn btn-dark" href="https://play.google.com/store/apps/details?id=uz.zargo.xonadosh" target="_blank" rel="noopener">
               <svg viewBox="0 0 24 24" width="22" height="22" fill="currentColor"><path d="M3.609 1.814L13.793 12 3.61 22.186c-.337-.306-.546-.745-.546-1.24V3.054c0-.495.209-.934.545-1.24zm11.606 11.608l2.368 2.368-12.02 6.892 9.652-9.26zm2.368-2.844l-2.368 2.368-9.652-9.26 12.02 6.892zm1.488 1.488l3.197 1.833c.976.56.976 1.472 0 2.032l-3.197 1.833-2.128-2.128 2.128-2.128z"/></svg>
@@ -1640,21 +1743,21 @@ h1, h2, h3, h4 {
 
       <div class="steps-grid">
         <div class="step-card">
-          <div class="step-num-badge">1</div>
-          <h3 data-i18n="step1Title">Anketani to‘ldiring</h3>
-          <p data-i18n="step1Desc">2 daqiqa ichida o‘qish joyingiz, byudjetingiz va kundalik odatlaringizni belgilang.</p>
+          <div class="step-num-badge" style="background:var(--primary); font-size:1.2rem;">🎓</div>
+          <h3>OTMni tanlang</h3>
+          <p>Universitetingiz yonidagi barcha talabalar uylarini ko‘ring.</p>
         </div>
 
         <div class="step-card">
-          <div class="step-num-badge" style="background:var(--accent-cyan);">2</div>
-          <h3 data-i18n="step2Title">Moslik foizini tanlang</h3>
-          <p data-i18n="step2Desc">Algoritm sizga eng yuqori mos keluvchi xonadoshlar va uy-joylarni taqdim etadi. Chatda tanishing.</p>
+          <div class="step-num-badge" style="background:var(--accent-cyan); font-size:1.2rem;">🛡️</div>
+          <h3>Maklersiz uyni tanlang</h3>
+          <p>Vositachisiz, toza va arzon xonalarni bron qiling.</p>
         </div>
 
         <div class="step-card">
-          <div class="step-num-badge" style="background:var(--accent-purple);">3</div>
-          <h3 data-i18n="step3Title">Xarajatni tejab yashang</h3>
-          <p data-i18n="step3Desc">Ijarani teng bo‘lishing, navbatchilik va bozorlikni qulay boshqarib har oy millionlab so‘m tejang.</p>
+          <div class="step-num-badge" style="background:var(--accent-purple); font-size:1.2rem;">🤝</div>
+          <h3>Xonadosh bilan ko‘chib o‘ting</h3>
+          <p>Odatlari mos xonadosh bilan ijarani teng bo‘lishing.</p>
         </div>
       </div>
     </div>
@@ -2387,6 +2490,12 @@ async function submitQuickListing(e) {
     btn.disabled = false;
     btn.innerText = 'Qayta urinish';
   }
+}
+
+function goToAppWithUni() {
+  const select = document.getElementById('heroUniSelect');
+  const val = select ? select.value : '';
+  window.location.href = '/app/' + (val ? '?uni=' + encodeURIComponent(val) : '');
 }
 
 // Initialize Language on Load

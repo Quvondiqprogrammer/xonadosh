@@ -19,8 +19,9 @@ class XonadoshColivingTab extends ConsumerStatefulWidget {
 }
 
 class _XonadoshColivingTabState extends ConsumerState<XonadoshColivingTab> {
-  // 0: Navbatchilik, 1: Taomnoma, 2: Bozorlik, 3: Moliya, 4: Masalalar, 5: Obro'/Karma
+  // 0: 🧹 Navbat va Uy, 1: 💰 Umumiy Kassa, 2: 🍲 Oshxona va Bozor
   int _activeSubTab = 0;
+  int _kitchenSubIndex = 0;
   bool _showTip = true;
 
   /// Moliya filtri: all | due | rent | utility | expense
@@ -30,7 +31,6 @@ class _XonadoshColivingTabState extends ConsumerState<XonadoshColivingTab> {
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
     final isDark = theme.brightness == Brightness.dark;
-    final l10n = context.l10n;
 
     return Scaffold(
       body: Column(
@@ -50,51 +50,25 @@ class _XonadoshColivingTabState extends ConsumerState<XonadoshColivingTab> {
             width: double.infinity,
             padding: const EdgeInsets.fromLTRB(16, 8, 16, 6),
             color: theme.scaffoldBackgroundColor,
-            child: SingleChildScrollView(
-              scrollDirection: Axis.horizontal,
-              physics: const BouncingScrollPhysics(),
+            child: Container(
+              padding: const EdgeInsets.all(4),
+              decoration: BoxDecoration(
+                color: isDark ? const Color(0xFF1E293B) : const Color(0xFFF1F5F9),
+                borderRadius: BorderRadius.circular(14),
+                border: Border.all(
+                  color: isDark ? const Color(0xFF334155) : const Color(0xFFE2E8F0),
+                ),
+              ),
               child: Row(
                 children: [
-                  _buildSubTabPill(
-                    0,
-                    Icons.assignment_turned_in_rounded,
-                    l10n.xonadoshDutyRosterTab,
-                    isDark,
+                  Expanded(
+                    child: _buildSubTabSegment(0, '🧹 Navbat va Uy', isDark),
                   ),
-                  const SizedBox(width: 6),
-                  _buildSubTabPill(
-                    1,
-                    Icons.restaurant_menu_rounded,
-                    l10n.xonadoshMenuTab,
-                    isDark,
+                  Expanded(
+                    child: _buildSubTabSegment(1, '💰 Umumiy Kassa', isDark),
                   ),
-                  const SizedBox(width: 6),
-                  _buildSubTabPill(
-                    2,
-                    Icons.shopping_cart_rounded,
-                    l10n.xonadoshGroceryTab,
-                    isDark,
-                  ),
-                  const SizedBox(width: 6),
-                  _buildSubTabPill(
-                    3,
-                    Icons.account_balance_wallet_rounded,
-                    l10n.xonadoshFinanceTab,
-                    isDark,
-                  ),
-                  const SizedBox(width: 6),
-                  _buildSubTabPill(
-                    4,
-                    Icons.how_to_vote_rounded,
-                    l10n.xonadoshPollsTab,
-                    isDark,
-                  ),
-                  const SizedBox(width: 6),
-                  _buildSubTabPill(
-                    5,
-                    Icons.military_tech_rounded,
-                    l10n.xonadoshKarmaTab,
-                    isDark,
+                  Expanded(
+                    child: _buildSubTabSegment(2, '🍲 Oshxona & Bozor', isDark),
                   ),
                 ],
               ),
@@ -106,11 +80,8 @@ class _XonadoshColivingTabState extends ConsumerState<XonadoshColivingTab> {
               duration: const Duration(milliseconds: 220),
               child: switch (_activeSubTab) {
                 0 => _buildDutyRosterView(context, isDark),
-                1 => _buildMealPlanView(context, isDark),
-                2 => _buildGroceryView(context, isDark),
-                3 => _buildFinancesView(context, isDark),
-                4 => _buildPollsView(context, isDark),
-                5 => _buildKarmaView(context, isDark),
+                1 => _buildFinancesView(context, isDark),
+                2 => _buildKitchenAndGroceryView(context, isDark),
                 _ => _buildDutyRosterView(context, isDark),
               },
             ),
@@ -120,65 +91,150 @@ class _XonadoshColivingTabState extends ConsumerState<XonadoshColivingTab> {
     );
   }
 
-  Widget _buildSubTabPill(int index, IconData icon, String label, bool isDark) {
+  Widget _buildSubTabSegment(int index, String label, bool isDark) {
     final isSelected = _activeSubTab == index;
     return GestureDetector(
-      onTap: () => setState(() => _activeSubTab = index),
+      onTap: () {
+        setState(() => _activeSubTab = index);
+      },
       child: AnimatedContainer(
         duration: const Duration(milliseconds: 180),
-        padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 8),
+        padding: const EdgeInsets.symmetric(vertical: 8),
+        alignment: Alignment.center,
         decoration: BoxDecoration(
           color: isSelected
-              ? (isDark ? const Color(0xFF0F766E) : const Color(0xFF0D9488))
-              : (isDark ? const Color(0xFF1E293B) : const Color(0xFFF1F5F9)),
-          borderRadius: BorderRadius.circular(12),
-          border: Border.all(
-            color: isSelected
-                ? Colors.transparent
-                : (isDark ? const Color(0xFF334155) : const Color(0xFFE2E8F0)),
-            width: 1,
-          ),
+              ? (isDark ? const Color(0xFF0F766E) : XonaDoshColors.primary)
+              : Colors.transparent,
+          borderRadius: BorderRadius.circular(10),
           boxShadow: isSelected
               ? [
                   BoxShadow(
-                    color:
-                        (isDark
-                                ? const Color(0xFF0F766E)
-                                : const Color(0xFF0D9488))
-                            .withValues(alpha: 0.28),
-                    blurRadius: 6,
-                    offset: const Offset(0, 2),
+                    color: XonaDoshColors.primary.withValues(alpha: 0.25),
+                    blurRadius: 4,
+                    offset: const Offset(0, 1),
                   ),
                 ]
               : null,
         ),
-        child: Row(
-          mainAxisSize: MainAxisSize.min,
-          children: [
-            Icon(
-              icon,
-              size: 14,
-              color: isSelected
-                  ? Colors.white
-                  : (isDark
-                        ? const Color(0xFF94A3B8)
-                        : const Color(0xFF64748B)),
-            ),
-            const SizedBox(width: 5),
-            Text(
-              label,
-              style: TextStyle(
-                fontSize: 12,
-                fontWeight: isSelected ? FontWeight.w700 : FontWeight.w500,
-                color: isSelected
-                    ? Colors.white
-                    : (isDark
-                          ? const Color(0xFFCBD5E1)
-                          : const Color(0xFF334155)),
-              ),
-            ),
-          ],
+        child: Text(
+          label,
+          textAlign: TextAlign.center,
+          style: TextStyle(
+            fontSize: 12,
+            fontWeight: isSelected ? FontWeight.w800 : FontWeight.w600,
+            color: isSelected
+                ? Colors.white
+                : (isDark ? const Color(0xFF94A3B8) : const Color(0xFF475569)),
+          ),
+          maxLines: 1,
+          overflow: TextOverflow.ellipsis,
         ),
+      ),
+    );
+  }
+
+  Widget _buildKitchenAndGroceryView(BuildContext context, bool isDark) {
+    return Column(
+      children: [
+        Container(
+          margin: const EdgeInsets.fromLTRB(16, 6, 16, 8),
+          padding: const EdgeInsets.all(3),
+          decoration: BoxDecoration(
+            color: isDark ? const Color(0xFF1E293B) : const Color(0xFFF1F5F9),
+            borderRadius: BorderRadius.circular(10),
+          ),
+          child: Row(
+            children: [
+              Expanded(
+                child: GestureDetector(
+                  onTap: () => setState(() => _kitchenSubIndex = 0),
+                  child: Container(
+                    padding: const EdgeInsets.symmetric(vertical: 6),
+                    alignment: Alignment.center,
+                    decoration: BoxDecoration(
+                      color: _kitchenSubIndex == 0
+                          ? (isDark ? const Color(0xFF0F766E) : XonaDoshColors.primary)
+                          : Colors.transparent,
+                      borderRadius: BorderRadius.circular(8),
+                    ),
+                    child: Text(
+                      '🍲 Taomnoma & Retseptlar',
+                      style: TextStyle(
+                        fontSize: 12,
+                        fontWeight: _kitchenSubIndex == 0 ? FontWeight.w700 : FontWeight.w500,
+                        color: _kitchenSubIndex == 0
+                            ? Colors.white
+                            : (isDark ? const Color(0xFF94A3B8) : const Color(0xFF64748B)),
+                      ),
+                    ),
+                  ),
+                ),
+              ),
+              Expanded(
+                child: GestureDetector(
+                  onTap: () => setState(() => _kitchenSubIndex = 1),
+                  child: Container(
+                    padding: const EdgeInsets.symmetric(vertical: 6),
+                    alignment: Alignment.center,
+                    decoration: BoxDecoration(
+                      color: _kitchenSubIndex == 1
+                          ? (isDark ? const Color(0xFF0F766E) : XonaDoshColors.primary)
+                          : Colors.transparent,
+                      borderRadius: BorderRadius.circular(8),
+                    ),
+                    child: Text(
+                      '🛒 Bozorlik va Narxlar',
+                      style: TextStyle(
+                        fontSize: 12,
+                        fontWeight: _kitchenSubIndex == 1 ? FontWeight.w700 : FontWeight.w500,
+                        color: _kitchenSubIndex == 1
+                            ? Colors.white
+                            : (isDark ? const Color(0xFF94A3B8) : const Color(0xFF64748B)),
+                      ),
+                    ),
+                  ),
+                ),
+              ),
+            ],
+          ),
+        ),
+        Expanded(
+          child: _kitchenSubIndex == 0
+              ? _buildMealPlanView(context, isDark)
+              : _buildGroceryView(context, isDark),
+        ),
+      ],
+    );
+  }
+
+  void _openPollsModal(BuildContext context, bool isDark) {
+    showModalBottomSheet<void>(
+      context: context,
+      isScrollControlled: true,
+      showDragHandle: true,
+      backgroundColor: isDark ? const Color(0xFF0F172A) : Colors.white,
+      shape: const RoundedRectangleBorder(
+        borderRadius: BorderRadius.vertical(top: Radius.circular(20)),
+      ),
+      builder: (ctx) => SizedBox(
+        height: MediaQuery.of(ctx).size.height * 0.85,
+        child: _buildPollsView(ctx, isDark),
+      ),
+    );
+  }
+
+  void _openKarmaModal(BuildContext context, bool isDark) {
+    showModalBottomSheet<void>(
+      context: context,
+      isScrollControlled: true,
+      showDragHandle: true,
+      backgroundColor: isDark ? const Color(0xFF0F172A) : Colors.white,
+      shape: const RoundedRectangleBorder(
+        borderRadius: BorderRadius.vertical(top: Radius.circular(20)),
+      ),
+      builder: (ctx) => SizedBox(
+        height: MediaQuery.of(ctx).size.height * 0.85,
+        child: _buildKarmaView(ctx, isDark),
       ),
     );
   }
@@ -468,6 +524,50 @@ class _XonadoshColivingTabState extends ConsumerState<XonadoshColivingTab> {
                   ),
                 );
               }),
+              const SizedBox(height: 16),
+              Row(
+                children: [
+                  Expanded(
+                    child: OutlinedButton.icon(
+                      onPressed: () => _openPollsModal(context, isDark),
+                      icon: const Icon(Icons.how_to_vote_rounded, size: 16),
+                      label: const Text('Ovoz berish (Polls)'),
+                      style: OutlinedButton.styleFrom(
+                        foregroundColor: XonaDoshColors.primary,
+                        side: BorderSide(
+                          color: isDark
+                              ? const Color(0xFF334155)
+                              : const Color(0xFFCBD5E1),
+                        ),
+                        padding: const EdgeInsets.symmetric(vertical: 10),
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(12),
+                        ),
+                      ),
+                    ),
+                  ),
+                  const SizedBox(width: 8),
+                  Expanded(
+                    child: OutlinedButton.icon(
+                      onPressed: () => _openKarmaModal(context, isDark),
+                      icon: const Icon(Icons.military_tech_rounded, size: 16),
+                      label: const Text('Xonadosh Karma'),
+                      style: OutlinedButton.styleFrom(
+                        foregroundColor: const Color(0xFFF59E0B),
+                        side: BorderSide(
+                          color: isDark
+                              ? const Color(0xFF334155)
+                              : const Color(0xFFCBD5E1),
+                        ),
+                        padding: const EdgeInsets.symmetric(vertical: 10),
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(12),
+                        ),
+                      ),
+                    ),
+                  ),
+                ],
+              ),
             ],
           ),
         );
@@ -1736,6 +1836,79 @@ class _XonadoshColivingTabState extends ConsumerState<XonadoshColivingTab> {
                 ),
                 padding: const EdgeInsets.fromLTRB(16, 8, 16, 100),
                 children: [
+                  // Katta Balans Kartasi (Splitwise style)
+                  Container(
+                    margin: const EdgeInsets.only(bottom: 12),
+                    padding: const EdgeInsets.all(16),
+                    decoration: BoxDecoration(
+                      color: data.totalPendingUzs > 0
+                          ? const Color(0xFFEF4444).withValues(alpha: 0.08)
+                          : const Color(0xFF10B981).withValues(alpha: 0.08),
+                      borderRadius: BorderRadius.circular(16),
+                      border: Border.all(
+                        color: data.totalPendingUzs > 0
+                            ? const Color(0xFFEF4444).withValues(alpha: 0.3)
+                            : const Color(0xFF10B981).withValues(alpha: 0.3),
+                      ),
+                    ),
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Row(
+                          children: [
+                            Icon(
+                              data.totalPendingUzs > 0
+                                  ? Icons.arrow_outward_rounded
+                                  : Icons.arrow_downward_rounded,
+                              color: data.totalPendingUzs > 0
+                                  ? const Color(0xFFEF4444)
+                                  : const Color(0xFF10B981),
+                              size: 22,
+                            ),
+                            const SizedBox(width: 8),
+                            Expanded(
+                              child: Text(
+                                data.totalPendingUzs > 0
+                                    ? "Siz ${_formatMoney(data.totalPendingUzs.toDouble())} so‘m qarzsiz"
+                                    : "Barcha hisob-kitoblar toza (0 so‘m qarz)",
+                                style: TextStyle(
+                                  fontSize: 16,
+                                  fontWeight: FontWeight.w800,
+                                  color: data.totalPendingUzs > 0
+                                      ? const Color(0xFFDC2626)
+                                      : const Color(0xFF059669),
+                                ),
+                              ),
+                            ),
+                          ],
+                        ),
+                        const SizedBox(height: 12),
+                        SizedBox(
+                          width: double.infinity,
+                          child: FilledButton.icon(
+                            onPressed: () => _showAddFinanceDialog(context),
+                            icon: const Icon(Icons.add_rounded, size: 18),
+                            label: const Text(
+                              '➕ Xarajat qo‘shish',
+                              style: TextStyle(
+                                fontWeight: FontWeight.w800,
+                                fontSize: 14,
+                              ),
+                            ),
+                            style: FilledButton.styleFrom(
+                              backgroundColor: XonaDoshColors.primary,
+                              foregroundColor: Colors.white,
+                              padding: const EdgeInsets.symmetric(vertical: 12),
+                              shape: RoundedRectangleBorder(
+                                borderRadius: BorderRadius.circular(12),
+                              ),
+                            ),
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
+
                   // Compact summary — numbers first, almost no prose
                   Container(
                     padding: const EdgeInsets.all(14),
