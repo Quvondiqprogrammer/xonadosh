@@ -96,6 +96,7 @@ def main() -> int:
             "robots.txt",
             "sitemap.xml",
             ".htaccess",
+            "join.php",
         ]
         for rf in root_files:
             lf = LOCAL_BACKEND_DIR / rf

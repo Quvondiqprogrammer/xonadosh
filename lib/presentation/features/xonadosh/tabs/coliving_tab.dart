@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import 'package:xonadosh/config/theme.dart';
@@ -79,6 +80,22 @@ class _XonadoshColivingTabState extends ConsumerState<XonadoshColivingTab> {
               padding: const EdgeInsets.symmetric(horizontal: 16),
               physics: const BouncingScrollPhysics(),
               children: [
+                Consumer(
+                  builder: (context, ref, _) {
+                    final groupCode = ref.watch(colivingGroupCodeProvider);
+                    final displayName = groupCode == 'home_default'
+                        ? 'Namunaviy Uy'
+                        : groupCode;
+                    return _buildQuickPill(
+                      icon: Icons.home_work_rounded,
+                      label: 'Uy: $displayName',
+                      color: XonaDoshColors.primary,
+                      isDark: isDark,
+                      onTap: () => _openHouseManagementModal(context, isDark),
+                    );
+                  },
+                ),
+                const SizedBox(width: 8),
                 _buildQuickPill(
                   icon: Icons.gavel_rounded,
                   label: 'Uy Qoidalari',
@@ -996,8 +1013,9 @@ class _XonadoshColivingTabState extends ConsumerState<XonadoshColivingTab> {
   }
 
   Widget _buildHouseRulesPinnedCard(BuildContext context, bool isDark) {
+    final groupCode = ref.watch(colivingGroupCodeProvider);
     final rulesAsync = ref.watch(
-      xonadoshHouseRulesAgreementProvider('home_default'),
+      xonadoshHouseRulesAgreementProvider(groupCode),
     );
     final session = ref.watch(sessionManagerProvider);
     final myUsername = session.username ?? '';
@@ -1130,10 +1148,11 @@ class _XonadoshColivingTabState extends ConsumerState<XonadoshColivingTab> {
                     FilledButton.icon(
                       onPressed: () async {
                         try {
+                          final currentCode = ref.read(colivingGroupCodeProvider);
                           await ref
                               .read(xonadoshRepositoryProvider)
                               .saveHouseRulesAgreement(
-                                groupCode: 'home_default',
+                                groupCode: currentCode,
                                 quietHoursStart: rules.quietHoursStart,
                                 rentDueDay: rules.rentDueDay,
                                 guestPolicy: rules.guestPolicy,
@@ -1142,7 +1161,7 @@ class _XonadoshColivingTabState extends ConsumerState<XonadoshColivingTab> {
                                 confirm: true,
                               );
                           ref.invalidate(
-                            xonadoshHouseRulesAgreementProvider('home_default'),
+                            xonadoshHouseRulesAgreementProvider(currentCode),
                           );
                           if (context.mounted) {
                             ScaffoldMessenger.of(context).showSnackBar(
@@ -1307,10 +1326,11 @@ class _XonadoshColivingTabState extends ConsumerState<XonadoshColivingTab> {
             onPressed: () async {
               Navigator.pop(ctx);
               try {
+                final currentCode = ref.read(colivingGroupCodeProvider);
                 await ref
                     .read(xonadoshRepositoryProvider)
                     .saveHouseRulesAgreement(
-                      groupCode: 'home_default',
+                      groupCode: currentCode,
                       quietHoursStart: quietCtrl.text.trim(),
                       rentDueDay: int.tryParse(rentCtrl.text.trim()) ?? 5,
                       guestPolicy: guestCtrl.text.trim(),
@@ -1320,7 +1340,7 @@ class _XonadoshColivingTabState extends ConsumerState<XonadoshColivingTab> {
                       confirm: true,
                     );
                 ref.invalidate(
-                  xonadoshHouseRulesAgreementProvider('home_default'),
+                  xonadoshHouseRulesAgreementProvider(currentCode),
                 );
                 if (context.mounted) {
                   ScaffoldMessenger.of(context).showSnackBar(
@@ -1366,7 +1386,7 @@ class _XonadoshColivingTabState extends ConsumerState<XonadoshColivingTab> {
           {'name': myName, 'amount': amount / 2, 'paid': 1},
           {'name': 'Xonadoshlar', 'amount': amount / 2, 'paid': 0},
         ],
-        'group_code': 'home_default',
+        'group_code': ref.read(colivingGroupCodeProvider),
       });
       ref.invalidate(xonadoshFinancesProvider);
       if (context.mounted) {
@@ -3105,7 +3125,7 @@ class _XonadoshColivingTabState extends ConsumerState<XonadoshColivingTab> {
                           'Qarz qaytarildi: ${debt.debtor} ➔ ${debt.creditor}',
                       'amount': debt.amountUzs,
                       'paid_by': debt.debtor,
-                      'group_code': 'home_default',
+                      'group_code': ref.read(colivingGroupCodeProvider),
                     });
                     ref.invalidate(xonadoshFinancesProvider);
                     if (context.mounted) {
@@ -4074,7 +4094,7 @@ class _XonadoshColivingTabState extends ConsumerState<XonadoshColivingTab> {
                       ? 'Jasur'
                       : personCtrl.text.trim(),
                   'day_of_week': day,
-                  'group_code': 'home_default',
+                  'group_code': ref.read(colivingGroupCodeProvider),
                 });
                 if (ctx.mounted) Navigator.pop(ctx);
                 ref.invalidate(xonadoshChoresProvider);
@@ -4285,7 +4305,7 @@ class _XonadoshColivingTabState extends ConsumerState<XonadoshColivingTab> {
                                   'title': titleCtrl.text.trim(),
                                   'amount_uzs': amt,
                                   'paid_by': paidBy,
-                                  'group_code': 'home_default',
+                                  'group_code': ref.read(colivingGroupCodeProvider),
                                 });
                             if (ctx.mounted) Navigator.pop(ctx);
                             ref.invalidate(xonadoshFinancesProvider);
@@ -4473,7 +4493,7 @@ class _XonadoshColivingTabState extends ConsumerState<XonadoshColivingTab> {
                   'title': titleCtrl.text.trim(),
                   'description': descCtrl.text.trim(),
                   'category': category,
-                  'group_code': 'home_default',
+                  'group_code': ref.read(colivingGroupCodeProvider),
                 });
                 if (ctx.mounted) Navigator.pop(ctx);
                 ref.invalidate(xonadoshPollsProvider);
@@ -4632,7 +4652,7 @@ class _XonadoshColivingTabState extends ConsumerState<XonadoshColivingTab> {
                   'badge_name': selectedBadgeName,
                   'points': points,
                   'comment': commentCtrl.text.trim(),
-                  'group_code': 'home_default',
+                  'group_code': ref.read(colivingGroupCodeProvider),
                 });
                 if (ctx.mounted) Navigator.pop(ctx);
                 ref.invalidate(xonadoshKarmaProvider);
@@ -4682,6 +4702,454 @@ class _XonadoshColivingTabState extends ConsumerState<XonadoshColivingTab> {
       buffer.write(s[i]);
     }
     return buffer.toString();
+  }
+
+  // ── Xonadon Boshqaruvi va Taklif Havolasi (Squad / House Invite) ──
+  void _openHouseManagementModal(BuildContext context, bool isDark) {
+    final joinCodeController = TextEditingController();
+    showModalBottomSheet(
+      context: context,
+      isScrollControlled: true,
+      backgroundColor: Colors.transparent,
+      builder: (ctx) {
+        return Consumer(
+          builder: (context, ref, _) {
+            final groupCode = ref.watch(colivingGroupCodeProvider);
+            final isDefault = groupCode == 'home_default';
+            final shareUrl = 'https://honadosh.uz/join/$groupCode';
+
+            return Padding(
+              padding: EdgeInsets.only(
+                bottom: MediaQuery.of(ctx).viewInsets.bottom,
+              ),
+              child: Container(
+                decoration: BoxDecoration(
+                  color: isDark ? const Color(0xFF1E293B) : Colors.white,
+                  borderRadius: const BorderRadius.vertical(
+                    top: Radius.circular(24),
+                  ),
+                ),
+                child: SafeArea(
+                  child: SingleChildScrollView(
+                    padding: const EdgeInsets.fromLTRB(20, 10, 20, 24),
+                    child: Column(
+                      mainAxisSize: MainAxisSize.min,
+                      crossAxisAlignment: CrossAxisAlignment.stretch,
+                      children: [
+                        Center(
+                          child: Container(
+                            width: 40,
+                            height: 4,
+                            margin: const EdgeInsets.only(bottom: 16),
+                            decoration: BoxDecoration(
+                              color: isDark ? Colors.white24 : Colors.grey[300],
+                              borderRadius: BorderRadius.circular(2),
+                            ),
+                          ),
+                        ),
+                        Row(
+                          children: [
+                            Container(
+                              padding: const EdgeInsets.all(10),
+                              decoration: BoxDecoration(
+                                color: XonaDoshColors.primary.withValues(alpha: 0.12),
+                                borderRadius: BorderRadius.circular(12),
+                              ),
+                              child: const Icon(
+                                Icons.home_work_rounded,
+                                color: XonaDoshColors.primary,
+                                size: 24,
+                              ),
+                            ),
+                            const SizedBox(width: 12),
+                            Expanded(
+                              child: Column(
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: [
+                                  const Text(
+                                    'Xonadon Boshqaruvi',
+                                    style: TextStyle(
+                                      fontSize: 18,
+                                      fontWeight: FontWeight.w800,
+                                      letterSpacing: -0.3,
+                                    ),
+                                  ),
+                                  Text(
+                                    isDefault
+                                        ? 'Namunaviy umumiy uy rejimi'
+                                        : 'Faol jamoa: $groupCode',
+                                    style: TextStyle(
+                                      fontSize: 12,
+                                      color: isDark
+                                          ? const Color(0xFF94A3B8)
+                                          : const Color(0xFF64748B),
+                                    ),
+                                  ),
+                                ],
+                              ),
+                            ),
+                            IconButton(
+                              onPressed: () => Navigator.pop(ctx),
+                              icon: const Icon(Icons.close_rounded),
+                            ),
+                          ],
+                        ),
+                        const SizedBox(height: 18),
+
+                        // Active House Code Card
+                        Container(
+                          padding: const EdgeInsets.all(16),
+                          decoration: BoxDecoration(
+                            color: isDark
+                                ? const Color(0xFF0F172A)
+                                : const Color(0xFFF0FDFA),
+                            borderRadius: BorderRadius.circular(18),
+                            border: Border.all(
+                              color: isDark
+                                  ? const Color(0xFF0D9488).withValues(alpha: 0.3)
+                                  : const Color(0xFF99F6E4),
+                            ),
+                          ),
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.center,
+                            children: [
+                              const Text(
+                                'XONADON TAKLIF KODI',
+                                style: TextStyle(
+                                  fontSize: 11,
+                                  fontWeight: FontWeight.w800,
+                                  letterSpacing: 1.0,
+                                  color: XonaDoshColors.primary,
+                                ),
+                              ),
+                              const SizedBox(height: 6),
+                              SelectableText(
+                                groupCode,
+                                style: const TextStyle(
+                                  fontSize: 24,
+                                  fontWeight: FontWeight.w900,
+                                  letterSpacing: 2.0,
+                                  fontFamily: 'monospace',
+                                  color: XonaDoshColors.primaryDark,
+                                ),
+                              ),
+                              const SizedBox(height: 12),
+                              Row(
+                                children: [
+                                  Expanded(
+                                    child: OutlinedButton.icon(
+                                      onPressed: () async {
+                                        await Clipboard.setData(
+                                          ClipboardData(text: groupCode),
+                                        );
+                                        if (context.mounted) {
+                                          ScaffoldMessenger.of(context).showSnackBar(
+                                            const SnackBar(
+                                              content: Text('✓ Uy kodi nusxalandi!'),
+                                              backgroundColor: Color(0xFF059669),
+                                              duration: Duration(seconds: 2),
+                                            ),
+                                          );
+                                        }
+                                      },
+                                      icon: const Icon(Icons.copy_rounded, size: 16),
+                                      label: const Text(
+                                        'Kodni olish',
+                                        style: TextStyle(
+                                          fontSize: 12,
+                                          fontWeight: FontWeight.w700,
+                                        ),
+                                      ),
+                                      style: OutlinedButton.styleFrom(
+                                        padding: const EdgeInsets.symmetric(
+                                          vertical: 10,
+                                        ),
+                                        shape: RoundedRectangleBorder(
+                                          borderRadius: BorderRadius.circular(10),
+                                        ),
+                                      ),
+                                    ),
+                                  ),
+                                  const SizedBox(width: 8),
+                                  Expanded(
+                                    child: FilledButton.icon(
+                                      onPressed: () {
+                                        ContactActions.shareText(
+                                          context,
+                                          'Salom! XonaDosh ilovasida bizning umumiy xonadonga qo‘shiling:\n$shareUrl\n\nYoki ilovada Uy kodi: $groupCode',
+                                        );
+                                      },
+                                      icon: const Icon(Icons.share_rounded, size: 16),
+                                      label: const Text(
+                                        'Ulashish',
+                                        style: TextStyle(
+                                          fontSize: 12,
+                                          fontWeight: FontWeight.w700,
+                                        ),
+                                      ),
+                                      style: FilledButton.styleFrom(
+                                        backgroundColor: XonaDoshColors.primary,
+                                        padding: const EdgeInsets.symmetric(
+                                          vertical: 10,
+                                        ),
+                                        shape: RoundedRectangleBorder(
+                                          borderRadius: BorderRadius.circular(10),
+                                        ),
+                                      ),
+                                    ),
+                                  ),
+                                  const SizedBox(width: 8),
+                                  IconButton.filledTonal(
+                                    onPressed: () => _showQrCodeDialog(
+                                      context,
+                                      groupCode,
+                                      shareUrl,
+                                      isDark,
+                                    ),
+                                    icon: const Icon(
+                                      Icons.qr_code_2_rounded,
+                                      size: 20,
+                                    ),
+                                    tooltip: 'QR Kod',
+                                  ),
+                                ],
+                              ),
+                            ],
+                          ),
+                        ),
+                        const SizedBox(height: 20),
+
+                        // Join Other House
+                        Text(
+                          'Boshqa xonadonga ulanish',
+                          style: TextStyle(
+                            fontSize: 14,
+                            fontWeight: FontWeight.w800,
+                            color: isDark ? Colors.white : const Color(0xFF0F172A),
+                          ),
+                        ),
+                        const SizedBox(height: 8),
+                        Row(
+                          children: [
+                            Expanded(
+                              child: TextField(
+                                controller: joinCodeController,
+                                textCapitalization: TextCapitalization.characters,
+                                decoration: InputDecoration(
+                                  hintText: 'Masalan: HOME-402 yoki chilonzor',
+                                  isDense: true,
+                                  filled: true,
+                                  fillColor: isDark
+                                      ? const Color(0xFF0F172A)
+                                      : const Color(0xFFF1F5F9),
+                                  contentPadding: const EdgeInsets.symmetric(
+                                    horizontal: 14,
+                                    vertical: 12,
+                                  ),
+                                  border: OutlineInputBorder(
+                                    borderRadius: BorderRadius.circular(12),
+                                    borderSide: BorderSide.none,
+                                  ),
+                                ),
+                              ),
+                            ),
+                            const SizedBox(width: 8),
+                            FilledButton(
+                              onPressed: () async {
+                                final text = joinCodeController.text.trim();
+                                if (text.isEmpty) return;
+                                await ref
+                                    .read(colivingGroupCodeProvider.notifier)
+                                    .setGroupCode(text);
+                                if (ctx.mounted) Navigator.pop(ctx);
+                                if (context.mounted) {
+                                  ScaffoldMessenger.of(context).showSnackBar(
+                                    SnackBar(
+                                      content: Text(
+                                        "✓ '$text' xonadoniga muvaffaqiyatli ulandingiz!",
+                                      ),
+                                      backgroundColor: const Color(0xFF059669),
+                                    ),
+                                  );
+                                }
+                              },
+                              style: FilledButton.styleFrom(
+                                backgroundColor: XonaDoshColors.primary,
+                                padding: const EdgeInsets.symmetric(
+                                  horizontal: 18,
+                                  vertical: 13,
+                                ),
+                                shape: RoundedRectangleBorder(
+                                  borderRadius: BorderRadius.circular(12),
+                                ),
+                              ),
+                              child: const Text(
+                                'Ulanish',
+                                style: TextStyle(fontWeight: FontWeight.w800),
+                              ),
+                            ),
+                          ],
+                        ),
+                        const SizedBox(height: 16),
+
+                        // Create New House or Reset
+                        Row(
+                          children: [
+                            Expanded(
+                              child: OutlinedButton.icon(
+                                onPressed: () async {
+                                  final randomCode =
+                                      'UY-${DateTime.now().millisecondsSinceEpoch.toString().substring(8)}';
+                                  await ref
+                                      .read(colivingGroupCodeProvider.notifier)
+                                      .setGroupCode(randomCode);
+                                  if (ctx.mounted) Navigator.pop(ctx);
+                                  if (context.mounted) {
+                                    ScaffoldMessenger.of(context).showSnackBar(
+                                      SnackBar(
+                                        content: Text(
+                                          "✓ Yangi xonadon yaratildi: $randomCode",
+                                        ),
+                                        backgroundColor: const Color(0xFF059669),
+                                      ),
+                                    );
+                                  }
+                                },
+                                icon: const Icon(Icons.add_home_rounded, size: 16),
+                                label: const Text(
+                                  'Yangi xonadon ochish',
+                                  style: TextStyle(
+                                    fontSize: 12,
+                                    fontWeight: FontWeight.w700,
+                                  ),
+                                ),
+                                style: OutlinedButton.styleFrom(
+                                  padding: const EdgeInsets.symmetric(
+                                    vertical: 11,
+                                  ),
+                                  shape: RoundedRectangleBorder(
+                                    borderRadius: BorderRadius.circular(12),
+                                  ),
+                                ),
+                              ),
+                            ),
+                            if (!isDefault) ...[
+                              const SizedBox(width: 8),
+                              TextButton(
+                                onPressed: () async {
+                                  await ref
+                                      .read(colivingGroupCodeProvider.notifier)
+                                      .setGroupCode('home_default');
+                                  if (ctx.mounted) Navigator.pop(ctx);
+                                },
+                                child: const Text(
+                                  'Namunaga qaytish',
+                                  style: TextStyle(fontSize: 12),
+                                ),
+                              ),
+                            ],
+                          ],
+                        ),
+                      ],
+                    ),
+                  ),
+                ),
+              ),
+            );
+          },
+        );
+      },
+    );
+  }
+
+  void _showQrCodeDialog(
+    BuildContext context,
+    String code,
+    String url,
+    bool isDark,
+  ) {
+    final qrApiUrl =
+        'https://api.qrserver.com/v1/create-qr-code/?size=250x250&data=${Uri.encodeComponent(url)}';
+    showDialog(
+      context: context,
+      builder: (ctx) => AlertDialog(
+        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
+        title: const Text(
+          'Xonadon QR Kodi',
+          textAlign: TextAlign.center,
+          style: TextStyle(fontWeight: FontWeight.w800, fontSize: 18),
+        ),
+        content: Column(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            Text(
+              'Xonadoshlaringiz kamerani shu QR kodga qaratsa, avtomatik xonadonga ulanadi.',
+              textAlign: TextAlign.center,
+              style: TextStyle(
+                fontSize: 13,
+                color: isDark
+                    ? const Color(0xFF94A3B8)
+                    : const Color(0xFF64748B),
+              ),
+            ),
+            const SizedBox(height: 16),
+            Container(
+              padding: const EdgeInsets.all(12),
+              decoration: BoxDecoration(
+                color: Colors.white,
+                borderRadius: BorderRadius.circular(16),
+                border: Border.all(color: const Color(0xFFE2E8F0)),
+              ),
+              child: Image.network(
+                qrApiUrl,
+                width: 200,
+                height: 200,
+                fit: BoxFit.contain,
+                loadingBuilder: (_, child, progress) => progress == null
+                    ? child
+                    : const SizedBox(
+                        width: 200,
+                        height: 200,
+                        child: Center(
+                          child: CircularProgressIndicator(strokeWidth: 2),
+                        ),
+                      ),
+                errorBuilder: (_, _, _) => const SizedBox(
+                  width: 200,
+                  height: 200,
+                  child: Center(
+                    child: Icon(
+                      Icons.qr_code_rounded,
+                      size: 80,
+                      color: Colors.grey,
+                    ),
+                  ),
+                ),
+              ),
+            ),
+            const SizedBox(height: 12),
+            Text(
+              'Kod: $code',
+              style: const TextStyle(
+                fontWeight: FontWeight.w900,
+                fontFamily: 'monospace',
+                fontSize: 16,
+                color: XonaDoshColors.primaryDark,
+              ),
+            ),
+          ],
+        ),
+        actions: [
+          TextButton(
+            onPressed: () => Navigator.pop(ctx),
+            child: const Text(
+              'Yopish',
+              style: TextStyle(fontWeight: FontWeight.w700),
+            ),
+          ),
+        ],
+      ),
+    );
   }
 
   // ── Uy Qoidalari (House Rules) Modali ──
@@ -5586,7 +6054,8 @@ class _XonadoshColivingTabState extends ConsumerState<XonadoshColivingTab> {
                                         'paid_by': 'Umumiy hisob',
                                         'roommates': selectedRoommates,
                                         'splits': splits,
-                                        'group_code': 'home_default',
+                                        'group_code':
+                                            ref.read(colivingGroupCodeProvider),
                                       });
                                 }
 

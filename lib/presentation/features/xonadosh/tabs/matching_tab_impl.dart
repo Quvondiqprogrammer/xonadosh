@@ -10,6 +10,8 @@ import 'package:xonadosh/presentation/common/block_user_action.dart';
 import 'package:xonadosh/presentation/common/contact_actions.dart';
 import 'package:xonadosh/presentation/common/report_content_dialog.dart';
 import 'package:go_router/go_router.dart';
+import 'package:xonadosh/presentation/features/xonadosh/screens/chat_screen.dart';
+import 'package:xonadosh/presentation/features/xonadosh/screens/conversations_screen.dart';
 import 'package:xonadosh/presentation/features/xonadosh/widgets/match_reasons.dart';
 import 'package:xonadosh/presentation/features/xonadosh/widgets/roommate_photo_resolver.dart';
 import 'package:xonadosh/presentation/features/xonadosh/widgets/tinder_roommate_deck.dart';
@@ -43,6 +45,78 @@ class XonadoshMatchingTab extends ConsumerWidget {
             parent: BouncingScrollPhysics(),
           ),
           slivers: [
+            // Top Bar with Section Title and Chat Button
+            SliverToBoxAdapter(
+              child: Padding(
+                padding: const EdgeInsets.fromLTRB(16, 12, 16, 0),
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    Row(
+                      children: [
+                        const Icon(Icons.people_alt_rounded, color: XonaDoshColors.primary, size: 22),
+                        const SizedBox(width: 8),
+                        Text(
+                          'Mos Xonadoshlar',
+                          style: TextStyle(
+                            fontSize: 18,
+                            fontWeight: FontWeight.w800,
+                            color: isDark ? Colors.white : const Color(0xFF0F172A),
+                          ),
+                        ),
+                      ],
+                    ),
+                    Consumer(
+                      builder: (context, ref, _) {
+                        final unread = ref.watch(chatTotalUnreadCountProvider);
+                        return Stack(
+                          clipBehavior: Clip.none,
+                          children: [
+                            IconButton.filledTonal(
+                              onPressed: () => Navigator.of(context).push(ConversationsScreen.route()),
+                              icon: const Icon(Icons.chat_bubble_outline_rounded, size: 18),
+                              tooltip: 'Muloqotlar',
+                              style: IconButton.styleFrom(
+                                backgroundColor: isDark ? const Color(0xFF1E293B) : Colors.white,
+                                foregroundColor: XonaDoshColors.primary,
+                                shape: RoundedRectangleBorder(
+                                  borderRadius: BorderRadius.circular(12),
+                                  side: BorderSide(
+                                    color: isDark ? const Color(0xFF334155) : const Color(0xFFE2E8F0),
+                                  ),
+                                ),
+                                minimumSize: const Size(40, 40),
+                              ),
+                            ),
+                            if (unread > 0)
+                              Positioned(
+                                right: -2,
+                                top: -2,
+                                child: Container(
+                                  padding: const EdgeInsets.symmetric(horizontal: 5, vertical: 2),
+                                  decoration: BoxDecoration(
+                                    color: Colors.redAccent,
+                                    borderRadius: BorderRadius.circular(10),
+                                  ),
+                                  child: Text(
+                                    unread > 9 ? '9+' : unread.toString(),
+                                    style: const TextStyle(
+                                      color: Colors.white,
+                                      fontSize: 10,
+                                      fontWeight: FontWeight.bold,
+                                    ),
+                                  ),
+                                ),
+                              ),
+                          ],
+                        );
+                      },
+                    ),
+                  ],
+                ),
+              ),
+            ),
+
             // 1. My Profile Status Card Banner
             SliverToBoxAdapter(
               child: Padding(
@@ -523,6 +597,11 @@ class XonadoshMatchingTab extends ConsumerWidget {
                           item,
                           myProfileAsync.valueOrNull,
                           isDark,
+                        ),
+                        onStartChat: (item) => _startInAppChatWithRoommate(
+                          context,
+                          ref,
+                          item,
                         ),
                         onResetFilters: () {
                           ref
@@ -1127,19 +1206,13 @@ class XonadoshMatchingTab extends ConsumerWidget {
                   const SizedBox(width: 8),
                   Expanded(
                     child: FilledButton.icon(
-                      onPressed: () {
-                        ContactActions.showContactSheet(
-                          context,
-                          phone: item.phoneNumber,
-                          telegramHandle: item.telegramHandle,
-                        );
-                      },
+                      onPressed: () => _startInAppChatWithRoommate(context, ref, item),
                       icon: const Icon(
-                        Icons.chat_bubble_outline_rounded,
+                        Icons.chat_bubble_rounded,
                         size: 15,
                       ),
                       label: const Text(
-                        '💬 Tanishish',
+                        'Muloqot',
                         style: TextStyle(
                           fontWeight: FontWeight.w700,
                           fontSize: 13,
@@ -1235,6 +1308,45 @@ class XonadoshMatchingTab extends ConsumerWidget {
         ],
       ),
     );
+  }
+
+  Future<void> _startInAppChatWithRoommate(
+    BuildContext context,
+    WidgetRef ref,
+    XonadoshProfile item,
+  ) async {
+    try {
+      final repo = ref.read(xonadoshRepositoryProvider);
+      final convId = await repo.startChat(
+        targetUsername: item.username,
+        initialMessage: 'Salom, XonaDosh’da anketangizni ko‘rib yozayotgandim.',
+      );
+      if (!context.mounted) return;
+      if (convId != null) {
+        Navigator.of(context).push(
+          ChatScreen.route(
+            conversationId: convId,
+            title: item.fullName.isNotEmpty ? item.fullName : item.username,
+            subtitle: '${item.universityName ?? "Talaba"} • Moslik: ${item.compatibilityScore ?? 85}%',
+            avatarUrl: resolveProfilePhoto(item),
+          ),
+        );
+      } else {
+        ContactActions.showContactSheet(
+          context,
+          phone: item.phoneNumber,
+          telegramHandle: item.telegramHandle,
+        );
+      }
+    } catch (_) {
+      if (context.mounted) {
+        ContactActions.showContactSheet(
+          context,
+          phone: item.phoneNumber,
+          telegramHandle: item.telegramHandle,
+        );
+      }
+    }
   }
 
   void _showRoommateDetailSheet(
@@ -1547,48 +1659,56 @@ class XonadoshMatchingTab extends ConsumerWidget {
                 top: false,
                 child: Row(
                   children: [
+                    // Quick Call
+                    IconButton.filledTonal(
+                      onPressed: () => ContactActions.callPhone(context, item.phoneNumber),
+                      icon: const Icon(Icons.call_rounded, size: 18),
+                      tooltip: 'Qo‘ng‘iroq',
+                      style: IconButton.styleFrom(
+                        backgroundColor: XonaDoshColors.primary.withValues(alpha: 0.12),
+                        foregroundColor: XonaDoshColors.primaryDark,
+                        padding: const EdgeInsets.all(10),
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(10),
+                        ),
+                      ),
+                    ),
+                    if (item.telegramHandle != null && item.telegramHandle!.isNotEmpty) ...[
+                      const SizedBox(width: 8),
+                      IconButton.filledTonal(
+                        onPressed: () => ContactActions.openTelegram(context, item.telegramHandle),
+                        icon: const Icon(Icons.send_rounded, size: 16),
+                        tooltip: 'Telegram',
+                        style: IconButton.styleFrom(
+                          backgroundColor: const Color(0xFF0284C7).withValues(alpha: 0.12),
+                          foregroundColor: const Color(0xFF0284C7),
+                          padding: const EdgeInsets.all(10),
+                          shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(10),
+                          ),
+                        ),
+                      ),
+                    ],
+                    const SizedBox(width: 8),
+
+                    // Primary In-App Chat Button
                     Expanded(
                       child: FilledButton.icon(
-                        onPressed: () =>
-                            ContactActions.callPhone(context, item.phoneNumber),
-                        icon: const Icon(Icons.call_rounded, size: 16),
-                        label: Text(
-                          l10n.xonadoshCall,
-                          style: const TextStyle(fontWeight: FontWeight.w700),
+                        onPressed: () => _startInAppChatWithRoommate(context, ref, item),
+                        icon: const Icon(Icons.chat_bubble_rounded, size: 16),
+                        label: const Text(
+                          'Muloqot boshlash',
+                          style: TextStyle(fontWeight: FontWeight.w700),
                         ),
                         style: FilledButton.styleFrom(
                           backgroundColor: XonaDoshColors.primary,
-                          padding: const EdgeInsets.symmetric(vertical: 10),
+                          padding: const EdgeInsets.symmetric(vertical: 12),
                           shape: RoundedRectangleBorder(
                             borderRadius: BorderRadius.circular(10),
                           ),
                         ),
                       ),
                     ),
-                    if (item.telegramHandle != null &&
-                        item.telegramHandle!.isNotEmpty) ...[
-                      const SizedBox(width: 10),
-                      Expanded(
-                        child: FilledButton.icon(
-                          onPressed: () => ContactActions.openTelegram(
-                            context,
-                            item.telegramHandle,
-                          ),
-                          icon: const Icon(Icons.send_rounded, size: 15),
-                          label: const Text(
-                            'Telegram',
-                            style: TextStyle(fontWeight: FontWeight.w700),
-                          ),
-                          style: FilledButton.styleFrom(
-                            backgroundColor: const Color(0xFF0284C7),
-                            padding: const EdgeInsets.symmetric(vertical: 10),
-                            shape: RoundedRectangleBorder(
-                              borderRadius: BorderRadius.circular(10),
-                            ),
-                          ),
-                        ),
-                      ),
-                    ],
                     const SizedBox(width: 8),
                     IconButton(
                       onPressed: () {

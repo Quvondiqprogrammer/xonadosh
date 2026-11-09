@@ -332,6 +332,62 @@ $pdo->exec("CREATE TABLE IF NOT EXISTS `xonadosh_broker_reports` (
     INDEX `idx_listing` (`listing_id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;");
 
+// --- In-App Chat & Messaging Core ---
+$pdo->exec("CREATE TABLE IF NOT EXISTS `xd_conversations` (
+    `id` BIGINT AUTO_INCREMENT PRIMARY KEY,
+    `type` ENUM('direct','coliving_group','listing_inquiry') NOT NULL DEFAULT 'direct',
+    `listing_id` INT NULL,
+    `coliving_group_code` VARCHAR(50) NULL,
+    `title` VARCHAR(150) NULL,
+    `last_message_text` VARCHAR(255) NULL,
+    `last_message_sender` VARCHAR(100) NULL,
+    `last_message_at` DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    `created_at` DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    INDEX `idx_last_msg` (`last_message_at`),
+    INDEX `idx_listing` (`listing_id`),
+    INDEX `idx_group` (`coliving_group_code`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;");
+
+$pdo->exec("CREATE TABLE IF NOT EXISTS `xd_chat_participants` (
+    `id` BIGINT AUTO_INCREMENT PRIMARY KEY,
+    `conversation_id` BIGINT NOT NULL,
+    `username` VARCHAR(100) NOT NULL,
+    `unread_count` INT NOT NULL DEFAULT 0,
+    `last_read_at` DATETIME NULL,
+    `created_at` DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    UNIQUE KEY `uk_conv_user` (`conversation_id`, `username`),
+    INDEX `idx_user` (`username`),
+    INDEX `idx_conv` (`conversation_id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;");
+
+$pdo->exec("CREATE TABLE IF NOT EXISTS `xd_chat_messages` (
+    `id` BIGINT AUTO_INCREMENT PRIMARY KEY,
+    `conversation_id` BIGINT NOT NULL,
+    `sender_username` VARCHAR(100) NOT NULL,
+    `message_type` ENUM('text','image','location','system_event') NOT NULL DEFAULT 'text',
+    `body` TEXT NOT NULL,
+    `metadata_json` JSON NULL,
+    `is_read` TINYINT(1) NOT NULL DEFAULT 0,
+    `created_at` DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    INDEX `idx_conv_time` (`conversation_id`, `created_at`),
+    INDEX `idx_sender` (`sender_username`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;");
+
+// --- Saved Searches & Instant Push Alerts ---
+$pdo->exec("CREATE TABLE IF NOT EXISTS `xd_saved_searches` (
+    `id` INT AUTO_INCREMENT PRIMARY KEY,
+    `username` VARCHAR(100) NOT NULL,
+    `university_id` INT NULL,
+    `city` VARCHAR(100) NOT NULL DEFAULT 'Toshkent',
+    `district` VARCHAR(100) NULL,
+    `max_budget` DECIMAL(15,2) NULL,
+    `gender_preference` VARCHAR(20) NULL,
+    `push_enabled` TINYINT(1) NOT NULL DEFAULT 1,
+    `created_at` DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    INDEX `idx_user` (`username`),
+    INDEX `idx_uni_budget` (`university_id`, `max_budget`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;");
+
 // Safe column migrations for xonadosh_listings, xd_users and xonadosh_profiles
 try {
     $colsList = $pdo->query("SHOW COLUMNS FROM `xonadosh_listings`")->fetchAll(PDO::FETCH_COLUMN);

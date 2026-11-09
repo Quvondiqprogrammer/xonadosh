@@ -32,6 +32,12 @@ GoRouter createAppRouter(Ref ref) {
       final onSplash = loc == AppRoutes.splash;
       final onOnboarding = loc == AppRoutes.onboarding;
 
+      // Dynamic Coliving Join Link (?join=CODE or ?code=CODE)
+      final joinCode = state.uri.queryParameters['join'] ?? state.uri.queryParameters['code'];
+      if (joinCode != null && joinCode.trim().isNotEmpty) {
+        ref.read(colivingGroupCodeProvider.notifier).setGroupCode(joinCode.trim());
+      }
+
       // Ekotizim Single Sign-On (SSO): Hamyon AI orqali ochilganda avto-kirish
       final ssoToken = state.uri.queryParameters['sso_token'];
       final ssoUserId = state.uri.queryParameters['user_id'];

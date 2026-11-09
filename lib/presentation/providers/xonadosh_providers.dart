@@ -1,7 +1,9 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 import 'package:xonadosh/data/api/block_store.dart';
 import 'package:xonadosh/data/api/onboarding_store.dart';
+import 'package:xonadosh/data/models/chat_models.dart';
 import 'package:xonadosh/data/models/xonadosh_models.dart';
 import 'package:xonadosh/presentation/providers/app_providers.dart';
 
@@ -203,6 +205,38 @@ final xonadoshMatchingRoommatesProvider =
           .toList();
     });
 
+class ColivingGroupCodeNotifier extends StateNotifier<String> {
+  static const _prefKey = 'active_coliving_group_code';
+
+  ColivingGroupCodeNotifier() : super('home_default') {
+    _load();
+  }
+
+  Future<void> _load() async {
+    try {
+      final prefs = await SharedPreferences.getInstance();
+      final saved = prefs.getString(_prefKey);
+      if (saved != null && saved.trim().isNotEmpty) {
+        state = saved.trim();
+      }
+    } catch (_) {}
+  }
+
+  Future<void> setGroupCode(String code) async {
+    final clean = code.trim().isEmpty ? 'home_default' : code.trim();
+    state = clean;
+    try {
+      final prefs = await SharedPreferences.getInstance();
+      await prefs.setString(_prefKey, clean);
+    } catch (_) {}
+  }
+}
+
+final colivingGroupCodeProvider =
+    StateNotifierProvider<ColivingGroupCodeNotifier, String>((ref) {
+  return ColivingGroupCodeNotifier();
+});
+
 final xonadoshChoresProvider =
     FutureProvider.autoDispose<
       ({
@@ -211,14 +245,18 @@ final xonadoshChoresProvider =
         List<XonadoshChore> allChores,
       })
     >((ref) async {
-      return ref.watch(xonadoshRepositoryProvider).getChores();
+      final groupCode = ref.watch(colivingGroupCodeProvider);
+      return ref.watch(xonadoshRepositoryProvider).getChores(groupCode: groupCode);
     });
 
 final xonadoshRecipesAndMealPlanProvider =
     FutureProvider.autoDispose<
       ({List<XonadoshRecipe> recipes, List<XonadoshMealPlan> mealPlans})
     >((ref) async {
-      return ref.watch(xonadoshRepositoryProvider).getRecipesAndMealPlan();
+      final groupCode = ref.watch(colivingGroupCodeProvider);
+      return ref
+          .watch(xonadoshRepositoryProvider)
+          .getRecipesAndMealPlan(groupCode: groupCode);
     });
 
 final xonadoshGroceryCalculationProvider =
@@ -232,18 +270,23 @@ final xonadoshGroceryCalculationProvider =
 final xonadoshKarmaProvider = FutureProvider.autoDispose<XonadoshKarmaData>((
   ref,
 ) async {
-  return ref.watch(xonadoshRepositoryProvider).getKarma();
+  final groupCode = ref.watch(colivingGroupCodeProvider);
+  return ref.watch(xonadoshRepositoryProvider).getKarma(groupCode: groupCode);
 });
 
 final xonadoshPollsProvider = FutureProvider.autoDispose<XonadoshPollsData>((
   ref,
 ) async {
-  return ref.watch(xonadoshRepositoryProvider).getPolls();
+  final groupCode = ref.watch(colivingGroupCodeProvider);
+  return ref.watch(xonadoshRepositoryProvider).getPolls(groupCode: groupCode);
 });
 
 final xonadoshFinancesProvider =
     FutureProvider.autoDispose<XonadoshFinancesData>((ref) async {
-      return ref.watch(xonadoshRepositoryProvider).getFinances();
+      final groupCode = ref.watch(colivingGroupCodeProvider);
+      return ref
+          .watch(xonadoshRepositoryProvider)
+          .getFinances(groupCode: groupCode);
     });
 
 final xonadoshHouseRulesAgreementProvider = FutureProvider.autoDispose
@@ -260,4 +303,26 @@ final xonadoshSquadsProvider = FutureProvider.autoDispose<List<XonadoshSquad>>((
   return ref
       .watch(xonadoshRepositoryProvider)
       .getSquads(universityId: selectedUni?.id);
+});
+
+// -------------------------------------------------------------
+// IN-APP CHAT PROVIDERS
+// -------------------------------------------------------------
+
+final chatConversationsProvider =
+    FutureProvider.autoDispose<List<ChatConversationModel>>((ref) async {
+  return ref.watch(xonadoshRepositoryProvider).getChatConversations();
+});
+
+final chatMessagesProvider = FutureProvider.autoDispose
+    .family<List<ChatMessageModel>, int>((ref, conversationId) async {
+  return ref.watch(xonadoshRepositoryProvider).getChatMessages(conversationId);
+});
+
+final chatTotalUnreadCountProvider = Provider.autoDispose<int>((ref) {
+  final convsAsync = ref.watch(chatConversationsProvider);
+  return convsAsync.maybeWhen(
+    data: (convs) => convs.fold<int>(0, (sum, c) => sum + c.unreadCount),
+    orElse: () => 0,
+  );
 });

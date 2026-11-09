@@ -16,6 +16,7 @@ class TinderRoommateDeck extends StatefulWidget {
     required this.myProfile,
     required this.isDark,
     required this.onOpenDetail,
+    this.onStartChat,
     this.onResetFilters,
   });
 
@@ -23,6 +24,7 @@ class TinderRoommateDeck extends StatefulWidget {
   final XonadoshProfile? myProfile;
   final bool isDark;
   final void Function(XonadoshProfile item) onOpenDetail;
+  final void Function(XonadoshProfile item)? onStartChat;
   final VoidCallback? onResetFilters;
 
   @override
@@ -785,30 +787,51 @@ class _TinderRoommateDeckState extends State<TinderRoommateDeck>
               );
             }
           },
-          icon: const Icon(Icons.send_rounded, size: 20),
+          icon: const Icon(Icons.send_rounded, size: 19),
           tooltip: hasTelegram ? 'Telegram' : 'Aloqa',
           style: IconButton.styleFrom(
             backgroundColor: const Color(0xFF0284C7).withValues(alpha: 0.12),
             foregroundColor: const Color(0xFF0284C7),
-            minimumSize: const Size(48, 48),
+            minimumSize: const Size(44, 44),
             shape: const CircleBorder(),
           ),
         ),
 
-        const SizedBox(width: 12),
+        const SizedBox(width: 8),
 
-        // 5. Primary Call / Match Button (Large Teal)
+        // 5. Direct Phone Call Button
+        IconButton.filledTonal(
+          onPressed: () {
+            ContactActions.callPhone(context, item.phoneNumber);
+          },
+          icon: const Icon(Icons.call_rounded, size: 20),
+          tooltip: 'Qo‘ng‘iroq',
+          style: IconButton.styleFrom(
+            backgroundColor: XonaDoshColors.primary.withValues(alpha: 0.12),
+            foregroundColor: XonaDoshColors.primaryDark,
+            minimumSize: const Size(44, 44),
+            shape: const CircleBorder(),
+          ),
+        ),
+
+        const SizedBox(width: 8),
+
+        // 6. Primary In-App Chat / Match Button (Large Teal)
         IconButton.filled(
           onPressed: () {
             _swipe(true);
-            ContactActions.callPhone(context, item.phoneNumber);
+            if (widget.onStartChat != null) {
+              widget.onStartChat!(item);
+            } else {
+              ContactActions.callPhone(context, item.phoneNumber);
+            }
           },
-          icon: const Icon(Icons.call_rounded, size: 26),
-          tooltip: 'Bog‘lanish (Qo‘ng‘iroq)',
+          icon: const Icon(Icons.chat_bubble_rounded, size: 24),
+          tooltip: 'Muloqot boshlash',
           style: IconButton.styleFrom(
             backgroundColor: XonaDoshColors.primary,
             foregroundColor: Colors.white,
-            minimumSize: const Size(60, 60),
+            minimumSize: const Size(56, 56),
             elevation: 4,
             shadowColor: XonaDoshColors.primary.withValues(alpha: 0.4),
             shape: const CircleBorder(),

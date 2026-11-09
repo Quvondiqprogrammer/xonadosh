@@ -17,6 +17,7 @@ FileETag MTime Size
   RewriteEngine On
   RewriteRule .* - [E=HTTP_AUTHORIZATION:%{HTTP:Authorization}]
 
+  RewriteRule ^join/([^/]+)/?$ join.php?code=$1 [L,QSA]
   RewriteRule ^uylar/([^/]+)/?$ uylar/index.php?slug=$1 [L,QSA]
   RewriteRule ^uylar/?$ uylar/index.php [L,QSA]
 </IfModule>

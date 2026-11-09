@@ -1,6 +1,7 @@
 import 'dart:convert';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:xonadosh/data/api/xonadosh_api_client.dart';
+import 'package:xonadosh/data/models/chat_models.dart';
 import 'package:xonadosh/data/models/xonadosh_models.dart';
 
 class XonadoshRepository {
@@ -1829,5 +1830,75 @@ class XonadoshRepository {
       squadId: squadId,
       memberBudgetUzs: memberBudgetUzs,
     );
+  }
+
+  // -------------------------------------------------------------
+  // IN-APP CHAT REPOSITORY
+  // -------------------------------------------------------------
+
+  Future<List<ChatConversationModel>> getChatConversations() async {
+    final res = await _api.getChatConversations();
+    if (res['ok'] == true && res['conversations'] is List) {
+      final list = res['conversations'] as List;
+      return list
+          .map((e) => ChatConversationModel.fromJson(Map<String, dynamic>.from(e as Map)))
+          .toList();
+    }
+    return [];
+  }
+
+  Future<int?> startChat({
+    String? targetUsername,
+    int? listingId,
+    String? colivingGroupCode,
+    String? initialMessage,
+  }) async {
+    final res = await _api.startChat(
+      targetUsername: targetUsername,
+      listingId: listingId,
+      colivingGroupCode: colivingGroupCode,
+      initialMessage: initialMessage,
+    );
+    if (res['ok'] == true && res['conversation_id'] != null) {
+      return (res['conversation_id'] as num).toInt();
+    }
+    return null;
+  }
+
+  Future<List<ChatMessageModel>> getChatMessages(
+    int conversationId, {
+    int? beforeId,
+    int limit = 50,
+  }) async {
+    final res = await _api.getChatMessages(
+      conversationId,
+      beforeId: beforeId,
+      limit: limit,
+    );
+    if (res['ok'] == true && res['messages'] is List) {
+      final list = res['messages'] as List;
+      return list
+          .map((e) => ChatMessageModel.fromJson(Map<String, dynamic>.from(e as Map)))
+          .toList();
+    }
+    return [];
+  }
+
+  Future<ChatMessageModel?> sendChatMessage(
+    int conversationId,
+    String body, {
+    String messageType = 'text',
+    Map<String, dynamic>? metadata,
+  }) async {
+    final res = await _api.sendChatMessage(
+      conversationId,
+      body,
+      messageType: messageType,
+      metadata: metadata,
+    );
+    if (res['ok'] == true && res['message'] is Map) {
+      return ChatMessageModel.fromJson(Map<String, dynamic>.from(res['message'] as Map));
+    }
+    return null;
   }
 }

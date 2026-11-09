@@ -11,6 +11,7 @@ import 'package:xonadosh/l10n/l10n_ext.dart';
 import 'package:xonadosh/presentation/common/contact_actions.dart';
 import 'package:xonadosh/presentation/common/empty_state.dart';
 import 'package:xonadosh/presentation/common/report_content_dialog.dart';
+import 'package:xonadosh/presentation/features/xonadosh/screens/conversations_screen.dart';
 import 'package:xonadosh/presentation/features/xonadosh/widgets/listing_card.dart';
 import 'package:xonadosh/presentation/providers/xonadosh_providers.dart';
 import 'package:xonadosh/presentation/router/app_routes.dart';
@@ -195,6 +196,61 @@ class _XonadoshHousingTabState extends ConsumerState<XonadoshHousingTab> {
                               ),
                             ),
                           ),
+                        ),
+                        const SizedBox(width: 8),
+                        Consumer(
+                          builder: (context, ref, _) {
+                            final unread = ref.watch(chatTotalUnreadCountProvider);
+                            return Stack(
+                              clipBehavior: Clip.none,
+                              children: [
+                                IconButton.filledTonal(
+                                  onPressed: () => Navigator.of(context).push(ConversationsScreen.route()),
+                                  icon: const Icon(Icons.chat_bubble_outline_rounded, size: 18),
+                                  tooltip: 'Muloqotlar',
+                                  style: IconButton.styleFrom(
+                                    backgroundColor: isDark
+                                        ? const Color(0xFF1E293B)
+                                        : Colors.white,
+                                    foregroundColor: XonaDoshColors.emerald,
+                                    shape: RoundedRectangleBorder(
+                                      borderRadius: BorderRadius.circular(14),
+                                      side: BorderSide(
+                                        color: isDark
+                                            ? const Color(0xFF334155)
+                                            : const Color(0xFFE2E8F0),
+                                      ),
+                                    ),
+                                    minimumSize: const Size(44, 44),
+                                  ),
+                                ),
+                                if (unread > 0)
+                                  Positioned(
+                                    right: -2,
+                                    top: -2,
+                                    child: Container(
+                                      padding: const EdgeInsets.symmetric(horizontal: 5, vertical: 2),
+                                      decoration: BoxDecoration(
+                                        color: Colors.redAccent,
+                                        borderRadius: BorderRadius.circular(10),
+                                        border: Border.all(
+                                          color: isDark ? const Color(0xFF0F172A) : Colors.white,
+                                          width: 1.5,
+                                        ),
+                                      ),
+                                      child: Text(
+                                        unread > 9 ? '9+' : unread.toString(),
+                                        style: const TextStyle(
+                                          color: Colors.white,
+                                          fontSize: 10,
+                                          fontWeight: FontWeight.bold,
+                                        ),
+                                      ),
+                                    ),
+                                  ),
+                              ],
+                            );
+                          },
                         ),
                         const SizedBox(width: 8),
                         IconButton.filledTonal(

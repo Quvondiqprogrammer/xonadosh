@@ -430,4 +430,54 @@ class XonadoshApiClient {
       'member_budget_uzs': memberBudgetUzs,
     },
   );
+
+  // -------------------------------------------------------------
+  // IN-APP REAL-TIME CHAT & MESSAGING
+  // -------------------------------------------------------------
+
+  Future<Map<String, dynamic>> getChatConversations() =>
+      _get('api/chat_conversations.php');
+
+  Future<Map<String, dynamic>> startChat({
+    String? targetUsername,
+    int? listingId,
+    String? colivingGroupCode,
+    String? initialMessage,
+  }) => _post(
+    'api/chat_start.php',
+    data: {
+      if (targetUsername != null && targetUsername.isNotEmpty)
+        'target_username': targetUsername,
+      'listing_id': ?listingId,
+      if (colivingGroupCode != null && colivingGroupCode.isNotEmpty)
+        'coliving_group_code': colivingGroupCode,
+      if (initialMessage != null && initialMessage.isNotEmpty)
+        'initial_message': initialMessage,
+    },
+  );
+
+  Future<Map<String, dynamic>> getChatMessages(
+    int conversationId, {
+    int? beforeId,
+    int limit = 50,
+  }) => _get('api/chat_messages.php', {
+    'conversation_id': conversationId,
+    'limit': limit,
+    'before_id': ?beforeId,
+  });
+
+  Future<Map<String, dynamic>> sendChatMessage(
+    int conversationId,
+    String body, {
+    String messageType = 'text',
+    Map<String, dynamic>? metadata,
+  }) => _post(
+    'api/chat_send.php',
+    data: {
+      'conversation_id': conversationId,
+      'body': body,
+      'message_type': messageType,
+      'metadata': ?metadata,
+    },
+  );
 }

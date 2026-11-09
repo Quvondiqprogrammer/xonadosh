@@ -3,11 +3,13 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 
 import 'package:xonadosh/config/theme.dart';
+import 'package:xonadosh/data/models/chat_models.dart';
 import 'package:xonadosh/data/models/xonadosh_models.dart';
 import 'package:xonadosh/l10n/l10n_ext.dart';
 import 'package:xonadosh/presentation/common/block_user_action.dart';
 import 'package:xonadosh/presentation/common/contact_actions.dart';
 import 'package:xonadosh/presentation/common/report_content_dialog.dart';
+import 'package:xonadosh/presentation/features/xonadosh/screens/chat_screen.dart';
 import 'package:xonadosh/presentation/providers/xonadosh_providers.dart';
 import 'package:xonadosh/presentation/router/app_routes.dart';
 
@@ -1364,47 +1366,50 @@ class _XonadoshListingDetailScreenState
         top: false,
         child: Row(
           children: [
-            if (item.telegramHandle != null &&
-                item.telegramHandle!.isNotEmpty) ...[
-              Expanded(
-                child: OutlinedButton.icon(
-                  onPressed: () =>
-                      ContactActions.openTelegram(context, item.telegramHandle),
-                  icon: const Icon(Icons.send_rounded, size: 18),
-                  label: const Text(
-                    'Telegram',
-                    style: TextStyle(fontWeight: FontWeight.w800, fontSize: 14),
-                  ),
-                  style: OutlinedButton.styleFrom(
-                    foregroundColor: const Color(0xFF0284C7),
-                    backgroundColor: isDark
-                        ? const Color(0xFF0284C7).withValues(alpha: 0.12)
-                        : const Color(0xFFF0F9FF),
-                    side: BorderSide(
-                      color: const Color(0xFF0284C7).withValues(alpha: 0.3),
-                      width: 1,
-                    ),
-                    padding: const EdgeInsets.symmetric(vertical: 14),
-                    shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(12),
-                    ),
+            // Quick Call Button
+            IconButton.filledTonal(
+              onPressed: () => _handleCall(context, item),
+              icon: const Icon(Icons.call_rounded, size: 20),
+              tooltip: 'Qo‘ng‘iroq',
+              style: IconButton.styleFrom(
+                backgroundColor: isDark ? const Color(0xFF334155) : const Color(0xFFF1F5F9),
+                foregroundColor: XonaDoshColors.primary,
+                padding: const EdgeInsets.all(12),
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(12),
+                ),
+              ),
+            ),
+            const SizedBox(width: 8),
+
+            // Telegram Button (if handle available)
+            if (item.telegramHandle != null && item.telegramHandle!.isNotEmpty) ...[
+              IconButton.filledTonal(
+                onPressed: () => ContactActions.openTelegram(context, item.telegramHandle),
+                icon: const Icon(Icons.send_rounded, size: 18),
+                tooltip: 'Telegram',
+                style: IconButton.styleFrom(
+                  backgroundColor: isDark
+                      ? const Color(0xFF0284C7).withValues(alpha: 0.15)
+                      : const Color(0xFFF0F9FF),
+                  foregroundColor: const Color(0xFF0284C7),
+                  padding: const EdgeInsets.all(12),
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(12),
                   ),
                 ),
               ),
-              const SizedBox(width: 12),
+              const SizedBox(width: 8),
             ],
+
+            // Primary Action: In-App Chat
             Expanded(
               child: FilledButton.icon(
-                onPressed: () => _handleCall(context, item),
-                onLongPress: () => ContactActions.showContactSheet(
-                  context,
-                  phone: item.phoneNumber,
-                  telegramHandle: item.telegramHandle,
-                ),
-                icon: const Icon(Icons.call_rounded, size: 20),
-                label: Text(
-                  context.l10n.xonadoshCallBtn,
-                  style: const TextStyle(
+                onPressed: () => _startInAppChat(context, item),
+                icon: const Icon(Icons.chat_bubble_rounded, size: 18),
+                label: const Text(
+                  'Xabar yozish',
+                  style: TextStyle(
                     fontWeight: FontWeight.w800,
                     fontSize: 15,
                   ),
@@ -1424,6 +1429,40 @@ class _XonadoshListingDetailScreenState
         ),
       ),
     );
+  }
+
+  Future<void> _startInAppChat(BuildContext context, XonadoshListing item) async {
+    try {
+      final repo = ref.read(xonadoshRepositoryProvider);
+      final convId = await repo.startChat(
+        targetUsername: item.username,
+        listingId: item.id,
+        initialMessage: 'Assalomu alaykum, "${item.title}" e\'loningiz bo‘yicha yozayotgandim.',
+      );
+      if (!context.mounted) return;
+      if (convId != null) {
+        final photos = item.photos;
+        Navigator.of(context).push(
+          ChatScreen.route(
+            conversationId: convId,
+            title: item.ownerName.isNotEmpty ? item.ownerName : item.username,
+            listing: ChatListingSummary(
+              id: item.id,
+              title: item.title,
+              price: item.price,
+              district: item.district,
+              thumb: photos.isNotEmpty ? photos.first : null,
+            ),
+          ),
+        );
+      } else {
+        ContactActions.openTelegram(context, item.telegramHandle);
+      }
+    } catch (_) {
+      if (context.mounted) {
+        ContactActions.openTelegram(context, item.telegramHandle);
+      }
+    }
   }
 
   IconData _getAmenityIcon(String name) {
