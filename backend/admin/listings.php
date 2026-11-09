@@ -150,12 +150,25 @@ require __DIR__ . '/includes/header.php';
                 <?php
                 $st = (string) ($l['status'] ?? '');
                 $badge = $st === 'active' ? '' : ($st === 'occupied' ? 'badge-occupied' : 'badge-off');
+                $photos = json_decode((string) ($l['photos'] ?? '[]'), true);
+                $coverPhoto = is_array($photos) && !empty($photos) ? $photos[0] : null;
                 ?>
                 <tr>
                     <td class="mono">#<?= (int) $l['id'] ?></td>
                     <td>
-                        <strong><?= h((string) $l['title']) ?></strong><br>
-                        <span class="label"><?= h((string) ($l['owner_name'] ?? '')) ?></span>
+                        <div style="display:flex;align-items:center;gap:10px;">
+                            <?php if (!empty($coverPhoto)): ?>
+                                <img src="<?= h(str_starts_with((string)$coverPhoto, 'http') ? (string)$coverPhoto : '/' . ltrim((string)$coverPhoto, '/')) ?>" alt="" style="width:44px;height:44px;border-radius:8px;object-fit:cover;border:1px solid #cbd5e1;background:#f1f5f9;flex-shrink:0;">
+                            <?php else: ?>
+                                <div style="width:44px;height:44px;border-radius:8px;background:#e2e8f0;display:flex;align-items:center;justify-content:center;font-size:18px;flex-shrink:0;">
+                                    🏠
+                                </div>
+                            <?php endif; ?>
+                            <div>
+                                <strong><?= h((string) $l['title']) ?></strong><br>
+                                <span class="label"><?= h((string) ($l['owner_name'] ?? '')) ?></span>
+                            </div>
+                        </div>
                     </td>
                     <td class="mono"><?= admin_money($l['price']) ?> <?= h((string) $l['currency']) ?></td>
                     <td><?= h((string) $l['type']) ?></td>

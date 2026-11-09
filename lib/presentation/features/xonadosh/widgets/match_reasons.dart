@@ -53,6 +53,45 @@ List<String> visibleMatchReasons({
       .toList();
 }
 
+/// Format match reason string into a concise 2-word chip
+String formatCompactMatchReason(String reason) {
+  final lower = reason.toLowerCase();
+  if (lower.contains('erta') ||
+      (lower.contains('uyqu') && lower.contains('erta'))) {
+    return 'Erta turuvchi';
+  }
+  if (lower.contains('kech') ||
+      (lower.contains('uyqu') && lower.contains('kech')) ||
+      lower.contains('tungi')) {
+    return 'Tungi rejim';
+  }
+  if (lower.contains('uyqu') ||
+      lower.contains('rejim') ||
+      lower.contains('moslashuvchan')) {
+    return 'Mos rejim';
+  }
+  if (lower.contains('tozalik') || lower.contains('ozod')) {
+    return 'Tartibli';
+  }
+  if (lower.contains('sokin') ||
+      lower.contains('tinch') ||
+      lower.contains('dars')) {
+    return 'Sokin dars';
+  }
+  if (lower.contains('chekmay') || lower.contains('tutunsiz')) {
+    return 'Chekmaydi';
+  }
+  if (lower.contains('byudjet') || lower.contains('budget')) {
+    return 'Byudjet mos';
+  }
+  if (lower.contains('otm') ||
+      lower.contains('universitet') ||
+      lower.contains('uni')) {
+    return 'Bir xil OTM';
+  }
+  return reason.length > 18 ? '${reason.substring(0, 16)}...' : reason;
+}
+
 class VisualMatchBadge {
   final IconData icon;
   final String label;
@@ -77,6 +116,80 @@ List<VisualMatchBadge> visibleVisualMatchBadges({
     me: me,
     limit: limit,
   );
+
+  if (rawReasons.isEmpty) {
+    final fallbacks = <VisualMatchBadge>[];
+    if (candidate.sleepSchedule == 'early_bird') {
+      fallbacks.add(
+        const VisualMatchBadge(
+          icon: Icons.wb_sunny_rounded,
+          label: 'Erta turuvchi',
+          color: Color(0xFFF59E0B),
+        ),
+      );
+    } else if (candidate.sleepSchedule == 'night_owl') {
+      fallbacks.add(
+        const VisualMatchBadge(
+          icon: Icons.bedtime_rounded,
+          label: 'Tungi rejim',
+          color: Color(0xFF8B5CF6),
+        ),
+      );
+    } else {
+      fallbacks.add(
+        const VisualMatchBadge(
+          icon: Icons.schedule_rounded,
+          label: 'Mos rejim',
+          color: Color(0xFF6366F1),
+        ),
+      );
+    }
+    if (candidate.smokingHabit == 'no' || candidate.smokingHabit == 'never') {
+      fallbacks.add(
+        const VisualMatchBadge(
+          icon: Icons.smoke_free_rounded,
+          label: 'Chekmaydi',
+          color: Color(0xFF10B981),
+        ),
+      );
+    }
+    if (candidate.cleanliness == 'strict') {
+      fallbacks.add(
+        const VisualMatchBadge(
+          icon: Icons.cleaning_services_rounded,
+          label: 'O‘ta ozoda',
+          color: Color(0xFF0D9488),
+        ),
+      );
+    } else if (candidate.cleanliness == 'moderate') {
+      fallbacks.add(
+        const VisualMatchBadge(
+          icon: Icons.cleaning_services_rounded,
+          label: 'Tartibli',
+          color: Color(0xFF0D9488),
+        ),
+      );
+    }
+    if (candidate.studyHabit == 'silent') {
+      fallbacks.add(
+        const VisualMatchBadge(
+          icon: Icons.menu_book_rounded,
+          label: 'Sokin dars',
+          color: Color(0xFF0284C7),
+        ),
+      );
+    }
+    if (candidate.budgetMax > 0) {
+      fallbacks.add(
+        const VisualMatchBadge(
+          icon: Icons.payments_rounded,
+          label: 'Byudjet mos',
+          color: Color(0xFFF59E0B),
+        ),
+      );
+    }
+    return fallbacks.take(limit).toList();
+  }
 
   return rawReasons.map((reason) {
     final lower = reason.toLowerCase();
@@ -113,7 +226,7 @@ List<VisualMatchBadge> visibleVisualMatchBadges({
         lower.contains('uni')) {
       return const VisualMatchBadge(
         icon: Icons.school_rounded,
-        label: 'OTM mos',
+        label: 'Bir xil OTM',
         color: Color(0xFF6366F1),
       );
     }

@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 
@@ -26,15 +27,60 @@ class _FirstRunOnboardingScreenState
   String _searchQuery = '';
 
   static const List<Map<String, String>> _popularUniPresets = [
-    {'name': 'TATU', 'short': 'TATU', 'city': 'Toshkent'},
-    {'name': 'O‘zMU', 'short': 'O‘zMU', 'city': 'Toshkent'},
-    {'name': 'TDTU (Politex)', 'short': 'TDTU', 'city': 'Toshkent'},
-    {'name': 'Inha Universiteti', 'short': 'Inha', 'city': 'Toshkent'},
-    {'name': 'Webster Universiteti', 'short': 'Webster', 'city': 'Toshkent'},
-    {'name': 'MDIS (Singapur)', 'short': 'MDIS', 'city': 'Toshkent'},
-    {'name': 'TDIU (Narxoz)', 'short': 'TDIU', 'city': 'Toshkent'},
-    {'name': 'Jahondillari (O‘zDJTU)', 'short': 'O‘zDJTU', 'city': 'Toshkent'},
-    {'name': 'Boshqa / OTM emas', 'short': 'Boshqa', 'city': 'Barcha'},
+    {
+      'name': 'TATU (Axborot Texnologiyalari)',
+      'short': 'TATU',
+      'city': 'Toshkent',
+      'icon': '🎓',
+    },
+    {
+      'name': 'O‘zMU (Milliy Universitet)',
+      'short': 'O‘zMU',
+      'city': 'Toshkent',
+      'icon': '🏛️',
+    },
+    {
+      'name': 'TDTU (Texnika / Politex)',
+      'short': 'TDTU',
+      'city': 'Toshkent',
+      'icon': '⚙️',
+    },
+    {
+      'name': 'Inha Universiteti',
+      'short': 'Inha',
+      'city': 'Toshkent',
+      'icon': '🌐',
+    },
+    {
+      'name': 'Webster Universiteti',
+      'short': 'Webster',
+      'city': 'Toshkent',
+      'icon': '🇬🇧',
+    },
+    {
+      'name': 'MDIS (Singapur Instituti)',
+      'short': 'MDIS',
+      'city': 'Toshkent',
+      'icon': '🏢',
+    },
+    {
+      'name': 'TDIU (Iqtisodiyot / Narxoz)',
+      'short': 'TDIU',
+      'city': 'Toshkent',
+      'icon': '📈',
+    },
+    {
+      'name': 'O‘zDJTU (Jahon Tillari)',
+      'short': 'O‘zDJTU',
+      'city': 'Toshkent',
+      'icon': '🌍',
+    },
+    {
+      'name': 'Boshqa / OTM emas',
+      'short': 'Boshqa',
+      'city': 'Barcha',
+      'icon': '📍',
+    },
   ];
 
   @override
@@ -79,7 +125,11 @@ class _FirstRunOnboardingScreenState
               // Top Brand Header
               Row(
                 children: [
-                  const XonaDoshLogo.mark(height: 36, width: 36, borderRadius: 10),
+                  const XonaDoshLogo.mark(
+                    height: 36,
+                    width: 36,
+                    borderRadius: 10,
+                  ),
                   const SizedBox(width: 10),
                   Text(
                     'XonaDosh',
@@ -98,7 +148,9 @@ class _FirstRunOnboardingScreenState
                       style: TextStyle(
                         fontSize: 13,
                         fontWeight: FontWeight.w600,
-                        color: isDark ? XonaDoshColors.slate400 : XonaDoshColors.slate500,
+                        color: isDark
+                            ? XonaDoshColors.slate400
+                            : XonaDoshColors.slate500,
                       ),
                     ),
                   ),
@@ -108,14 +160,14 @@ class _FirstRunOnboardingScreenState
 
               // Headline & Visual Prompt
               Text(
-                'Qaysi OTM yonidan uy yoki xonadosh qidiryapsiz?',
+                'Qaysi OTMda o‘qiysiz?',
                 style: XonaDoshStyles.h1.copyWith(
                   color: isDark ? Colors.white : XonaDoshColors.slate900,
                 ),
               ),
-              const SizedBox(height: 8),
+              const SizedBox(height: 6),
               Text(
-                'Universitetingizni tanlang, 12 daqiqalik radiusdagi eng arzon va maklersiz uylarni ko‘rsatamiz.',
+                'Universitetingizni tanlang, 12 daqiqalik radiusdagi arzon va maklersiz uylarni darhol ko‘rsatamiz.',
                 style: XonaDoshStyles.body(isDark),
                 maxLines: 2,
                 overflow: TextOverflow.ellipsis,
@@ -128,11 +180,15 @@ class _FirstRunOnboardingScreenState
                   color: isDark ? XonaDoshColors.cardDark : Colors.white,
                   borderRadius: BorderRadius.circular(16),
                   border: Border.all(
-                    color: isDark ? XonaDoshColors.borderDark : XonaDoshColors.borderLight,
+                    color: isDark
+                        ? XonaDoshColors.borderDark
+                        : XonaDoshColors.borderLight,
                   ),
                   boxShadow: [
                     BoxShadow(
-                      color: Colors.black.withValues(alpha: isDark ? 0.2 : 0.04),
+                      color: Colors.black.withValues(
+                        alpha: isDark ? 0.2 : 0.04,
+                      ),
                       blurRadius: 10,
                       offset: const Offset(0, 2),
                     ),
@@ -145,12 +201,17 @@ class _FirstRunOnboardingScreenState
                       _searchQuery = val.trim().toLowerCase();
                     });
                   },
-                  style: const TextStyle(fontSize: 15, fontWeight: FontWeight.w600),
+                  style: const TextStyle(
+                    fontSize: 15,
+                    fontWeight: FontWeight.w600,
+                  ),
                   decoration: InputDecoration(
                     hintText: 'OTM yoki institut nomi...',
                     hintStyle: TextStyle(
                       fontSize: 14,
-                      color: isDark ? XonaDoshColors.slate400 : XonaDoshColors.slate500,
+                      color: isDark
+                          ? XonaDoshColors.slate400
+                          : XonaDoshColors.slate500,
                     ),
                     prefixIcon: const Icon(
                       Icons.search_rounded,
@@ -167,36 +228,33 @@ class _FirstRunOnboardingScreenState
                           )
                         : null,
                     border: InputBorder.none,
-                    contentPadding: const EdgeInsets.symmetric(horizontal: 16, vertical: 14),
+                    contentPadding: const EdgeInsets.symmetric(
+                      horizontal: 16,
+                      vertical: 14,
+                    ),
                   ),
                 ),
               ),
               const SizedBox(height: 18),
 
-              // University Chips Grid / Scrollable list
+              // University Cards 2-Column Grid (Instant 1-Tap Exploration)
               Expanded(
-                child: SingleChildScrollView(
-                  physics: const BouncingScrollPhysics(),
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Text(
-                        'Mashhur OTMlar',
-                        style: TextStyle(
-                          fontSize: 13,
-                          fontWeight: FontWeight.w700,
-                          color: isDark ? XonaDoshColors.slate400 : XonaDoshColors.slate500,
-                        ),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text(
+                      'Mashhur OTMlar',
+                      style: TextStyle(
+                        fontSize: 13,
+                        fontWeight: FontWeight.w700,
+                        color: isDark
+                            ? XonaDoshColors.slate400
+                            : XonaDoshColors.slate500,
                       ),
-                      const SizedBox(height: 12),
-                      Wrap(
-                        spacing: 10,
-                        runSpacing: 10,
-                        children: _buildUniChips(liveUnis, isDark),
-                      ),
-                      const SizedBox(height: 24),
-                    ],
-                  ),
+                    ),
+                    const SizedBox(height: 10),
+                    Expanded(child: _buildUniGrid(liveUnis, isDark)),
+                  ],
                 ),
               ),
 
@@ -208,7 +266,7 @@ class _FirstRunOnboardingScreenState
                   style: FilledButton.styleFrom(
                     backgroundColor: XonaDoshColors.emerald,
                     foregroundColor: Colors.white,
-                    minimumSize: const Size.fromHeight(54),
+                    minimumSize: const Size.fromHeight(52),
                     shape: RoundedRectangleBorder(
                       borderRadius: BorderRadius.circular(16),
                     ),
@@ -220,9 +278,9 @@ class _FirstRunOnboardingScreenState
                       Text(
                         _selectedUni != null
                             ? '${_selectedUni!.shortName} yonidagi uylarni ko‘rish →'
-                            : 'Uylarni ko‘rish →',
+                            : 'Barcha uylarni ko‘rish →',
                         style: const TextStyle(
-                          fontSize: 16,
+                          fontSize: 15,
                           fontWeight: FontWeight.w800,
                           letterSpacing: -0.2,
                         ),
@@ -238,57 +296,67 @@ class _FirstRunOnboardingScreenState
     );
   }
 
-  List<Widget> _buildUniChips(List<XonadoshUniversity> liveUnis, bool isDark) {
-    final list = <Widget>[];
+  Widget _buildUniGrid(List<XonadoshUniversity> liveUnis, bool isDark) {
+    final filtered = _popularUniPresets.where((preset) {
+      if (_searchQuery.isEmpty) return true;
+      final matchesName = preset['name']!.toLowerCase().contains(_searchQuery);
+      final matchesShort = preset['short']!.toLowerCase().contains(
+        _searchQuery,
+      );
+      return matchesName || matchesShort;
+    }).toList();
 
-    // If query is empty, show presets first matched with liveUnis
-    for (final preset in _popularUniPresets) {
-      if (_searchQuery.isNotEmpty) {
-        final matchesName = preset['name']!.toLowerCase().contains(_searchQuery);
-        final matchesShort = preset['short']!.toLowerCase().contains(_searchQuery);
-        if (!matchesName && !matchesShort) continue;
-      }
+    return GridView.builder(
+      physics: const BouncingScrollPhysics(),
+      gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
+        crossAxisCount: 2,
+        crossAxisSpacing: 10,
+        mainAxisSpacing: 10,
+        childAspectRatio: 2.3,
+      ),
+      itemCount: filtered.length,
+      itemBuilder: (ctx, i) {
+        final preset = filtered[i];
 
-      // Check if matching live university exists
-      XonadoshUniversity? matched;
-      for (final u in liveUnis) {
-        if (u.shortName.toLowerCase() == preset['short']!.toLowerCase() ||
-            u.nameUz.toLowerCase().contains(preset['short']!.toLowerCase())) {
-          matched = u;
-          break;
+        XonadoshUniversity? matched;
+        for (final u in liveUnis) {
+          if (u.shortName.toLowerCase() == preset['short']!.toLowerCase() ||
+              u.nameUz.toLowerCase().contains(preset['short']!.toLowerCase())) {
+            matched = u;
+            break;
+          }
         }
-      }
 
-      final isSelected = _selectedUni?.shortName.toLowerCase() == preset['short']!.toLowerCase();
+        final targetUni =
+            matched ??
+            (preset['short'] == 'Boshqa'
+                ? null
+                : XonadoshUniversity(
+                    id: 0,
+                    nameUz: preset['name']!,
+                    shortName: preset['short']!,
+                    city: preset['city']!,
+                    district: 'Yunusobod',
+                    address: preset['name']!,
+                    latitude: 41.311081,
+                    longitude: 69.240562,
+                  ));
 
-      list.add(
-        InkWell(
+        final isSelected =
+            _selectedUni?.shortName.toLowerCase() ==
+            preset['short']!.toLowerCase();
+
+        return InkWell(
           borderRadius: BorderRadius.circular(14),
           onTap: () {
-            setState(() {
-              if (isSelected) {
-                _selectedUni = null;
-              } else if (matched != null) {
-                _selectedUni = matched;
-              } else if (preset['short'] == 'Boshqa') {
-                _selectedUni = null;
-              } else {
-                _selectedUni = XonadoshUniversity(
-                  id: 0,
-                  nameUz: preset['name']!,
-                  shortName: preset['short']!,
-                  city: preset['city']!,
-                  district: 'Yunusobod',
-                  address: preset['name']!,
-                  latitude: 41.311081,
-                  longitude: 69.240562,
-                );
-              }
-            });
+            HapticFeedback.selectionClick();
+            setState(() => _selectedUni = targetUni);
+            // Instant 1-tap navigation to Housing Feed!
+            _proceed(uni: targetUni);
           },
           child: AnimatedContainer(
-            duration: const Duration(milliseconds: 180),
-            padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 10),
+            duration: const Duration(milliseconds: 160),
+            padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 8),
             decoration: BoxDecoration(
               color: isSelected
                   ? XonaDoshColors.emerald
@@ -297,51 +365,69 @@ class _FirstRunOnboardingScreenState
               border: Border.all(
                 color: isSelected
                     ? XonaDoshColors.emerald
-                    : (isDark ? XonaDoshColors.borderDark : XonaDoshColors.borderLight),
+                    : (isDark
+                          ? XonaDoshColors.borderDark
+                          : XonaDoshColors.borderLight),
                 width: isSelected ? 1.5 : 1,
               ),
               boxShadow: [
                 BoxShadow(
                   color: isSelected
-                      ? XonaDoshColors.emerald.withValues(alpha: 0.3)
+                      ? XonaDoshColors.emerald.withValues(alpha: 0.25)
                       : Colors.black.withValues(alpha: isDark ? 0.15 : 0.03),
-                  blurRadius: isSelected ? 8 : 4,
+                  blurRadius: isSelected ? 6 : 3,
                   offset: const Offset(0, 2),
                 ),
               ],
             ),
             child: Row(
-              mainAxisSize: MainAxisSize.min,
               children: [
-                Icon(
-                  preset['short'] == 'Boshqa' ? Icons.location_city_rounded : Icons.school_rounded,
-                  size: 16,
-                  color: isSelected
-                      ? Colors.white
-                      : (isDark ? XonaDoshColors.slate400 : XonaDoshColors.slate600),
+                Text(
+                  preset['icon'] ?? '🎓',
+                  style: const TextStyle(fontSize: 18),
                 ),
                 const SizedBox(width: 8),
-                Text(
-                  preset['name']!,
-                  style: TextStyle(
-                    fontSize: 13,
-                    fontWeight: isSelected ? FontWeight.w800 : FontWeight.w600,
-                    color: isSelected
-                        ? Colors.white
-                        : (isDark ? Colors.white : XonaDoshColors.slate900),
+                Expanded(
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      Text(
+                        preset['short']!,
+                        style: TextStyle(
+                          fontSize: 13,
+                          fontWeight: FontWeight.w800,
+                          color: isSelected
+                              ? Colors.white
+                              : (isDark
+                                    ? Colors.white
+                                    : XonaDoshColors.slate900),
+                        ),
+                        maxLines: 1,
+                        overflow: TextOverflow.ellipsis,
+                      ),
+                      Text(
+                        preset['name']!,
+                        style: TextStyle(
+                          fontSize: 10,
+                          fontWeight: FontWeight.w500,
+                          color: isSelected
+                              ? Colors.white.withValues(alpha: 0.85)
+                              : (isDark
+                                    ? XonaDoshColors.slate400
+                                    : XonaDoshColors.slate500),
+                        ),
+                        maxLines: 1,
+                        overflow: TextOverflow.ellipsis,
+                      ),
+                    ],
                   ),
                 ),
-                if (isSelected) ...[
-                  const SizedBox(width: 6),
-                  const Icon(Icons.check_rounded, size: 16, color: Colors.white),
-                ],
               ],
             ),
           ),
-        ),
-      );
-    }
-
-    return list;
+        );
+      },
+    );
   }
 }

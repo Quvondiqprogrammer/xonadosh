@@ -85,6 +85,7 @@ void main() {
 
     await tester.tap(find.text('Together'));
     await tester.pump();
-    expect(find.text('Together tools'), findsOneWidget);
+    await tester.pump(const Duration(milliseconds: 50));
+    expect(find.textContaining('Navbat'), findsOneWidget);
   });
 }

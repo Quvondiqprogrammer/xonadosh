@@ -5,7 +5,6 @@ import 'package:xonadosh/config/theme.dart';
 import 'package:xonadosh/data/models/xonadosh_models.dart';
 import 'package:xonadosh/l10n/l10n_ext.dart';
 import 'package:xonadosh/presentation/common/contact_actions.dart';
-import 'package:xonadosh/presentation/features/xonadosh/widgets/onboarding_welcome.dart';
 import 'package:xonadosh/presentation/providers/xonadosh_providers.dart';
 import '../widgets/xonadosh_create_recipe_sheet.dart';
 import '../widgets/xonadosh_recipe_picker_sheet.dart';
@@ -22,7 +21,6 @@ class _XonadoshColivingTabState extends ConsumerState<XonadoshColivingTab> {
   // 0: 🧹 Navbat va Uy, 1: 💰 Umumiy Kassa, 2: 🍲 Oshxona va Bozor
   int _activeSubTab = 0;
   int _kitchenSubIndex = 0;
-  bool _showTip = true;
 
   /// Moliya filtri: all | due | rent | utility | expense
   String _financeFilter = 'all';
@@ -32,20 +30,13 @@ class _XonadoshColivingTabState extends ConsumerState<XonadoshColivingTab> {
     final theme = Theme.of(context);
     final isDark = theme.brightness == Brightness.dark;
 
+    // Pre-warm polls & karma providers in background
+    ref.watch(xonadoshPollsProvider);
+    ref.watch(xonadoshKarmaProvider);
+
     return Scaffold(
       body: Column(
         children: [
-          if (_showTip)
-            Padding(
-              padding: const EdgeInsets.fromLTRB(16, 8, 16, 4),
-              child: XonadoshColivingUnlockTip(
-                onFindRoom: () =>
-                    ref.read(xonadoshShellTabIndexProvider.notifier).state = 0,
-                onFindRoommate: () =>
-                    ref.read(xonadoshShellTabIndexProvider.notifier).state = 1,
-                onDismiss: () => setState(() => _showTip = false),
-              ),
-            ),
           Container(
             width: double.infinity,
             padding: const EdgeInsets.fromLTRB(16, 8, 16, 6),
@@ -53,25 +44,73 @@ class _XonadoshColivingTabState extends ConsumerState<XonadoshColivingTab> {
             child: Container(
               padding: const EdgeInsets.all(4),
               decoration: BoxDecoration(
-                color: isDark ? const Color(0xFF1E293B) : const Color(0xFFF1F5F9),
+                color: isDark
+                    ? const Color(0xFF1E293B)
+                    : const Color(0xFFF1F5F9),
                 borderRadius: BorderRadius.circular(14),
                 border: Border.all(
-                  color: isDark ? const Color(0xFF334155) : const Color(0xFFE2E8F0),
+                  color: isDark
+                      ? const Color(0xFF334155)
+                      : const Color(0xFFE2E8F0),
                 ),
               ),
               child: Row(
                 children: [
                   Expanded(
-                    child: _buildSubTabSegment(0, '🧹 Navbat va Uy', isDark),
+                    child: _buildSubTabSegment(0, 'Navbatchilik', isDark),
                   ),
                   Expanded(
-                    child: _buildSubTabSegment(1, '💰 Umumiy Kassa', isDark),
+                    child: _buildSubTabSegment(1, 'Umumiy Kassa', isDark),
                   ),
                   Expanded(
-                    child: _buildSubTabSegment(2, '🍲 Oshxona & Bozor', isDark),
+                    child: _buildSubTabSegment(2, 'Oshxona & Bozor', isDark),
                   ),
                 ],
               ),
+            ),
+          ),
+
+          // Quick House Tools Strip (Xonadon Tezkor Asboblari)
+          Container(
+            height: 38,
+            margin: const EdgeInsets.only(bottom: 6),
+            child: ListView(
+              scrollDirection: Axis.horizontal,
+              padding: const EdgeInsets.symmetric(horizontal: 16),
+              physics: const BouncingScrollPhysics(),
+              children: [
+                _buildQuickPill(
+                  icon: Icons.gavel_rounded,
+                  label: 'Uy Qoidalari',
+                  color: const Color(0xFF6366F1),
+                  isDark: isDark,
+                  onTap: () => _openHouseRulesModal(context),
+                ),
+                const SizedBox(width: 8),
+                _buildQuickPill(
+                  icon: Icons.how_to_vote_rounded,
+                  label: 'Ovoz berish',
+                  color: XonaDoshColors.primary,
+                  isDark: isDark,
+                  onTap: () => _openPollsModal(context, isDark),
+                ),
+                const SizedBox(width: 8),
+                _buildQuickPill(
+                  icon: Icons.star_rounded,
+                  label: 'Obro‘ (Karma)',
+                  color: const Color(0xFFF59E0B),
+                  isDark: isDark,
+                  onTap: () => _openKarmaModal(context, isDark),
+                ),
+                const SizedBox(width: 8),
+                _buildQuickPill(
+                  icon: Icons.add_rounded,
+                  label: 'Tezkor qo‘shish',
+                  color: const Color(0xFF10B981),
+                  isDark: isDark,
+                  onTap: () => _openQuickAddSheet(context, isDark),
+                ),
+              ],
             ),
           ),
 
@@ -88,6 +127,169 @@ class _XonadoshColivingTabState extends ConsumerState<XonadoshColivingTab> {
           ),
         ],
       ),
+    );
+  }
+
+  Widget _buildQuickPill({
+    required IconData icon,
+    required String label,
+    required Color color,
+    required bool isDark,
+    required VoidCallback onTap,
+  }) {
+    return Material(
+      color: Colors.transparent,
+      child: InkWell(
+        onTap: onTap,
+        borderRadius: BorderRadius.circular(20),
+        child: Container(
+          padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
+          decoration: BoxDecoration(
+            color: color.withValues(alpha: isDark ? 0.18 : 0.08),
+            borderRadius: BorderRadius.circular(20),
+            border: Border.all(
+              color: color.withValues(alpha: isDark ? 0.35 : 0.25),
+            ),
+          ),
+          child: Row(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              Icon(icon, size: 15, color: color),
+              const SizedBox(width: 6),
+              Text(
+                label,
+                style: TextStyle(
+                  fontSize: 12,
+                  fontWeight: FontWeight.w700,
+                  color: isDark ? Colors.white : color,
+                ),
+              ),
+            ],
+          ),
+        ),
+      ),
+    );
+  }
+
+  void _openQuickAddSheet(BuildContext context, bool isDark) {
+    showModalBottomSheet<void>(
+      context: context,
+      backgroundColor: isDark ? const Color(0xFF1E293B) : Colors.white,
+      shape: const RoundedRectangleBorder(
+        borderRadius: BorderRadius.vertical(top: Radius.circular(24)),
+      ),
+      builder: (ctx) {
+        return SafeArea(
+          child: Padding(
+            padding: const EdgeInsets.fromLTRB(20, 12, 20, 20),
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Center(
+                  child: Container(
+                    width: 36,
+                    height: 4,
+                    decoration: BoxDecoration(
+                      color: Colors.grey[400],
+                      borderRadius: BorderRadius.circular(2),
+                    ),
+                  ),
+                ),
+                const SizedBox(height: 16),
+                const Text(
+                  'Tezkor qo‘shish',
+                  style: TextStyle(fontSize: 18, fontWeight: FontWeight.w800),
+                ),
+                const SizedBox(height: 14),
+                _buildQuickAddTile(
+                  icon: Icons.cleaning_services_rounded,
+                  color: XonaDoshColors.primary,
+                  title: 'Yangi navbatchilik vazifasi',
+                  subtitle: 'Xonadon tartibi yoki tozalik biriktirish',
+                  onTap: () {
+                    Navigator.pop(ctx);
+                    _showAddChoreDialog(context);
+                  },
+                  isDark: isDark,
+                ),
+                _buildQuickAddTile(
+                  icon: Icons.account_balance_wallet_rounded,
+                  color: const Color(0xFF10B981),
+                  title: 'Yangi xarajat yoki kommunal',
+                  subtitle: 'Ijara, svet, gaz yoki bozorlik xarajati',
+                  onTap: () {
+                    Navigator.pop(ctx);
+                    _showAddFinanceDialog(context);
+                  },
+                  isDark: isDark,
+                ),
+                _buildQuickAddTile(
+                  icon: Icons.how_to_vote_rounded,
+                  color: const Color(0xFF6366F1),
+                  title: 'Yangi masala (ovoz berish)',
+                  subtitle: 'Anonim ovoz berish uchun mavzu kiritish',
+                  onTap: () {
+                    Navigator.pop(ctx);
+                    _showCreatePollDialog(context);
+                  },
+                  isDark: isDark,
+                ),
+                _buildQuickAddTile(
+                  icon: Icons.restaurant_menu_rounded,
+                  color: const Color(0xFFD97706),
+                  title: 'Yangi taom retsepti',
+                  subtitle: 'Haftalik taomnoma uchun retsept qo‘shish',
+                  onTap: () {
+                    Navigator.pop(ctx);
+                    _showCreateRecipeSheet(context);
+                  },
+                  isDark: isDark,
+                ),
+              ],
+            ),
+          ),
+        );
+      },
+    );
+  }
+
+  Widget _buildQuickAddTile({
+    required IconData icon,
+    required Color color,
+    required String title,
+    required String subtitle,
+    required VoidCallback onTap,
+    required bool isDark,
+  }) {
+    return ListTile(
+      contentPadding: EdgeInsets.zero,
+      leading: Container(
+        width: 42,
+        height: 42,
+        decoration: BoxDecoration(
+          color: color.withValues(alpha: 0.15),
+          borderRadius: BorderRadius.circular(12),
+        ),
+        child: Icon(icon, color: color, size: 22),
+      ),
+      title: Text(
+        title,
+        style: const TextStyle(fontWeight: FontWeight.w700, fontSize: 14),
+      ),
+      subtitle: Text(
+        subtitle,
+        style: TextStyle(
+          fontSize: 12,
+          color: isDark ? const Color(0xFF94A3B8) : const Color(0xFF64748B),
+        ),
+      ),
+      trailing: const Icon(
+        Icons.chevron_right_rounded,
+        size: 20,
+        color: Colors.grey,
+      ),
+      onTap: onTap,
     );
   }
 
@@ -153,18 +355,24 @@ class _XonadoshColivingTabState extends ConsumerState<XonadoshColivingTab> {
                     alignment: Alignment.center,
                     decoration: BoxDecoration(
                       color: _kitchenSubIndex == 0
-                          ? (isDark ? const Color(0xFF0F766E) : XonaDoshColors.primary)
+                          ? (isDark
+                                ? const Color(0xFF0F766E)
+                                : XonaDoshColors.primary)
                           : Colors.transparent,
                       borderRadius: BorderRadius.circular(8),
                     ),
                     child: Text(
-                      '🍲 Taomnoma & Retseptlar',
+                      'Haftalik Taomnoma',
                       style: TextStyle(
                         fontSize: 12,
-                        fontWeight: _kitchenSubIndex == 0 ? FontWeight.w700 : FontWeight.w500,
+                        fontWeight: _kitchenSubIndex == 0
+                            ? FontWeight.w700
+                            : FontWeight.w500,
                         color: _kitchenSubIndex == 0
                             ? Colors.white
-                            : (isDark ? const Color(0xFF94A3B8) : const Color(0xFF64748B)),
+                            : (isDark
+                                  ? const Color(0xFF94A3B8)
+                                  : const Color(0xFF64748B)),
                       ),
                     ),
                   ),
@@ -178,18 +386,24 @@ class _XonadoshColivingTabState extends ConsumerState<XonadoshColivingTab> {
                     alignment: Alignment.center,
                     decoration: BoxDecoration(
                       color: _kitchenSubIndex == 1
-                          ? (isDark ? const Color(0xFF0F766E) : XonaDoshColors.primary)
+                          ? (isDark
+                                ? const Color(0xFF0F766E)
+                                : XonaDoshColors.primary)
                           : Colors.transparent,
                       borderRadius: BorderRadius.circular(8),
                     ),
                     child: Text(
-                      '🛒 Bozorlik va Narxlar',
+                      'Bozorlik va Narxlar',
                       style: TextStyle(
                         fontSize: 12,
-                        fontWeight: _kitchenSubIndex == 1 ? FontWeight.w700 : FontWeight.w500,
+                        fontWeight: _kitchenSubIndex == 1
+                            ? FontWeight.w700
+                            : FontWeight.w500,
                         color: _kitchenSubIndex == 1
                             ? Colors.white
-                            : (isDark ? const Color(0xFF94A3B8) : const Color(0xFF64748B)),
+                            : (isDark
+                                  ? const Color(0xFF94A3B8)
+                                  : const Color(0xFF64748B)),
                       ),
                     ),
                   ),
@@ -218,7 +432,7 @@ class _XonadoshColivingTabState extends ConsumerState<XonadoshColivingTab> {
       ),
       builder: (ctx) => SizedBox(
         height: MediaQuery.of(ctx).size.height * 0.85,
-        child: _buildPollsView(ctx, isDark),
+        child: Consumer(builder: (c, ref, _) => _buildPollsView(c, isDark)),
       ),
     );
   }
@@ -234,7 +448,7 @@ class _XonadoshColivingTabState extends ConsumerState<XonadoshColivingTab> {
       ),
       builder: (ctx) => SizedBox(
         height: MediaQuery.of(ctx).size.height * 0.85,
-        child: _buildKarmaView(ctx, isDark),
+        child: Consumer(builder: (c, ref, _) => _buildKarmaView(c, isDark)),
       ),
     );
   }
@@ -275,6 +489,12 @@ class _XonadoshColivingTabState extends ConsumerState<XonadoshColivingTab> {
       data: (data) {
         final todayDuties = data.todayDuties;
         final allChores = data.allChores;
+        final completedToday = todayDuties.where((c) => c.isCompleted).length;
+        final totalToday = todayDuties.length;
+        final todayProgress = totalToday > 0
+            ? completedToday / totalToday
+            : 0.0;
+        final allTodayDone = totalToday > 0 && completedToday == totalToday;
 
         return RefreshIndicator(
           color: XonaDoshColors.emerald,
@@ -282,21 +502,29 @@ class _XonadoshColivingTabState extends ConsumerState<XonadoshColivingTab> {
           child: ListView(
             padding: const EdgeInsets.fromLTRB(16, 8, 16, 80),
             children: [
-              // Raqamli Xonadoshlik Kodeksi (Pinned Agreement Card)
-              _buildHouseRulesPinnedCard(context, isDark),
-
-              // Today Duty Banner Card
+              // Today Duty Hero Card
               Container(
-                padding: const EdgeInsets.all(14),
+                padding: const EdgeInsets.all(16),
                 decoration: BoxDecoration(
                   color: isDark ? const Color(0xFF1E293B) : Colors.white,
-                  borderRadius: BorderRadius.circular(14),
+                  borderRadius: BorderRadius.circular(18),
                   border: Border.all(
-                    color: isDark
-                        ? const Color(0xFF334155)
-                        : const Color(0xFFE2E8F0),
-                    width: 1,
+                    color: allTodayDone
+                        ? const Color(0xFF10B981)
+                        : (isDark
+                              ? const Color(0xFF334155)
+                              : const Color(0xFFE2E8F0)),
+                    width: allTodayDone ? 1.5 : 1,
                   ),
+                  boxShadow: [
+                    BoxShadow(
+                      color: Colors.black.withValues(
+                        alpha: isDark ? 0.2 : 0.04,
+                      ),
+                      blurRadius: 8,
+                      offset: const Offset(0, 2),
+                    ),
+                  ],
                 ),
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
@@ -304,106 +532,200 @@ class _XonadoshColivingTabState extends ConsumerState<XonadoshColivingTab> {
                     Row(
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: [
-                        Row(
-                          children: [
-                            const Icon(
-                              Icons.today_rounded,
-                              color: XonaDoshColors.primary,
-                              size: 18,
-                            ),
-                            const SizedBox(width: 8),
-                            Text(
-                              '${context.l10n.xonadoshToday} (${_getLocalizedDayName(data.todayDay, context.l10n)})',
-                              style: const TextStyle(
-                                fontWeight: FontWeight.w700,
-                                fontSize: 14,
+                        Expanded(
+                          child: Row(
+                            children: [
+                              Container(
+                                padding: const EdgeInsets.all(6),
+                                decoration: BoxDecoration(
+                                  color: XonaDoshColors.primary.withValues(
+                                    alpha: 0.12,
+                                  ),
+                                  borderRadius: BorderRadius.circular(8),
+                                ),
+                                child: const Icon(
+                                  Icons.today_rounded,
+                                  color: XonaDoshColors.primary,
+                                  size: 18,
+                                ),
                               ),
-                            ),
-                          ],
+                              const SizedBox(width: 10),
+                              Expanded(
+                                child: Column(
+                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                  children: [
+                                    Text(
+                                      'Bugun: ${_getLocalizedDayName(data.todayDay, context.l10n)}',
+                                      style: const TextStyle(
+                                        fontWeight: FontWeight.w800,
+                                        fontSize: 15,
+                                      ),
+                                      maxLines: 1,
+                                      overflow: TextOverflow.ellipsis,
+                                    ),
+                                    Text(
+                                      'Xonadon navbatchiligi',
+                                      style: TextStyle(
+                                        fontSize: 11,
+                                        color: isDark
+                                            ? const Color(0xFF94A3B8)
+                                            : const Color(0xFF64748B),
+                                      ),
+                                    ),
+                                  ],
+                                ),
+                              ),
+                            ],
+                          ),
                         ),
+                        const SizedBox(width: 8),
                         Container(
                           padding: const EdgeInsets.symmetric(
-                            horizontal: 8,
-                            vertical: 3,
+                            horizontal: 10,
+                            vertical: 4,
                           ),
                           decoration: BoxDecoration(
-                            color: XonaDoshColors.primary.withValues(
-                              alpha: 0.1,
-                            ),
-                            borderRadius: BorderRadius.circular(6),
+                            color: allTodayDone
+                                ? const Color(
+                                    0xFF10B981,
+                                  ).withValues(alpha: 0.15)
+                                : XonaDoshColors.primary.withValues(alpha: 0.1),
+                            borderRadius: BorderRadius.circular(10),
                           ),
                           child: Text(
-                            '${todayDuties.where((c) => c.isCompleted).length}/${todayDuties.length}',
-                            style: const TextStyle(
-                              color: XonaDoshColors.primaryDark,
-                              fontSize: 11,
-                              fontWeight: FontWeight.w700,
+                            '$completedToday/$totalToday bajarildi',
+                            style: TextStyle(
+                              color: allTodayDone
+                                  ? const Color(0xFF059669)
+                                  : XonaDoshColors.primaryDark,
+                              fontSize: 12,
+                              fontWeight: FontWeight.w800,
                             ),
                           ),
                         ),
                       ],
                     ),
-                    const SizedBox(height: 10),
+                    if (totalToday > 0) ...[
+                      const SizedBox(height: 12),
+                      ClipRRect(
+                        borderRadius: BorderRadius.circular(4),
+                        child: LinearProgressIndicator(
+                          value: todayProgress,
+                          minHeight: 6,
+                          backgroundColor: isDark
+                              ? const Color(0xFF0F172A)
+                              : const Color(0xFFF1F5F9),
+                          color: allTodayDone
+                              ? const Color(0xFF10B981)
+                              : XonaDoshColors.primary,
+                        ),
+                      ),
+                    ],
+                    const SizedBox(height: 12),
                     if (todayDuties.isEmpty)
-                      Text(
-                        context.l10n.xonadoshNoDutyToday,
-                        style: TextStyle(
-                          color: isDark
-                              ? const Color(0xFF94A3B8)
-                              : const Color(0xFF64748B),
-                          fontSize: 13,
+                      Container(
+                        padding: const EdgeInsets.symmetric(vertical: 12),
+                        alignment: Alignment.center,
+                        child: Row(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          children: [
+                            Icon(
+                              Icons.spa_outlined,
+                              size: 18,
+                              color: isDark
+                                  ? const Color(0xFF94A3B8)
+                                  : const Color(0xFF64748B),
+                            ),
+                            const SizedBox(width: 8),
+                            Text(
+                              context.l10n.xonadoshNoDutyToday,
+                              style: TextStyle(
+                                color: isDark
+                                    ? const Color(0xFF94A3B8)
+                                    : const Color(0xFF64748B),
+                                fontSize: 13,
+                                fontWeight: FontWeight.w600,
+                              ),
+                            ),
+                          ],
                         ),
                       )
-                    else
+                    else ...[
+                      if (allTodayDone)
+                        Container(
+                          margin: const EdgeInsets.only(bottom: 8),
+                          padding: const EdgeInsets.symmetric(
+                            horizontal: 10,
+                            vertical: 6,
+                          ),
+                          decoration: BoxDecoration(
+                            color: const Color(
+                              0xFF10B981,
+                            ).withValues(alpha: 0.1),
+                            borderRadius: BorderRadius.circular(8),
+                          ),
+                          child: const Row(
+                            children: [
+                              Icon(
+                                Icons.check_circle_rounded,
+                                size: 16,
+                                color: Color(0xFF059669),
+                              ),
+                              SizedBox(width: 8),
+                              Expanded(
+                                child: Text(
+                                  'Bugungi barcha vazifalar to‘liq bajarildi!',
+                                  style: TextStyle(
+                                    fontSize: 12,
+                                    fontWeight: FontWeight.w700,
+                                    color: Color(0xFF059669),
+                                  ),
+                                ),
+                              ),
+                            ],
+                          ),
+                        ),
                       ...todayDuties.map(
                         (chore) =>
                             _buildChoreItem(chore, isDark, isToday: true),
                       ),
+                    ],
                   ],
                 ),
               ),
 
               const SizedBox(height: 16),
 
+              // Raqamli Kodeks pinned preview
+              _buildHouseRulesPinnedCard(context, isDark),
+
+              const SizedBox(height: 12),
+
               // Weekly Schedule Header
               Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
-                  Text(
-                    context.l10n.xonadoshDutySchedule,
-                    style: const TextStyle(
-                      fontWeight: FontWeight.w800,
-                      fontSize: 15,
-                    ),
+                  const Text(
+                    'Haftalik navbatchilik jadvali',
+                    style: TextStyle(fontWeight: FontWeight.w800, fontSize: 15),
                   ),
-                  Row(
-                    children: [
-                      OutlinedButton.icon(
-                        onPressed: () => _openHouseRulesModal(context),
-                        icon: const Icon(Icons.rule_rounded, size: 16),
-                        label: const Text('Uy Qoidalari'),
-                        style: OutlinedButton.styleFrom(
-                          foregroundColor: XonaDoshColors.accentPurple,
-                          side: const BorderSide(
-                            color: XonaDoshColors.accentPurple,
-                          ),
-                          visualDensity: VisualDensity.compact,
-                          padding: const EdgeInsets.symmetric(
-                            horizontal: 10,
-                            vertical: 6,
-                          ),
-                          shape: RoundedRectangleBorder(
-                            borderRadius: BorderRadius.circular(10),
-                          ),
-                        ),
+                  FilledButton.tonalIcon(
+                    onPressed: () => _showAddChoreDialog(context),
+                    icon: const Icon(Icons.add_rounded, size: 16),
+                    label: const Text(
+                      'Vazifa qo‘shish',
+                      style: TextStyle(
+                        fontSize: 12,
+                        fontWeight: FontWeight.w700,
                       ),
-                      const SizedBox(width: 8),
-                      IconButton.filledTonal(
-                        onPressed: () => _showAddChoreDialog(context),
-                        icon: const Icon(Icons.add_rounded, size: 18),
-                        visualDensity: VisualDensity.compact,
+                    ),
+                    style: FilledButton.styleFrom(
+                      visualDensity: VisualDensity.compact,
+                      padding: const EdgeInsets.symmetric(
+                        horizontal: 10,
+                        vertical: 4,
                       ),
-                    ],
+                    ),
                   ),
                 ],
               ),
@@ -439,7 +761,7 @@ class _XonadoshColivingTabState extends ConsumerState<XonadoshColivingTab> {
                               : (isDark
                                     ? const Color(0xFF334155)
                                     : const Color(0xFFE8EEF3)),
-                          width: isToday ? 1.5 : 1,
+                          width: isToday ? 1.6 : 1,
                         ),
                       ),
                       child: Theme(
@@ -461,13 +783,40 @@ class _XonadoshColivingTabState extends ConsumerState<XonadoshColivingTab> {
                                       ? Colors.grey[400]
                                       : Colors.grey[600]),
                           ),
-                          title: Text(
-                            _getLocalizedDayName(day, context.l10n),
-                            style: TextStyle(
-                              fontWeight: FontWeight.w800,
-                              fontSize: 14,
-                              color: isToday ? XonaDoshColors.emerald : null,
-                            ),
+                          title: Row(
+                            children: [
+                              Text(
+                                _getLocalizedDayName(day, context.l10n),
+                                style: TextStyle(
+                                  fontWeight: FontWeight.w800,
+                                  fontSize: 14,
+                                  color: isToday
+                                      ? XonaDoshColors.emerald
+                                      : null,
+                                ),
+                              ),
+                              if (isToday) ...[
+                                const SizedBox(width: 6),
+                                Container(
+                                  padding: const EdgeInsets.symmetric(
+                                    horizontal: 6,
+                                    vertical: 1.5,
+                                  ),
+                                  decoration: BoxDecoration(
+                                    color: XonaDoshColors.emerald,
+                                    borderRadius: BorderRadius.circular(6),
+                                  ),
+                                  child: const Text(
+                                    'BUGUN',
+                                    style: TextStyle(
+                                      color: Colors.white,
+                                      fontSize: 9,
+                                      fontWeight: FontWeight.w900,
+                                    ),
+                                  ),
+                                ),
+                              ],
+                            ],
                           ),
                           trailing: Container(
                             padding: const EdgeInsets.symmetric(
@@ -524,50 +873,7 @@ class _XonadoshColivingTabState extends ConsumerState<XonadoshColivingTab> {
                   ),
                 );
               }),
-              const SizedBox(height: 16),
-              Row(
-                children: [
-                  Expanded(
-                    child: OutlinedButton.icon(
-                      onPressed: () => _openPollsModal(context, isDark),
-                      icon: const Icon(Icons.how_to_vote_rounded, size: 16),
-                      label: const Text('Ovoz berish (Polls)'),
-                      style: OutlinedButton.styleFrom(
-                        foregroundColor: XonaDoshColors.primary,
-                        side: BorderSide(
-                          color: isDark
-                              ? const Color(0xFF334155)
-                              : const Color(0xFFCBD5E1),
-                        ),
-                        padding: const EdgeInsets.symmetric(vertical: 10),
-                        shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(12),
-                        ),
-                      ),
-                    ),
-                  ),
-                  const SizedBox(width: 8),
-                  Expanded(
-                    child: OutlinedButton.icon(
-                      onPressed: () => _openKarmaModal(context, isDark),
-                      icon: const Icon(Icons.military_tech_rounded, size: 16),
-                      label: const Text('Xonadosh Karma'),
-                      style: OutlinedButton.styleFrom(
-                        foregroundColor: const Color(0xFFF59E0B),
-                        side: BorderSide(
-                          color: isDark
-                              ? const Color(0xFF334155)
-                              : const Color(0xFFCBD5E1),
-                        ),
-                        padding: const EdgeInsets.symmetric(vertical: 10),
-                        shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(12),
-                        ),
-                      ),
-                    ),
-                  ),
-                ],
-              ),
+              const SizedBox(height: 100),
             ],
           ),
         );
@@ -582,86 +888,109 @@ class _XonadoshColivingTabState extends ConsumerState<XonadoshColivingTab> {
   }) {
     final bgColor = isDark ? const Color(0xFF0F172A) : const Color(0xFFF8FAFC);
 
-    return Container(
-      margin: const EdgeInsets.symmetric(vertical: 3),
-      padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 7),
-      decoration: BoxDecoration(
-        color: bgColor,
-        borderRadius: BorderRadius.circular(8),
-        border: Border.all(
-          color: isDark ? const Color(0xFF334155) : const Color(0xFFE2E8F0),
-        ),
-      ),
-      child: Row(
-        children: [
-          Checkbox(
-            value: chore.isCompleted,
-            activeColor: XonaDoshColors.emerald,
-            shape: RoundedRectangleBorder(
-              borderRadius: BorderRadius.circular(4),
-            ),
-            visualDensity: VisualDensity.compact,
-            onChanged: (val) async {
-              await ref
-                  .read(xonadoshRepositoryProvider)
-                  .toggleChoreDone(
-                    choreId: chore.id,
-                    isCompleted: val ?? false,
-                  );
-              ref.invalidate(xonadoshChoresProvider);
-            },
+    return InkWell(
+      onTap: () async {
+        await ref
+            .read(xonadoshRepositoryProvider)
+            .toggleChoreDone(
+              choreId: chore.id,
+              isCompleted: !chore.isCompleted,
+            );
+        ref.invalidate(xonadoshChoresProvider);
+      },
+      borderRadius: BorderRadius.circular(10),
+      child: Container(
+        margin: const EdgeInsets.symmetric(vertical: 3),
+        padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 8),
+        decoration: BoxDecoration(
+          color: bgColor,
+          borderRadius: BorderRadius.circular(10),
+          border: Border.all(
+            color: chore.isCompleted
+                ? (isDark ? const Color(0xFF1E293B) : const Color(0xFFE2E8F0))
+                : (isDark ? const Color(0xFF334155) : const Color(0xFFE2E8F0)),
           ),
-          const SizedBox(width: 4),
-          Expanded(
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Text(
-                  chore.title,
-                  style: TextStyle(
-                    fontWeight: FontWeight.w600,
-                    fontSize: 13,
-                    color: chore.isCompleted
-                        ? (isDark
-                              ? const Color(0xFF64748B)
-                              : const Color(0xFF94A3B8))
-                        : null,
-                    decoration: chore.isCompleted
-                        ? TextDecoration.lineThrough
-                        : null,
-                  ),
-                ),
-                if (chore.notes.isNotEmpty)
+        ),
+        child: Row(
+          children: [
+            Checkbox(
+              value: chore.isCompleted,
+              activeColor: XonaDoshColors.emerald,
+              shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.circular(4),
+              ),
+              visualDensity: VisualDensity.compact,
+              onChanged: (val) async {
+                await ref
+                    .read(xonadoshRepositoryProvider)
+                    .toggleChoreDone(
+                      choreId: chore.id,
+                      isCompleted: val ?? false,
+                    );
+                ref.invalidate(xonadoshChoresProvider);
+              },
+            ),
+            const SizedBox(width: 4),
+            Expanded(
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
                   Text(
-                    chore.notes,
+                    chore.title,
                     style: TextStyle(
-                      fontSize: 11,
-                      color: isDark
-                          ? const Color(0xFF94A3B8)
-                          : const Color(0xFF64748B),
+                      fontWeight: FontWeight.w600,
+                      fontSize: 13,
+                      color: chore.isCompleted
+                          ? (isDark
+                                ? const Color(0xFF64748B)
+                                : const Color(0xFF94A3B8))
+                          : null,
+                      decoration: chore.isCompleted
+                          ? TextDecoration.lineThrough
+                          : null,
                     ),
                   ),
-              ],
-            ),
-          ),
-          Container(
-            padding: const EdgeInsets.symmetric(horizontal: 7, vertical: 2.5),
-            decoration: BoxDecoration(
-              color: isDark ? const Color(0xFF1E293B) : const Color(0xFFE2E8F0),
-              borderRadius: BorderRadius.circular(6),
-            ),
-            child: Text(
-              chore.assignedName,
-              style: TextStyle(
-                fontSize: 11,
-                fontWeight: FontWeight.w600,
-                color: isDark
-                    ? const Color(0xFFCBD5E1)
-                    : const Color(0xFF334155),
+                  if (chore.notes.isNotEmpty)
+                    Text(
+                      chore.notes,
+                      style: TextStyle(
+                        fontSize: 11,
+                        color: isDark
+                            ? const Color(0xFF94A3B8)
+                            : const Color(0xFF64748B),
+                      ),
+                    ),
+                ],
               ),
             ),
-          ),
-        ],
+            Container(
+              padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 3),
+              decoration: BoxDecoration(
+                color: isDark
+                    ? const Color(0xFF1E293B)
+                    : const Color(0xFFE2E8F0),
+                borderRadius: BorderRadius.circular(8),
+              ),
+              child: Row(
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  _avatarInitial(chore.assignedName, XonaDoshColors.primary),
+                  const SizedBox(width: 5),
+                  Text(
+                    chore.assignedName,
+                    style: TextStyle(
+                      fontSize: 11,
+                      fontWeight: FontWeight.w700,
+                      color: isDark
+                          ? const Color(0xFFCBD5E1)
+                          : const Color(0xFF334155),
+                    ),
+                  ),
+                ],
+              ),
+            ),
+          ],
+        ),
       ),
     );
   }
@@ -707,19 +1036,26 @@ class _XonadoshColivingTabState extends ConsumerState<XonadoshColivingTab> {
               Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
-                  const Row(
-                    children: [
-                      Text('📜', style: TextStyle(fontSize: 16)),
-                      SizedBox(width: 8),
-                      Text(
-                        'Raqamli Xonadoshlik Kodeksi',
-                        style: TextStyle(
-                          fontWeight: FontWeight.w800,
-                          fontSize: 14,
+                  const Expanded(
+                    child: Row(
+                      children: [
+                        Text('📜', style: TextStyle(fontSize: 16)),
+                        SizedBox(width: 8),
+                        Expanded(
+                          child: Text(
+                            'Xonadoshlik Kodeksi',
+                            style: TextStyle(
+                              fontWeight: FontWeight.w800,
+                              fontSize: 14,
+                            ),
+                            maxLines: 1,
+                            overflow: TextOverflow.ellipsis,
+                          ),
                         ),
-                      ),
-                    ],
+                      ],
+                    ),
                   ),
+                  const SizedBox(width: 8),
                   Container(
                     padding: const EdgeInsets.symmetric(
                       horizontal: 8,
@@ -734,7 +1070,7 @@ class _XonadoshColivingTabState extends ConsumerState<XonadoshColivingTab> {
                     child: Text(
                       rules.isAgreed
                           ? '✓ Tasdiqlangan'
-                          : 'Kelishilmoqda (${rules.confirmedBy.length} kishi)',
+                          : 'Kelishilmoqda (${rules.confirmedBy.length})',
                       style: TextStyle(
                         fontSize: 11,
                         fontWeight: FontWeight.w800,
@@ -748,19 +1084,32 @@ class _XonadoshColivingTabState extends ConsumerState<XonadoshColivingTab> {
               ),
               const SizedBox(height: 10),
               _buildRuleRow(
-                '🌙 Sokinlik soati',
+                Icons.bedtime_outlined,
+                'Sokinlik soati',
                 '${rules.quietHoursStart} dan boshlab',
                 isDark,
               ),
               _buildRuleRow(
-                '💳 Ijara to‘lovi',
+                Icons.calendar_month_outlined,
+                'Ijara to‘lovi',
                 'Har oyning ${rules.rentDueDay}-sanasigacha',
                 isDark,
               ),
-              _buildRuleRow('👥 Mehmonlar', rules.guestPolicy, isDark),
-              _buildRuleRow('🛒 Umumiy xarid', rules.commonGroceries, isDark),
               _buildRuleRow(
-                '📦 Ko‘chish haqida',
+                Icons.group_outlined,
+                'Mehmonlar',
+                rules.guestPolicy,
+                isDark,
+              ),
+              _buildRuleRow(
+                Icons.shopping_bag_outlined,
+                'Umumiy xarid',
+                rules.commonGroceries,
+                isDark,
+              ),
+              _buildRuleRow(
+                Icons.moving_outlined,
+                'Ko‘chish haqida',
                 'Kamida ${rules.moveOutNoticeDays} kun oldin ogohlantirish',
                 isDark,
               ),
@@ -836,12 +1185,18 @@ class _XonadoshColivingTabState extends ConsumerState<XonadoshColivingTab> {
     );
   }
 
-  Widget _buildRuleRow(String label, String value, bool isDark) {
+  Widget _buildRuleRow(IconData icon, String label, String value, bool isDark) {
     return Padding(
-      padding: const EdgeInsets.symmetric(vertical: 3),
+      padding: const EdgeInsets.symmetric(vertical: 3.5),
       child: Row(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
+          Icon(
+            icon,
+            size: 14,
+            color: isDark ? const Color(0xFF94A3B8) : const Color(0xFF64748B),
+          ),
+          const SizedBox(width: 6),
           SizedBox(
             width: 120,
             child: Text(
@@ -885,9 +1240,15 @@ class _XonadoshColivingTabState extends ConsumerState<XonadoshColivingTab> {
     showDialog(
       context: context,
       builder: (ctx) => AlertDialog(
-        title: const Text(
-          '📜 Xonadoshlik Kodeksini tahrirlash',
-          style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
+        title: const Row(
+          children: [
+            Icon(Icons.gavel_rounded, size: 20, color: XonaDoshColors.primary),
+            SizedBox(width: 8),
+            Text(
+              'Xonadoshlik Kodeksini tahrirlash',
+              style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
+            ),
+          ],
         ),
         content: SingleChildScrollView(
           child: Column(
@@ -1172,10 +1533,15 @@ class _XonadoshColivingTabState extends ConsumerState<XonadoshColivingTab> {
                         ),
                       );
 
-                      final mealIcon = switch (mealTime) {
-                        'breakfast' => '🌅',
-                        'lunch' => '🌤',
-                        _ => '🌙',
+                      final mealIconData = switch (mealTime) {
+                        'breakfast' => Icons.wb_twilight_rounded,
+                        'lunch' => Icons.wb_sunny_outlined,
+                        _ => Icons.bedtime_outlined,
+                      };
+                      final mealIconColor = switch (mealTime) {
+                        'breakfast' => const Color(0xFFF59E0B),
+                        'lunch' => const Color(0xFFEAB308),
+                        _ => const Color(0xFF6366F1),
                       };
 
                       final mealLabel = switch (mealTime) {
@@ -1192,12 +1558,25 @@ class _XonadoshColivingTabState extends ConsumerState<XonadoshColivingTab> {
                               ? const Color(0xFF0F172A)
                               : const Color(0xFFF8FAFC),
                           borderRadius: BorderRadius.circular(12),
+                          border: Border.all(
+                            color: isDark
+                                ? const Color(0xFF1E293B)
+                                : const Color(0xFFE2E8F0),
+                          ),
                         ),
                         child: Row(
                           children: [
-                            Text(
-                              mealIcon,
-                              style: const TextStyle(fontSize: 18),
+                            Container(
+                              padding: const EdgeInsets.all(6),
+                              decoration: BoxDecoration(
+                                color: mealIconColor.withValues(alpha: 0.12),
+                                borderRadius: BorderRadius.circular(8),
+                              ),
+                              child: Icon(
+                                mealIconData,
+                                size: 16,
+                                color: mealIconColor,
+                              ),
                             ),
                             const SizedBox(width: 8),
                             Expanded(
@@ -1494,7 +1873,7 @@ class _XonadoshColivingTabState extends ConsumerState<XonadoshColivingTab> {
                   onPressed: () => _handleInstantGroceryExpense(context, calc),
                   icon: const Icon(Icons.add_shopping_cart_rounded, size: 18),
                   label: Text(
-                    '🛒 Bozorlik qildim (${_formatMoney(calc.perPersonDailyUzs.toDouble())} so‘m xarajatga yozish)',
+                    'Bozorlik qildim (${_formatMoney(calc.perPersonDailyUzs.toDouble())} so‘m)',
                     style: const TextStyle(
                       fontWeight: FontWeight.w800,
                       fontSize: 13,
@@ -1548,7 +1927,7 @@ class _XonadoshColivingTabState extends ConsumerState<XonadoshColivingTab> {
                       ),
                       const SizedBox(height: 8),
                       Text(
-                        '🍞 Qolipli buxanka (ertalab/kunduzi): ${bread['total_buxanka'] ?? bread['breakfast_lunch_buxanka'] ?? 0} dona',
+                        'Qolipli buxanka (ertalab/kunduzi): ${bread['total_buxanka'] ?? bread['breakfast_lunch_buxanka'] ?? 0} dona',
                         style: TextStyle(
                           fontSize: 12,
                           color: isDark
@@ -1558,7 +1937,7 @@ class _XonadoshColivingTabState extends ConsumerState<XonadoshColivingTab> {
                       ),
                       const SizedBox(height: 2),
                       Text(
-                        '🫓 Tandir patir / Obi non (kechki ovqat): ${bread['total_patir'] ?? bread['dinner_patir'] ?? 0} dona',
+                        'Tandir patir / Obi non (kechki ovqat): ${bread['total_patir'] ?? bread['dinner_patir'] ?? 0} dona',
                         style: TextStyle(
                           fontSize: 12,
                           color: isDark
@@ -2062,72 +2441,127 @@ class _XonadoshColivingTabState extends ConsumerState<XonadoshColivingTab> {
 
                   if (data.debtBalances.isNotEmpty) ...[
                     const SizedBox(height: 14),
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: [
+                        const Text(
+                          '🤝 Xonadoshlar o‘rtasidagi balans',
+                          style: TextStyle(
+                            fontWeight: FontWeight.w800,
+                            fontSize: 13,
+                          ),
+                        ),
+                        Text(
+                          '${data.debtBalances.length} ta',
+                          style: TextStyle(
+                            fontSize: 12,
+                            color: isDark ? Colors.grey[400] : Colors.grey[600],
+                            fontWeight: FontWeight.w600,
+                          ),
+                        ),
+                      ],
+                    ),
+                    const SizedBox(height: 8),
                     SizedBox(
-                      height: 88,
+                      height: 94,
                       child: ListView.separated(
                         scrollDirection: Axis.horizontal,
                         itemCount: data.debtBalances.length,
                         separatorBuilder: (_, _) => const SizedBox(width: 8),
                         itemBuilder: (_, i) {
                           final d = data.debtBalances[i];
-                          return Container(
-                            width: 168,
-                            padding: const EdgeInsets.all(12),
-                            decoration: BoxDecoration(
-                              color: isDark
-                                  ? const Color(0xFF1E293B)
-                                  : Colors.white,
-                              borderRadius: BorderRadius.circular(16),
-                              border: Border.all(
-                                color: const Color(
-                                  0xFFF59E0B,
-                                ).withValues(alpha: 0.35),
-                              ),
-                            ),
-                            child: Column(
-                              crossAxisAlignment: CrossAxisAlignment.start,
-                              children: [
-                                Row(
+                          return Material(
+                            color: isDark
+                                ? const Color(0xFF1E293B)
+                                : Colors.white,
+                            borderRadius: BorderRadius.circular(16),
+                            clipBehavior: Clip.antiAlias,
+                            child: InkWell(
+                              onTap: () =>
+                                  _showDebtPaymentSheet(context, d, isDark),
+                              child: Container(
+                                width: 175,
+                                padding: const EdgeInsets.all(12),
+                                decoration: BoxDecoration(
+                                  borderRadius: BorderRadius.circular(16),
+                                  border: Border.all(
+                                    color: const Color(
+                                      0xFFF59E0B,
+                                    ).withValues(alpha: 0.35),
+                                  ),
+                                ),
+                                child: Column(
+                                  crossAxisAlignment: CrossAxisAlignment.start,
                                   children: [
-                                    _avatarInitial(
-                                      d.debtor,
-                                      const Color(0xFFF59E0B),
+                                    Row(
+                                      children: [
+                                        _avatarInitial(
+                                          d.debtor,
+                                          const Color(0xFFF59E0B),
+                                        ),
+                                        const Padding(
+                                          padding: EdgeInsets.symmetric(
+                                            horizontal: 4,
+                                          ),
+                                          child: Icon(
+                                            Icons.arrow_forward_rounded,
+                                            size: 14,
+                                            color: Color(0xFFF59E0B),
+                                          ),
+                                        ),
+                                        _avatarInitial(
+                                          d.creditor,
+                                          XonaDoshColors.emerald,
+                                        ),
+                                        const Spacer(),
+                                        Container(
+                                          padding: const EdgeInsets.symmetric(
+                                            horizontal: 5,
+                                            vertical: 1.5,
+                                          ),
+                                          decoration: BoxDecoration(
+                                            color: const Color(
+                                              0xFFF59E0B,
+                                            ).withValues(alpha: 0.15),
+                                            borderRadius: BorderRadius.circular(
+                                              4,
+                                            ),
+                                          ),
+                                          child: const Text(
+                                            'To‘lash ›',
+                                            style: TextStyle(
+                                              fontSize: 9,
+                                              fontWeight: FontWeight.w800,
+                                              color: Color(0xFFD97706),
+                                            ),
+                                          ),
+                                        ),
+                                      ],
                                     ),
-                                    const Padding(
-                                      padding: EdgeInsets.symmetric(
-                                        horizontal: 4,
-                                      ),
-                                      child: Icon(
-                                        Icons.arrow_forward_rounded,
-                                        size: 14,
-                                        color: Color(0xFFF59E0B),
+                                    const Spacer(),
+                                    Text(
+                                      '${_formatMoney(d.amountUzs.toDouble())} so‘m',
+                                      style: const TextStyle(
+                                        fontWeight: FontWeight.w900,
+                                        fontSize: 14,
+                                        color: Color(0xFFD97706),
                                       ),
                                     ),
-                                    _avatarInitial(
-                                      d.creditor,
-                                      XonaDoshColors.emerald,
+                                    Text(
+                                      '${d.debtor} ➔ ${d.creditor}',
+                                      style: TextStyle(
+                                        fontSize: 10,
+                                        fontWeight: FontWeight.w500,
+                                        color: isDark
+                                            ? Colors.grey[400]
+                                            : Colors.grey[600],
+                                      ),
+                                      maxLines: 1,
+                                      overflow: TextOverflow.ellipsis,
                                     ),
                                   ],
                                 ),
-                                const Spacer(),
-                                Text(
-                                  _formatMoney(d.amountUzs.toDouble()),
-                                  style: const TextStyle(
-                                    fontWeight: FontWeight.w900,
-                                    fontSize: 15,
-                                    color: Color(0xFFD97706),
-                                  ),
-                                ),
-                                Text(
-                                  'so‘m',
-                                  style: TextStyle(
-                                    fontSize: 10,
-                                    color: isDark
-                                        ? Colors.grey[400]
-                                        : Colors.grey[600],
-                                  ),
-                                ),
-                              ],
+                              ),
                             ),
                           );
                         },
@@ -2537,6 +2971,172 @@ class _XonadoshColivingTabState extends ConsumerState<XonadoshColivingTab> {
           ),
         ),
       ),
+    );
+  }
+
+  void _showDebtPaymentSheet(
+    BuildContext context,
+    XonadoshDebtBalance debt,
+    bool isDark,
+  ) {
+    showModalBottomSheet(
+      context: context,
+      isScrollControlled: true,
+      backgroundColor: Colors.transparent,
+      builder: (ctx) {
+        return Container(
+          decoration: BoxDecoration(
+            color: isDark ? const Color(0xFF1E293B) : Colors.white,
+            borderRadius: const BorderRadius.vertical(top: Radius.circular(24)),
+          ),
+          padding: EdgeInsets.fromLTRB(
+            20,
+            12,
+            20,
+            20 + MediaQuery.of(ctx).padding.bottom,
+          ),
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Center(
+                child: Container(
+                  width: 36,
+                  height: 4,
+                  decoration: BoxDecoration(
+                    color: Colors.grey[400],
+                    borderRadius: BorderRadius.circular(2),
+                  ),
+                ),
+              ),
+              const SizedBox(height: 14),
+              Row(
+                children: [
+                  Container(
+                    padding: const EdgeInsets.all(10),
+                    decoration: BoxDecoration(
+                      color: const Color(0xFFF59E0B).withValues(alpha: 0.15),
+                      borderRadius: BorderRadius.circular(12),
+                    ),
+                    child: const Icon(
+                      Icons.handshake_rounded,
+                      color: Color(0xFFD97706),
+                      size: 22,
+                    ),
+                  ),
+                  const SizedBox(width: 12),
+                  Expanded(
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        const Text(
+                          'Qarzni to‘lash va yopish',
+                          style: TextStyle(
+                            fontWeight: FontWeight.w800,
+                            fontSize: 16,
+                          ),
+                        ),
+                        Text(
+                          '${debt.debtor} ➔ ${debt.creditor}ga',
+                          style: TextStyle(
+                            fontSize: 12,
+                            color: isDark ? Colors.grey[400] : Colors.grey[600],
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
+                  Text(
+                    '${_formatMoney(debt.amountUzs.toDouble())} so‘m',
+                    style: const TextStyle(
+                      fontWeight: FontWeight.w900,
+                      fontSize: 16,
+                      color: Color(0xFFD97706),
+                    ),
+                  ),
+                ],
+              ),
+              const SizedBox(height: 16),
+              Container(
+                padding: const EdgeInsets.all(12),
+                decoration: BoxDecoration(
+                  color: isDark
+                      ? const Color(0xFF0F172A)
+                      : const Color(0xFFF8FAFC),
+                  borderRadius: BorderRadius.circular(14),
+                  border: Border.all(
+                    color: isDark
+                        ? const Color(0xFF334155)
+                        : const Color(0xFFE2E8F0),
+                  ),
+                ),
+                child: Row(
+                  children: [
+                    const Icon(
+                      Icons.credit_card_rounded,
+                      size: 20,
+                      color: XonaDoshColors.primary,
+                    ),
+                    const SizedBox(width: 10),
+                    Expanded(
+                      child: Text(
+                        'Click / Payme / Uzum orqali ${debt.creditor}ga o‘tkazishingiz mumkin',
+                        style: TextStyle(
+                          fontSize: 12,
+                          fontWeight: FontWeight.w600,
+                          color: isDark
+                              ? Colors.grey[300]
+                              : const Color(0xFF334155),
+                        ),
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+              const SizedBox(height: 16),
+              SizedBox(
+                width: double.infinity,
+                child: FilledButton.icon(
+                  onPressed: () async {
+                    Navigator.pop(ctx);
+                    await ref.read(xonadoshRepositoryProvider).addFinance({
+                      'type': 'debt',
+                      'title':
+                          'Qarz qaytarildi: ${debt.debtor} ➔ ${debt.creditor}',
+                      'amount': debt.amountUzs,
+                      'paid_by': debt.debtor,
+                      'group_code': 'home_default',
+                    });
+                    ref.invalidate(xonadoshFinancesProvider);
+                    if (context.mounted) {
+                      ScaffoldMessenger.of(context).showSnackBar(
+                        SnackBar(
+                          content: Text(
+                            '✓ ${_formatMoney(debt.amountUzs.toDouble())} so‘m qarz to‘langani qayd etildi!',
+                          ),
+                          backgroundColor: XonaDoshColors.emeraldDark,
+                        ),
+                      );
+                    }
+                  },
+                  icon: const Icon(Icons.check_circle_rounded, size: 18),
+                  label: const Text(
+                    'To‘ladim deb belgilash',
+                    style: TextStyle(fontWeight: FontWeight.w800, fontSize: 14),
+                  ),
+                  style: FilledButton.styleFrom(
+                    backgroundColor: XonaDoshColors.emerald,
+                    padding: const EdgeInsets.symmetric(vertical: 13),
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(12),
+                    ),
+                  ),
+                ),
+              ),
+            ],
+          ),
+        );
+      },
     );
   }
 
@@ -2967,40 +3567,79 @@ class _XonadoshColivingTabState extends ConsumerState<XonadoshColivingTab> {
           Row(
             children: [
               Expanded(
-                child: Text(
-                  '👍 ${poll.votesYes} (${poll.yesPercent}%)',
-                  style: const TextStyle(
-                    fontSize: 11,
-                    fontWeight: FontWeight.w700,
-                    color: XonaDoshColors.primary,
-                  ),
-                  maxLines: 1,
-                  overflow: TextOverflow.ellipsis,
+                child: Row(
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    const Icon(
+                      Icons.thumb_up_rounded,
+                      size: 13,
+                      color: XonaDoshColors.primary,
+                    ),
+                    const SizedBox(width: 4),
+                    Flexible(
+                      child: Text(
+                        '${poll.votesYes} (${poll.yesPercent}%)',
+                        style: const TextStyle(
+                          fontSize: 11,
+                          fontWeight: FontWeight.w700,
+                          color: XonaDoshColors.primary,
+                        ),
+                        maxLines: 1,
+                        overflow: TextOverflow.ellipsis,
+                      ),
+                    ),
+                  ],
                 ),
               ),
               Expanded(
-                child: Text(
-                  '👎 ${poll.votesNo} (${poll.noPercent}%)',
-                  textAlign: TextAlign.center,
-                  style: const TextStyle(
-                    fontSize: 11,
-                    fontWeight: FontWeight.w700,
-                    color: Color(0xFFDC2626),
-                  ),
-                  maxLines: 1,
-                  overflow: TextOverflow.ellipsis,
+                child: Row(
+                  mainAxisSize: MainAxisSize.min,
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    const Icon(
+                      Icons.thumb_down_rounded,
+                      size: 13,
+                      color: Color(0xFFDC2626),
+                    ),
+                    const SizedBox(width: 4),
+                    Flexible(
+                      child: Text(
+                        '${poll.votesNo} (${poll.noPercent}%)',
+                        style: const TextStyle(
+                          fontSize: 11,
+                          fontWeight: FontWeight.w700,
+                          color: Color(0xFFDC2626),
+                        ),
+                        maxLines: 1,
+                        overflow: TextOverflow.ellipsis,
+                      ),
+                    ),
+                  ],
                 ),
               ),
               Expanded(
-                child: Text(
-                  '🤷 ${poll.votesNeutral}',
-                  textAlign: TextAlign.end,
-                  style: TextStyle(
-                    fontSize: 11,
-                    color: isDark ? Colors.grey[400] : Colors.grey[600],
-                  ),
-                  maxLines: 1,
-                  overflow: TextOverflow.ellipsis,
+                child: Row(
+                  mainAxisSize: MainAxisSize.min,
+                  mainAxisAlignment: MainAxisAlignment.end,
+                  children: [
+                    Icon(
+                      Icons.remove_circle_outline_rounded,
+                      size: 13,
+                      color: isDark ? Colors.grey[400] : Colors.grey[600],
+                    ),
+                    const SizedBox(width: 4),
+                    Flexible(
+                      child: Text(
+                        '${poll.votesNeutral}',
+                        style: TextStyle(
+                          fontSize: 11,
+                          color: isDark ? Colors.grey[400] : Colors.grey[600],
+                        ),
+                        maxLines: 1,
+                        overflow: TextOverflow.ellipsis,
+                      ),
+                    ),
+                  ],
                 ),
               ),
             ],
@@ -3013,7 +3652,7 @@ class _XonadoshColivingTabState extends ConsumerState<XonadoshColivingTab> {
             Row(
               children: [
                 Expanded(
-                  child: FilledButton.tonal(
+                  child: FilledButton.tonalIcon(
                     style: FilledButton.styleFrom(
                       backgroundColor: XonaDoshColors.primary.withValues(
                         alpha: 0.15,
@@ -3022,8 +3661,9 @@ class _XonadoshColivingTabState extends ConsumerState<XonadoshColivingTab> {
                       padding: const EdgeInsets.symmetric(vertical: 6),
                     ),
                     onPressed: () => _submitVote(poll.id, 'yes'),
-                    child: const Text(
-                      '👍 Rozi',
+                    icon: const Icon(Icons.thumb_up_rounded, size: 13),
+                    label: const Text(
+                      'Rozi',
                       style: TextStyle(
                         fontSize: 12,
                         fontWeight: FontWeight.w800,
@@ -3033,7 +3673,7 @@ class _XonadoshColivingTabState extends ConsumerState<XonadoshColivingTab> {
                 ),
                 const SizedBox(width: 6),
                 Expanded(
-                  child: FilledButton.tonal(
+                  child: FilledButton.tonalIcon(
                     style: FilledButton.styleFrom(
                       backgroundColor: const Color(
                         0xFFEF4444,
@@ -3042,8 +3682,9 @@ class _XonadoshColivingTabState extends ConsumerState<XonadoshColivingTab> {
                       padding: const EdgeInsets.symmetric(vertical: 6),
                     ),
                     onPressed: () => _submitVote(poll.id, 'no'),
-                    child: const Text(
-                      '👎 Qarshi',
+                    icon: const Icon(Icons.thumb_down_rounded, size: 13),
+                    label: const Text(
+                      'Qarshi',
                       style: TextStyle(
                         fontSize: 12,
                         fontWeight: FontWeight.w800,
@@ -3053,15 +3694,19 @@ class _XonadoshColivingTabState extends ConsumerState<XonadoshColivingTab> {
                 ),
                 const SizedBox(width: 6),
                 Expanded(
-                  child: FilledButton.tonal(
+                  child: FilledButton.tonalIcon(
                     style: FilledButton.styleFrom(
                       backgroundColor: Colors.grey.withValues(alpha: 0.15),
                       foregroundColor: isDark ? Colors.white70 : Colors.black87,
                       padding: const EdgeInsets.symmetric(vertical: 6),
                     ),
                     onPressed: () => _submitVote(poll.id, 'neutral'),
-                    child: const Text(
-                      '🤷‍♂️ Betaraf',
+                    icon: const Icon(
+                      Icons.remove_circle_outline_rounded,
+                      size: 13,
+                    ),
+                    label: const Text(
+                      'Betaraf',
                       style: TextStyle(fontSize: 11),
                     ),
                   ),
@@ -3735,23 +4380,58 @@ class _XonadoshColivingTabState extends ConsumerState<XonadoshColivingTab> {
                   items: const [
                     DropdownMenuItem(
                       value: 'rules',
-                      child: Text('📋 Xonadon qoidasi'),
+                      child: Row(
+                        mainAxisSize: MainAxisSize.min,
+                        children: [
+                          Icon(Icons.gavel_rounded, size: 16),
+                          SizedBox(width: 8),
+                          Text('Xonadon qoidasi'),
+                        ],
+                      ),
                     ),
                     DropdownMenuItem(
                       value: 'cleaning',
-                      child: Text('🧹 Tozalik va tartib'),
+                      child: Row(
+                        mainAxisSize: MainAxisSize.min,
+                        children: [
+                          Icon(Icons.cleaning_services_outlined, size: 16),
+                          SizedBox(width: 8),
+                          Text('Tozalik va tartib'),
+                        ],
+                      ),
                     ),
                     DropdownMenuItem(
                       value: 'shopping',
-                      child: Text('🛒 Xaridlar va byudjet'),
+                      child: Row(
+                        mainAxisSize: MainAxisSize.min,
+                        children: [
+                          Icon(Icons.shopping_bag_outlined, size: 16),
+                          SizedBox(width: 8),
+                          Text('Xaridlar va byudjet'),
+                        ],
+                      ),
                     ),
                     DropdownMenuItem(
                       value: 'guests',
-                      child: Text('👥 Mehmonlar tartibi'),
+                      child: Row(
+                        mainAxisSize: MainAxisSize.min,
+                        children: [
+                          Icon(Icons.people_outline_rounded, size: 16),
+                          SizedBox(width: 8),
+                          Text('Mehmonlar tartibi'),
+                        ],
+                      ),
                     ),
                     DropdownMenuItem(
                       value: 'general',
-                      child: Text('💡 Umumiy taklif'),
+                      child: Row(
+                        mainAxisSize: MainAxisSize.min,
+                        children: [
+                          Icon(Icons.lightbulb_outline_rounded, size: 16),
+                          SizedBox(width: 8),
+                          Text('Umumiy taklif'),
+                        ],
+                      ),
                     ),
                   ],
                   onChanged: (val) =>
@@ -4105,6 +4785,8 @@ class _XonadoshColivingTabState extends ConsumerState<XonadoshColivingTab> {
                           return ListView(
                             padding: const EdgeInsets.all(16),
                             children: [
+                              _buildHouseRulesPinnedCard(context, isDark),
+                              const SizedBox(height: 12),
                               ...rules.map((rule) {
                                 final color = _ruleCategoryColor(rule.category);
                                 return Container(
@@ -4367,27 +5049,69 @@ class _XonadoshColivingTabState extends ConsumerState<XonadoshColivingTab> {
                       items: const [
                         DropdownMenuItem(
                           value: 'cleanliness',
-                          child: Text('🧹 Tozalik'),
+                          child: Row(
+                            mainAxisSize: MainAxisSize.min,
+                            children: [
+                              Icon(Icons.cleaning_services_outlined, size: 16),
+                              SizedBox(width: 8),
+                              Text('Tozalik'),
+                            ],
+                          ),
                         ),
                         DropdownMenuItem(
                           value: 'quiet_hours',
-                          child: Text('🌙 Tinchlik soatlari'),
+                          child: Row(
+                            mainAxisSize: MainAxisSize.min,
+                            children: [
+                              Icon(Icons.bedtime_outlined, size: 16),
+                              SizedBox(width: 8),
+                              Text('Tinchlik soatlari'),
+                            ],
+                          ),
                         ),
                         DropdownMenuItem(
                           value: 'guests',
-                          child: Text('👥 Mehmonlar tartibi'),
+                          child: Row(
+                            mainAxisSize: MainAxisSize.min,
+                            children: [
+                              Icon(Icons.people_outline_rounded, size: 16),
+                              SizedBox(width: 8),
+                              Text('Mehmonlar tartibi'),
+                            ],
+                          ),
                         ),
                         DropdownMenuItem(
                           value: 'smoking',
-                          child: Text('🚭 Zararli odatlar'),
+                          child: Row(
+                            mainAxisSize: MainAxisSize.min,
+                            children: [
+                              Icon(Icons.smoke_free_rounded, size: 16),
+                              SizedBox(width: 8),
+                              Text('Zararli odatlar'),
+                            ],
+                          ),
                         ),
                         DropdownMenuItem(
                           value: 'finances',
-                          child: Text('💰 To‘lovlar'),
+                          child: Row(
+                            mainAxisSize: MainAxisSize.min,
+                            children: [
+                              Icon(Icons.payments_outlined, size: 16),
+                              SizedBox(width: 8),
+                              Text('To‘lovlar'),
+                            ],
+                          ),
                         ),
                         DropdownMenuItem(
                           value: 'safety',
-                          child: Text('🔒 Xavfsizlik'),
+                          child: Row(
+                            mainAxisSize: MainAxisSize.min,
+                            children: [
+                              Icon(Icons.lock_outline_rounded, size: 16),
+                              SizedBox(width: 8),
+                              Text('Xavfsizlik'),
+                            ],
+                          ),
                         ),
                       ],
                       onChanged: (val) {
@@ -4654,12 +5378,22 @@ class _XonadoshColivingTabState extends ConsumerState<XonadoshColivingTab> {
                         padding: const EdgeInsets.all(18),
                         children: [
                           // Roommates count selector
-                          Text(
-                            '👥 Xonadoshlar soni: $roommateCount kishi',
-                            style: const TextStyle(
-                              fontWeight: FontWeight.w800,
-                              fontSize: 14,
-                            ),
+                          Row(
+                            children: [
+                              const Icon(
+                                Icons.group_outlined,
+                                size: 18,
+                                color: XonaDoshColors.primary,
+                              ),
+                              const SizedBox(width: 8),
+                              Text(
+                                'Xonadoshlar soni: $roommateCount kishi',
+                                style: const TextStyle(
+                                  fontWeight: FontWeight.w800,
+                                  fontSize: 14,
+                                ),
+                              ),
+                            ],
                           ),
                           const SizedBox(height: 8),
                           SingleChildScrollView(

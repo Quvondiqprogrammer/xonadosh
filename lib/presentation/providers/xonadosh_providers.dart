@@ -27,6 +27,9 @@ final xonadoshGenderFilterProvider = StateProvider<String>((ref) => 'any');
 
 final xonadoshMatchGenderFilterProvider = StateProvider<String>((ref) => 'any');
 
+/// Tinder Swipe vs List view mode for roommate matching
+final xonadoshMatchSwipeModeProvider = StateProvider<bool>((ref) => true);
+
 /// Matching university filter — kept separate from housing so a housing
 /// city/OTM filter does not silently hide roommate matches.
 final xonadoshMatchUniProvider = StateProvider<XonadoshUniversity?>(

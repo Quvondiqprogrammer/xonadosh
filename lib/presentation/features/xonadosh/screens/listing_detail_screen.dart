@@ -814,11 +814,11 @@ class _XonadoshListingDetailScreenState
                         itemCount: item.amenities.length,
                         gridDelegate:
                             const SliverGridDelegateWithFixedCrossAxisCount(
-                          crossAxisCount: 2,
-                          crossAxisSpacing: 8,
-                          mainAxisSpacing: 8,
-                          childAspectRatio: 3.2,
-                        ),
+                              crossAxisCount: 2,
+                              crossAxisSpacing: 8,
+                              mainAxisSpacing: 8,
+                              childAspectRatio: 3.2,
+                            ),
                         itemBuilder: (ctx, i) {
                           final a = item.amenities[i];
                           return Container(
@@ -1121,7 +1121,8 @@ class _XonadoshListingDetailScreenState
                   icon: Icons.directions_subway_rounded,
                   title: '🚇 Metro',
                   time: '${commute.metro.timeMin} daq',
-                  fare: '${_formatMoney(commute.metro.fareUzs.toDouble())} so‘m',
+                  fare:
+                      '${_formatMoney(commute.metro.fareUzs.toDouble())} so‘m',
                   color: const Color(0xFF0284C7),
                   isDark: isDark,
                 ),
@@ -1145,7 +1146,8 @@ class _XonadoshListingDetailScreenState
                   icon: Icons.local_taxi_rounded,
                   title: '🚕 Taksi',
                   time: '${commute.taxi.timeMin} daq',
-                  fare: '~${_formatMoney(commute.taxi.fareUzs.toDouble())} so‘m',
+                  fare:
+                      '~${_formatMoney(commute.taxi.fareUzs.toDouble())} so‘m',
                   color: const Color(0xFF8B5CF6),
                   isDark: isDark,
                 ),
@@ -1168,7 +1170,9 @@ class _XonadoshListingDetailScreenState
     return Container(
       padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 8),
       decoration: BoxDecoration(
-        color: isDark ? const Color(0xFF334155).withValues(alpha: 0.6) : Colors.white,
+        color: isDark
+            ? const Color(0xFF334155).withValues(alpha: 0.6)
+            : Colors.white,
         borderRadius: BorderRadius.circular(12),
         border: Border.all(
           color: isDark ? const Color(0xFF475569) : const Color(0xFFE2E8F0),
@@ -1182,7 +1186,10 @@ class _XonadoshListingDetailScreenState
             children: [
               Text(
                 title,
-                style: const TextStyle(fontWeight: FontWeight.w700, fontSize: 12),
+                style: const TextStyle(
+                  fontWeight: FontWeight.w700,
+                  fontSize: 12,
+                ),
               ),
               const Spacer(),
               Text(
@@ -1357,8 +1364,36 @@ class _XonadoshListingDetailScreenState
         top: false,
         child: Row(
           children: [
+            if (item.telegramHandle != null &&
+                item.telegramHandle!.isNotEmpty) ...[
+              Expanded(
+                child: OutlinedButton.icon(
+                  onPressed: () =>
+                      ContactActions.openTelegram(context, item.telegramHandle),
+                  icon: const Icon(Icons.send_rounded, size: 18),
+                  label: const Text(
+                    'Telegram',
+                    style: TextStyle(fontWeight: FontWeight.w800, fontSize: 14),
+                  ),
+                  style: OutlinedButton.styleFrom(
+                    foregroundColor: const Color(0xFF0284C7),
+                    backgroundColor: isDark
+                        ? const Color(0xFF0284C7).withValues(alpha: 0.12)
+                        : const Color(0xFFF0F9FF),
+                    side: BorderSide(
+                      color: const Color(0xFF0284C7).withValues(alpha: 0.3),
+                      width: 1,
+                    ),
+                    padding: const EdgeInsets.symmetric(vertical: 14),
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(12),
+                    ),
+                  ),
+                ),
+              ),
+              const SizedBox(width: 12),
+            ],
             Expanded(
-              flex: 3,
               child: FilledButton.icon(
                 onPressed: () => _handleCall(context, item),
                 onLongPress: () => ContactActions.showContactSheet(
@@ -1385,31 +1420,6 @@ class _XonadoshListingDetailScreenState
                 ),
               ),
             ),
-            if (item.telegramHandle != null &&
-                item.telegramHandle!.isNotEmpty) ...[
-              const SizedBox(width: 10),
-              Expanded(
-                flex: 2,
-                child: FilledButton.icon(
-                  onPressed: () =>
-                      ContactActions.openTelegram(context, item.telegramHandle),
-                  icon: const Icon(Icons.send_rounded, size: 18),
-                  label: const Text(
-                    'Telegram',
-                    style: TextStyle(fontWeight: FontWeight.w800, fontSize: 14),
-                  ),
-                  style: FilledButton.styleFrom(
-                    backgroundColor: const Color(0xFF0284C7),
-                    foregroundColor: Colors.white,
-                    padding: const EdgeInsets.symmetric(vertical: 14),
-                    shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(12),
-                    ),
-                    elevation: 0,
-                  ),
-                ),
-              ),
-            ],
           ],
         ),
       ),

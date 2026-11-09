@@ -322,7 +322,7 @@ class AppLocalizationsUz extends AppLocalizations {
       'Navbatchilik, menyu & bozorlik hisobi';
 
   @override
-  String get xonadoshColivingTab => 'Bizning uy';
+  String get xonadoshColivingTab => 'XonaDoshlar';
 
   @override
   String get xonadoshContactMethods => 'Aloqa vositalari';

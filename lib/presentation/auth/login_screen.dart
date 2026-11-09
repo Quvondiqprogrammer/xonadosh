@@ -77,7 +77,11 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
                     Row(
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: [
-                        const XonaDoshLogo.mark(height: 36, width: 36, borderRadius: 10),
+                        const XonaDoshLogo.mark(
+                          height: 36,
+                          width: 36,
+                          borderRadius: 10,
+                        ),
                         IconButton(
                           icon: const Icon(Icons.close_rounded, size: 22),
                           tooltip: 'Yopish',
@@ -117,7 +121,9 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
                       children: [
                         Expanded(
                           child: Divider(
-                            color: isDark ? XonaDoshColors.borderDark : XonaDoshColors.borderLight,
+                            color: isDark
+                                ? XonaDoshColors.borderDark
+                                : XonaDoshColors.borderLight,
                           ),
                         ),
                         Padding(
@@ -127,13 +133,17 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
                             style: TextStyle(
                               fontSize: 12,
                               fontWeight: FontWeight.w600,
-                              color: isDark ? XonaDoshColors.slate400 : XonaDoshColors.slate500,
+                              color: isDark
+                                  ? XonaDoshColors.slate400
+                                  : XonaDoshColors.slate500,
                             ),
                           ),
                         ),
                         Expanded(
                           child: Divider(
-                            color: isDark ? XonaDoshColors.borderDark : XonaDoshColors.borderLight,
+                            color: isDark
+                                ? XonaDoshColors.borderDark
+                                : XonaDoshColors.borderLight,
                           ),
                         ),
                       ],
@@ -156,22 +166,29 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
                           size: 20,
                         ),
                         filled: true,
-                        fillColor: isDark ? XonaDoshColors.cardDark : Colors.white,
+                        fillColor: isDark
+                            ? XonaDoshColors.cardDark
+                            : Colors.white,
                         border: OutlineInputBorder(
                           borderRadius: BorderRadius.circular(14),
                           borderSide: BorderSide(
-                            color: isDark ? XonaDoshColors.borderDark : XonaDoshColors.borderLight,
+                            color: isDark
+                                ? XonaDoshColors.borderDark
+                                : XonaDoshColors.borderLight,
                           ),
                         ),
                         enabledBorder: OutlineInputBorder(
                           borderRadius: BorderRadius.circular(14),
                           borderSide: BorderSide(
-                            color: isDark ? XonaDoshColors.borderDark : XonaDoshColors.borderLight,
+                            color: isDark
+                                ? XonaDoshColors.borderDark
+                                : XonaDoshColors.borderLight,
                           ),
                         ),
                       ),
-                      validator: (v) =>
-                          (v == null || v.trim().isEmpty) ? 'Raqam yoki loginni kiriting' : null,
+                      validator: (v) => (v == null || v.trim().isEmpty)
+                          ? 'Raqam yoki loginni kiriting'
+                          : null,
                     ),
                     const SizedBox(height: 12),
 
@@ -190,37 +207,51 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
                         suffixIcon: IconButton(
                           onPressed: () => setState(() => _obscure = !_obscure),
                           icon: Icon(
-                            _obscure ? Icons.visibility_outlined : Icons.visibility_off_outlined,
+                            _obscure
+                                ? Icons.visibility_outlined
+                                : Icons.visibility_off_outlined,
                             size: 18,
                           ),
                         ),
                         filled: true,
-                        fillColor: isDark ? XonaDoshColors.cardDark : Colors.white,
+                        fillColor: isDark
+                            ? XonaDoshColors.cardDark
+                            : Colors.white,
                         border: OutlineInputBorder(
                           borderRadius: BorderRadius.circular(14),
                           borderSide: BorderSide(
-                            color: isDark ? XonaDoshColors.borderDark : XonaDoshColors.borderLight,
+                            color: isDark
+                                ? XonaDoshColors.borderDark
+                                : XonaDoshColors.borderLight,
                           ),
                         ),
                         enabledBorder: OutlineInputBorder(
                           borderRadius: BorderRadius.circular(14),
                           borderSide: BorderSide(
-                            color: isDark ? XonaDoshColors.borderDark : XonaDoshColors.borderLight,
+                            color: isDark
+                                ? XonaDoshColors.borderDark
+                                : XonaDoshColors.borderLight,
                           ),
                         ),
                       ),
-                      validator: (v) => (v == null || v.isEmpty) ? 'Parolni kiriting' : null,
+                      validator: (v) =>
+                          (v == null || v.isEmpty) ? 'Parolni kiriting' : null,
                     ),
 
                     if (_error != null) ...[
                       const SizedBox(height: 12),
                       Container(
-                        padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 10),
+                        padding: const EdgeInsets.symmetric(
+                          horizontal: 14,
+                          vertical: 10,
+                        ),
                         decoration: BoxDecoration(
                           color: const Color(0xFFEF4444).withValues(alpha: 0.1),
                           borderRadius: BorderRadius.circular(12),
                           border: Border.all(
-                            color: const Color(0xFFEF4444).withValues(alpha: 0.3),
+                            color: const Color(
+                              0xFFEF4444,
+                            ).withValues(alpha: 0.3),
                           ),
                         ),
                         child: Text(
@@ -276,7 +307,9 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
                           text: 'Hisobingiz yo‘qmi? ',
                           style: TextStyle(
                             fontSize: 14,
-                            color: isDark ? XonaDoshColors.slate400 : XonaDoshColors.slate600,
+                            color: isDark
+                                ? XonaDoshColors.slate400
+                                : XonaDoshColors.slate600,
                           ),
                           children: const [
                             TextSpan(

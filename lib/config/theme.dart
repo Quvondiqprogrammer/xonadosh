@@ -78,11 +78,11 @@ class XonaDoshStyles {
   );
 
   static TextStyle body(bool isDark) => TextStyle(
-        fontSize: 14,
-        fontWeight: FontWeight.w400,
-        height: 1.4,
-        color: isDark ? XonaDoshColors.slate400 : XonaDoshColors.slate600,
-      );
+    fontSize: 14,
+    fontWeight: FontWeight.w400,
+    height: 1.4,
+    color: isDark ? XonaDoshColors.slate400 : XonaDoshColors.slate600,
+  );
 
   static const TextStyle chip = TextStyle(
     fontSize: 12,

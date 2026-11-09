@@ -3,11 +3,13 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
+import 'package:image_picker/image_picker.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 import 'package:xonadosh/config/theme.dart';
 import 'package:xonadosh/data/models/xonadosh_models.dart';
 import 'package:xonadosh/l10n/l10n_ext.dart';
+import 'package:xonadosh/presentation/features/xonadosh/widgets/roommate_photo_resolver.dart';
 import 'package:xonadosh/presentation/providers/xonadosh_providers.dart';
 import 'package:xonadosh/presentation/router/app_routes.dart';
 
@@ -53,6 +55,7 @@ class _XonadoshProfileEditScreenState
   final String _guests = 'sometimes';
 
   String? _avatarUrl;
+  bool _uploadingAvatar = false;
   XonadoshUniversity? _selectedUni;
   bool _isLoading = false;
   bool _hasUnsavedChanges = false;
@@ -177,6 +180,9 @@ class _XonadoshProfileEditScreenState
             _study = draft['study_habit'] ?? _study;
             _cooking = draft['cooking_habit'] ?? _cooking;
             _smoking = draft['smoking_habit'] ?? _smoking;
+            if (_avatarUrl == null || _avatarUrl!.isEmpty) {
+              _avatarUrl = draft['avatar_url'];
+            }
           });
         }
       }
@@ -190,6 +196,8 @@ class _XonadoshProfileEditScreenState
         'full_name': _nameCtrl.text.trim(),
         'phone_number': _phoneCtrl.text.trim(),
         'telegram_handle': _tgCtrl.text.trim(),
+        if (_avatarUrl != null && _avatarUrl!.isNotEmpty)
+          'avatar_url': _avatarUrl,
         'gender': _gender,
         'age': _age,
         'university_id': _selectedUni?.id,
@@ -215,6 +223,190 @@ class _XonadoshProfileEditScreenState
       final prefs = await SharedPreferences.getInstance();
       await prefs.remove(_draftKey);
     } catch (_) {}
+  }
+
+  Future<void> _pickAndUploadAvatar(ImageSource source) async {
+    if (_uploadingAvatar) return;
+    try {
+      final picker = ImagePicker();
+      final file = await picker.pickImage(
+        source: source,
+        maxWidth: 1200,
+        maxHeight: 1200,
+        imageQuality: 85,
+      );
+      if (file == null) return;
+
+      setState(() => _uploadingAvatar = true);
+      final bytes = await file.readAsBytes();
+      final name = file.name.isNotEmpty
+          ? file.name
+          : 'avatar_${DateTime.now().millisecondsSinceEpoch}.jpg';
+
+      final repo = ref.read(xonadoshRepositoryProvider);
+      final url = await repo.uploadPhoto(bytes: bytes, filename: name);
+
+      if (!mounted) return;
+      if (url != null && url.isNotEmpty) {
+        setState(() {
+          _avatarUrl = url;
+          _hasUnsavedChanges = true;
+        });
+        _autoSaveDraft();
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(
+            content: Row(
+              children: [
+                Icon(Icons.check_circle_rounded, color: Colors.white, size: 20),
+                SizedBox(width: 8),
+                Text('Surat muvaffaqiyatli yuklandi!'),
+              ],
+            ),
+            backgroundColor: XonaDoshColors.primary,
+            behavior: SnackBarBehavior.floating,
+          ),
+        );
+      } else {
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(
+            content: Text('Surat yuklashda xatolik yuz berdi'),
+            backgroundColor: Color(0xFFEF4444),
+            behavior: SnackBarBehavior.floating,
+          ),
+        );
+      }
+    } catch (e) {
+      if (mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            content: Text('Surat yuklab bo‘lmadi: $e'),
+            backgroundColor: const Color(0xFFEF4444),
+            behavior: SnackBarBehavior.floating,
+          ),
+        );
+      }
+    } finally {
+      if (mounted) setState(() => _uploadingAvatar = false);
+    }
+  }
+
+  void _showPhotoSourceSheet() {
+    HapticFeedback.lightImpact();
+    showModalBottomSheet(
+      context: context,
+      shape: const RoundedRectangleBorder(
+        borderRadius: BorderRadius.vertical(top: Radius.circular(20)),
+      ),
+      builder: (ctx) {
+        return SafeArea(
+          child: Padding(
+            padding: const EdgeInsets.fromLTRB(16, 8, 16, 20),
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Center(
+                  child: Container(
+                    width: 36,
+                    height: 4,
+                    decoration: BoxDecoration(
+                      color: Colors.grey[400],
+                      borderRadius: BorderRadius.circular(2),
+                    ),
+                  ),
+                ),
+                const SizedBox(height: 16),
+                const Text(
+                  'Profil suratini tanlang',
+                  style: TextStyle(fontSize: 17, fontWeight: FontWeight.w800),
+                ),
+                const SizedBox(height: 6),
+                const Text(
+                  'Suratli anketalar Tinder kartasida alohida ko‘rinadi va xonadosh topish ehtimoli 3 barobar yuqori bo‘ladi.',
+                  style: TextStyle(
+                    fontSize: 13,
+                    color: Color(0xFF64748B),
+                    height: 1.3,
+                  ),
+                ),
+                const SizedBox(height: 16),
+                ListTile(
+                  leading: Container(
+                    padding: const EdgeInsets.all(8),
+                    decoration: BoxDecoration(
+                      color: XonaDoshColors.primary.withValues(alpha: 0.1),
+                      shape: BoxShape.circle,
+                    ),
+                    child: const Icon(
+                      Icons.camera_alt_rounded,
+                      color: XonaDoshColors.primary,
+                    ),
+                  ),
+                  title: const Text(
+                    'Kameradan suratga olish',
+                    style: TextStyle(fontWeight: FontWeight.w700),
+                  ),
+                  onTap: () {
+                    Navigator.of(ctx).pop();
+                    _pickAndUploadAvatar(ImageSource.camera);
+                  },
+                ),
+                ListTile(
+                  leading: Container(
+                    padding: const EdgeInsets.all(8),
+                    decoration: BoxDecoration(
+                      color: const Color(0xFF0284C7).withValues(alpha: 0.1),
+                      shape: BoxShape.circle,
+                    ),
+                    child: const Icon(
+                      Icons.photo_library_rounded,
+                      color: Color(0xFF0284C7),
+                    ),
+                  ),
+                  title: const Text(
+                    'Galereyadan tanlash',
+                    style: TextStyle(fontWeight: FontWeight.w700),
+                  ),
+                  onTap: () {
+                    Navigator.of(ctx).pop();
+                    _pickAndUploadAvatar(ImageSource.gallery);
+                  },
+                ),
+                if (_avatarUrl != null && _avatarUrl!.isNotEmpty)
+                  ListTile(
+                    leading: Container(
+                      padding: const EdgeInsets.all(8),
+                      decoration: BoxDecoration(
+                        color: const Color(0xFFEF4444).withValues(alpha: 0.1),
+                        shape: BoxShape.circle,
+                      ),
+                      child: const Icon(
+                        Icons.delete_outline_rounded,
+                        color: Color(0xFFEF4444),
+                      ),
+                    ),
+                    title: const Text(
+                      'Suratni o‘chirish',
+                      style: TextStyle(
+                        fontWeight: FontWeight.w700,
+                        color: Color(0xFFEF4444),
+                      ),
+                    ),
+                    onTap: () {
+                      Navigator.of(ctx).pop();
+                      setState(() {
+                        _avatarUrl = null;
+                        _hasUnsavedChanges = true;
+                      });
+                      _autoSaveDraft();
+                    },
+                  ),
+              ],
+            ),
+          ),
+        );
+      },
+    );
   }
 
   @override
@@ -858,7 +1050,103 @@ class _XonadoshProfileEditScreenState
             subtitle: context.l10n.xonadoshPersonalDataHint,
             icon: Icons.badge_rounded,
           ),
-          const SizedBox(height: 18),
+          const SizedBox(height: 16),
+
+          // Profil surati (Avatar Picker)
+          Center(
+            child: Column(
+              children: [
+                Stack(
+                  alignment: Alignment.bottomRight,
+                  children: [
+                    Container(
+                      width: 104,
+                      height: 104,
+                      decoration: BoxDecoration(
+                        shape: BoxShape.circle,
+                        border: Border.all(
+                          color: XonaDoshColors.primary,
+                          width: 2.5,
+                        ),
+                        boxShadow: [
+                          BoxShadow(
+                            color: XonaDoshColors.primary.withValues(
+                              alpha: 0.2,
+                            ),
+                            blurRadius: 10,
+                            offset: const Offset(0, 3),
+                          ),
+                        ],
+                      ),
+                      child: ClipOval(
+                        child: _uploadingAvatar
+                            ? const Center(
+                                child: CircularProgressIndicator(
+                                  strokeWidth: 2.5,
+                                  color: XonaDoshColors.primary,
+                                ),
+                              )
+                            : (_avatarUrl != null && _avatarUrl!.isNotEmpty)
+                            ? Image.network(
+                                _avatarUrl!.startsWith('http')
+                                    ? _avatarUrl!
+                                    : 'https://honadosh.uz/$_avatarUrl',
+                                fit: BoxFit.cover,
+                                errorBuilder: (context, error, stackTrace) =>
+                                    buildStudentPhotoPlaceholder(
+                                      fullName: _nameCtrl.text.isNotEmpty
+                                          ? _nameCtrl.text
+                                          : 'Talaba',
+                                      isDark: isDark,
+                                      size: 50,
+                                    ),
+                              )
+                            : buildStudentPhotoPlaceholder(
+                                fullName: _nameCtrl.text.isNotEmpty
+                                    ? _nameCtrl.text
+                                    : 'Talaba',
+                                isDark: isDark,
+                                size: 50,
+                              ),
+                      ),
+                    ),
+                    Material(
+                      color: XonaDoshColors.primary,
+                      shape: const CircleBorder(),
+                      elevation: 2,
+                      child: InkWell(
+                        onTap: _uploadingAvatar ? null : _showPhotoSourceSheet,
+                        customBorder: const CircleBorder(),
+                        child: const Padding(
+                          padding: EdgeInsets.all(8.0),
+                          child: Icon(
+                            Icons.camera_alt_rounded,
+                            size: 18,
+                            color: Colors.white,
+                          ),
+                        ),
+                      ),
+                    ),
+                  ],
+                ),
+                const SizedBox(height: 8),
+                TextButton.icon(
+                  onPressed: _uploadingAvatar ? null : _showPhotoSourceSheet,
+                  icon: const Icon(Icons.add_a_photo_outlined, size: 16),
+                  label: Text(
+                    _avatarUrl != null && _avatarUrl!.isNotEmpty
+                        ? 'Suratni almashtirish'
+                        : 'Surat yuklash (Tinder kartasi uchun)',
+                    style: const TextStyle(
+                      fontWeight: FontWeight.w700,
+                      fontSize: 13,
+                    ),
+                  ),
+                ),
+              ],
+            ),
+          ),
+          const SizedBox(height: 14),
 
           // Ism-familiya
           TextFormField(
@@ -1329,9 +1617,9 @@ class _XonadoshProfileEditScreenState
             icon: Icons.bedtime_rounded,
             currentValue: _sleep,
             options: [
-              ('early_bird', '🌅 Erta turaman (06:00)'),
-              ('night_owl', '🦉 Kech yotaman (01:00)'),
-              ('flexible', '⚡ Moslashuvchan rejim'),
+              ('early_bird', 'Erta turaman (06:00)'),
+              ('night_owl', 'Kech yotaman (01:00)'),
+              ('flexible', 'Moslashuvchan rejim'),
             ],
             onChanged: (v) => setState(() => _sleep = v),
           ),
@@ -1344,9 +1632,9 @@ class _XonadoshProfileEditScreenState
             icon: Icons.cleaning_services_rounded,
             currentValue: _cleanliness,
             options: [
-              ('strict', '✨ Har kuni tartib'),
-              ('moderate', '👌 O‘rtacha erkin'),
-              ('relaxed', '😌 Muhimi xotirjamlik'),
+              ('strict', 'Har kuni qat‘iy tartib'),
+              ('moderate', 'O‘rtacha erkin tartib'),
+              ('relaxed', 'Xotirjam erkin tartib'),
             ],
             onChanged: (v) => setState(() => _cleanliness = v),
           ),
@@ -1359,9 +1647,9 @@ class _XonadoshProfileEditScreenState
             icon: Icons.menu_book_rounded,
             currentValue: _study,
             options: [
-              ('silent', '🤫 Tinch sukunatda'),
-              ('music', '🎧 Musiqa / Suhbat bilan'),
-              ('group', '👥 Birgalikda guruh bilan'),
+              ('silent', 'Tinch va sokin muhitda'),
+              ('music', 'Musiqa yoki suhbat bilan'),
+              ('group', 'Birgalikda guruh bilan'),
             ],
             onChanged: (v) => setState(() => _study = v),
           ),
@@ -1374,9 +1662,9 @@ class _XonadoshProfileEditScreenState
             icon: Icons.smoke_free_rounded,
             currentValue: _smoking,
             options: [
-              ('no', '🚭 Umuman chekmayman'),
-              ('balcony', '💨 Faqat balkonda'),
-              ('yes', '🚬 Chekaman'),
+              ('no', 'Umuman chekmayman'),
+              ('balcony', 'Faqat balkonda mumkin'),
+              ('yes', 'Chekaman'),
             ],
             onChanged: (v) => setState(() => _smoking = v),
           ),
@@ -1389,9 +1677,9 @@ class _XonadoshProfileEditScreenState
             icon: Icons.soup_kitchen_rounded,
             currentValue: _cooking,
             options: [
-              ('rotates', '🍲 Birga navbat bilan'),
-              ('cooks_self', '🍳 Har kim o‘zi uchun'),
-              ('eats_out', '🍽️ Oshxona yoki kafeda'),
+              ('rotates', 'Birgalikda navbat bilan'),
+              ('cooks_self', 'Har kim alohida o‘zi uchun'),
+              ('eats_out', 'Asosan kafeda yoki yetkazish'),
             ],
             onChanged: (v) => setState(() => _cooking = v),
           ),
@@ -1451,15 +1739,15 @@ class _XonadoshProfileEditScreenState
                     color: isSelected
                         ? XonaDoshColors.primary.withValues(alpha: 0.1)
                         : (isDark
-                            ? const Color(0xFF1E293B)
-                            : const Color(0xFFF8FAFC)),
+                              ? const Color(0xFF1E293B)
+                              : const Color(0xFFF8FAFC)),
                     borderRadius: BorderRadius.circular(12),
                     border: Border.all(
                       color: isSelected
                           ? XonaDoshColors.primary
                           : (isDark
-                              ? const Color(0xFF334155)
-                              : const Color(0xFFE2E8F0)),
+                                ? const Color(0xFF334155)
+                                : const Color(0xFFE2E8F0)),
                       width: isSelected ? 1.5 : 1,
                     ),
                   ),
@@ -1475,11 +1763,11 @@ class _XonadoshProfileEditScreenState
                                 : FontWeight.w500,
                             color: isSelected
                                 ? (isDark
-                                    ? const Color(0xFF5EEAD4)
-                                    : XonaDoshColors.primaryDark)
+                                      ? const Color(0xFF5EEAD4)
+                                      : XonaDoshColors.primaryDark)
                                 : (isDark
-                                    ? Colors.white
-                                    : const Color(0xFF1E293B)),
+                                      ? Colors.white
+                                      : const Color(0xFF1E293B)),
                           ),
                         ),
                       ),

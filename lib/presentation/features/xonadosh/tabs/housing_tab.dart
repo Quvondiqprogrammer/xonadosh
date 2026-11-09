@@ -140,7 +140,7 @@ class _XonadoshHousingTabState extends ConsumerState<XonadoshHousingTab> {
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    // Row 1: OTM Selector + Map Button
+                    // Row 1: OTM Selector + Map Button + Create Listing Action
                     Row(
                       children: [
                         Expanded(
@@ -197,175 +197,180 @@ class _XonadoshHousingTabState extends ConsumerState<XonadoshHousingTab> {
                           ),
                         ),
                         const SizedBox(width: 8),
-                        FilledButton.icon(
+                        IconButton.filledTonal(
                           onPressed: () => context.push(AppRoutes.xonadoshMap),
-                          icon: const Icon(Icons.map_rounded, size: 16),
-                          label: const Text('Xarita'),
+                          icon: const Icon(Icons.map_rounded, size: 18),
+                          tooltip: 'Xarita',
+                          style: IconButton.styleFrom(
+                            backgroundColor: isDark
+                                ? const Color(0xFF1E293B)
+                                : Colors.white,
+                            foregroundColor: XonaDoshColors.emerald,
+                            shape: RoundedRectangleBorder(
+                              borderRadius: BorderRadius.circular(14),
+                              side: BorderSide(
+                                color: isDark
+                                    ? const Color(0xFF334155)
+                                    : const Color(0xFFE2E8F0),
+                              ),
+                            ),
+                            minimumSize: const Size(44, 44),
+                          ),
+                        ),
+                        const SizedBox(width: 8),
+                        FilledButton.icon(
+                          onPressed: () =>
+                              context.push(AppRoutes.xonadoshCreateListing),
+                          icon: const Icon(Icons.add_rounded, size: 18),
+                          label: const Text('E‘lon'),
                           style: FilledButton.styleFrom(
                             backgroundColor: XonaDoshColors.emerald,
                             foregroundColor: Colors.white,
                             padding: const EdgeInsets.symmetric(
-                              horizontal: 14,
-                              vertical: 12,
+                              horizontal: 12,
+                              vertical: 10,
                             ),
                             shape: RoundedRectangleBorder(
                               borderRadius: BorderRadius.circular(14),
                             ),
+                            elevation: 0,
                           ),
                         ),
                       ],
                     ),
                     const SizedBox(height: 10),
 
-                    // Row 2: Search Bar + Filter Button
-                    Row(
-                      children: [
-                        Expanded(
-                          child: Container(
-                            height: 48,
-                            decoration: BoxDecoration(
-                              color: isDark
-                                  ? const Color(0xFF1E293B)
-                                  : Colors.white,
-                              borderRadius: BorderRadius.circular(14),
-                              border: Border.all(
-                                color: isDark
-                                    ? const Color(0xFF334155)
-                                    : const Color(0xFFE2E8F0),
-                              ),
-                              boxShadow: [
-                                BoxShadow(
-                                  color: Colors.black.withValues(
-                                    alpha: isDark ? 0.2 : 0.04,
-                                  ),
-                                  blurRadius: 10,
-                                  offset: const Offset(0, 2),
-                                ),
-                              ],
-                            ),
-                            child: TextField(
-                              controller: _searchController,
-                              focusNode: _searchFocus,
-                              onChanged: (v) {
-                                setState(() {});
-                                _searchDebounce?.cancel();
-                                _searchDebounce = Timer(
-                                  const Duration(milliseconds: 350),
-                                  () {
-                                    if (!mounted) return;
-                                    ref
-                                        .read(
-                                          xonadoshSearchQueryProvider.notifier,
-                                        )
-                                        .state = v.trim().isEmpty
-                                        ? null
-                                        : v.trim();
-                                  },
-                                );
-                              },
-                              style: const TextStyle(fontSize: 14),
-                              decoration: InputDecoration(
-                                hintText: 'Tuman yoki metro qidiring...',
-                                hintStyle: TextStyle(
-                                  fontSize: 13,
-                                  color: isDark
-                                      ? const Color(0xFF64748B)
-                                      : const Color(0xFF94A3B8),
-                                ),
-                                prefixIcon: const Icon(
-                                  Icons.search_rounded,
-                                  color: XonaDoshColors.emerald,
-                                  size: 20,
-                                ),
-                                suffixIcon: _searchController.text.isNotEmpty
-                                    ? IconButton(
-                                        icon: const Icon(
-                                          Icons.close_rounded,
-                                          size: 16,
-                                        ),
-                                        onPressed: () {
-                                          _searchController.clear();
-                                          ref
-                                                  .read(
-                                                    xonadoshSearchQueryProvider
-                                                        .notifier,
-                                                  )
-                                                  .state =
-                                              null;
-                                          setState(() {});
-                                        },
-                                      )
-                                    : null,
-                                contentPadding: const EdgeInsets.symmetric(
-                                  horizontal: 14,
-                                  vertical: 12,
-                                ),
-                                border: InputBorder.none,
-                                enabledBorder: InputBorder.none,
-                                focusedBorder: InputBorder.none,
-                                filled: false,
-                              ),
-                            ),
-                          ),
+                    // Row 2: Unified Search Bar with Embedded Filter Button
+                    Container(
+                      height: 48,
+                      decoration: BoxDecoration(
+                        color: isDark ? const Color(0xFF1E293B) : Colors.white,
+                        borderRadius: BorderRadius.circular(14),
+                        border: Border.all(
+                          color: isDark
+                              ? const Color(0xFF334155)
+                              : const Color(0xFFE2E8F0),
                         ),
-                        const SizedBox(width: 8),
-
-                        // Filters button with badge
-                        Stack(
-                          clipBehavior: Clip.none,
-                          children: [
-                            IconButton.filledTonal(
-                              onPressed: () => _openFilterSheet(context),
-                              icon: const Icon(Icons.tune_rounded, size: 20),
-                              tooltip: l10n.xonadoshSearchFiltersTitle,
-                              style: IconButton.styleFrom(
-                                backgroundColor: activeFilterCount > 0
-                                    ? XonaDoshColors.emerald.withValues(
-                                        alpha: 0.15,
-                                      )
-                                    : (isDark
-                                          ? const Color(0xFF1E293B)
-                                          : Colors.white),
-                                foregroundColor: activeFilterCount > 0
-                                    ? XonaDoshColors.emeraldDark
-                                    : (isDark
-                                          ? Colors.white
-                                          : const Color(0xFF334155)),
-                                shape: RoundedRectangleBorder(
-                                  borderRadius: BorderRadius.circular(14),
-                                  side: BorderSide(
+                        boxShadow: [
+                          BoxShadow(
+                            color: Colors.black.withValues(
+                              alpha: isDark ? 0.2 : 0.04,
+                            ),
+                            blurRadius: 10,
+                            offset: const Offset(0, 2),
+                          ),
+                        ],
+                      ),
+                      child: TextField(
+                        controller: _searchController,
+                        focusNode: _searchFocus,
+                        onChanged: (v) {
+                          setState(() {});
+                          _searchDebounce?.cancel();
+                          _searchDebounce = Timer(
+                            const Duration(milliseconds: 350),
+                            () {
+                              if (!mounted) return;
+                              ref
+                                  .read(xonadoshSearchQueryProvider.notifier)
+                                  .state = v.trim().isEmpty
+                                  ? null
+                                  : v.trim();
+                            },
+                          );
+                        },
+                        style: const TextStyle(fontSize: 14),
+                        decoration: InputDecoration(
+                          hintText: 'Tuman yoki metro qidiring...',
+                          hintStyle: TextStyle(
+                            fontSize: 13,
+                            color: isDark
+                                ? const Color(0xFF64748B)
+                                : const Color(0xFF94A3B8),
+                          ),
+                          prefixIcon: const Icon(
+                            Icons.search_rounded,
+                            color: XonaDoshColors.emerald,
+                            size: 20,
+                          ),
+                          suffixIcon: Row(
+                            mainAxisSize: MainAxisSize.min,
+                            children: [
+                              if (_searchController.text.isNotEmpty)
+                                IconButton(
+                                  icon: const Icon(
+                                    Icons.close_rounded,
+                                    size: 16,
+                                  ),
+                                  onPressed: () {
+                                    _searchController.clear();
+                                    ref
+                                            .read(
+                                              xonadoshSearchQueryProvider
+                                                  .notifier,
+                                            )
+                                            .state =
+                                        null;
+                                    setState(() {});
+                                  },
+                                ),
+                              GestureDetector(
+                                onTap: () => _openFilterSheet(context),
+                                child: Container(
+                                  margin: const EdgeInsets.only(right: 8),
+                                  padding: const EdgeInsets.symmetric(
+                                    horizontal: 8,
+                                    vertical: 6,
+                                  ),
+                                  decoration: BoxDecoration(
                                     color: activeFilterCount > 0
-                                        ? XonaDoshColors.emerald
+                                        ? XonaDoshColors.emerald.withValues(
+                                            alpha: 0.15,
+                                          )
                                         : (isDark
                                               ? const Color(0xFF334155)
-                                              : const Color(0xFFE2E8F0)),
+                                              : const Color(0xFFF1F5F9)),
+                                    borderRadius: BorderRadius.circular(10),
+                                  ),
+                                  child: Row(
+                                    mainAxisSize: MainAxisSize.min,
+                                    children: [
+                                      Icon(
+                                        Icons.tune_rounded,
+                                        size: 16,
+                                        color: activeFilterCount > 0
+                                            ? XonaDoshColors.emerald
+                                            : (isDark
+                                                  ? Colors.grey[400]
+                                                  : Colors.grey[700]),
+                                      ),
+                                      if (activeFilterCount > 0) ...[
+                                        const SizedBox(width: 4),
+                                        Text(
+                                          '$activeFilterCount',
+                                          style: const TextStyle(
+                                            color: XonaDoshColors.emerald,
+                                            fontSize: 11,
+                                            fontWeight: FontWeight.w800,
+                                          ),
+                                        ),
+                                      ],
+                                    ],
                                   ),
                                 ),
                               ),
-                            ),
-                            if (activeFilterCount > 0)
-                              Positioned(
-                                top: -2,
-                                right: -2,
-                                child: Container(
-                                  padding: const EdgeInsets.all(5),
-                                  decoration: const BoxDecoration(
-                                    color: XonaDoshColors.emerald,
-                                    shape: BoxShape.circle,
-                                  ),
-                                  child: Text(
-                                    '$activeFilterCount',
-                                    style: const TextStyle(
-                                      color: Colors.white,
-                                      fontSize: 10,
-                                      fontWeight: FontWeight.w900,
-                                    ),
-                                  ),
-                                ),
-                              ),
-                          ],
+                            ],
+                          ),
+                          contentPadding: const EdgeInsets.symmetric(
+                            horizontal: 14,
+                            vertical: 12,
+                          ),
+                          border: InputBorder.none,
+                          enabledBorder: InputBorder.none,
+                          focusedBorder: InputBorder.none,
+                          filled: false,
                         ),
-                      ],
+                      ),
                     ),
 
                     const SizedBox(height: 10),
@@ -443,11 +448,10 @@ class _XonadoshHousingTabState extends ConsumerState<XonadoshHousingTab> {
                             activeColor: const Color(0xFF0284C7),
                             onTap: () =>
                                 ref
-                                        .read(
-                                          xonadoshGenderFilterProvider.notifier,
-                                        )
-                                        .state =
-                                    selectedGender == 'boys' ? 'any' : 'boys',
+                                    .read(xonadoshGenderFilterProvider.notifier)
+                                    .state = selectedGender == 'boys'
+                                ? 'any'
+                                : 'boys',
                           ),
                           const SizedBox(width: 6),
                           _buildFeatureToggleChip(
@@ -457,11 +461,10 @@ class _XonadoshHousingTabState extends ConsumerState<XonadoshHousingTab> {
                             activeColor: const Color(0xFFF59E0B),
                             onTap: () =>
                                 ref
-                                        .read(
-                                          xonadoshMaxPriceProvider.notifier,
-                                        )
-                                        .state =
-                                    maxPrice == 1000000 ? null : 1000000,
+                                    .read(xonadoshMaxPriceProvider.notifier)
+                                    .state = maxPrice == 1000000
+                                ? null
+                                : 1000000,
                           ),
                           const SizedBox(width: 6),
                           _buildFeatureToggleChip(
@@ -909,20 +912,26 @@ class _XonadoshHousingTabState extends ConsumerState<XonadoshHousingTab> {
                               mainAxisAlignment: MainAxisAlignment.center,
                               children: [
                                 TextButton(
-                                  onPressed: () => ref
-                                      .read(
-                                        xonadoshShellTabIndexProvider.notifier,
-                                      )
-                                      .state = 0,
+                                  onPressed: () =>
+                                      ref
+                                              .read(
+                                                xonadoshShellTabIndexProvider
+                                                    .notifier,
+                                              )
+                                              .state =
+                                          0,
                                   child: Text(l10n.xonadoshFindRoom),
                                 ),
                                 const SizedBox(width: 8),
                                 TextButton(
-                                  onPressed: () => ref
-                                      .read(
-                                        xonadoshShellTabIndexProvider.notifier,
-                                      )
-                                      .state = 1,
+                                  onPressed: () =>
+                                      ref
+                                              .read(
+                                                xonadoshShellTabIndexProvider
+                                                    .notifier,
+                                              )
+                                              .state =
+                                          1,
                                   child: Text(l10n.xonadoshFindRoommate),
                                 ),
                               ],
@@ -977,21 +986,6 @@ class _XonadoshHousingTabState extends ConsumerState<XonadoshHousingTab> {
               },
             ),
           ],
-        ),
-      ),
-      floatingActionButton: Padding(
-        padding: const EdgeInsets.only(bottom: 74),
-        child: FloatingActionButton.extended(
-          onPressed: () {
-            context.push(AppRoutes.xonadoshCreateListing);
-          },
-          backgroundColor: XonaDoshColors.emerald,
-          foregroundColor: Colors.white,
-          icon: const Icon(Icons.add_home_rounded),
-          label: Text(
-            l10n.xonadoshPostListing,
-            style: const TextStyle(fontWeight: FontWeight.bold),
-          ),
         ),
       ),
     );
@@ -1122,11 +1116,21 @@ class _XonadoshHousingTabState extends ConsumerState<XonadoshHousingTab> {
                 ),
                 const SizedBox(height: 12),
                 ListTile(
-                  leading: const Icon(Icons.school_outlined, color: XonaDoshColors.emerald),
-                  title: const Text('Barcha OTMlar (Hammasi)', style: TextStyle(fontWeight: FontWeight.w700)),
+                  leading: const Icon(
+                    Icons.school_outlined,
+                    color: XonaDoshColors.emerald,
+                  ),
+                  title: const Text(
+                    'Barcha OTMlar (Hammasi)',
+                    style: TextStyle(fontWeight: FontWeight.w700),
+                  ),
                   selected: selectedUni == null,
-                  shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
-                  selectedTileColor: XonaDoshColors.emerald.withValues(alpha: 0.1),
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(12),
+                  ),
+                  selectedTileColor: XonaDoshColors.emerald.withValues(
+                    alpha: 0.1,
+                  ),
                   onTap: () {
                     ref.read(xonadoshSelectedUniProvider.notifier).state = null;
                     Navigator.pop(ctx);
@@ -1143,15 +1147,33 @@ class _XonadoshHousingTabState extends ConsumerState<XonadoshHousingTab> {
                       return ListTile(
                         leading: Icon(
                           Icons.school_rounded,
-                          color: isSelected ? XonaDoshColors.emerald : Colors.grey,
+                          color: isSelected
+                              ? XonaDoshColors.emerald
+                              : Colors.grey,
                         ),
-                        title: Text(u.nameUz, style: TextStyle(fontWeight: isSelected ? FontWeight.w800 : FontWeight.w600, fontSize: 14)),
-                        subtitle: Text('${u.shortName} • ${u.district}', style: const TextStyle(fontSize: 12)),
+                        title: Text(
+                          u.nameUz,
+                          style: TextStyle(
+                            fontWeight: isSelected
+                                ? FontWeight.w800
+                                : FontWeight.w600,
+                            fontSize: 14,
+                          ),
+                        ),
+                        subtitle: Text(
+                          '${u.shortName} • ${u.district}',
+                          style: const TextStyle(fontSize: 12),
+                        ),
                         selected: isSelected,
-                        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
-                        selectedTileColor: XonaDoshColors.emerald.withValues(alpha: 0.1),
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(12),
+                        ),
+                        selectedTileColor: XonaDoshColors.emerald.withValues(
+                          alpha: 0.1,
+                        ),
                         onTap: () {
-                          ref.read(xonadoshSelectedUniProvider.notifier).state = u;
+                          ref.read(xonadoshSelectedUniProvider.notifier).state =
+                              u;
                           Navigator.pop(ctx);
                         },
                       );

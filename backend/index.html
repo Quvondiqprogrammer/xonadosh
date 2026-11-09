@@ -471,34 +471,53 @@ h1, h2, h3, h4 {
   padding: 6px;
   gap: 8px;
   margin-bottom: 1.25rem;
-  max-width: 520px;
+  max-width: 620px;
 }
 .search-select-wrap {
   display: flex;
   align-items: center;
   flex: 1;
-  padding: 4px 10px;
+  padding: 4px 8px;
   gap: 8px;
+  min-width: 0;
+}
+.search-divider {
+  width: 1px;
+  height: 28px;
+  background: var(--line);
+  flex-shrink: 0;
 }
 .search-icon {
-  font-size: 1.25rem;
+  font-size: 1.15rem;
+  flex-shrink: 0;
 }
 .hero-uni-select {
   border: none;
   background: transparent;
   width: 100%;
   font-family: inherit;
-  font-size: 0.95rem;
+  font-size: 0.9rem;
   font-weight: 600;
   color: var(--ink-800);
   outline: none;
   cursor: pointer;
+  text-overflow: ellipsis;
 }
 .hero-search-btn {
   padding: 0.65rem 1.2rem;
   white-space: nowrap;
   font-weight: 700;
   border-radius: 12px;
+  flex-shrink: 0;
+}
+@media (max-width: 640px) {
+  .hero-search-box {
+    flex-direction: column;
+    align-items: stretch;
+  }
+  .search-divider {
+    display: none;
+  }
 }
 
 .hero-trust-badges {
@@ -1460,18 +1479,18 @@ h1, h2, h3, h4 {
             <span data-i18n="heroBadge">O‘zbekistondagi 1-raqamli talabalar platformasi</span>
           </div>
           <h1 class="hero-title" id="heroHeadline">
-            Talabalar uchun <span class="gradient-text">maklersiz uy</span> va mos xonadosh
+            Universitet yonidan <span class="gradient-text">maklersiz uy</span> va mos xonadosh
           </h1>
           <p class="hero-desc" id="heroDesc">
             OTM yonidan arzon turar-joy va xarakteringizga mos xonadoshni 3 daqiqada toping.
           </p>
 
-          <!-- Interaktiv Qidiruv Qutisi -->
+          <!-- Interaktiv Qidiruv Qutisi (1-qator OTM + Byudjet + Qidirish) -->
           <div class="hero-search-box">
             <div class="search-select-wrap">
-              <span class="search-icon">🎓</span>
+              <span class="search-icon"><svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 10v6M2 10l10-5 10 5-10 5z"/><path d="M6 12v5c3 3 9 3 12 0v-5"/></svg></span>
               <select id="heroUniSelect" class="hero-uni-select" aria-label="OTM tanlash">
-                <option value="">OTMni tanlang (TATU, O‘zMU, Inha...)</option>
+                <option value="">OTM (TATU, O‘zMU, Inha...)</option>
                 <option value="tatu">TATU (Muhammad al-Xorazmiy)</option>
                 <option value="ozmu">O‘zMU (Mirzo Ulug‘bek)</option>
                 <option value="tdtu">TDTU (Islom Karimov)</option>
@@ -1483,25 +1502,36 @@ h1, h2, h3, h4 {
                 <option value="tma">TTA (Tibbiyot)</option>
               </select>
             </div>
+            <div class="search-divider"></div>
+            <div class="search-select-wrap">
+              <span class="search-icon"><svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="5" width="20" height="14" rx="2"/><line x1="2" y1="10" x2="22" y2="10"/></svg></span>
+              <select id="heroBudgetSelect" class="hero-uni-select" aria-label="Byudjet tanlash">
+                <option value="">Byudjet (Barchasi)</option>
+                <option value="600000">600 000 so‘mgacha</option>
+                <option value="1000000">1 000 000 so‘mgacha</option>
+                <option value="1500000">1 500 000 so‘mgacha</option>
+                <option value="2500000">2 500 000 so‘mgacha</option>
+              </select>
+            </div>
             <button class="btn btn-primary hero-search-btn" onclick="goToAppWithUni()">
               <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><circle cx="11" cy="11" r="8"></circle><line x1="21" y1="21" x2="16.65" y2="16.65"></line></svg>
               <span>Uylarni ko‘rish</span>
             </button>
           </div>
 
-          <!-- 3 ta ishonch ko'rsatkichi (Trust badges) -->
+          <!-- 3 ta toza ishonch nishoni (Trust badges) -->
           <div class="hero-trust-badges">
             <div class="trust-badge">
-              <span>🛡️</span>
-              <span><strong>0%</strong> Makler komissiyasi</span>
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#10b981" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
+              <span><strong>0%</strong> Makler</span>
             </div>
             <div class="trust-badge">
-              <span>🤝</span>
-              <span><strong>94%</strong> Xonadosh mosligi</span>
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#0ea5e9" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>
+              <span><strong>AI Moslik</strong> 94%+</span>
             </div>
             <div class="trust-badge">
-              <span>🎓</span>
-              <span><strong>10+</strong> OTM klasterlari</span>
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#8b5cf6" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg>
+              <span><strong>Coliving</strong> Boshqaruvi</span>
             </div>
           </div>
 
@@ -1518,27 +1548,12 @@ h1, h2, h3, h4 {
               <span>Web ilovani ochish</span>
             </a>
           </div>
-
-          <div class="hero-stats-row">
-            <div class="hero-stat-card">
-              <span class="hero-stat-val">45+</span>
-              <span class="hero-stat-label" data-i18n="statUnis">OTMlar qamrovi</span>
-            </div>
-            <div class="hero-stat-card">
-              <span class="hero-stat-val">94%</span>
-              <span class="hero-stat-label" data-i18n="statMatch">O'rtacha moslik</span>
-            </div>
-            <div class="hero-stat-card">
-              <span class="hero-stat-val">⭐ 4.9</span>
-              <span class="hero-stat-label" data-i18n="statRating">Talabalar bahosi</span>
-            </div>
-          </div>
         </div>
 
         <!-- Phone Visual Mockup -->
         <div class="mockup-wrap">
           <div class="floating-chip chip-left">
-            <div class="chip-icon green">⚡</div>
+            <div class="chip-icon green"><svg width="15" height="15" viewBox="0 0 24 24" fill="currentColor"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/></svg></div>
             <div class="chip-text">
               <h5 data-i18n="chip1Title">Yangi moslik!</h5>
               <p data-i18n="chip1Sub">96% xarakter mos keldi</p>
@@ -1546,7 +1561,7 @@ h1, h2, h3, h4 {
           </div>
 
           <div class="floating-chip chip-right">
-            <div class="chip-icon blue">📍</div>
+            <div class="chip-icon blue"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg></div>
             <div class="chip-text">
               <h5 data-i18n="chip2Title">TATU ro‘parasida</h5>
               <p data-i18n="chip2Sub">450m piyoda masofa</p>
@@ -1558,7 +1573,7 @@ h1, h2, h3, h4 {
             <div class="app-screen">
               <div class="app-header">
                 <div class="app-logo-pill">
-                  <span style="font-size:1.1rem">🏡</span> XonaDosh
+                  <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="var(--primary)" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" style="margin-right:4px;"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg> XonaDosh
                 </div>
                 <div style="font-size:0.75rem; font-weight:700; color:var(--primary); background:#ecfdf5; padding:2px 8px; border-radius:99px;">
                   ● Jonli
@@ -1566,9 +1581,9 @@ h1, h2, h3, h4 {
               </div>
 
               <div class="app-nav-tabs">
-                <button class="app-tab-btn active" onclick="switchMockupTab('match')">🎯 Moslik</button>
-                <button class="app-tab-btn" onclick="switchMockupTab('housing')">🏠 Uy-joy</button>
-                <button class="app-tab-btn" onclick="switchMockupTab('coliving')">🥗 Oshxona</button>
+                <button class="app-tab-btn active" onclick="switchMockupTab('match')">Moslik</button>
+                <button class="app-tab-btn" onclick="switchMockupTab('housing')">Uy-joy</button>
+                <button class="app-tab-btn" onclick="switchMockupTab('coliving')">Xonadoshlar</button>
               </div>
 
               <!-- Phone Screen Content (Dynamic Tabs) -->
@@ -1585,16 +1600,16 @@ h1, h2, h3, h4 {
 
                   <div class="compat-meter-row">
                     <div class="compat-badge">
-                      <span class="compat-sparkle">🔥</span> 94% Moslik
+                      <svg width="12" height="12" viewBox="0 0 24 24" fill="currentColor" style="margin-right:2px;"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/></svg> 94% Moslik
                     </div>
                     <span class="compat-uni">TATUga 5 min piyoda</span>
                   </div>
 
                   <div class="habit-pills-wrap">
-                    <span class="habit-pill highlight">🌅 Erta turadi</span>
-                    <span class="habit-pill highlight">🧹 Tartibli</span>
-                    <span class="habit-pill highlight">🚭 Chekmaydi</span>
-                    <span class="habit-pill">📚 Dasturchi</span>
+                    <span class="habit-pill highlight">Erta turadi</span>
+                    <span class="habit-pill highlight">Tartibli</span>
+                    <span class="habit-pill highlight">Chekmaydi</span>
+                    <span class="habit-pill">Dasturchi</span>
                   </div>
 
                   <div class="card-foot-row">
@@ -1604,7 +1619,7 @@ h1, h2, h3, h4 {
                 </div>
 
                 <div style="background:#ffffff; border-radius:16px; padding:0.8rem 1rem; border:1px solid var(--line); display:flex; align-items:center; justify-content:space-between;">
-                  <span style="font-size:0.8rem; font-weight:700;">🤝 Bog'lanishga tayyor</span>
+                  <span style="font-size:0.8rem; font-weight:700; color:var(--ink-dark);">Bog'lanishga tayyor</span>
                   <button style="border:0; background:var(--primary); color:#fff; font-size:0.75rem; font-weight:700; padding:0.35rem 0.85rem; border-radius:99px;">Chat ochish</button>
                 </div>
               </div>
@@ -1619,27 +1634,27 @@ h1, h2, h3, h4 {
   <section class="marquee-section">
     <p class="marquee-title" data-i18n="marqueeTitle">O‘zbekistonning 45+ yetakchi oliygohlari talabalari ishonchi</p>
     <div class="marquee-track">
-      <div class="uni-badge-item">🏛️ TATU — Axborot Texnologiyalari</div>
-      <div class="uni-badge-item">🎓 O‘zMU — Milliy Universitet</div>
-      <div class="uni-badge-item">💻 INHA Universiteti</div>
-      <div class="uni-badge-item">🇬🇧 Westminster (WIUT)</div>
-      <div class="uni-badge-item">🌐 Amity Universiteti</div>
-      <div class="uni-badge-item">⚙️ TDTU — Texnika Universiteti</div>
-      <div class="uni-badge-item">📈 TDIU — Iqtisodiyot (Narxoz)</div>
-      <div class="uni-badge-item">🩺 TMA — Tibbiyot Akademiyasi</div>
-      <div class="uni-badge-item">🌍 O‘zDJTU — Jahon Tillari</div>
-      <div class="uni-badge-item">⚖️ TDYU — Yuridik Universiteti</div>
+      <div class="uni-badge-item">TATU — Axborot Texnologiyalari</div>
+      <div class="uni-badge-item">O‘zMU — Milliy Universitet</div>
+      <div class="uni-badge-item">INHA Universiteti</div>
+      <div class="uni-badge-item">Westminster (WIUT)</div>
+      <div class="uni-badge-item">Amity Universiteti</div>
+      <div class="uni-badge-item">TDTU — Texnika Universiteti</div>
+      <div class="uni-badge-item">TDIU — Iqtisodiyot (Narxoz)</div>
+      <div class="uni-badge-item">TMA — Tibbiyot Akademiyasi</div>
+      <div class="uni-badge-item">O‘zDJTU — Jahon Tillari</div>
+      <div class="uni-badge-item">TDYU — Yuridik Universiteti</div>
       <!-- Duplicate for seamless infinite loop -->
-      <div class="uni-badge-item">🏛️ TATU — Axborot Texnologiyalari</div>
-      <div class="uni-badge-item">🎓 O‘zMU — Milliy Universitet</div>
-      <div class="uni-badge-item">💻 INHA Universiteti</div>
-      <div class="uni-badge-item">🇬🇧 Westminster (WIUT)</div>
-      <div class="uni-badge-item">🌐 Amity Universiteti</div>
-      <div class="uni-badge-item">⚙️ TDTU — Texnika Universiteti</div>
-      <div class="uni-badge-item">📈 TDIU — Iqtisodiyot (Narxoz)</div>
-      <div class="uni-badge-item">🩺 TMA — Tibbiyot Akademiyasi</div>
-      <div class="uni-badge-item">🌍 O‘zDJTU — Jahon Tillari</div>
-      <div class="uni-badge-item">⚖️ TDYU — Yuridik Universiteti</div>
+      <div class="uni-badge-item">TATU — Axborot Texnologiyalari</div>
+      <div class="uni-badge-item">O‘zMU — Milliy Universitet</div>
+      <div class="uni-badge-item">INHA Universiteti</div>
+      <div class="uni-badge-item">Westminster (WIUT)</div>
+      <div class="uni-badge-item">Amity Universiteti</div>
+      <div class="uni-badge-item">TDTU — Texnika Universiteti</div>
+      <div class="uni-badge-item">TDIU — Iqtisodiyot (Narxoz)</div>
+      <div class="uni-badge-item">TMA — Tibbiyot Akademiyasi</div>
+      <div class="uni-badge-item">O‘zDJTU — Jahon Tillari</div>
+      <div class="uni-badge-item">TDYU — Yuridik Universiteti</div>
     </div>
   </section>
 
@@ -1655,37 +1670,37 @@ h1, h2, h3, h4 {
       <div class="feature-cards-grid">
         <!-- Feature 1 -->
         <div class="feature-box">
-          <div class="feature-icon-box">🏠</div>
+          <div class="feature-icon-box"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg></div>
           <h3 data-i18n="feat1Title">Universitet yaqinidan uy-joy</h3>
           <p data-i18n="feat1Desc">Oliygohingizgacha bo‘lgan masofani aniq ko‘ring. Ortiqcha makler komissiyalarisiz, xonadon egalari bilan to‘g‘ridan-to‘g‘ri gaplashing.</p>
           <div class="feature-mini-pills">
-            <span class="f-mini-pill">📍 Xaritada masofa</span>
-            <span class="f-mini-pill">💰 Bez makler</span>
-            <span class="f-mini-pill">🧺 Qulayliklar</span>
+            <span class="f-mini-pill">Xaritada masofa</span>
+            <span class="f-mini-pill">0% Komissiya</span>
+            <span class="f-mini-pill">Qulayliklar</span>
           </div>
         </div>
 
         <!-- Feature 2 -->
         <div class="feature-box">
-          <div class="feature-icon-box" style="background:#fef3c7; color:#d97706;">🤝</div>
+          <div class="feature-icon-box" style="background:#fef3c7; color:#d97706;"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg></div>
           <h3 data-i18n="feat2Title">Aqlli Moslik Algoritmi</h3>
           <p data-i18n="feat2Desc">Uyqu tartibi (erta turar yoki boyqush), tozalik odati, byudjet va qiziqishlaringiz bo‘yicha aniq moslik foizi. Noqulay xonadoshlar bilan vaqt yo‘qotmaysiz.</p>
           <div class="feature-mini-pills">
-            <span class="f-mini-pill">🌅 Rejim mosligi</span>
-            <span class="f-mini-pill">🧹 Tozalik indeksi</span>
-            <span class="f-mini-pill">⚡ 90%+ aniqlik</span>
+            <span class="f-mini-pill">Rejim mosligi</span>
+            <span class="f-mini-pill">Tozalik indeksi</span>
+            <span class="f-mini-pill">90%+ aniqlik</span>
           </div>
         </div>
 
         <!-- Feature 3 -->
         <div class="feature-box">
-          <div class="feature-icon-box" style="background:#e0e7ff; color:#4f46e5;">🥗</div>
+          <div class="feature-icon-box" style="background:#e0e7ff; color:#4f46e5;"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 8h1a4 4 0 0 1 0 8h-1"/><path d="M2 8h16v9a4 4 0 0 1-4 4H6a4 4 0 0 1-4-4V8z"/><line x1="6" y1="1" x2="6" y2="4"/><line x1="10" y1="1" x2="10" y2="4"/><line x1="14" y1="1" x2="14" y2="4"/></svg></div>
           <h3 data-i18n="feat3Title">Coliving & Umumiy Oshxona</h3>
           <p data-i18n="feat3Desc">Navbatchilik jadvali (kim qachon idish yuvadi), 21 taomli haftalik menyu, arzon talabalar retseptlari va bozorlik xarajatlarini 50/50 teng bo‘lish.</p>
           <div class="feature-mini-pills">
-            <span class="f-mini-pill">🧹 Navbatchilik</span>
-            <span class="f-mini-pill">🍲 Ovqat menyusi</span>
-            <span class="f-mini-pill">🛒 Bozorlik balansi</span>
+            <span class="f-mini-pill">Navbatchilik</span>
+            <span class="f-mini-pill">Taomnoma</span>
+            <span class="f-mini-pill">Bozorlik balansi</span>
           </div>
         </div>
       </div>
@@ -1702,12 +1717,12 @@ h1, h2, h3, h4 {
           <p data-i18n="simDesc">Odatlaringizni tanlang va algoritmimiz sizga qanchalik mos nomzod topishini jonli kuzating:</p>
 
           <div class="sim-habit-selectors">
-            <button class="sim-toggle-btn active" onclick="toggleSimHabit(this, 12)">🌅 Erta turaman</button>
-            <button class="sim-toggle-btn active" onclick="toggleSimHabit(this, 15)">🧹 Tartibliman</button>
-            <button class="sim-toggle-btn active" onclick="toggleSimHabit(this, 18)">🚭 Chekmayman</button>
-            <button class="sim-toggle-btn active" onclick="toggleSimHabit(this, 14)">📚 Sokinlikni yoqtiraman</button>
-            <button class="sim-toggle-btn" onclick="toggleSimHabit(this, 10)">🍳 Ovqat pishira olaman</button>
-            <button class="sim-toggle-btn" onclick="toggleSimHabit(this, 8)">⚽ Sportga qiziqaman</button>
+            <button class="sim-toggle-btn active" onclick="toggleSimHabit(this, 12)">Erta turaman</button>
+            <button class="sim-toggle-btn active" onclick="toggleSimHabit(this, 15)">Tartibliman</button>
+            <button class="sim-toggle-btn active" onclick="toggleSimHabit(this, 18)">Chekmayman</button>
+            <button class="sim-toggle-btn active" onclick="toggleSimHabit(this, 14)">Sokinlik tarafdori</button>
+            <button class="sim-toggle-btn" onclick="toggleSimHabit(this, 10)">Ovqat pishiraman</button>
+            <button class="sim-toggle-btn" onclick="toggleSimHabit(this, 8)">Sportga qiziqaman</button>
           </div>
 
           <a href="/app/" class="btn btn-primary" data-i18n="simCta">Barcha mos nomzodlarni ko‘rish →</a>
@@ -1743,19 +1758,19 @@ h1, h2, h3, h4 {
 
       <div class="steps-grid">
         <div class="step-card">
-          <div class="step-num-badge" style="background:var(--primary); font-size:1.2rem;">🎓</div>
+          <div class="step-num-badge" style="background:var(--primary); font-size:1rem; font-weight:800;">1</div>
           <h3>OTMni tanlang</h3>
           <p>Universitetingiz yonidagi barcha talabalar uylarini ko‘ring.</p>
         </div>
 
         <div class="step-card">
-          <div class="step-num-badge" style="background:var(--accent-cyan); font-size:1.2rem;">🛡️</div>
+          <div class="step-num-badge" style="background:var(--accent-cyan); font-size:1rem; font-weight:800;">2</div>
           <h3>Maklersiz uyni tanlang</h3>
           <p>Vositachisiz, toza va arzon xonalarni bron qiling.</p>
         </div>
 
         <div class="step-card">
-          <div class="step-num-badge" style="background:var(--accent-purple); font-size:1.2rem;">🤝</div>
+          <div class="step-num-badge" style="background:var(--accent-purple); font-size:1rem; font-weight:800;">3</div>
           <h3>Xonadosh bilan ko‘chib o‘ting</h3>
           <p>Odatlari mos xonadosh bilan ijarani teng bo‘lishing.</p>
         </div>
@@ -1886,7 +1901,7 @@ h1, h2, h3, h4 {
 
           <div style="text-align: center;">
             <button type="submit" id="qlSubmitBtn" style="background: #10B981; color: #fff; border: none; padding: 14px 32px; border-radius: 12px; font-size: 16px; font-weight: 700; cursor: pointer; transition: 0.2s; box-shadow: 0 4px 15px rgba(16, 185, 129, 0.4);">
-              🚀 E‘lonni bepul joylashtirish (1 daqiqada)
+              E‘lonni bepul joylashtirish (1 daqiqada)
             </button>
             <div id="qlStatus" style="margin-top: 14px; font-size: 14px; font-weight: 600; display: none;"></div>
           </div>
@@ -2052,8 +2067,8 @@ const translations = {
     navWebApp: 'Web ilova',
     navDownload: 'Yuklab olish',
     heroBadge: 'O‘zbekistondagi 1-raqamli talabalar platformasi',
-    heroHeadline: 'Universitet yonida arzon uy va <span class="gradient-text">mos xonadosh</span>',
-    heroDesc: 'Ortiqcha makler to‘lovlarsiz, odatlaringiz va byudjetingizga 90%+ mos xonadosh toping, birga yashang va ijarani teng bo‘lishing.',
+    heroHeadline: 'Universitet yonidan <span class="gradient-text">maklersiz uy</span> va mos xonadosh',
+    heroDesc: 'OTM yonidan arzon turar-joy va xarakteringizga mos xonadoshni 3 daqiqada toping.',
     badgeGooglePlaySub: 'Yuklab oling',
     heroWebBtn: 'Web ilovani ochish',
     statUnis: 'OTMlar qamrovi',
@@ -2122,8 +2137,8 @@ const translations = {
     navWebApp: 'Веб-приложение',
     navDownload: 'Скачать',
     heroBadge: 'Платформа №1 для студентов в Узбекистане',
-    heroHeadline: 'Жильё у вуза и <span class="gradient-text">надёжный сосед</span>',
-    heroDesc: 'Без комиссии риелтора найдите соседа с совместимостью 90%+, делите аренду пополам и управляйте совместным бытом.',
+    heroHeadline: 'Жильё у вуза <span class="gradient-text">без маклера</span> и надёжный сосед',
+    heroDesc: 'Найдите доступное жильё рядом с вузом и совместимого соседа за 3 минуты.',
     badgeGooglePlaySub: 'Скачать в',
     heroWebBtn: 'Открыть веб-версию',
     statUnis: 'Охват вузов',
@@ -2192,8 +2207,8 @@ const translations = {
     navWebApp: 'Web App',
     navDownload: 'Download',
     heroBadge: '#1 Student Coliving Platform in Uzbekistan',
-    heroHeadline: 'Campus housing and a <span class="gradient-text">compatible roommate</span>',
-    heroDesc: 'Skip broker fees. Find verified student apartments and roommates with 90%+ lifestyle compatibility, split rent, and live together peacefully.',
+    heroHeadline: 'Broker-free housing near campus and a <span class="gradient-text">matched roommate</span>',
+    heroDesc: 'Find affordable campus housing and compatible roommates in 3 minutes.',
     badgeGooglePlaySub: 'Get it on',
     heroWebBtn: 'Open Web App',
     statUnis: 'Universities',
@@ -2369,14 +2384,14 @@ function switchMockupTab(type) {
           </div>
         </div>
         <div class="compat-meter-row">
-          <div class="compat-badge"><span class="compat-sparkle">🔥</span> 94% Moslik</div>
+          <div class="compat-badge"><svg width="12" height="12" viewBox="0 0 24 24" fill="currentColor" style="margin-right:2px;"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/></svg> 94% Moslik</div>
           <span class="compat-uni">TATUga 5 min piyoda</span>
         </div>
         <div class="habit-pills-wrap">
-          <span class="habit-pill highlight">🌅 Erta turadi</span>
-          <span class="habit-pill highlight">🧹 Tartibli</span>
-          <span class="habit-pill highlight">🚭 Chekmaydi</span>
-          <span class="habit-pill">📚 Dasturchi</span>
+          <span class="habit-pill highlight">Erta turadi</span>
+          <span class="habit-pill highlight">Tartibli</span>
+          <span class="habit-pill highlight">Chekmaydi</span>
+          <span class="habit-pill">Dasturchi</span>
         </div>
         <div class="card-foot-row">
           <span style="font-size:0.75rem; color:var(--ink-muted);">Byudjet:</span>
@@ -2384,7 +2399,7 @@ function switchMockupTab(type) {
         </div>
       </div>
       <div style="background:#ffffff; border-radius:16px; padding:0.8rem 1rem; border:1px solid var(--line); display:flex; align-items:center; justify-content:space-between;">
-        <span style="font-size:0.8rem; font-weight:700;">🤝 Bog'lanishga tayyor</span>
+        <span style="font-size:0.8rem; font-weight:700; color:var(--ink-dark);">Bog'lanishga tayyor</span>
         <button style="border:0; background:var(--primary); color:#fff; font-size:0.75rem; font-weight:700; padding:0.35rem 0.85rem; border-radius:99px;">Chat ochish</button>
       </div>
     `;
@@ -2393,16 +2408,16 @@ function switchMockupTab(type) {
     content.innerHTML = `
       <div class="matching-card">
         <div style="display:flex; justify-content:space-between; margin-bottom:0.5rem;">
-          <span style="background:#059669; color:#fff; font-size:0.68rem; font-weight:800; padding:2px 7px; border-radius:6px;">Bez Makler</span>
+          <span style="background:#059669; color:#fff; font-size:0.68rem; font-weight:800; padding:2px 7px; border-radius:6px;">Maklersiz</span>
           <span style="background:#0284c7; color:#fff; font-size:0.68rem; font-weight:800; padding:2px 7px; border-radius:6px;">Kommunal ichida</span>
         </div>
         <h4 style="font-size:0.95rem; margin-bottom:0.25rem;">Yunusobod 4-mavze, 2 xonali</h4>
-        <p style="font-size:0.75rem; color:var(--ink-muted); margin-bottom:0.7rem;">📍 TATU bosh binosiga 450m piyoda</p>
+        <p style="font-size:0.75rem; color:var(--ink-muted); margin-bottom:0.7rem;">TATU bosh binosiga 450m piyoda</p>
         <div class="habit-pills-wrap" style="margin-bottom:0.7rem;">
-          <span class="habit-pill">📶 Wi-Fi</span>
-          <span class="habit-pill">🧺 Kir mashina</span>
-          <span class="habit-pill">🧊 Muzlatgich</span>
-          <span class="habit-pill">🔥 Issiq suv</span>
+          <span class="habit-pill">Wi-Fi</span>
+          <span class="habit-pill">Kir mashina</span>
+          <span class="habit-pill">Muzlatgich</span>
+          <span class="habit-pill">Konditsioner</span>
         </div>
         <div class="card-foot-row">
           <span style="font-size:0.75rem; color:var(--ink-muted);">Xona narxi:</span>
@@ -2410,7 +2425,7 @@ function switchMockupTab(type) {
         </div>
       </div>
       <div style="background:#ecfdf5; border-radius:14px; padding:0.75rem 1rem; border:1px solid rgba(16,185,129,0.3); display:flex; align-items:center; justify-content:space-between;">
-        <span style="font-size:0.8rem; font-weight:700; color:#047857;">📞 Egasiga qo'ng'iroq</span>
+        <span style="font-size:0.8rem; font-weight:700; color:#047857;">Egasiga qo'ng'iroq</span>
         <span style="font-size:0.75rem; font-weight:800; color:#047857;">+998 90 ••• •• 77</span>
       </div>
     `;
@@ -2419,7 +2434,7 @@ function switchMockupTab(type) {
     content.innerHTML = `
       <div class="matching-card">
         <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:0.6rem;">
-          <h4 style="font-size:0.88rem;">🎯 Haftalik Tartib & Reja</h4>
+          <h4 style="font-size:0.88rem;">Haftalik Tartib & Reja</h4>
           <span style="font-size:0.75rem; font-weight:800; color:#059669;">10/12 (83%)</span>
         </div>
         <div style="background:#f1f5f9; border-radius:99px; height:6px; overflow:hidden; margin-bottom:0.85rem;">
@@ -2427,17 +2442,17 @@ function switchMockupTab(type) {
         </div>
         <div style="display:flex; flex-direction:column; gap:0.5rem; font-size:0.78rem;">
           <div style="display:flex; justify-content:space-between; align-items:center; background:#f8fafc; padding:0.4rem 0.6rem; border-radius:8px;">
-            <span>🧹 Oshxona tozalash (Azizbek)</span>
+            <span>Oshxona tozalash (Azizbek)</span>
             <span style="color:#059669; font-weight:800;">✓ Bajarildi</span>
           </div>
           <div style="display:flex; justify-content:space-between; align-items:center; background:#f8fafc; padding:0.4rem 0.6rem; border-radius:8px;">
-            <span>🍲 Kechki ovqat: Palov (Jasur)</span>
+            <span>Kechki ovqat: Palov (Jasur)</span>
             <span style="color:#d97706; font-weight:800;">Bugun 19:30</span>
           </div>
         </div>
       </div>
       <div style="background:#ffffff; border-radius:14px; padding:0.7rem 1rem; border:1px solid var(--line); display:flex; justify-content:space-between; align-items:center;">
-        <span style="font-size:0.78rem; font-weight:700;">🛒 Bozorlik balansi (50/50):</span>
+        <span style="font-size:0.78rem; font-weight:700;">Bozorlik balansi (50/50):</span>
         <span style="font-size:0.85rem; font-weight:800; color:#059669;">85,000 UZS</span>
       </div>
     `;
@@ -2493,9 +2508,15 @@ async function submitQuickListing(e) {
 }
 
 function goToAppWithUni() {
-  const select = document.getElementById('heroUniSelect');
-  const val = select ? select.value : '';
-  window.location.href = '/app/' + (val ? '?uni=' + encodeURIComponent(val) : '');
+  const uniSelect = document.getElementById('heroUniSelect');
+  const budgetSelect = document.getElementById('heroBudgetSelect');
+  const uni = uniSelect ? uniSelect.value : '';
+  const budget = budgetSelect ? budgetSelect.value : '';
+  const params = new URLSearchParams();
+  if (uni) params.set('uni', uni);
+  if (budget) params.set('max_price', budget);
+  const q = params.toString();
+  window.location.href = '/app/' + (q ? '?' + q : '');
 }
 
 // Initialize Language on Load

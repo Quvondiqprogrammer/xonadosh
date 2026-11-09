@@ -52,10 +52,16 @@ class _RegisterScreenState extends ConsumerState<RegisterScreen> {
       _error = null;
     });
 
-    final normalizedPhone = IntlPhone.normalize(_phoneCtrl.text, country: _country);
-    final autoUsername = 'user_${IntlPhone.digits(normalizedPhone).replaceAll(RegExp(r'\D'), '')}';
+    final normalizedPhone = IntlPhone.normalize(
+      _phoneCtrl.text,
+      country: _country,
+    );
+    final autoUsername =
+        'user_${IntlPhone.digits(normalizedPhone).replaceAll(RegExp(r'\D'), '')}';
 
-    final res = await ref.read(authRepositoryProvider).register(
+    final res = await ref
+        .read(authRepositoryProvider)
+        .register(
           fullName: _nameCtrl.text.trim(),
           username: autoUsername,
           phone: normalizedPhone,
@@ -68,7 +74,9 @@ class _RegisterScreenState extends ConsumerState<RegisterScreen> {
     if (res['ok'] == true) {
       ref.invalidate(authBootstrapProvider);
       try {
-        final retention = ref.read(xonadoshRetentionNotificationServiceProvider);
+        final retention = ref.read(
+          xonadoshRetentionNotificationServiceProvider,
+        );
         await retention.sendWelcomeNotification();
         await retention.setupAllRetentionHooks();
       } catch (_) {}
@@ -100,7 +108,11 @@ class _RegisterScreenState extends ConsumerState<RegisterScreen> {
                     Row(
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: [
-                        const XonaDoshLogo.mark(height: 36, width: 36, borderRadius: 10),
+                        const XonaDoshLogo.mark(
+                          height: 36,
+                          width: 36,
+                          borderRadius: 10,
+                        ),
                         IconButton(
                           icon: const Icon(Icons.close_rounded, size: 22),
                           tooltip: 'Yopish',
@@ -140,7 +152,9 @@ class _RegisterScreenState extends ConsumerState<RegisterScreen> {
                       children: [
                         Expanded(
                           child: Divider(
-                            color: isDark ? XonaDoshColors.borderDark : XonaDoshColors.borderLight,
+                            color: isDark
+                                ? XonaDoshColors.borderDark
+                                : XonaDoshColors.borderLight,
                           ),
                         ),
                         Padding(
@@ -150,13 +164,17 @@ class _RegisterScreenState extends ConsumerState<RegisterScreen> {
                             style: TextStyle(
                               fontSize: 12,
                               fontWeight: FontWeight.w600,
-                              color: isDark ? XonaDoshColors.slate400 : XonaDoshColors.slate500,
+                              color: isDark
+                                  ? XonaDoshColors.slate400
+                                  : XonaDoshColors.slate500,
                             ),
                           ),
                         ),
                         Expanded(
                           child: Divider(
-                            color: isDark ? XonaDoshColors.borderDark : XonaDoshColors.borderLight,
+                            color: isDark
+                                ? XonaDoshColors.borderDark
+                                : XonaDoshColors.borderLight,
                           ),
                         ),
                       ],
@@ -177,22 +195,29 @@ class _RegisterScreenState extends ConsumerState<RegisterScreen> {
                           size: 20,
                         ),
                         filled: true,
-                        fillColor: isDark ? XonaDoshColors.cardDark : Colors.white,
+                        fillColor: isDark
+                            ? XonaDoshColors.cardDark
+                            : Colors.white,
                         border: OutlineInputBorder(
                           borderRadius: BorderRadius.circular(14),
                           borderSide: BorderSide(
-                            color: isDark ? XonaDoshColors.borderDark : XonaDoshColors.borderLight,
+                            color: isDark
+                                ? XonaDoshColors.borderDark
+                                : XonaDoshColors.borderLight,
                           ),
                         ),
                         enabledBorder: OutlineInputBorder(
                           borderRadius: BorderRadius.circular(14),
                           borderSide: BorderSide(
-                            color: isDark ? XonaDoshColors.borderDark : XonaDoshColors.borderLight,
+                            color: isDark
+                                ? XonaDoshColors.borderDark
+                                : XonaDoshColors.borderLight,
                           ),
                         ),
                       ),
-                      validator: (v) =>
-                          (v == null || v.trim().isEmpty) ? 'Ismingizni kiriting' : null,
+                      validator: (v) => (v == null || v.trim().isEmpty)
+                          ? 'Ismingizni kiriting'
+                          : null,
                     ),
                     const SizedBox(height: 12),
 
@@ -206,17 +231,25 @@ class _RegisterScreenState extends ConsumerState<RegisterScreen> {
                         hintText: '90 123 45 67',
                         prefixIcon: InkWell(
                           onTap: _pickCountry,
-                          borderRadius: const BorderRadius.horizontal(left: Radius.circular(14)),
+                          borderRadius: const BorderRadius.horizontal(
+                            left: Radius.circular(14),
+                          ),
                           child: Padding(
                             padding: const EdgeInsets.symmetric(horizontal: 10),
                             child: Row(
                               mainAxisSize: MainAxisSize.min,
                               children: [
-                                Text(_country.flag, style: const TextStyle(fontSize: 18)),
+                                Text(
+                                  _country.flag,
+                                  style: const TextStyle(fontSize: 18),
+                                ),
                                 const SizedBox(width: 4),
                                 Text(
                                   '+${_country.dial}',
-                                  style: const TextStyle(fontWeight: FontWeight.w700, fontSize: 14),
+                                  style: const TextStyle(
+                                    fontWeight: FontWeight.w700,
+                                    fontSize: 14,
+                                  ),
                                 ),
                                 const Icon(Icons.arrow_drop_down, size: 16),
                               ],
@@ -224,22 +257,30 @@ class _RegisterScreenState extends ConsumerState<RegisterScreen> {
                           ),
                         ),
                         filled: true,
-                        fillColor: isDark ? XonaDoshColors.cardDark : Colors.white,
+                        fillColor: isDark
+                            ? XonaDoshColors.cardDark
+                            : Colors.white,
                         border: OutlineInputBorder(
                           borderRadius: BorderRadius.circular(14),
                           borderSide: BorderSide(
-                            color: isDark ? XonaDoshColors.borderDark : XonaDoshColors.borderLight,
+                            color: isDark
+                                ? XonaDoshColors.borderDark
+                                : XonaDoshColors.borderLight,
                           ),
                         ),
                         enabledBorder: OutlineInputBorder(
                           borderRadius: BorderRadius.circular(14),
                           borderSide: BorderSide(
-                            color: isDark ? XonaDoshColors.borderDark : XonaDoshColors.borderLight,
+                            color: isDark
+                                ? XonaDoshColors.borderDark
+                                : XonaDoshColors.borderLight,
                           ),
                         ),
                       ),
                       validator: (v) {
-                        if (v == null || v.trim().isEmpty) return 'Telefon raqamni kiriting';
+                        if (v == null || v.trim().isEmpty) {
+                          return 'Telefon raqamni kiriting';
+                        }
                         if (!IntlPhone.isValid(v, country: _country)) {
                           return 'To‘liq telefon raqamni kiriting';
                         }
@@ -263,22 +304,30 @@ class _RegisterScreenState extends ConsumerState<RegisterScreen> {
                         suffixIcon: IconButton(
                           onPressed: () => setState(() => _obscure = !_obscure),
                           icon: Icon(
-                            _obscure ? Icons.visibility_outlined : Icons.visibility_off_outlined,
+                            _obscure
+                                ? Icons.visibility_outlined
+                                : Icons.visibility_off_outlined,
                             size: 18,
                           ),
                         ),
                         filled: true,
-                        fillColor: isDark ? XonaDoshColors.cardDark : Colors.white,
+                        fillColor: isDark
+                            ? XonaDoshColors.cardDark
+                            : Colors.white,
                         border: OutlineInputBorder(
                           borderRadius: BorderRadius.circular(14),
                           borderSide: BorderSide(
-                            color: isDark ? XonaDoshColors.borderDark : XonaDoshColors.borderLight,
+                            color: isDark
+                                ? XonaDoshColors.borderDark
+                                : XonaDoshColors.borderLight,
                           ),
                         ),
                         enabledBorder: OutlineInputBorder(
                           borderRadius: BorderRadius.circular(14),
                           borderSide: BorderSide(
-                            color: isDark ? XonaDoshColors.borderDark : XonaDoshColors.borderLight,
+                            color: isDark
+                                ? XonaDoshColors.borderDark
+                                : XonaDoshColors.borderLight,
                           ),
                         ),
                       ),
@@ -293,12 +342,17 @@ class _RegisterScreenState extends ConsumerState<RegisterScreen> {
                     if (_error != null) ...[
                       const SizedBox(height: 12),
                       Container(
-                        padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 10),
+                        padding: const EdgeInsets.symmetric(
+                          horizontal: 14,
+                          vertical: 10,
+                        ),
                         decoration: BoxDecoration(
                           color: const Color(0xFFEF4444).withValues(alpha: 0.1),
                           borderRadius: BorderRadius.circular(12),
                           border: Border.all(
-                            color: const Color(0xFFEF4444).withValues(alpha: 0.3),
+                            color: const Color(
+                              0xFFEF4444,
+                            ).withValues(alpha: 0.3),
                           ),
                         ),
                         child: Text(
@@ -354,7 +408,9 @@ class _RegisterScreenState extends ConsumerState<RegisterScreen> {
                           text: 'Hisobingiz bormi? ',
                           style: TextStyle(
                             fontSize: 14,
-                            color: isDark ? XonaDoshColors.slate400 : XonaDoshColors.slate600,
+                            color: isDark
+                                ? XonaDoshColors.slate400
+                                : XonaDoshColors.slate600,
                           ),
                           children: const [
                             TextSpan(

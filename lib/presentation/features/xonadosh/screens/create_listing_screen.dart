@@ -27,7 +27,7 @@ class _XonadoshCreateListingScreenState
 
   final _titleController = TextEditingController();
   final _descController = TextEditingController();
-  final _priceController = TextEditingController();
+  final _priceController = TextEditingController(text: '1500000');
   final _phoneController = TextEditingController();
   final _telegramController = TextEditingController();
   final _addressController = TextEditingController();
@@ -441,703 +441,711 @@ class _XonadoshCreateListingScreenState
                         subtitle: context.l10n.xonadoshStep1Subtitle,
                         icon: Icons.category_rounded,
                       ),
-              const SizedBox(height: 12),
-              Row(
-                children: [
-                  _buildTypeChip(
-                    'rent',
-                    context.l10n.xonadoshTypeRentHome,
-                    Icons.home_rounded,
-                  ),
-                  const SizedBox(width: 8),
-                  _buildTypeChip(
-                    'roommate_wanted',
-                    context.l10n.xonadoshTypeRoommate,
-                    Icons.people_rounded,
-                  ),
-                ],
-              ),
-              const SizedBox(height: 8),
-              Row(
-                children: [
-                  _buildTypeChip(
-                    'sell',
-                    context.l10n.xonadoshTypeForSale,
-                    Icons.sell_rounded,
-                  ),
-                  const SizedBox(width: 8),
-                  _buildTypeChip(
-                    'buy',
-                    context.l10n.xonadoshTypeLookingRent,
-                    Icons.search_rounded,
-                  ),
-                ],
-              ),
-              const SizedBox(height: 20),
-
-              // ==========================================
-              // 2. JOYLASHUV VA MANZIL (REGIONS & DISTRICTS)
-              // ==========================================
-              _buildSectionHeader(
-                title: context.l10n.xonadoshStep2Title,
-                subtitle: context.l10n.xonadoshStep2Subtitle,
-                icon: Icons.location_on_rounded,
-              ),
-              const SizedBox(height: 12),
-
-              // Viloyat / Mamlakat tanlash
-              DropdownButtonFormField<XonadoshRegion>(
-                initialValue: _selectedRegion,
-                decoration: InputDecoration(
-                  labelText: context.l10n.xonadoshSelectRegionReq,
-                  prefixIcon: const Icon(
-                    Icons.map_rounded,
-                    color: XonaDoshColors.primary,
-                  ),
-                  border: OutlineInputBorder(
-                    borderRadius: BorderRadius.circular(10),
-                  ),
-                ),
-                isExpanded: true,
-                items: XonadoshLocationData.regions.map((r) {
-                  return DropdownMenuItem(
-                    value: r,
-                    child: Text(
-                      '${r.flag} ${r.name}',
-                      style: const TextStyle(
-                        fontWeight: FontWeight.w700,
-                        fontSize: 14,
+                      const SizedBox(height: 12),
+                      Row(
+                        children: [
+                          _buildTypeChip(
+                            'rent',
+                            context.l10n.xonadoshTypeRentHome,
+                            Icons.home_rounded,
+                          ),
+                          const SizedBox(width: 8),
+                          _buildTypeChip(
+                            'roommate_wanted',
+                            context.l10n.xonadoshTypeRoommate,
+                            Icons.people_rounded,
+                          ),
+                        ],
                       ),
-                    ),
-                  );
-                }).toList(),
-                onChanged: (r) {
-                  if (r != null) _onRegionChanged(r);
-                },
-              ),
-              const SizedBox(height: 14),
+                      const SizedBox(height: 20),
 
-              // Tuman / Shahar tanlash yoki Erkin kiritish
-              if (!_isCustomDistrict) ...[
-                DropdownButtonFormField<String>(
-                  initialValue: _selectedDistrict,
-                  decoration: InputDecoration(
-                    labelText: context.l10n.xonadoshSelectDistrictReq,
-                    prefixIcon: const Icon(
-                      Icons.location_city_rounded,
-                      color: XonaDoshColors.primary,
-                    ),
-                    border: OutlineInputBorder(
-                      borderRadius: BorderRadius.circular(10),
-                    ),
-                  ),
-                  isExpanded: true,
-                  items: [
-                    ..._selectedRegion.districts.map((d) {
-                      return DropdownMenuItem(
-                        value: d,
-                        child: Text(d, style: const TextStyle(fontSize: 14)),
-                      );
-                    }),
-                    DropdownMenuItem(
-                      value: '__custom__',
-                      child: Text(
-                        context.l10n.xonadoshOtherDistrictWrite,
-                        style: const TextStyle(
-                          color: XonaDoshColors.accentPurple,
-                          fontWeight: FontWeight.bold,
-                        ),
+                      // ==========================================
+                      // 2. JOYLASHUV VA MANZIL (REGIONS & DISTRICTS)
+                      // ==========================================
+                      _buildSectionHeader(
+                        title: context.l10n.xonadoshStep2Title,
+                        subtitle: context.l10n.xonadoshStep2Subtitle,
+                        icon: Icons.location_on_rounded,
                       ),
-                    ),
-                  ],
-                  onChanged: (d) {
-                    if (d == '__custom__') {
-                      setState(() => _isCustomDistrict = true);
-                    } else if (d != null) {
-                      setState(() => _selectedDistrict = d);
-                    }
-                  },
-                ),
-              ] else ...[
-                Row(
-                  children: [
-                    Expanded(
-                      child: TextFormField(
-                        controller: _customDistrictController,
+                      const SizedBox(height: 12),
+
+                      // Viloyat / Mamlakat tanlash
+                      DropdownButtonFormField<XonadoshRegion>(
+                        initialValue: _selectedRegion,
                         decoration: InputDecoration(
-                          labelText: context.l10n.xonadoshEnterDistrictName,
-                          hintText: context.l10n.xonadoshDistrictExampleHint,
+                          labelText: context.l10n.xonadoshSelectRegionReq,
                           prefixIcon: const Icon(
-                            Icons.edit_location_alt_rounded,
-                            color: XonaDoshColors.accentPurple,
+                            Icons.map_rounded,
+                            color: XonaDoshColors.primary,
                           ),
                           border: OutlineInputBorder(
                             borderRadius: BorderRadius.circular(10),
                           ),
                         ),
-                        validator: (v) =>
-                            _isCustomDistrict && (v == null || v.trim().isEmpty)
-                            ? context.l10n.xonadoshEnterDistrictName
-                            : null,
+                        isExpanded: true,
+                        items: XonadoshLocationData.regions.map((r) {
+                          return DropdownMenuItem(
+                            value: r,
+                            child: Text(
+                              '${r.flag} ${r.name}',
+                              style: const TextStyle(
+                                fontWeight: FontWeight.w700,
+                                fontSize: 14,
+                              ),
+                            ),
+                          );
+                        }).toList(),
+                        onChanged: (r) {
+                          if (r != null) _onRegionChanged(r);
+                        },
                       ),
-                    ),
-                    const SizedBox(width: 8),
-                    IconButton.filledTonal(
-                      onPressed: () =>
-                          setState(() => _isCustomDistrict = false),
-                      tooltip: context.l10n.xonadoshBackToListSelection,
-                      icon: const Icon(Icons.list_rounded),
-                    ),
-                  ],
-                ),
-              ],
-              const SizedBox(height: 14),
+                      const SizedBox(height: 14),
 
-              // Aniq manzil / Mo'ljal
-              TextFormField(
-                controller: _addressController,
-                decoration: InputDecoration(
-                  labelText: context.l10n.xonadoshAddressReq,
-                  hintText: context.l10n.xonadoshAddressHint,
-                  prefixIcon: const Icon(Icons.pin_drop_outlined),
-                  border: OutlineInputBorder(
-                    borderRadius: BorderRadius.circular(14),
-                  ),
-                ),
-                validator: (v) => (v == null || v.trim().isEmpty)
-                    ? context.l10n.xonadoshEnterAddress
-                    : null,
-              ),
-              const SizedBox(height: 14),
-
-              // Yaqin OTM (Ixtiyoriy)
-              if (unis.isNotEmpty) ...[
-                DropdownButtonFormField<XonadoshUniversity>(
-                  initialValue: _selectedUni,
-                  decoration: InputDecoration(
-                    labelText: context.l10n.xonadoshUniOptionalLabel,
-                    prefixIcon: const Icon(
-                      Icons.school_outlined,
-                      color: Color(0xFF6366F1),
-                    ),
-                    border: OutlineInputBorder(
-                      borderRadius: BorderRadius.circular(14),
-                    ),
-                  ),
-                  isExpanded: true,
-                  items: [
-                    DropdownMenuItem(
-                      value: null,
-                      child: Text(context.l10n.xonadoshUniNotLinked),
-                    ),
-                    ...unis.map(
-                      (u) => DropdownMenuItem(
-                        value: u,
-                        child: Text('${u.shortName} (${u.district})'),
-                      ),
-                    ),
-                  ],
-                  onChanged: (u) => setState(() => _selectedUni = u),
-                ),
-                const SizedBox(height: 14),
-              ],
-              _buildPhotosSection(context, isDark),
-            ] else if (_currentStep == 1) ...[
-              // ==========================================
-              // 3. SARLAVHA, NARX VA VALYUTA
-              // ==========================================
-              _buildSectionHeader(
-                title: context.l10n.xonadoshStep3Title,
-                subtitle: context.l10n.xonadoshStep3Subtitle,
-                icon: Icons.payments_rounded,
-              ),
-              const SizedBox(height: 12),
-
-              // Sarlavha
-              TextFormField(
-                controller: _titleController,
-                decoration: InputDecoration(
-                  labelText: context.l10n.xonadoshListingTitleReq,
-                  hintText: context.l10n.xonadoshListingTitleHint,
-                  border: OutlineInputBorder(
-                    borderRadius: BorderRadius.circular(14),
-                  ),
-                ),
-                validator: (v) => (v == null || v.trim().isEmpty)
-                    ? context.l10n.xonadoshEnterTitle
-                    : null,
-              ),
-              const SizedBox(height: 14),
-
-              // Narx va Valyuta tanlagich
-              Row(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Expanded(
-                    flex: 5,
-                    child: TextFormField(
-                      controller: _priceController,
-                      keyboardType: TextInputType.number,
-                      decoration: InputDecoration(
-                        labelText: context.l10n.xonadoshPriceRequired,
-                        hintText: '1 200 000',
-                        prefixIcon: const Icon(Icons.price_change_outlined),
-                        contentPadding: const EdgeInsets.symmetric(
-                          horizontal: 12,
-                          vertical: 14,
-                        ),
-                        border: OutlineInputBorder(
-                          borderRadius: BorderRadius.circular(14),
-                        ),
-                      ),
-                      validator: (v) => (v == null || v.trim().isEmpty)
-                          ? context.l10n.xonadoshEnterPrice
-                          : null,
-                    ),
-                  ),
-                  const SizedBox(width: 8),
-                  Expanded(
-                    flex: 3,
-                    child: DropdownButtonFormField<String>(
-                      initialValue: _currency,
-                      isExpanded: true,
-                      decoration: InputDecoration(
-                        labelText: context.l10n.xonadoshCurrency,
-                        contentPadding: const EdgeInsets.symmetric(
-                          horizontal: 10,
-                          vertical: 14,
-                        ),
-                        border: OutlineInputBorder(
-                          borderRadius: BorderRadius.circular(14),
-                        ),
-                      ),
-                      items: XonadoshLocationData.availableCurrencies.map((c) {
-                        return DropdownMenuItem(
-                          value: c,
-                          child: Text(
-                            '$c (${XonadoshLocationData.currencySymbols[c]})',
-                            overflow: TextOverflow.ellipsis,
-                            style: const TextStyle(
-                              fontWeight: FontWeight.w700,
-                              fontSize: 13,
+                      // Tuman / Shahar tanlash yoki Erkin kiritish
+                      if (!_isCustomDistrict) ...[
+                        DropdownButtonFormField<String>(
+                          initialValue: _selectedDistrict,
+                          decoration: InputDecoration(
+                            labelText: context.l10n.xonadoshSelectDistrictReq,
+                            prefixIcon: const Icon(
+                              Icons.location_city_rounded,
+                              color: XonaDoshColors.primary,
+                            ),
+                            border: OutlineInputBorder(
+                              borderRadius: BorderRadius.circular(10),
                             ),
                           ),
-                        );
-                      }).toList(),
-                      onChanged: (c) {
-                        if (c != null) setState(() => _currency = c);
-                      },
-                    ),
-                  ),
-                ],
-              ),
-              const SizedBox(height: 14),
-
-              // To'lov davri
-              DropdownButtonFormField<String>(
-                initialValue: _pricePeriod,
-                isExpanded: true,
-                decoration: InputDecoration(
-                  labelText: context.l10n.xonadoshPaymentPeriod,
-                  prefixIcon: const Icon(Icons.calendar_month_rounded),
-                  contentPadding: const EdgeInsets.symmetric(
-                    horizontal: 12,
-                    vertical: 14,
-                  ),
-                  border: OutlineInputBorder(
-                    borderRadius: BorderRadius.circular(14),
-                  ),
-                ),
-                items: XonadoshLocationData.pricePeriods.map((p) {
-                  return DropdownMenuItem(
-                    value: p,
-                    child: Text(
-                      XonadoshLocationData.pricePeriodLabels[p] ?? p,
-                      overflow: TextOverflow.ellipsis,
-                    ),
-                  );
-                }).toList(),
-                onChanged: (p) {
-                  if (p != null) setState(() => _pricePeriod = p);
-                },
-              ),
-              const SizedBox(height: 20),
-
-              // ==========================================
-              // 4. XONALAR, QAVAT VA AUDITORIYA
-              // ==========================================
-              _buildSectionHeader(
-                title: context.l10n.xonadoshStep4Title,
-                subtitle: context.l10n.xonadoshStep4Subtitle,
-                icon: Icons.apartment_rounded,
-              ),
-              const SizedBox(height: 12),
-
-              Row(
-                children: [
-                  Expanded(
-                    child: TextFormField(
-                      controller: _roomsController,
-                      keyboardType: TextInputType.number,
-                      decoration: InputDecoration(
-                        labelText: context.l10n.xonadoshRoomsCount,
-                        hintText: '2',
-                        prefixIcon: const Icon(Icons.meeting_room_outlined),
-                        border: OutlineInputBorder(
-                          borderRadius: BorderRadius.circular(14),
+                          isExpanded: true,
+                          items: [
+                            ..._selectedRegion.districts.map((d) {
+                              return DropdownMenuItem(
+                                value: d,
+                                child: Text(
+                                  d,
+                                  style: const TextStyle(fontSize: 14),
+                                ),
+                              );
+                            }),
+                            DropdownMenuItem(
+                              value: '__custom__',
+                              child: Text(
+                                context.l10n.xonadoshOtherDistrictWrite,
+                                style: const TextStyle(
+                                  color: XonaDoshColors.accentPurple,
+                                  fontWeight: FontWeight.bold,
+                                ),
+                              ),
+                            ),
+                          ],
+                          onChanged: (d) {
+                            if (d == '__custom__') {
+                              setState(() => _isCustomDistrict = true);
+                            } else if (d != null) {
+                              setState(() => _selectedDistrict = d);
+                            }
+                          },
                         ),
+                      ] else ...[
+                        Row(
+                          children: [
+                            Expanded(
+                              child: TextFormField(
+                                controller: _customDistrictController,
+                                decoration: InputDecoration(
+                                  labelText:
+                                      context.l10n.xonadoshEnterDistrictName,
+                                  hintText:
+                                      context.l10n.xonadoshDistrictExampleHint,
+                                  prefixIcon: const Icon(
+                                    Icons.edit_location_alt_rounded,
+                                    color: XonaDoshColors.accentPurple,
+                                  ),
+                                  border: OutlineInputBorder(
+                                    borderRadius: BorderRadius.circular(10),
+                                  ),
+                                ),
+                                validator: (v) =>
+                                    _isCustomDistrict &&
+                                        (v == null || v.trim().isEmpty)
+                                    ? context.l10n.xonadoshEnterDistrictName
+                                    : null,
+                              ),
+                            ),
+                            const SizedBox(width: 8),
+                            IconButton.filledTonal(
+                              onPressed: () =>
+                                  setState(() => _isCustomDistrict = false),
+                              tooltip: context.l10n.xonadoshBackToListSelection,
+                              icon: const Icon(Icons.list_rounded),
+                            ),
+                          ],
+                        ),
+                      ],
+                      const SizedBox(height: 14),
+
+                      // Aniq manzil / Mo'ljal
+                      TextFormField(
+                        controller: _addressController,
+                        decoration: InputDecoration(
+                          labelText: context.l10n.xonadoshAddressReq,
+                          hintText: context.l10n.xonadoshAddressHint,
+                          prefixIcon: const Icon(Icons.pin_drop_outlined),
+                          border: OutlineInputBorder(
+                            borderRadius: BorderRadius.circular(14),
+                          ),
+                        ),
+                        validator: (v) => (v == null || v.trim().isEmpty)
+                            ? context.l10n.xonadoshEnterAddress
+                            : null,
                       ),
-                    ),
-                  ),
-                  const SizedBox(width: 10),
-                  Expanded(
-                    child: TextFormField(
-                      controller: _areaController,
-                      keyboardType: TextInputType.number,
-                      decoration: InputDecoration(
-                        labelText: context.l10n.xonadoshAreaSqM,
-                        hintText: '65',
-                        prefixIcon: const Icon(Icons.square_foot_outlined),
-                        border: OutlineInputBorder(
-                          borderRadius: BorderRadius.circular(14),
-                        ),
-                      ),
-                    ),
-                  ),
-                ],
-              ),
-              const SizedBox(height: 12),
+                      const SizedBox(height: 14),
 
-              Row(
-                children: [
-                  Expanded(
-                    child: TextFormField(
-                      controller: _floorController,
-                      keyboardType: TextInputType.number,
-                      decoration: InputDecoration(
-                        labelText: context.l10n.xonadoshFloor,
-                        hintText: '3',
-                        prefixIcon: const Icon(Icons.layers_outlined),
-                        border: OutlineInputBorder(
-                          borderRadius: BorderRadius.circular(14),
+                      // Yaqin OTM (Ixtiyoriy)
+                      if (unis.isNotEmpty) ...[
+                        DropdownButtonFormField<XonadoshUniversity>(
+                          initialValue: _selectedUni,
+                          decoration: InputDecoration(
+                            labelText: context.l10n.xonadoshUniOptionalLabel,
+                            prefixIcon: const Icon(
+                              Icons.school_outlined,
+                              color: Color(0xFF6366F1),
+                            ),
+                            border: OutlineInputBorder(
+                              borderRadius: BorderRadius.circular(14),
+                            ),
+                          ),
+                          isExpanded: true,
+                          items: [
+                            DropdownMenuItem(
+                              value: null,
+                              child: Text(context.l10n.xonadoshUniNotLinked),
+                            ),
+                            ...unis.map(
+                              (u) => DropdownMenuItem(
+                                value: u,
+                                child: Text('${u.shortName} (${u.district})'),
+                              ),
+                            ),
+                          ],
+                          onChanged: (u) => setState(() => _selectedUni = u),
                         ),
+                        const SizedBox(height: 14),
+                      ],
+                      _buildPhotosSection(context, isDark),
+                    ] else if (_currentStep == 1) ...[
+                      // ==========================================
+                      // 3. SARLAVHA, NARX VA VALYUTA
+                      // ==========================================
+                      _buildSectionHeader(
+                        title: context.l10n.xonadoshStep3Title,
+                        subtitle: context.l10n.xonadoshStep3Subtitle,
+                        icon: Icons.payments_rounded,
                       ),
-                    ),
-                  ),
-                  const SizedBox(width: 10),
-                  Expanded(
-                    child: TextFormField(
-                      controller: _totalFloorsController,
-                      keyboardType: TextInputType.number,
-                      decoration: InputDecoration(
-                        labelText: context.l10n.xonadoshTotalFloors,
-                        hintText: '9',
-                        prefixIcon: const Icon(Icons.apartment_rounded),
-                        border: OutlineInputBorder(
-                          borderRadius: BorderRadius.circular(14),
+                      const SizedBox(height: 12),
+
+                      // Sarlavha
+                      TextFormField(
+                        controller: _titleController,
+                        decoration: InputDecoration(
+                          labelText: context.l10n.xonadoshListingTitleReq,
+                          hintText: context.l10n.xonadoshListingTitleHint,
+                          border: OutlineInputBorder(
+                            borderRadius: BorderRadius.circular(14),
+                          ),
                         ),
+                        validator: (v) => (v == null || v.trim().isEmpty)
+                            ? context.l10n.xonadoshEnterTitle
+                            : null,
                       ),
-                    ),
-                  ),
-                ],
-              ),
-              const SizedBox(height: 14),
+                      const SizedBox(height: 14),
 
-              // Kim uchun
-              Text(
-                context.l10n.xonadoshTargetAudience,
-                style: const TextStyle(
-                  fontWeight: FontWeight.w700,
-                  fontSize: 13,
-                ),
-              ),
-              const SizedBox(height: 8),
-              Wrap(
-                spacing: 8,
-                runSpacing: 8,
-                children: [
-                  _buildAudienceChip('any', context.l10n.xonadoshAudienceAll),
-                  _buildAudienceChip('boys', context.l10n.xonadoshAudienceBoys),
-                  _buildAudienceChip(
-                    'girls',
-                    context.l10n.xonadoshAudienceGirls,
-                  ),
-                  _buildAudienceChip(
-                    'family',
-                    context.l10n.xonadoshAudienceFamily,
-                  ),
-                ],
-              ),
-              const SizedBox(height: 20),
-
-            ] else ...[
-              // ==========================================
-              // 6. QULAYLIKLAR & JIXOZLAR (AMENITIES)
-              // ==========================================
-              _buildSectionHeader(
-                title: context.l10n.xonadoshStep6Title,
-                subtitle: context.l10n.xonadoshStep6Subtitle,
-                icon: Icons.check_circle_outline_rounded,
-              ),
-              const SizedBox(height: 12),
-              Wrap(
-                spacing: 8,
-                runSpacing: 8,
-                children: _availableAmenities.map((item) {
-                  final isSelected = _selectedAmenities.contains(item.name);
-                  return FilterChip(
-                    avatar: Icon(
-                      item.icon,
-                      size: 16,
-                      color: isSelected ? XonaDoshColors.primary : Colors.grey,
-                    ),
-                    label: Text(item.name),
-                    selected: isSelected,
-                    selectedColor: XonaDoshColors.primary.withAlpha(25),
-                    checkmarkColor: XonaDoshColors.primary,
-                    onSelected: (selected) {
-                      setState(() {
-                        if (selected) {
-                          _selectedAmenities.add(item.name);
-                        } else {
-                          _selectedAmenities.remove(item.name);
-                        }
-                      });
-                    },
-                  );
-                }).toList(),
-              ),
-              const SizedBox(height: 14),
-
-              // Bez Makler & Utilities Toggles
-              Container(
-                decoration: BoxDecoration(
-                  color: isDark
-                      ? const Color(0xFF1E293B)
-                      : const Color(0xFFF8FAFC),
-                  borderRadius: BorderRadius.circular(14),
-                  border: Border.all(
-                    color: isDark
-                        ? const Color(0xFF334155)
-                        : const Color(0xFFE2E8F0),
-                  ),
-                ),
-                child: Column(
-                  children: [
-                    SwitchListTile.adaptive(
-                      value: _isNoBroker,
-                      activeTrackColor: const Color(0xFF059669),
-                      activeThumbColor: Colors.white,
-                      secondary: Container(
-                        padding: const EdgeInsets.all(8),
-                        decoration: BoxDecoration(
-                          color: const Color(0xFF059669).withAlpha(25),
-                          borderRadius: BorderRadius.circular(8),
-                        ),
-                        child: const Icon(
-                          Icons.verified_user_rounded,
-                          color: Color(0xFF059669),
-                          size: 20,
-                        ),
+                      // Narx va Valyuta tanlagich
+                      Row(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Expanded(
+                            flex: 5,
+                            child: TextFormField(
+                              controller: _priceController,
+                              keyboardType: TextInputType.number,
+                              decoration: InputDecoration(
+                                labelText: context.l10n.xonadoshPriceRequired,
+                                hintText: '1 200 000',
+                                prefixIcon: const Icon(
+                                  Icons.price_change_outlined,
+                                ),
+                                contentPadding: const EdgeInsets.symmetric(
+                                  horizontal: 12,
+                                  vertical: 14,
+                                ),
+                                border: OutlineInputBorder(
+                                  borderRadius: BorderRadius.circular(14),
+                                ),
+                              ),
+                              validator: (v) => (v == null || v.trim().isEmpty)
+                                  ? context.l10n.xonadoshEnterPrice
+                                  : null,
+                            ),
+                          ),
+                          const SizedBox(width: 8),
+                          Expanded(
+                            flex: 3,
+                            child: DropdownButtonFormField<String>(
+                              initialValue: _currency,
+                              isExpanded: true,
+                              decoration: InputDecoration(
+                                labelText: context.l10n.xonadoshCurrency,
+                                contentPadding: const EdgeInsets.symmetric(
+                                  horizontal: 10,
+                                  vertical: 14,
+                                ),
+                                border: OutlineInputBorder(
+                                  borderRadius: BorderRadius.circular(14),
+                                ),
+                              ),
+                              items: XonadoshLocationData.availableCurrencies.map((
+                                c,
+                              ) {
+                                return DropdownMenuItem(
+                                  value: c,
+                                  child: Text(
+                                    '$c (${XonadoshLocationData.currencySymbols[c]})',
+                                    overflow: TextOverflow.ellipsis,
+                                    style: const TextStyle(
+                                      fontWeight: FontWeight.w700,
+                                      fontSize: 13,
+                                    ),
+                                  ),
+                                );
+                              }).toList(),
+                              onChanged: (c) {
+                                if (c != null) setState(() => _currency = c);
+                              },
+                            ),
+                          ),
+                        ],
                       ),
-                      title: const Text(
-                        'Bez Makler (E’lon uy egasidan)',
-                        style: TextStyle(
+                      const SizedBox(height: 14),
+
+                      // To'lov davri
+                      DropdownButtonFormField<String>(
+                        initialValue: _pricePeriod,
+                        isExpanded: true,
+                        decoration: InputDecoration(
+                          labelText: context.l10n.xonadoshPaymentPeriod,
+                          prefixIcon: const Icon(Icons.calendar_month_rounded),
+                          contentPadding: const EdgeInsets.symmetric(
+                            horizontal: 12,
+                            vertical: 14,
+                          ),
+                          border: OutlineInputBorder(
+                            borderRadius: BorderRadius.circular(14),
+                          ),
+                        ),
+                        items: XonadoshLocationData.pricePeriods.map((p) {
+                          return DropdownMenuItem(
+                            value: p,
+                            child: Text(
+                              XonadoshLocationData.pricePeriodLabels[p] ?? p,
+                              overflow: TextOverflow.ellipsis,
+                            ),
+                          );
+                        }).toList(),
+                        onChanged: (p) {
+                          if (p != null) setState(() => _pricePeriod = p);
+                        },
+                      ),
+                      const SizedBox(height: 20),
+
+                      // ==========================================
+                      // 4. XONALAR, QAVAT VA AUDITORIYA
+                      // ==========================================
+                      _buildSectionHeader(
+                        title: context.l10n.xonadoshStep4Title,
+                        subtitle: context.l10n.xonadoshStep4Subtitle,
+                        icon: Icons.apartment_rounded,
+                      ),
+                      const SizedBox(height: 12),
+
+                      Row(
+                        children: [
+                          Expanded(
+                            child: TextFormField(
+                              controller: _roomsController,
+                              keyboardType: TextInputType.number,
+                              decoration: InputDecoration(
+                                labelText: context.l10n.xonadoshRoomsCount,
+                                hintText: '2',
+                                prefixIcon: const Icon(
+                                  Icons.meeting_room_outlined,
+                                ),
+                                border: OutlineInputBorder(
+                                  borderRadius: BorderRadius.circular(14),
+                                ),
+                              ),
+                            ),
+                          ),
+                          const SizedBox(width: 10),
+                          Expanded(
+                            child: TextFormField(
+                              controller: _areaController,
+                              keyboardType: TextInputType.number,
+                              decoration: InputDecoration(
+                                labelText: context.l10n.xonadoshAreaSqM,
+                                hintText: '65',
+                                prefixIcon: const Icon(
+                                  Icons.square_foot_outlined,
+                                ),
+                                border: OutlineInputBorder(
+                                  borderRadius: BorderRadius.circular(14),
+                                ),
+                              ),
+                            ),
+                          ),
+                        ],
+                      ),
+                      const SizedBox(height: 12),
+
+                      Row(
+                        children: [
+                          Expanded(
+                            child: TextFormField(
+                              controller: _floorController,
+                              keyboardType: TextInputType.number,
+                              decoration: InputDecoration(
+                                labelText: context.l10n.xonadoshFloor,
+                                hintText: '3',
+                                prefixIcon: const Icon(Icons.layers_outlined),
+                                border: OutlineInputBorder(
+                                  borderRadius: BorderRadius.circular(14),
+                                ),
+                              ),
+                            ),
+                          ),
+                          const SizedBox(width: 10),
+                          Expanded(
+                            child: TextFormField(
+                              controller: _totalFloorsController,
+                              keyboardType: TextInputType.number,
+                              decoration: InputDecoration(
+                                labelText: context.l10n.xonadoshTotalFloors,
+                                hintText: '9',
+                                prefixIcon: const Icon(Icons.apartment_rounded),
+                                border: OutlineInputBorder(
+                                  borderRadius: BorderRadius.circular(14),
+                                ),
+                              ),
+                            ),
+                          ),
+                        ],
+                      ),
+                      const SizedBox(height: 14),
+
+                      // Kim uchun
+                      Text(
+                        context.l10n.xonadoshTargetAudience,
+                        style: const TextStyle(
                           fontWeight: FontWeight.w700,
-                          fontSize: 14,
+                          fontSize: 13,
                         ),
                       ),
-                      subtitle: const Text(
-                        'Ijarachilar 50% makler to‘lovini tejaydi va e’loningizga maxsus belgi beriladi',
-                        style: TextStyle(fontSize: 12),
+                      const SizedBox(height: 8),
+                      Wrap(
+                        spacing: 8,
+                        runSpacing: 8,
+                        children: [
+                          _buildAudienceChip(
+                            'any',
+                            context.l10n.xonadoshAudienceAll,
+                          ),
+                          _buildAudienceChip(
+                            'boys',
+                            context.l10n.xonadoshAudienceBoys,
+                          ),
+                          _buildAudienceChip(
+                            'girls',
+                            context.l10n.xonadoshAudienceGirls,
+                          ),
+                          _buildAudienceChip(
+                            'family',
+                            context.l10n.xonadoshAudienceFamily,
+                          ),
+                        ],
                       ),
-                      onChanged: (val) => setState(() => _isNoBroker = val),
-                    ),
-                    const Divider(height: 1),
-                    SwitchListTile.adaptive(
-                      value: _utilitiesIncluded,
-                      activeTrackColor: const Color(0xFF0284C7),
-                      activeThumbColor: Colors.white,
-                      secondary: Container(
-                        padding: const EdgeInsets.all(8),
+                      const SizedBox(height: 20),
+                    ] else ...[
+                      // ==========================================
+                      // 6. QULAYLIKLAR & JIXOZLAR (AMENITIES)
+                      // ==========================================
+                      _buildSectionHeader(
+                        title: context.l10n.xonadoshStep6Title,
+                        subtitle: context.l10n.xonadoshStep6Subtitle,
+                        icon: Icons.check_circle_outline_rounded,
+                      ),
+                      const SizedBox(height: 12),
+                      Wrap(
+                        spacing: 8,
+                        runSpacing: 8,
+                        children: _availableAmenities.map((item) {
+                          final isSelected = _selectedAmenities.contains(
+                            item.name,
+                          );
+                          return FilterChip(
+                            avatar: Icon(
+                              item.icon,
+                              size: 16,
+                              color: isSelected
+                                  ? XonaDoshColors.primary
+                                  : Colors.grey,
+                            ),
+                            label: Text(item.name),
+                            selected: isSelected,
+                            selectedColor: XonaDoshColors.primary.withAlpha(25),
+                            checkmarkColor: XonaDoshColors.primary,
+                            onSelected: (selected) {
+                              setState(() {
+                                if (selected) {
+                                  _selectedAmenities.add(item.name);
+                                } else {
+                                  _selectedAmenities.remove(item.name);
+                                }
+                              });
+                            },
+                          );
+                        }).toList(),
+                      ),
+                      const SizedBox(height: 14),
+
+                      // Bez Makler & Utilities Toggles
+                      Container(
                         decoration: BoxDecoration(
-                          color: const Color(0xFF0284C7).withAlpha(25),
-                          borderRadius: BorderRadius.circular(8),
+                          color: isDark
+                              ? const Color(0xFF1E293B)
+                              : const Color(0xFFF8FAFC),
+                          borderRadius: BorderRadius.circular(14),
+                          border: Border.all(
+                            color: isDark
+                                ? const Color(0xFF334155)
+                                : const Color(0xFFE2E8F0),
+                          ),
                         ),
-                        child: const Icon(
-                          Icons.bolt_rounded,
-                          color: Color(0xFF0284C7),
-                          size: 20,
+                        child: Column(
+                          children: [
+                            SwitchListTile.adaptive(
+                              value: _isNoBroker,
+                              activeTrackColor: const Color(0xFF059669),
+                              activeThumbColor: Colors.white,
+                              secondary: Container(
+                                padding: const EdgeInsets.all(8),
+                                decoration: BoxDecoration(
+                                  color: const Color(0xFF059669).withAlpha(25),
+                                  borderRadius: BorderRadius.circular(8),
+                                ),
+                                child: const Icon(
+                                  Icons.verified_user_rounded,
+                                  color: Color(0xFF059669),
+                                  size: 20,
+                                ),
+                              ),
+                              title: const Text(
+                                'Bez Makler (E’lon uy egasidan)',
+                                style: TextStyle(
+                                  fontWeight: FontWeight.w700,
+                                  fontSize: 14,
+                                ),
+                              ),
+                              subtitle: const Text(
+                                'Ijarachilar 50% makler to‘lovini tejaydi va e’loningizga maxsus belgi beriladi',
+                                style: TextStyle(fontSize: 12),
+                              ),
+                              onChanged: (val) =>
+                                  setState(() => _isNoBroker = val),
+                            ),
+                            const Divider(height: 1),
+                            SwitchListTile.adaptive(
+                              value: _utilitiesIncluded,
+                              activeTrackColor: const Color(0xFF0284C7),
+                              activeThumbColor: Colors.white,
+                              secondary: Container(
+                                padding: const EdgeInsets.all(8),
+                                decoration: BoxDecoration(
+                                  color: const Color(0xFF0284C7).withAlpha(25),
+                                  borderRadius: BorderRadius.circular(8),
+                                ),
+                                child: const Icon(
+                                  Icons.bolt_rounded,
+                                  color: Color(0xFF0284C7),
+                                  size: 20,
+                                ),
+                              ),
+                              title: const Text(
+                                'Kommunal to‘lovlar narx ichida',
+                                style: TextStyle(
+                                  fontWeight: FontWeight.w700,
+                                  fontSize: 14,
+                                ),
+                              ),
+                              subtitle: const Text(
+                                'Elektr, gaz, suv va Wi-Fi xarajatlari oylik to‘lov ichiga kiritilgan',
+                                style: TextStyle(fontSize: 12),
+                              ),
+                              onChanged: (val) =>
+                                  setState(() => _utilitiesIncluded = val),
+                            ),
+                            const Divider(height: 1),
+                            SwitchListTile.adaptive(
+                              value: _hasSubsidyContract,
+                              activeTrackColor: const Color(0xFFD97706),
+                              activeThumbColor: Colors.white,
+                              secondary: Container(
+                                padding: const EdgeInsets.all(8),
+                                decoration: BoxDecoration(
+                                  color: const Color(0xFFD97706).withAlpha(25),
+                                  borderRadius: BorderRadius.circular(8),
+                                ),
+                                child: const Icon(
+                                  Icons.description_rounded,
+                                  color: Color(0xFFD97706),
+                                  size: 20,
+                                ),
+                              ),
+                              title: const Text(
+                                'Ijara shartnomasi / Subsidiya beriladi',
+                                style: TextStyle(
+                                  fontWeight: FontWeight.w700,
+                                  fontSize: 14,
+                                ),
+                              ),
+                              subtitle: const Text(
+                                'Talabalar uchun 50% davlat subsidiyasi rasmiylashtiriladi (e‘loningizga katta ustunlik beradi)',
+                                style: TextStyle(fontSize: 12),
+                              ),
+                              onChanged: (val) =>
+                                  setState(() => _hasSubsidyContract = val),
+                            ),
+                            const Divider(height: 1),
+                            SwitchListTile.adaptive(
+                              value: _isWomenOnly,
+                              activeTrackColor: const Color(0xFFE11D48),
+                              activeThumbColor: Colors.white,
+                              secondary: Container(
+                                padding: const EdgeInsets.all(8),
+                                decoration: BoxDecoration(
+                                  color: const Color(0xFFE11D48).withAlpha(25),
+                                  borderRadius: BorderRadius.circular(8),
+                                ),
+                                child: const Icon(
+                                  Icons.female_rounded,
+                                  color: Color(0xFFE11D48),
+                                  size: 20,
+                                ),
+                              ),
+                              title: const Text(
+                                'Faqat qizlar uchun (Ayollar maxfiylik rejimi)',
+                                style: TextStyle(
+                                  fontWeight: FontWeight.w700,
+                                  fontSize: 14,
+                                ),
+                              ),
+                              subtitle: const Text(
+                                'Qizlar va ota-onalar uchun xavfsiz va tinch muhit kafolatlangan',
+                                style: TextStyle(fontSize: 12),
+                              ),
+                              onChanged: (val) =>
+                                  setState(() => _isWomenOnly = val),
+                            ),
+                          ],
                         ),
                       ),
-                      title: const Text(
-                        'Kommunal to‘lovlar narx ichida',
-                        style: TextStyle(
-                          fontWeight: FontWeight.w700,
-                          fontSize: 14,
-                        ),
-                      ),
-                      subtitle: const Text(
-                        'Elektr, gaz, suv va Wi-Fi xarajatlari oylik to‘lov ichiga kiritilgan',
-                        style: TextStyle(fontSize: 12),
-                      ),
-                      onChanged: (val) =>
-                          setState(() => _utilitiesIncluded = val),
-                    ),
-                    const Divider(height: 1),
-                    SwitchListTile.adaptive(
-                      value: _hasSubsidyContract,
-                      activeTrackColor: const Color(0xFFD97706),
-                      activeThumbColor: Colors.white,
-                      secondary: Container(
-                        padding: const EdgeInsets.all(8),
-                        decoration: BoxDecoration(
-                          color: const Color(0xFFD97706).withAlpha(25),
-                          borderRadius: BorderRadius.circular(8),
-                        ),
-                        child: const Icon(
-                          Icons.description_rounded,
-                          color: Color(0xFFD97706),
-                          size: 20,
-                        ),
-                      ),
-                      title: const Text(
-                        'Ijara shartnomasi / Subsidiya beriladi',
-                        style: TextStyle(
-                          fontWeight: FontWeight.w700,
-                          fontSize: 14,
-                        ),
-                      ),
-                      subtitle: const Text(
-                        'Talabalar uchun 50% davlat subsidiyasi rasmiylashtiriladi (e‘loningizga katta ustunlik beradi)',
-                        style: TextStyle(fontSize: 12),
-                      ),
-                      onChanged: (val) =>
-                          setState(() => _hasSubsidyContract = val),
-                    ),
-                    const Divider(height: 1),
-                    SwitchListTile.adaptive(
-                      value: _isWomenOnly,
-                      activeTrackColor: const Color(0xFFE11D48),
-                      activeThumbColor: Colors.white,
-                      secondary: Container(
-                        padding: const EdgeInsets.all(8),
-                        decoration: BoxDecoration(
-                          color: const Color(0xFFE11D48).withAlpha(25),
-                          borderRadius: BorderRadius.circular(8),
-                        ),
-                        child: const Icon(
-                          Icons.female_rounded,
-                          color: Color(0xFFE11D48),
-                          size: 20,
-                        ),
-                      ),
-                      title: const Text(
-                        'Faqat qizlar uchun (Ayollar maxfiylik rejimi)',
-                        style: TextStyle(
-                          fontWeight: FontWeight.w700,
-                          fontSize: 14,
-                        ),
-                      ),
-                      subtitle: const Text(
-                        'Qizlar va ota-onalar uchun xavfsiz va tinch muhit kafolatlangan',
-                        style: TextStyle(fontSize: 12),
-                      ),
-                      onChanged: (val) => setState(() => _isWomenOnly = val),
-                    ),
-                  ],
-                ),
-              ),
-              const SizedBox(height: 20),
+                      const SizedBox(height: 20),
 
-              // ==========================================
-              // 7. ALOQA MA'LUMOTLARI VA TAVSIF
-              // ==========================================
-              _buildSectionHeader(
-                title: context.l10n.xonadoshStep7Title,
-                subtitle: context.l10n.xonadoshStep7Subtitle,
-                icon: Icons.contact_phone_rounded,
-              ),
-              const SizedBox(height: 12),
+                      // ==========================================
+                      // 7. ALOQA MA'LUMOTLARI VA TAVSIF
+                      // ==========================================
+                      _buildSectionHeader(
+                        title: context.l10n.xonadoshStep7Title,
+                        subtitle: context.l10n.xonadoshStep7Subtitle,
+                        icon: Icons.contact_phone_rounded,
+                      ),
+                      const SizedBox(height: 12),
 
-              Row(
-                children: [
-                  Expanded(
-                    child: TextFormField(
-                      controller: _phoneController,
-                      keyboardType: TextInputType.phone,
-                      decoration: InputDecoration(
-                        labelText: context.l10n.xonadoshPhoneRequired,
-                        hintText: '+998 90 123 45 67',
-                        prefixIcon: const Icon(Icons.phone_rounded),
-                        border: OutlineInputBorder(
-                          borderRadius: BorderRadius.circular(10),
+                      Row(
+                        children: [
+                          Expanded(
+                            child: TextFormField(
+                              controller: _phoneController,
+                              keyboardType: TextInputType.phone,
+                              decoration: InputDecoration(
+                                labelText: context.l10n.xonadoshPhoneRequired,
+                                hintText: '+998 90 123 45 67',
+                                prefixIcon: const Icon(Icons.phone_rounded),
+                                border: OutlineInputBorder(
+                                  borderRadius: BorderRadius.circular(10),
+                                ),
+                              ),
+                              validator: (v) => (v == null || v.trim().isEmpty)
+                                  ? context.l10n.xonadoshEnterPhone
+                                  : null,
+                            ),
+                          ),
+                          const SizedBox(width: 8),
+                          Expanded(
+                            child: TextFormField(
+                              controller: _telegramController,
+                              decoration: InputDecoration(
+                                labelText: context.l10n.xonadoshTelegram,
+                                hintText: '@username',
+                                prefixIcon: const Icon(Icons.send_rounded),
+                                border: OutlineInputBorder(
+                                  borderRadius: BorderRadius.circular(10),
+                                ),
+                              ),
+                            ),
+                          ),
+                        ],
+                      ),
+                      const SizedBox(height: 14),
+
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        children: [
+                          Text(
+                            context.l10n.xonadoshDetailedDesc,
+                            style: const TextStyle(fontWeight: FontWeight.w700),
+                          ),
+                          TextButton.icon(
+                            onPressed: _generateAIDescription,
+                            icon: const Icon(
+                              Icons.auto_awesome_rounded,
+                              size: 16,
+                              color: XonaDoshColors.primary,
+                            ),
+                            label: const Text(
+                              'AI tavsif yaratish',
+                              style: TextStyle(
+                                fontWeight: FontWeight.bold,
+                                fontSize: 13,
+                                color: XonaDoshColors.primary,
+                              ),
+                            ),
+                          ),
+                        ],
+                      ),
+                      const SizedBox(height: 6),
+
+                      TextFormField(
+                        controller: _descController,
+                        maxLines: 4,
+                        decoration: InputDecoration(
+                          labelText: context.l10n.xonadoshDetailedDesc,
+                          hintText: context.l10n.xonadoshDetailedDescHint,
+                          alignLabelWithHint: true,
+                          border: OutlineInputBorder(
+                            borderRadius: BorderRadius.circular(10),
+                          ),
                         ),
                       ),
-                      validator: (v) => (v == null || v.trim().isEmpty)
-                          ? context.l10n.xonadoshEnterPhone
-                          : null,
-                    ),
-                  ),
-                  const SizedBox(width: 8),
-                  Expanded(
-                    child: TextFormField(
-                      controller: _telegramController,
-                      decoration: InputDecoration(
-                        labelText: context.l10n.xonadoshTelegram,
-                        hintText: '@username',
-                        prefixIcon: const Icon(Icons.send_rounded),
-                        border: OutlineInputBorder(
-                          borderRadius: BorderRadius.circular(10),
-                        ),
-                      ),
-                    ),
-                  ),
-                ],
-              ),
-              const SizedBox(height: 14),
-
-              Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: [
-                  Text(
-                    context.l10n.xonadoshDetailedDesc,
-                    style: const TextStyle(fontWeight: FontWeight.w700),
-                  ),
-                  TextButton.icon(
-                    onPressed: _generateAIDescription,
-                    icon: const Icon(
-                      Icons.auto_awesome_rounded,
-                      size: 16,
-                      color: XonaDoshColors.primary,
-                    ),
-                    label: const Text(
-                      'AI tavsif yaratish',
-                      style: TextStyle(
-                        fontWeight: FontWeight.bold,
-                        fontSize: 13,
-                        color: XonaDoshColors.primary,
-                      ),
-                    ),
-                  ),
-                ],
-              ),
-              const SizedBox(height: 6),
-
-              TextFormField(
-                controller: _descController,
-                maxLines: 4,
-                decoration: InputDecoration(
-                  labelText: context.l10n.xonadoshDetailedDesc,
-                  hintText: context.l10n.xonadoshDetailedDescHint,
-                  alignLabelWithHint: true,
-                  border: OutlineInputBorder(
-                    borderRadius: BorderRadius.circular(10),
-                  ),
-                ),
-              ),
-              const SizedBox(height: 28),
-
+                      const SizedBox(height: 28),
                     ],
                   ],
                 ),
@@ -1150,7 +1158,11 @@ class _XonadoshCreateListingScreenState
   }
 
   Widget _buildStepProgressHeader(bool isDark) {
-    const steps = ['1. Manzil & Rasm', '2. Narx & Shartlar', '3. Tavsif & Aloqa'];
+    const steps = [
+      '1. Manzil & Rasm',
+      '2. Narx & Shartlar',
+      '3. Tavsif & Aloqa',
+    ];
     return Container(
       padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
       decoration: BoxDecoration(
@@ -1179,16 +1191,24 @@ class _XonadoshCreateListingScreenState
                             backgroundColor: isCurrent
                                 ? XonaDoshColors.emerald
                                 : (isDone
-                                    ? const Color(0xFF10B981)
-                                    : (isDark ? Colors.white24 : Colors.black12)),
+                                      ? const Color(0xFF10B981)
+                                      : (isDark
+                                            ? Colors.white24
+                                            : Colors.black12)),
                             child: isDone
-                                ? const Icon(Icons.check, size: 12, color: Colors.white)
+                                ? const Icon(
+                                    Icons.check,
+                                    size: 12,
+                                    color: Colors.white,
+                                  )
                                 : Text(
                                     '${i + 1}',
                                     style: TextStyle(
                                       fontSize: 10,
                                       fontWeight: FontWeight.w800,
-                                      color: (isCurrent || isDone) ? Colors.white : Colors.grey,
+                                      color: (isCurrent || isDone)
+                                          ? Colors.white
+                                          : Colors.grey,
                                     ),
                                   ),
                           ),
@@ -1200,10 +1220,14 @@ class _XonadoshCreateListingScreenState
                               overflow: TextOverflow.ellipsis,
                               style: TextStyle(
                                 fontSize: 11,
-                                fontWeight: isCurrent ? FontWeight.w800 : FontWeight.w600,
+                                fontWeight: isCurrent
+                                    ? FontWeight.w800
+                                    : FontWeight.w600,
                                 color: isCurrent
                                     ? XonaDoshColors.emerald
-                                    : (isDark ? Colors.white70 : Colors.black54),
+                                    : (isDark
+                                          ? Colors.white70
+                                          : Colors.black54),
                               ),
                             ),
                           ),
@@ -1215,7 +1239,9 @@ class _XonadoshCreateListingScreenState
                         decoration: BoxDecoration(
                           color: (isCurrent || isDone)
                               ? XonaDoshColors.emerald
-                              : (isDark ? const Color(0xFF334155) : const Color(0xFFE2E8F0)),
+                              : (isDark
+                                    ? const Color(0xFF334155)
+                                    : const Color(0xFFE2E8F0)),
                           borderRadius: BorderRadius.circular(2),
                         ),
                       ),
@@ -1252,8 +1278,13 @@ class _XonadoshCreateListingScreenState
                 icon: const Icon(Icons.arrow_back_rounded, size: 16),
                 label: const Text('Orqaga'),
                 style: OutlinedButton.styleFrom(
-                  padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
-                  shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+                  padding: const EdgeInsets.symmetric(
+                    horizontal: 16,
+                    vertical: 12,
+                  ),
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(12),
+                  ),
                 ),
               ),
               const SizedBox(width: 12),
@@ -1266,13 +1297,20 @@ class _XonadoshCreateListingScreenState
                         if (_currentStep < 2) {
                           if (_currentStep == 0 && _photos.isEmpty) {
                             ScaffoldMessenger.of(context).showSnackBar(
-                              const SnackBar(content: Text('Kamida 1 ta rasm tanlang yoki yuklang')),
+                              const SnackBar(
+                                content: Text(
+                                  'Kamida 1 ta rasm tanlang yoki yuklang',
+                                ),
+                              ),
                             );
                             return;
                           }
-                          if (_currentStep == 1 && _priceController.text.trim().isEmpty) {
+                          if (_currentStep == 1 &&
+                              _priceController.text.trim().isEmpty) {
                             ScaffoldMessenger.of(context).showSnackBar(
-                              const SnackBar(content: Text('Ijara narxini kiriting')),
+                              const SnackBar(
+                                content: Text('Ijara narxini kiriting'),
+                              ),
                             );
                             return;
                           }
@@ -1285,20 +1323,30 @@ class _XonadoshCreateListingScreenState
                   backgroundColor: XonaDoshColors.emerald,
                   foregroundColor: Colors.white,
                   padding: const EdgeInsets.symmetric(vertical: 14),
-                  shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(12),
+                  ),
                 ),
                 child: _isLoading
                     ? const SizedBox(
                         height: 20,
                         width: 20,
-                        child: CircularProgressIndicator(strokeWidth: 2, color: Colors.white),
+                        child: CircularProgressIndicator(
+                          strokeWidth: 2,
+                          color: Colors.white,
+                        ),
                       )
                     : Row(
                         mainAxisAlignment: MainAxisAlignment.center,
                         children: [
                           Text(
-                            _currentStep < 2 ? 'Davom etish →' : 'E‘lonni joylash 🚀',
-                            style: const TextStyle(fontWeight: FontWeight.w800, fontSize: 15),
+                            _currentStep < 2
+                                ? 'Davom etish →'
+                                : 'E‘lonni joylash 🚀',
+                            style: const TextStyle(
+                              fontWeight: FontWeight.w800,
+                              fontSize: 15,
+                            ),
                           ),
                         ],
                       ),
@@ -1370,10 +1418,7 @@ class _XonadoshCreateListingScreenState
                         Container(
                           decoration: const BoxDecoration(
                             gradient: LinearGradient(
-                              colors: [
-                                Colors.transparent,
-                                Colors.black87,
-                              ],
+                              colors: [Colors.transparent, Colors.black87],
                               begin: Alignment.topCenter,
                               end: Alignment.bottomCenter,
                             ),

@@ -70,6 +70,8 @@ DerivedData/
 /dist/*.apk
 *.aab
 *.ipa
+screenshots/
+*.zip
 
 # Optional: very large decks (>50MB) — none currently; keep pattern for safety
 # XonaDosh taqdimot*.pptx

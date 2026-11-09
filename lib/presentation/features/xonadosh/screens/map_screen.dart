@@ -236,7 +236,9 @@ class _XonadoshMapScreenState extends ConsumerState<XonadoshMapScreen> {
                           decoration: BoxDecoration(
                             color: isSelected
                                 ? XonaDoshColors.emerald
-                                : (isDark ? const Color(0xFF1E293B) : Colors.white),
+                                : (isDark
+                                      ? const Color(0xFF1E293B)
+                                      : Colors.white),
                             borderRadius: BorderRadius.circular(16),
                             border: Border.all(
                               color: XonaDoshColors.emerald,
@@ -244,7 +246,9 @@ class _XonadoshMapScreenState extends ConsumerState<XonadoshMapScreen> {
                             ),
                             boxShadow: [
                               BoxShadow(
-                                color: Colors.black.withValues(alpha: isDark ? 0.35 : 0.12),
+                                color: Colors.black.withValues(
+                                  alpha: isDark ? 0.35 : 0.12,
+                                ),
                                 blurRadius: isSelected ? 8 : 4,
                                 offset: const Offset(0, 2),
                               ),
@@ -269,7 +273,9 @@ class _XonadoshMapScreenState extends ConsumerState<XonadoshMapScreen> {
                                 style: TextStyle(
                                   color: isSelected
                                       ? Colors.white
-                                      : (isDark ? Colors.white : const Color(0xFF0F172A)),
+                                      : (isDark
+                                            ? Colors.white
+                                            : const Color(0xFF0F172A)),
                                   fontSize: 11,
                                   fontWeight: FontWeight.w800,
                                 ),
@@ -294,8 +300,6 @@ class _XonadoshMapScreenState extends ConsumerState<XonadoshMapScreen> {
                 _buildLegend(XonaDoshColors.primary, 'Ijara uylar'),
                 const SizedBox(width: 8),
                 _buildLegend(const Color(0xFF6366F1), 'Universitetlar'),
-                const SizedBox(width: 8),
-                _buildLegend(const Color(0xFFF59E0B), 'Sotuv'),
               ],
             ),
           ),
@@ -487,12 +491,17 @@ class _XonadoshMapScreenState extends ConsumerState<XonadoshMapScreen> {
                         const Spacer(),
                         FilledButton(
                           onPressed: () {
-                            context.push('${AppRoutes.shell}/listing/${item.id}');
+                            context.push(
+                              '${AppRoutes.shell}/listing/${item.id}',
+                            );
                           },
                           style: FilledButton.styleFrom(
                             backgroundColor: XonaDoshColors.emerald,
                             foregroundColor: Colors.white,
-                            padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 4),
+                            padding: const EdgeInsets.symmetric(
+                              horizontal: 10,
+                              vertical: 4,
+                            ),
                             visualDensity: VisualDensity.compact,
                             shape: RoundedRectangleBorder(
                               borderRadius: BorderRadius.circular(8),
@@ -500,7 +509,10 @@ class _XonadoshMapScreenState extends ConsumerState<XonadoshMapScreen> {
                           ),
                           child: const Text(
                             'Ko‘rish →',
-                            style: TextStyle(fontSize: 11, fontWeight: FontWeight.w700),
+                            style: TextStyle(
+                              fontSize: 11,
+                              fontWeight: FontWeight.w700,
+                            ),
                           ),
                         ),
                       ],

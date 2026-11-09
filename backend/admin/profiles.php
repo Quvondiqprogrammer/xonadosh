@@ -126,8 +126,19 @@ require __DIR__ . '/includes/header.php';
                 <tr>
                     <td class="mono">#<?= (int) $p['id'] ?></td>
                     <td>
-                        <strong><?= h((string) $p['full_name']) ?></strong><br>
-                        <span class="label mono"><?= h((string) ($p['phone_number'] ?? '')) ?></span>
+                        <div style="display:flex;align-items:center;gap:10px;">
+                            <?php if (!empty($p['avatar_url'])): ?>
+                                <img src="<?= h(str_starts_with((string)$p['avatar_url'], 'http') ? (string)$p['avatar_url'] : '/' . ltrim((string)$p['avatar_url'], '/')) ?>" alt="" style="width:36px;height:36px;border-radius:50%;object-fit:cover;border:1px solid #cbd5e1;background:#f1f5f9;">
+                            <?php else: ?>
+                                <div style="width:36px;height:36px;border-radius:50%;background:#e2e8f0;display:flex;align-items:center;justify-content:center;font-weight:700;color:#64748b;font-size:14px;flex-shrink:0;">
+                                    <?= mb_substr((string) $p['full_name'], 0, 1) ?>
+                                </div>
+                            <?php endif; ?>
+                            <div>
+                                <strong><?= h((string) $p['full_name']) ?></strong><br>
+                                <span class="label mono"><?= h((string) ($p['phone_number'] ?? '')) ?></span>
+                            </div>
+                        </div>
                     </td>
                     <td><?= h((string) $p['username']) ?></td>
                     <td><?= h((string) ($p['university_name'] ?? '—')) ?></td>

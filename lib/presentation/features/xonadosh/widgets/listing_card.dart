@@ -49,11 +49,10 @@ class XonadoshListingCard extends StatelessWidget {
 
     // Time estimate to nearest uni (approx 12 km/h bike/metro, 4 km/h walking)
     final uniDistance = item.distanceToUniversityKm;
-    final uniName = item.nearestUniversityShort ?? 'OTM';
     final estMinutes = uniDistance != null
         ? (uniDistance <= 1.5
-            ? (uniDistance * 12).round()
-            : (uniDistance * 3.5).round())
+              ? (uniDistance * 12).round()
+              : (uniDistance * 3.5).round())
         : null;
 
     return Container(
@@ -67,7 +66,9 @@ class XonadoshListingCard extends StatelessWidget {
           children: [
             // 1. Photo Container (190px rounded)
             ClipRRect(
-              borderRadius: const BorderRadius.vertical(top: Radius.circular(16)),
+              borderRadius: const BorderRadius.vertical(
+                top: Radius.circular(16),
+              ),
               child: Stack(
                 children: [
                   photo != null
@@ -242,23 +243,20 @@ class XonadoshListingCard extends StatelessWidget {
                           vertical: 4,
                         ),
                         decoration: BoxDecoration(
-                          color: Colors.black.withValues(alpha: 0.7),
+                          color: Colors.black.withValues(alpha: 0.72),
                           borderRadius: BorderRadius.circular(8),
                         ),
                         child: Row(
                           mainAxisSize: MainAxisSize.min,
                           children: [
                             const Icon(
-                              Icons.school_rounded,
+                              Icons.directions_walk_rounded,
                               size: 13,
                               color: Colors.white,
                             ),
-                            const SizedBox(width: 4),
+                            const SizedBox(width: 3),
                             Text(
-                              item.distanceToUniversityKm != null &&
-                                      item.distanceToUniversityKm! > 0
-                                  ? '$uniName • ${estMinutes ?? 12} daq (${formatListingDistanceKm(item.distanceToUniversityKm!)} km)'
-                                  : '$uniName • $estMinutes daq',
+                              '${estMinutes ?? 12} daq',
                               style: const TextStyle(
                                 color: Colors.white,
                                 fontSize: 11,
@@ -273,7 +271,7 @@ class XonadoshListingCard extends StatelessWidget {
               ),
             ),
 
-            // 2. Card Content (STRICTLY 3 VISUAL ROWS)
+            // 2. Card Content (STRICTLY 2-3 ELEGANT ROWS)
             Padding(
               padding: const EdgeInsets.fromLTRB(14, 12, 14, 14),
               child: Column(
@@ -283,16 +281,17 @@ class XonadoshListingCard extends StatelessWidget {
                     Text(
                       item.title,
                       style: TextStyle(
-                        fontSize: 14,
+                        fontSize: 15,
                         fontWeight: FontWeight.w700,
-                        color: isDark ? Colors.white : const Color(0xFF0F172A),
+                        color: isDark ? Colors.white : XonaDoshColors.slate900,
                       ),
                       maxLines: 1,
                       overflow: TextOverflow.ellipsis,
                     ),
                     const SizedBox(height: 6),
                   ],
-                  // Row 1: Price (Left) + Availability / Roommates needed (Right)
+
+                  // Row: Price (Left) + Badge (Right)
                   Row(
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     crossAxisAlignment: CrossAxisAlignment.center,
@@ -308,7 +307,7 @@ class XonadoshListingCard extends StatelessWidget {
                                   ? const Color(0xFF2DD4BF)
                                   : XonaDoshColors.emeraldDark,
                               fontWeight: FontWeight.w900,
-                              fontSize: 18,
+                              fontSize: 17,
                               letterSpacing: -0.4,
                             ),
                           ),
@@ -336,79 +335,73 @@ class XonadoshListingCard extends StatelessWidget {
                               : const Color(0xFFF1F5F9),
                           borderRadius: BorderRadius.circular(8),
                         ),
-                        child: Text(
-                          item.type == 'roommate_wanted'
-                              ? '🔥 Xonadosh kerak'
-                              : '🛏️ ${item.roomsCount} xonali',
-                          style: TextStyle(
-                            color: isDark
-                                ? const Color(0xFFE2E8F0)
-                                : const Color(0xFF334155),
-                            fontWeight: FontWeight.w700,
-                            fontSize: 11,
-                          ),
+                        child: Row(
+                          mainAxisSize: MainAxisSize.min,
+                          children: [
+                            Icon(
+                              item.type == 'roommate_wanted'
+                                  ? Icons.groups_outlined
+                                  : Icons.bed_outlined,
+                              size: 13,
+                              color: item.type == 'roommate_wanted'
+                                  ? const Color(0xFFEA580C)
+                                  : (isDark
+                                        ? const Color(0xFF94A3B8)
+                                        : const Color(0xFF64748B)),
+                            ),
+                            const SizedBox(width: 4),
+                            Text(
+                              item.type == 'roommate_wanted'
+                                  ? 'Xonadosh'
+                                  : '${item.roomsCount} xonali',
+                              style: TextStyle(
+                                color: item.type == 'roommate_wanted'
+                                    ? const Color(0xFFEA580C)
+                                    : (isDark
+                                          ? const Color(0xFFE2E8F0)
+                                          : const Color(0xFF334155)),
+                                fontWeight: FontWeight.w700,
+                                fontSize: 11,
+                              ),
+                            ),
+                          ],
                         ),
                       ),
                     ],
                   ),
                   const SizedBox(height: 6),
 
-                  // Row 2: Location & Metro
-                  Row(
+                  // Row: Location & Landmark Chips
+                  Wrap(
+                    spacing: 6,
+                    runSpacing: 4,
                     children: [
-                      Icon(
+                      _metaChip(
+                        isDark,
                         Icons.location_on_outlined,
-                        size: 14,
-                        color: isDark
-                            ? XonaDoshColors.slate400
-                            : XonaDoshColors.slate500,
+                        item.district.isNotEmpty ? item.district : item.city,
                       ),
-                      const SizedBox(width: 4),
-                      Expanded(
-                        child: Row(
-                          children: [
-                            Text(
-                              item.district.isNotEmpty
-                                  ? item.district
-                                  : item.city,
-                              style: TextStyle(
-                                fontSize: 13,
-                                fontWeight: FontWeight.w600,
-                                color: isDark
-                                    ? XonaDoshColors.slate300
-                                    : XonaDoshColors.slate700,
-                              ),
-                            ),
-                            if ((item.nearestMetro ?? '').trim().isNotEmpty)
-                              Text(
-                                ' • Metro ${(item.nearestMetro ?? '').trim()}',
-                                style: TextStyle(
-                                  fontSize: 13,
-                                  fontWeight: FontWeight.w600,
-                                  color: isDark
-                                      ? XonaDoshColors.slate300
-                                      : XonaDoshColors.slate700,
-                                ),
-                              ),
-                          ],
+                      if (item.nearestMetro != null &&
+                          item.nearestMetro!.trim().isNotEmpty)
+                        _metaChip(
+                          isDark,
+                          Icons.subway_outlined,
+                          'Metro ${item.nearestMetro!.trim()}',
                         ),
-                      ),
-                    ],
-                  ),
-                  const SizedBox(height: 8),
-
-                  // Row 3: Key Micro-Chips (Wi-Fi, Washer, Utilities, etc.)
-                  Row(
-                    children: [
-                      _microFeature(Icons.meeting_room_outlined, '${item.roomsCount} xona', isDark),
-                      const SizedBox(width: 12),
-                      _microFeature(Icons.wifi_rounded, 'Wi-Fi', isDark),
-                      const SizedBox(width: 12),
-                      _microFeature(Icons.local_laundry_service_outlined, 'Kir mashina', isDark),
-                      if (item.utilitiesIncluded) ...[
-                        const SizedBox(width: 12),
-                        _microFeature(Icons.bolt_rounded, 'Kommunal ichida', isDark),
-                      ],
+                      if (item.nearestUniversityShort != null ||
+                          item.distanceToUniversityKm != null)
+                        _metaChip(
+                          isDark,
+                          Icons.school_outlined,
+                          [
+                            if (item.distanceToUniversityKm != null)
+                              formatListingDistanceKm(
+                                item.distanceToUniversityKm!,
+                              ),
+                            if (item.nearestUniversityShort != null)
+                              item.nearestUniversityShort!,
+                          ].join(' • '),
+                        ),
                     ],
                   ),
                 ],
@@ -420,25 +413,32 @@ class XonadoshListingCard extends StatelessWidget {
     );
   }
 
-  Widget _microFeature(IconData icon, String label, bool isDark) {
-    return Row(
-      mainAxisSize: MainAxisSize.min,
-      children: [
-        Icon(
-          icon,
-          size: 13,
-          color: isDark ? XonaDoshColors.slate400 : XonaDoshColors.slate500,
-        ),
-        const SizedBox(width: 4),
-        Text(
-          label,
-          style: TextStyle(
-            fontSize: 11,
-            fontWeight: FontWeight.w600,
-            color: isDark ? XonaDoshColors.slate400 : XonaDoshColors.slate600,
+  Widget _metaChip(bool isDark, IconData icon, String text) {
+    return Container(
+      padding: const EdgeInsets.symmetric(horizontal: 7, vertical: 3),
+      decoration: BoxDecoration(
+        color: isDark ? const Color(0xFF1E293B) : const Color(0xFFF1F5F9),
+        borderRadius: BorderRadius.circular(6),
+      ),
+      child: Row(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          Icon(
+            icon,
+            size: 12,
+            color: isDark ? XonaDoshColors.slate400 : XonaDoshColors.slate500,
           ),
-        ),
-      ],
+          const SizedBox(width: 4),
+          Text(
+            text,
+            style: TextStyle(
+              fontSize: 11,
+              fontWeight: FontWeight.w600,
+              color: isDark ? XonaDoshColors.slate300 : XonaDoshColors.slate700,
+            ),
+          ),
+        ],
+      ),
     );
   }
 
