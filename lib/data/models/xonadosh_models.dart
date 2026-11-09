@@ -199,6 +199,7 @@ class XonadoshListing {
     this.utilitiesIncluded = false,
     this.hasSubsidyContract = false,
     this.isWomenOnly = false,
+    this.isVerifiedOwner = false,
     this.trueMonthlyCostUzs,
     this.crowdBrokerReports = 0,
     this.expiresAt,
@@ -245,6 +246,7 @@ class XonadoshListing {
   final bool utilitiesIncluded;
   final bool hasSubsidyContract;
   final bool isWomenOnly;
+  final bool isVerifiedOwner;
   final double? trueMonthlyCostUzs;
   final int crowdBrokerReports;
   final String? expiresAt;
@@ -375,6 +377,7 @@ class XonadoshListing {
       utilitiesIncluded: utilitiesIncluded,
       hasSubsidyContract: hasSubsidy,
       isWomenOnly: isWomenOnly,
+      isVerifiedOwner: parseBool(json['is_verified_owner']),
       crowdBrokerReports: crowdBrokerReports,
       expiresAt: expiresAt,
       hoursLeft: hoursLeft,
@@ -518,6 +521,7 @@ class XonadoshProfile {
     this.aboutMe = '',
     this.lookingForText = '',
     this.status = 'looking',
+    this.isHemisVerified = false,
     this.compatibilityScore,
     this.compatibilityLevel,
     this.matchReasons = const [],
@@ -549,6 +553,7 @@ class XonadoshProfile {
   final String aboutMe;
   final String lookingForText;
   final String status;
+  final bool isHemisVerified;
   final int? compatibilityScore;
   final String? compatibilityLevel;
   final List<String> matchReasons;
@@ -562,6 +567,14 @@ class XonadoshProfile {
       for (final r in reasonsRaw) {
         if (r != null) reasons.add(r.toString());
       }
+    }
+
+    bool parseBool(dynamic val) {
+      if (val == null) return false;
+      if (val is bool) return val;
+      if (val is num) return val != 0;
+      final s = val.toString().trim().toLowerCase();
+      return s == '1' || s == 'true' || s == 'yes';
     }
 
     return XonadoshProfile(
@@ -593,6 +606,7 @@ class XonadoshProfile {
       aboutMe: (prof['about_me'] ?? '').toString(),
       lookingForText: (prof['looking_for_text'] ?? '').toString(),
       status: (prof['status'] ?? 'looking').toString(),
+      isHemisVerified: parseBool(prof['is_hemis_verified']),
       compatibilityScore: json['compatibility_score'] != null
           ? _numToInt(json['compatibility_score'])
           : null,
@@ -629,6 +643,7 @@ class XonadoshProfile {
       'about_me': aboutMe,
       'looking_for_text': lookingForText,
       'status': status,
+      'is_hemis_verified': isHemisVerified ? 1 : 0,
       if (compatibilityScore != null) 'compatibility_score': compatibilityScore,
       if (compatibilityLevel != null) 'compatibility_level': compatibilityLevel,
       'match_reasons': matchReasons,

@@ -1025,6 +1025,14 @@ class XonadoshMatchingTab extends ConsumerWidget {
                                   fontWeight: FontWeight.w600,
                                 ),
                               ),
+                            if (item.isHemisVerified) ...[
+                              const SizedBox(width: 4),
+                              const Icon(
+                                Icons.verified_rounded,
+                                size: 15,
+                                color: Color(0xFF0284C7),
+                              ),
+                            ],
                           ],
                         ),
                         const SizedBox(height: 3),

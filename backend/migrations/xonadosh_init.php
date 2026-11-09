@@ -56,6 +56,22 @@ try {
     }
 } catch (Throwable $e) {}
 
+// Safe column migrations for xonadosh_profiles (HEMIS student verification)
+try {
+    $profCols = $pdo->query("SHOW COLUMNS FROM `xonadosh_profiles`")->fetchAll(PDO::FETCH_COLUMN);
+    if (!in_array('is_hemis_verified', $profCols, true)) {
+        $pdo->exec("ALTER TABLE `xonadosh_profiles` ADD COLUMN `is_hemis_verified` TINYINT(1) NOT NULL DEFAULT 0 AFTER `status`");
+    }
+} catch (Throwable $e) {}
+
+// Safe column migrations for xonadosh_listings (Verified landlord)
+try {
+    $listCols = $pdo->query("SHOW COLUMNS FROM `xonadosh_listings`")->fetchAll(PDO::FETCH_COLUMN);
+    if (!in_array('is_verified_owner', $listCols, true)) {
+        $pdo->exec("ALTER TABLE `xonadosh_listings` ADD COLUMN `is_verified_owner` TINYINT(1) NOT NULL DEFAULT 0 AFTER `views_count`");
+    }
+} catch (Throwable $e) {}
+
 $pdo->exec("CREATE TABLE IF NOT EXISTS `xd_sessions` (
     `token` CHAR(64) NOT NULL PRIMARY KEY,
     `username` VARCHAR(100) NOT NULL,
