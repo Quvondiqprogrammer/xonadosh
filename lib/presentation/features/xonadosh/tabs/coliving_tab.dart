@@ -2282,27 +2282,65 @@ class _XonadoshColivingTabState extends ConsumerState<XonadoshColivingTab> {
                           ],
                         ),
                         const SizedBox(height: 12),
-                        SizedBox(
-                          width: double.infinity,
-                          child: FilledButton.icon(
-                            onPressed: () => _showAddFinanceDialog(context),
-                            icon: const Icon(Icons.add_rounded, size: 18),
-                            label: const Text(
-                              '➕ Xarajat qo‘shish',
-                              style: TextStyle(
-                                fontWeight: FontWeight.w800,
-                                fontSize: 14,
+                        Row(
+                          children: [
+                            Expanded(
+                              flex: 3,
+                              child: FilledButton.icon(
+                                onPressed: () => _showAddFinanceDialog(context),
+                                icon: const Icon(Icons.add_rounded, size: 18),
+                                label: const Text(
+                                  '➕ Xarajat',
+                                  style: TextStyle(
+                                    fontWeight: FontWeight.w800,
+                                    fontSize: 14,
+                                  ),
+                                ),
+                                style: FilledButton.styleFrom(
+                                  backgroundColor: XonaDoshColors.primary,
+                                  foregroundColor: Colors.white,
+                                  padding: const EdgeInsets.symmetric(
+                                    vertical: 12,
+                                  ),
+                                  shape: RoundedRectangleBorder(
+                                    borderRadius: BorderRadius.circular(12),
+                                  ),
+                                ),
                               ),
                             ),
-                            style: FilledButton.styleFrom(
-                              backgroundColor: XonaDoshColors.primary,
-                              foregroundColor: Colors.white,
-                              padding: const EdgeInsets.symmetric(vertical: 12),
-                              shape: RoundedRectangleBorder(
-                                borderRadius: BorderRadius.circular(12),
+                            const SizedBox(width: 8),
+                            Expanded(
+                              flex: 2,
+                              child: OutlinedButton.icon(
+                                onPressed: () =>
+                                    _shareFinancesReport(context, data),
+                                icon: const Icon(Icons.share_rounded, size: 16),
+                                label: const Text(
+                                  'Hisobot',
+                                  style: TextStyle(
+                                    fontWeight: FontWeight.w800,
+                                    fontSize: 13,
+                                  ),
+                                ),
+                                style: OutlinedButton.styleFrom(
+                                  foregroundColor: isDark
+                                      ? Colors.white
+                                      : const Color(0xFF0F172A),
+                                  side: BorderSide(
+                                    color: isDark
+                                        ? const Color(0xFF475569)
+                                        : const Color(0xFFCBD5E1),
+                                  ),
+                                  padding: const EdgeInsets.symmetric(
+                                    vertical: 12,
+                                  ),
+                                  shape: RoundedRectangleBorder(
+                                    borderRadius: BorderRadius.circular(12),
+                                  ),
+                                ),
                               ),
                             ),
-                          ),
+                          ],
                         ),
                       ],
                     ),
@@ -4105,6 +4143,52 @@ class _XonadoshColivingTabState extends ConsumerState<XonadoshColivingTab> {
         ),
       ),
     );
+  }
+
+  void _shareFinancesReport(BuildContext context, XonadoshFinancesData data) {
+    final groupCode = ref.read(colivingGroupCodeProvider);
+    final now = DateTime.now();
+    final dateStr =
+        '${now.day.toString().padLeft(2, '0')}.${now.month.toString().padLeft(2, '0')}.${now.year}';
+    final buffer = StringBuffer();
+    buffer.writeln('📊 XONADOSH — UMUMIY KASSA HISOBOTI');
+    buffer.writeln('🏠 Xonadon kodi: $groupCode');
+    buffer.writeln('📅 Sana: $dateStr');
+    buffer.writeln('');
+    buffer.writeln(
+      '💰 JAMI XARAJATLAR: ${_formatMoney(data.totalSpendUzs.toDouble())} so‘m',
+    );
+    if (data.rentTotalUzs > 0) {
+      buffer.writeln(
+        '  • Uy ijarasi: ${_formatMoney(data.rentTotalUzs.toDouble())} so‘m',
+      );
+    }
+    if (data.utilityTotalUzs > 0) {
+      buffer.writeln(
+        '  • Kommunal to‘lovlar: ${_formatMoney(data.utilityTotalUzs.toDouble())} so‘m',
+      );
+    }
+    if (data.expenseTotalUzs > 0) {
+      buffer.writeln(
+        '  • Bozorlik va ro‘zg‘or: ${_formatMoney(data.expenseTotalUzs.toDouble())} so‘m',
+      );
+    }
+    buffer.writeln('');
+    if (data.debtBalances.isNotEmpty) {
+      buffer.writeln('⚖️ QARZDORLIK VA HISOB-KITOBLAR:');
+      for (final debt in data.debtBalances) {
+        buffer.writeln(
+          '  👉 ${debt.debtor} ➔ ${debt.creditor}: ${_formatMoney(debt.amountUzs.toDouble())} so‘m',
+        );
+      }
+    } else {
+      buffer.writeln('✓ Barcha hisob-kitoblar toza, qarzlar yo‘q!');
+    }
+    buffer.writeln('');
+    buffer.writeln('📲 XonaDosh orqali kuzatib boring:');
+    buffer.writeln('https://honadosh.uz/join/$groupCode');
+
+    ContactActions.shareText(context, buffer.toString());
   }
 
   void _showAddFinanceDialog(BuildContext context) {
