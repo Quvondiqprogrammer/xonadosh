@@ -142,6 +142,13 @@ if ($utilitiesIncluded) {
 $sql .= " ORDER BY l.id DESC LIMIT $limit OFFSET $offset";
 
 try {
+    // Multi-district broker crowd-filter: Phone numbers with listings across 3+ districts
+    $brokerPhones = [];
+    try {
+        $bpStmt = $pdo->query("SELECT phone_number FROM `xonadosh_listings` WHERE phone_number != '' AND phone_number IS NOT NULL GROUP BY phone_number HAVING COUNT(DISTINCT district) >= 3");
+        $brokerPhones = array_flip($bpStmt->fetchAll(PDO::FETCH_COLUMN));
+    } catch (Throwable $e) {}
+
     $stmt = $pdo->prepare($sql);
     $stmt->execute($params);
     $rows = $stmt->fetchAll(PDO::FETCH_ASSOC);
@@ -229,6 +236,22 @@ try {
         $hasSubsidy = !empty($r['has_subsidy_contract']);
         $isWomenOnly = !empty($r['is_women_only']) || ($r['target_gender'] === 'girls');
 
+        $phone = (string)($r['phone_number'] ?? '');
+        $isMultiDistrictBroker = isset($brokerPhones[$phone]);
+        if ($isMultiDistrictBroker) {
+            $isNoBroker = false;
+        }
+
+        // Safe anonymous address: show district and general landmark, obscuring exact door/apartment numbers
+        $rawAddr = (string)($r['address'] ?? '');
+        $safeAddr = !empty($r['district']) ? ($r['district'] . ' tumani') : 'Toshkent shahar';
+        if (!empty($r['nearest_metro'])) {
+            $safeAddr .= " (" . $r['nearest_metro'] . " metro bekati yaqinida)";
+        } elseif (!empty($rawAddr)) {
+            $anonymized = preg_replace('/(\b(kv|kvartira|xonadon|uy|dom|etaj|qavat)\b\s*\d+)/iu', 'hududi', $rawAddr);
+            $safeAddr = $anonymized ?: $safeAddr;
+        }
+
         $listings[] = [
             'id' => (int)$r['id'],
             'user_id' => $r['user_id'] !== null ? (int)$r['user_id'] : null,
@@ -246,6 +269,9 @@ try {
             'city' => $r['city'],
             'district' => $r['district'],
             'address' => $r['address'],
+            'safe_address' => $safeAddr,
+            'is_multi_district_broker' => (bool)$isMultiDistrictBroker,
+            'broker_badge' => $isMultiDistrictBroker ? 'Rieltor/Makler (3+ tuman)' : ($isNoBroker ? 'Bez makler (Uy egasi)' : 'Oddiy e‘lon'),
             'latitude' => $lat,
             'longitude' => $lng,
             'nearest_university_id' => $r['nearest_university_id'] !== null ? (int)$r['nearest_university_id'] : null,

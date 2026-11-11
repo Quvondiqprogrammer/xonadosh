@@ -138,6 +138,13 @@ def main() -> int:
                 print(f"→ Uploading backend/{folder}/...")
                 total_uploaded += upload_tree(ftp, lf, folder)
 
+    # 4e. Cron scheduler
+    if target in ("all", "quick", "cron"):
+        cron_dir = LOCAL_BACKEND_DIR / "cron"
+        if cron_dir.exists():
+            print("→ Uploading backend/cron/...")
+            total_uploaded += upload_tree(ftp, cron_dir, "cron")
+
     # 5. Assets
     if target in ("all", "assets"):
         print("→ Uploading backend/assets/...")

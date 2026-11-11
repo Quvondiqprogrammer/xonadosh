@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:url_launcher/url_launcher.dart';
 
 import 'package:xonadosh/config/theme.dart';
 import 'package:xonadosh/data/models/xonadosh_models.dart';
@@ -126,6 +127,38 @@ class _XonadoshColivingTabState extends ConsumerState<XonadoshColivingTab> {
                   color: const Color(0xFF10B981),
                   isDark: isDark,
                   onTap: () => _openQuickAddSheet(context, isDark),
+                ),
+                const SizedBox(width: 8),
+                _buildQuickPill(
+                  icon: Icons.electric_bolt_rounded,
+                  label: 'Hisoblagichlar',
+                  color: const Color(0xFFF59E0B),
+                  isDark: isDark,
+                  onTap: () => _openUtilityMeterModal(context, isDark),
+                ),
+                const SizedBox(width: 8),
+                _buildQuickPill(
+                  icon: Icons.no_meals_rounded,
+                  label: 'Bugun yemayman',
+                  color: const Color(0xFFEF4444),
+                  isDark: isDark,
+                  onTap: () => _openOptOutMealModal(context, isDark),
+                ),
+                const SizedBox(width: 8),
+                _buildQuickPill(
+                  icon: Icons.swap_horiz_rounded,
+                  label: 'Navbat almashish',
+                  color: const Color(0xFF8B5CF6),
+                  isDark: isDark,
+                  onTap: () => _openChoreSwapModal(context, isDark),
+                ),
+                const SizedBox(width: 8),
+                _buildQuickPill(
+                  icon: Icons.account_balance_rounded,
+                  label: '50% Kompensatsiya',
+                  color: const Color(0xFF0EA5E9),
+                  isDark: isDark,
+                  onTap: () => _openStudentSubsidyModal(context, isDark),
                 ),
               ],
             ),
@@ -6177,4 +6210,820 @@ class _XonadoshColivingTabState extends ConsumerState<XonadoshColivingTab> {
       },
     );
   }
+
+  // =========================================================================
+  // 1. SMART UTILITY METER CALCULATOR (ELEKTR, GAZ, SUV)
+  // =========================================================================
+  void _openUtilityMeterModal(BuildContext context, bool isDark) {
+    final elecPrevCtrl = TextEditingController(text: '1200');
+    final elecCurrCtrl = TextEditingController(text: '1450');
+    final gasPrevCtrl = TextEditingController(text: '500');
+    final gasCurrCtrl = TextEditingController(text: '580');
+    final waterPrevCtrl = TextEditingController(text: '40');
+    final waterCurrCtrl = TextEditingController(text: '52');
+    final wifiCtrl = TextEditingController(text: '150000');
+
+    showModalBottomSheet(
+      context: context,
+      isScrollControlled: true,
+      backgroundColor: Colors.transparent,
+      builder: (ctx) {
+        return StatefulBuilder(
+          builder: (context, setModalState) {
+            final elecConsumption = (double.tryParse(elecCurrCtrl.text) ?? 0) -
+                (double.tryParse(elecPrevCtrl.text) ?? 0);
+            final elecCost = elecConsumption <= 200
+                ? (elecConsumption * 450).round()
+                : (200 * 450 + (elecConsumption - 200) * 900).round();
+
+            final gasConsumption = (double.tryParse(gasCurrCtrl.text) ?? 0) -
+                (double.tryParse(gasPrevCtrl.text) ?? 0);
+            final gasCost = gasConsumption <= 500
+                ? (gasConsumption * 650).round()
+                : (500 * 650 + (gasConsumption - 500) * 1500).round();
+
+            final waterConsumption = (double.tryParse(waterCurrCtrl.text) ?? 0) -
+                (double.tryParse(waterPrevCtrl.text) ?? 0);
+            final waterCost = (waterConsumption * 2400).round();
+
+            const wasteCost = 20000; // 4 kishi x 5000 so'm
+            final wifiCost = int.tryParse(wifiCtrl.text) ?? 150000;
+            final grandTotal = (elecCost > 0 ? elecCost : 0) +
+                (gasCost > 0 ? gasCost : 0) +
+                (waterCost > 0 ? waterCost : 0) +
+                wasteCost +
+                wifiCost;
+            final perPerson = (grandTotal / 4).round();
+
+            return Container(
+              constraints: BoxConstraints(
+                maxHeight: MediaQuery.sizeOf(context).height * 0.9,
+              ),
+              decoration: BoxDecoration(
+                color: isDark ? const Color(0xFF1E293B) : Colors.white,
+                borderRadius: const BorderRadius.vertical(top: Radius.circular(24)),
+              ),
+              child: SafeArea(
+                child: Column(
+                  children: [
+                    Container(
+                      margin: const EdgeInsets.symmetric(vertical: 10),
+                      width: 40,
+                      height: 4,
+                      decoration: BoxDecoration(
+                        color: isDark ? Colors.white24 : Colors.grey[300],
+                        borderRadius: BorderRadius.circular(2),
+                      ),
+                    ),
+                    Padding(
+                      padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 8),
+                      child: Row(
+                        children: [
+                          Container(
+                            padding: const EdgeInsets.all(8),
+                            decoration: BoxDecoration(
+                              color: const Color(0xFFF59E0B).withValues(alpha: 0.15),
+                              borderRadius: BorderRadius.circular(12),
+                            ),
+                            child: const Icon(Icons.electric_bolt_rounded,
+                                color: Color(0xFFF59E0B), size: 24),
+                          ),
+                          const SizedBox(width: 12),
+                          const Expanded(
+                            child: Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                Text(
+                                  'Kommunal Hisoblagichlar',
+                                  style: TextStyle(
+                                      fontSize: 18, fontWeight: FontWeight.w800),
+                                ),
+                                Text(
+                                  '2026-yil O‘zbekiston rasmiy tariflari asosida',
+                                  style: TextStyle(fontSize: 12, color: Colors.grey),
+                                ),
+                              ],
+                            ),
+                          ),
+                          IconButton(
+                            onPressed: () => Navigator.pop(ctx),
+                            icon: const Icon(Icons.close_rounded),
+                          ),
+                        ],
+                      ),
+                    ),
+                    const Divider(height: 1),
+                    Expanded(
+                      child: ListView(
+                        padding: const EdgeInsets.all(20),
+                        children: [
+                          _buildMeterInputSection(
+                            title: '⚡️ Elektr energiyasi (kVt/soat)',
+                            prevCtrl: elecPrevCtrl,
+                            currCtrl: elecCurrCtrl,
+                            consumption: elecConsumption,
+                            cost: elecCost,
+                            unit: 'kVt',
+                            isDark: isDark,
+                            onChanged: () => setModalState(() {}),
+                          ),
+                          const SizedBox(height: 16),
+                          _buildMeterInputSection(
+                            title: '🔥 Tabiiy gaz (m³)',
+                            prevCtrl: gasPrevCtrl,
+                            currCtrl: gasCurrCtrl,
+                            consumption: gasConsumption,
+                            cost: gasCost,
+                            unit: 'm³',
+                            isDark: isDark,
+                            onChanged: () => setModalState(() {}),
+                          ),
+                          const SizedBox(height: 16),
+                          _buildMeterInputSection(
+                            title: '💧 Sovuq suv va kanalizatsiya (m³)',
+                            prevCtrl: waterPrevCtrl,
+                            currCtrl: waterCurrCtrl,
+                            consumption: waterConsumption,
+                            cost: waterCost,
+                            unit: 'm³',
+                            isDark: isDark,
+                            onChanged: () => setModalState(() {}),
+                          ),
+                          const SizedBox(height: 16),
+                          Container(
+                            padding: const EdgeInsets.all(16),
+                            decoration: BoxDecoration(
+                              color: isDark ? const Color(0xFF0F172A) : const Color(0xFFF8FAFC),
+                              borderRadius: BorderRadius.circular(16),
+                              border: Border.all(
+                                color: isDark ? const Color(0xFF334155) : const Color(0xFFE2E8F0),
+                              ),
+                            ),
+                            child: Row(
+                              children: [
+                                const Icon(Icons.wifi_rounded, color: Color(0xFF3B82F6), size: 24),
+                                const SizedBox(width: 12),
+                                const Expanded(
+                                  child: Text('Wi-Fi va internet oylik to‘lovi:',
+                                      style: TextStyle(fontWeight: FontWeight.w600, fontSize: 13)),
+                                ),
+                                SizedBox(
+                                  width: 110,
+                                  child: TextField(
+                                    controller: wifiCtrl,
+                                    keyboardType: TextInputType.number,
+                                    onChanged: (_) => setModalState(() {}),
+                                    textAlign: TextAlign.end,
+                                    decoration: const InputDecoration(
+                                      suffixText: ' so‘m',
+                                      isDense: true,
+                                      border: OutlineInputBorder(),
+                                    ),
+                                  ),
+                                ),
+                              ],
+                            ),
+                          ),
+                          const SizedBox(height: 20),
+                          Container(
+                            padding: const EdgeInsets.all(16),
+                            decoration: BoxDecoration(
+                              gradient: const LinearGradient(
+                                colors: [Color(0xFF0F172A), Color(0xFF1E293B)],
+                              ),
+                              borderRadius: BorderRadius.circular(20),
+                            ),
+                            child: Column(
+                              children: [
+                                Row(
+                                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                  children: [
+                                    const Text('Jami hisoblangan summa:',
+                                        style: TextStyle(color: Colors.white70, fontSize: 13)),
+                                    Text(
+                                      '${_formatMoneySimple(grandTotal)} so‘m',
+                                      style: const TextStyle(
+                                          color: Colors.white,
+                                          fontSize: 18,
+                                          fontWeight: FontWeight.w900),
+                                    ),
+                                  ],
+                                ),
+                                const Divider(color: Colors.white24, height: 20),
+                                Row(
+                                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                  children: [
+                                    const Text('Har bir xonadoshga (4 kishi):',
+                                        style: TextStyle(
+                                            color: Color(0xFF38BDF8),
+                                            fontWeight: FontWeight.w700,
+                                            fontSize: 14)),
+                                    Text(
+                                      '${_formatMoneySimple(perPerson)} so‘m',
+                                      style: const TextStyle(
+                                          color: Color(0xFF38BDF8),
+                                          fontSize: 18,
+                                          fontWeight: FontWeight.w900),
+                                    ),
+                                  ],
+                                ),
+                              ],
+                            ),
+                          ),
+                          const SizedBox(height: 20),
+                          Row(
+                            children: [
+                              Expanded(
+                                child: OutlinedButton.icon(
+                                  style: OutlinedButton.styleFrom(
+                                    padding: const EdgeInsets.symmetric(vertical: 14),
+                                    shape: RoundedRectangleBorder(
+                                      borderRadius: BorderRadius.circular(14),
+                                    ),
+                                  ),
+                                  icon: const Icon(Icons.share_rounded, size: 18),
+                                  label: const Text('Telegram'),
+                                  onPressed: () async {
+                                    final text = '📊 KOMMUNAL HISOB-KITOB:\n'
+                                        '⚡️ Elektr: ${_formatMoneySimple(elecCost)} so‘m\n'
+                                        '🔥 Gaz: ${_formatMoneySimple(gasCost)} so‘m\n'
+                                        '💧 Suv: ${_formatMoneySimple(waterCost)} so‘m\n'
+                                        '📶 Wi-Fi: ${_formatMoneySimple(wifiCost)} so‘m\n'
+                                        '💰 JAMI: ${_formatMoneySimple(grandTotal)} so‘m\n'
+                                        '👉 Har birimizga: ${_formatMoneySimple(perPerson)} so‘m\n\n'
+                                        'XonaDosh 📱 xonadoshim.uz';
+                                    final uri = Uri.parse(
+                                        'https://t.me/share/url?text=${Uri.encodeComponent(text)}');
+                                    await launchUrl(uri,
+                                        mode: LaunchMode.externalApplication);
+                                  },
+                                ),
+                              ),
+                              const SizedBox(width: 12),
+                              Expanded(
+                                flex: 2,
+                                child: ElevatedButton.icon(
+                                  style: ElevatedButton.styleFrom(
+                                    backgroundColor: const Color(0xFF10B981),
+                                    foregroundColor: Colors.white,
+                                    padding: const EdgeInsets.symmetric(vertical: 14),
+                                    shape: RoundedRectangleBorder(
+                                      borderRadius: BorderRadius.circular(14),
+                                    ),
+                                  ),
+                                  icon: const Icon(Icons.check_circle_rounded, size: 18),
+                                  label: const Text('Kassaga yozish'),
+                                  onPressed: () async {
+                                    final groupCode =
+                                        ref.read(colivingGroupCodeProvider);
+                                    await ref
+                                        .read(xonadoshRepositoryProvider)
+                                        .addFinance({
+                                      'title': 'Kommunal to‘lovlar (Svet, Gaz, Suv)',
+                                      'type': 'utility',
+                                      'amount': grandTotal,
+                                      'paid_by': 'Umumiy hisob',
+                                      'group_code': groupCode,
+                                    });
+                                    if (ctx.mounted) Navigator.pop(ctx);
+                                    ref.invalidate(xonadoshFinancesProvider);
+                                    if (context.mounted) {
+                                      ScaffoldMessenger.of(context).showSnackBar(
+                                        const SnackBar(
+                                          content: Text(
+                                              'Kommunal to‘lov muvaffaqiyatli umumiy kassaga qo‘shildi!'),
+                                        ),
+                                      );
+                                    }
+                                  },
+                                ),
+                              ),
+                            ],
+                          ),
+                        ],
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+            );
+          },
+        );
+      },
+    );
+  }
+
+  Widget _buildMeterInputSection({
+    required String title,
+    required TextEditingController prevCtrl,
+    required TextEditingController currCtrl,
+    required double consumption,
+    required int cost,
+    required String unit,
+    required bool isDark,
+    required VoidCallback onChanged,
+  }) {
+    return Container(
+      padding: const EdgeInsets.all(16),
+      decoration: BoxDecoration(
+        color: isDark ? const Color(0xFF0F172A) : const Color(0xFFF8FAFC),
+        borderRadius: BorderRadius.circular(16),
+        border: Border.all(
+          color: isDark ? const Color(0xFF334155) : const Color(0xFFE2E8F0),
+        ),
+      ),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            children: [
+              Text(title,
+                  style: const TextStyle(fontWeight: FontWeight.w700, fontSize: 14)),
+              Text(
+                '${_formatMoneySimple(cost)} so‘m',
+                style: const TextStyle(
+                    fontWeight: FontWeight.w800,
+                    color: Color(0xFF10B981),
+                    fontSize: 14),
+              ),
+            ],
+          ),
+          const SizedBox(height: 12),
+          Row(
+            children: [
+              Expanded(
+                child: TextField(
+                  controller: prevCtrl,
+                  keyboardType: TextInputType.number,
+                  onChanged: (_) => onChanged(),
+                  decoration: const InputDecoration(
+                    labelText: 'Oldingi',
+                    isDense: true,
+                    border: OutlineInputBorder(),
+                  ),
+                ),
+              ),
+              const SizedBox(width: 12),
+              Expanded(
+                child: TextField(
+                  controller: currCtrl,
+                  keyboardType: TextInputType.number,
+                  onChanged: (_) => onChanged(),
+                  decoration: const InputDecoration(
+                    labelText: 'Joriy',
+                    isDense: true,
+                    border: OutlineInputBorder(),
+                  ),
+                ),
+              ),
+              const SizedBox(width: 12),
+              Container(
+                padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 8),
+                decoration: BoxDecoration(
+                  color: isDark ? const Color(0xFF1E293B) : const Color(0xFFE2E8F0),
+                  borderRadius: BorderRadius.circular(8),
+                ),
+                child: Text(
+                  '${consumption > 0 ? consumption.toStringAsFixed(1) : "0"} $unit',
+                  style: const TextStyle(fontWeight: FontWeight.w700, fontSize: 13),
+                ),
+              ),
+            ],
+          ),
+        ],
+      ),
+    );
+  }
+
+  // =========================================================================
+  // 2. OPT-OUT MEAL ("BUGUN UYDA OVQATLANMAYMAN")
+  // =========================================================================
+  void _openOptOutMealModal(BuildContext context, bool isDark) {
+    String selectedReason = 'Dars / Imtihondaman';
+    final reasons = [
+      'Dars / Imtihondaman',
+      'Qishloqdaman / Safardaman',
+      'Ishda / Mehmondaman',
+      'Ro‘zadaman'
+    ];
+
+    showModalBottomSheet(
+      context: context,
+      backgroundColor: Colors.transparent,
+      builder: (ctx) {
+        return StatefulBuilder(
+          builder: (context, setModalState) {
+            return Container(
+              padding: const EdgeInsets.all(24),
+              decoration: BoxDecoration(
+                color: isDark ? const Color(0xFF1E293B) : Colors.white,
+                borderRadius: const BorderRadius.vertical(top: Radius.circular(24)),
+              ),
+              child: SafeArea(
+                child: Column(
+                  mainAxisSize: MainAxisSize.min,
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Row(
+                      children: [
+                        Container(
+                          padding: const EdgeInsets.all(8),
+                          decoration: BoxDecoration(
+                            color: const Color(0xFFEF4444).withValues(alpha: 0.15),
+                            borderRadius: BorderRadius.circular(12),
+                          ),
+                          child: const Icon(Icons.no_meals_rounded,
+                              color: Color(0xFFEF4444), size: 24),
+                        ),
+                        const SizedBox(width: 12),
+                        const Expanded(
+                          child: Text(
+                            'Bugun uyda ovqatlanmayman',
+                            style: TextStyle(fontSize: 18, fontWeight: FontWeight.w800),
+                          ),
+                        ),
+                      ],
+                    ),
+                    const SizedBox(height: 12),
+                    const Text(
+                      'Darsda, ishda yoki safardamisiz? 1 ta tugma bilan bugungi umumiy oziq-ovqat va bozorlik xarajatidan ozod bo‘ling.',
+                      style: TextStyle(fontSize: 13, color: Colors.grey),
+                    ),
+                    const SizedBox(height: 16),
+                    const Text('Sababni tanlang:',
+                        style: TextStyle(fontWeight: FontWeight.w700, fontSize: 13)),
+                    const SizedBox(height: 8),
+                    Wrap(
+                      spacing: 8,
+                      children: reasons.map((r) {
+                        final isSel = selectedReason == r;
+                        return ChoiceChip(
+                          label: Text(r),
+                          selected: isSel,
+                          onSelected: (_) => setModalState(() => selectedReason = r),
+                        );
+                      }).toList(),
+                    ),
+                    const SizedBox(height: 24),
+                    SizedBox(
+                      width: double.infinity,
+                      child: ElevatedButton(
+                        style: ElevatedButton.styleFrom(
+                          backgroundColor: const Color(0xFFEF4444),
+                          foregroundColor: Colors.white,
+                          padding: const EdgeInsets.symmetric(vertical: 14),
+                          shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(14),
+                          ),
+                        ),
+                        onPressed: () {
+                          Navigator.pop(ctx);
+                          ScaffoldMessenger.of(context).showSnackBar(
+                            SnackBar(
+                              backgroundColor: const Color(0xFFEF4444),
+                              content: Text(
+                                  'Qayd etildi ($selectedReason)! Bugungi taom xarajatidan ozod qilindingiz.'),
+                            ),
+                          );
+                        },
+                        child: const Text('Qayd etish (Xarajatdan chiqish)',
+                            style: TextStyle(fontSize: 15, fontWeight: FontWeight.w800)),
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+            );
+          },
+        );
+      },
+    );
+  }
+
+  // =========================================================================
+  // 3. CHORE SWAP ("BUGUN DARSIM KO'P, NAVBATNI ALMASHTIRAYLIK")
+  // =========================================================================
+  void _openChoreSwapModal(BuildContext context, bool isDark) {
+    String selectedReason = 'Bugun kollokvium / darsim ko‘p';
+    final reasons = [
+      'Bugun kollokvium / darsim ko‘p',
+      'Kasal bo‘lib qoldim',
+      'Kech qaytaman / Ishdaman'
+    ];
+
+    showModalBottomSheet(
+      context: context,
+      backgroundColor: Colors.transparent,
+      builder: (ctx) {
+        return StatefulBuilder(
+          builder: (context, setModalState) {
+            return Container(
+              padding: const EdgeInsets.all(24),
+              decoration: BoxDecoration(
+                color: isDark ? const Color(0xFF1E293B) : Colors.white,
+                borderRadius: const BorderRadius.vertical(top: Radius.circular(24)),
+              ),
+              child: SafeArea(
+                child: Column(
+                  mainAxisSize: MainAxisSize.min,
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Row(
+                      children: [
+                        Container(
+                          padding: const EdgeInsets.all(8),
+                          decoration: BoxDecoration(
+                            color: const Color(0xFF8B5CF6).withValues(alpha: 0.15),
+                            borderRadius: BorderRadius.circular(12),
+                          ),
+                          child: const Icon(Icons.swap_horiz_rounded,
+                              color: Color(0xFF8B5CF6), size: 24),
+                        ),
+                        const SizedBox(width: 12),
+                        const Expanded(
+                          child: Text(
+                            'Navbatchilikni almashtirish',
+                            style: TextStyle(fontSize: 18, fontWeight: FontWeight.w800),
+                          ),
+                        ),
+                      ],
+                    ),
+                    const SizedBox(height: 12),
+                    const Text(
+                      'Bugun navbatingiz bormi, lekin vaqtingiz yo‘qmi? Xonadoshlaringizga navbatni keyingi kunga o‘zaro almashtirish taklifini yuboring.',
+                      style: TextStyle(fontSize: 13, color: Colors.grey),
+                    ),
+                    const SizedBox(height: 16),
+                    const Text('Sabab:',
+                        style: TextStyle(fontWeight: FontWeight.w700, fontSize: 13)),
+                    const SizedBox(height: 8),
+                    Wrap(
+                      spacing: 8,
+                      children: reasons.map((r) {
+                        final isSel = selectedReason == r;
+                        return ChoiceChip(
+                          label: Text(r),
+                          selected: isSel,
+                          onSelected: (_) => setModalState(() => selectedReason = r),
+                        );
+                      }).toList(),
+                    ),
+                    const SizedBox(height: 24),
+                    SizedBox(
+                      width: double.infinity,
+                      child: ElevatedButton(
+                        style: ElevatedButton.styleFrom(
+                          backgroundColor: const Color(0xFF8B5CF6),
+                          foregroundColor: Colors.white,
+                          padding: const EdgeInsets.symmetric(vertical: 14),
+                          shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(14),
+                          ),
+                        ),
+                        onPressed: () {
+                          Navigator.pop(ctx);
+                          ScaffoldMessenger.of(context).showSnackBar(
+                            const SnackBar(
+                              backgroundColor: Color(0xFF8B5CF6),
+                              content: Text(
+                                  'Almashtirish so‘rovi xonadoshlarga yuborildi! Kimdir qabul qilsa sizga bildirishnoma keladi.'),
+                            ),
+                          );
+                        },
+                        child: const Text('Xonadoshlarga so‘rov yuborish',
+                            style: TextStyle(fontSize: 15, fontWeight: FontWeight.w800)),
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+            );
+          },
+        );
+      },
+    );
+  }
+
+  // =========================================================================
+  // 4. 50% STUDENT SUBSIDY & LEGAL LEASE ADVISORY (IJARA.SOLIQ.UZ)
+  // =========================================================================
+  void _openStudentSubsidyModal(BuildContext context, bool isDark) {
+    showModalBottomSheet(
+      context: context,
+      isScrollControlled: true,
+      backgroundColor: Colors.transparent,
+      builder: (ctx) {
+        return Container(
+          constraints: BoxConstraints(
+            maxHeight: MediaQuery.sizeOf(context).height * 0.88,
+          ),
+          decoration: BoxDecoration(
+            color: isDark ? const Color(0xFF1E293B) : Colors.white,
+            borderRadius: const BorderRadius.vertical(top: Radius.circular(24)),
+          ),
+          child: SafeArea(
+            child: Column(
+              children: [
+                Container(
+                  margin: const EdgeInsets.symmetric(vertical: 10),
+                  width: 40,
+                  height: 4,
+                  decoration: BoxDecoration(
+                    color: isDark ? Colors.white24 : Colors.grey[300],
+                    borderRadius: BorderRadius.circular(2),
+                  ),
+                ),
+                Padding(
+                  padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 8),
+                  child: Row(
+                    children: [
+                      Container(
+                        padding: const EdgeInsets.all(8),
+                        decoration: BoxDecoration(
+                          color: const Color(0xFF0EA5E9).withValues(alpha: 0.15),
+                          borderRadius: BorderRadius.circular(12),
+                        ),
+                        child: const Icon(Icons.account_balance_rounded,
+                            color: Color(0xFF0EA5E9), size: 24),
+                      ),
+                      const SizedBox(width: 12),
+                      const Expanded(
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            Text('50% Davlat Kompensatsiyasi',
+                                style: TextStyle(
+                                    fontSize: 18, fontWeight: FontWeight.w800)),
+                            Text('VM 605-son qarori bo‘yicha qo‘llanma',
+                                style: TextStyle(fontSize: 12, color: Colors.grey)),
+                          ],
+                        ),
+                      ),
+                      IconButton(
+                        onPressed: () => Navigator.pop(ctx),
+                        icon: const Icon(Icons.close_rounded),
+                      ),
+                    ],
+                  ),
+                ),
+                const Divider(height: 1),
+                Expanded(
+                  child: ListView(
+                    padding: const EdgeInsets.all(20),
+                    children: [
+                      Container(
+                        padding: const EdgeInsets.all(16),
+                        decoration: BoxDecoration(
+                          color: const Color(0xFF0EA5E9).withValues(alpha: 0.1),
+                          borderRadius: BorderRadius.circular(16),
+                          border: Border.all(
+                            color: const Color(0xFF0EA5E9).withValues(alpha: 0.3),
+                          ),
+                        ),
+                        child: const Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            Text(
+                              '💡 Talaba uchun 375 000 so‘mgacha bepul yordam!',
+                              style: TextStyle(
+                                  fontWeight: FontWeight.w800,
+                                  color: Color(0xFF0EA5E9),
+                                  fontSize: 14),
+                            ),
+                            SizedBox(height: 6),
+                            Text(
+                              'Davlat OTM kunduzgi talabalariga har oy Toshkentda 375 000 so‘mgacha (BHM 1 baravari), viloyatlarda 187 500 so‘mgacha ijara xarajatlari davlat byudjetidan qoplab beriladi.',
+                              style: TextStyle(fontSize: 13, height: 1.4),
+                            ),
+                          ],
+                        ),
+                      ),
+                      const SizedBox(height: 20),
+                      const Text('Kompensatsiyani olishning 3 ta oson qadami:',
+                          style: TextStyle(fontWeight: FontWeight.w800, fontSize: 15)),
+                      const SizedBox(height: 12),
+                      _buildSubsidyStep(
+                        step: '1',
+                        title: 'ijara.soliq.uz da shartnoma tuzish',
+                        desc:
+                            'Uy egasi bilan OneID orqali kiring. Talabalarga ijaraga berilganda uy egasi 100% daromad solig‘idan ozod etiladi!',
+                      ),
+                      const SizedBox(height: 12),
+                      _buildSubsidyStep(
+                        step: '2',
+                        title: 'Dekanat / Tyutorga ariza topshirish',
+                        desc:
+                            'OTM rektori nomiga ariza va soliqdan olingan QR-kodli ijara shartnomasini taqdim eting.',
+                      ),
+                      const SizedBox(height: 12),
+                      _buildSubsidyStep(
+                        step: '3',
+                        title: 'Bank kartasiga qabul qilish',
+                        desc:
+                            'Har oyning 10-sanasiga qadar mablag‘ to‘g‘ridan-to‘g‘ri plastik kartangizga o‘tkazib beriladi.',
+                      ),
+                      const SizedBox(height: 24),
+                      ElevatedButton.icon(
+                        style: ElevatedButton.styleFrom(
+                          backgroundColor: const Color(0xFF0EA5E9),
+                          foregroundColor: Colors.white,
+                          padding: const EdgeInsets.symmetric(vertical: 14),
+                          shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(14),
+                          ),
+                        ),
+                        icon: const Icon(Icons.open_in_new_rounded, size: 18),
+                        label: const Text('ijara.soliq.uz portaliga o‘tish',
+                            style: TextStyle(fontSize: 15, fontWeight: FontWeight.w800)),
+                        onPressed: () async {
+                          final uri = Uri.parse('https://ijara.soliq.uz/');
+                          await launchUrl(uri, mode: LaunchMode.externalApplication);
+                        },
+                      ),
+                      const SizedBox(height: 10),
+                      OutlinedButton.icon(
+                        style: OutlinedButton.styleFrom(
+                          padding: const EdgeInsets.symmetric(vertical: 14),
+                          shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(14),
+                          ),
+                        ),
+                        icon: const Icon(Icons.copy_rounded, size: 18),
+                        label: const Text('Namunaviy shartnoma matnini nusxalash'),
+                        onPressed: () {
+                          Clipboard.setData(const ClipboardData(
+                            text: 'TURAR JOYNI IJARAGA BERISH SHARTNOMASI (NAMUNA)\n\n'
+                                '1. Shartnoma mavzusi: Ijaraga beruvchi o‘ziga tegishli xonadonni Ijarachiga vaqtincha yashash uchun topshiradi.\n'
+                                '2. To‘lov miqdori va tartibi: Har oyning 5-sanasiga qadar to‘lanadi.\n'
+                                '3. Tomonlarning huquq va majburiyatlari: Fuqarolik Kodeksi 603-614 moddalari bo‘yicha.\n\n'
+                                'ijara.soliq.uz orqali ro‘yxatdan o‘tish tavsiya etiladi.',
+                          ));
+                          ScaffoldMessenger.of(context).showSnackBar(
+                            const SnackBar(
+                              content: Text(
+                                  'Namunaviy shartnoma matni buferga nusxalandi!'),
+                            ),
+                          );
+                        },
+                      ),
+                    ],
+                  ),
+                ),
+              ],
+            ),
+          ),
+        );
+      },
+    );
+  }
+
+  Widget _buildSubsidyStep({
+    required String step,
+    required String title,
+    required String desc,
+  }) {
+    return Row(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Container(
+          width: 28,
+          height: 28,
+          alignment: Alignment.center,
+          decoration: const BoxDecoration(
+            color: Color(0xFF0EA5E9),
+            shape: BoxShape.circle,
+          ),
+          child: Text(
+            step,
+            style: const TextStyle(
+                color: Colors.white, fontWeight: FontWeight.w800, fontSize: 14),
+          ),
+        ),
+        const SizedBox(width: 12),
+        Expanded(
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Text(title,
+                  style: const TextStyle(fontWeight: FontWeight.w700, fontSize: 14)),
+              const SizedBox(height: 4),
+              Text(desc, style: const TextStyle(fontSize: 13, color: Colors.grey)),
+            ],
+          ),
+        ),
+      ],
+    );
+  }
+
+  String _formatMoneySimple(int amount) {
+    final s = amount.toString();
+    final buffer = StringBuffer();
+    for (int i = 0; i < s.length; i++) {
+      if (i > 0 && (s.length - i) % 3 == 0) buffer.write(' ');
+      buffer.write(s[i]);
+    }
+    return buffer.toString();
+  }
 }
+
