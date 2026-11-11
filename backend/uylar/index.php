@@ -3,7 +3,7 @@ declare(strict_types=1);
 
 /**
  * Server-Side Rendered (SSR) SEO Landing Pages for XonaDosh
- * URLs: honadosh.uz/uylar/ or honadosh.uz/uylar/[slug]
+ * URLs: xonadoshim.uz/uylar/ or xonadoshim.uz/uylar/[slug]
  */
 
 require_once dirname(__DIR__) . '/includes/bootstrap.php';
@@ -88,14 +88,14 @@ $allUnis = $pdo->query("SELECT short_name, name_uz FROM `xonadosh_universities` 
     <title><?= $pageTitle ?></title>
     <meta name="description" content="<?= $pageDesc ?>">
     <meta name="keywords" content="ijara uy, talabalar ijarasi, xonadosh, toshkent ijara, bez makler, subsidiya, tatu, ozmu">
-    <link rel="canonical" href="https://honadosh.uz/uylar/<?= htmlspecialchars($slug) ?>">
+    <link rel="canonical" href="https://xonadoshim.uz/uylar/<?= htmlspecialchars($slug) ?>">
     
     <!-- Open Graph -->
     <meta property="og:title" content="<?= $pageTitle ?>">
     <meta property="og:description" content="<?= $pageDesc ?>">
     <meta property="og:type" content="website">
-    <meta property="og:url" content="https://honadosh.uz/uylar/<?= htmlspecialchars($slug) ?>">
-    <meta property="og:image" content="https://honadosh.uz/assets/img/og_image.png">
+    <meta property="og:url" content="https://xonadoshim.uz/uylar/<?= htmlspecialchars($slug) ?>">
+    <meta property="og:image" content="https://xonadoshim.uz/assets/img/og_image.png">
 
     <style>
         :root {
@@ -148,10 +148,10 @@ $allUnis = $pdo->query("SELECT short_name, name_uz FROM `xonadosh_universities` 
 <body>
 
 <header class="header">
-    <a href="https://honadosh.uz" class="logo-wrap">
+    <a href="https://xonadoshim.uz" class="logo-wrap">
         <span>🏠 XonaDosh</span>
     </a>
-    <a href="https://honadosh.uz/app/" class="app-btn">Ilovani ochish</a>
+    <a href="https://xonadoshim.uz/app/" class="app-btn">Ilovani ochish</a>
 </header>
 
 <main>
@@ -160,13 +160,13 @@ $allUnis = $pdo->query("SELECT short_name, name_uz FROM `xonadosh_universities` 
         <p><?= $pageDesc ?></p>
 
         <div class="badges-bar">
-            <a href="https://honadosh.uz/uylar" class="filter-chip <?= empty($slug) ? 'active' : '' ?>">Barchasi</a>
-            <a href="https://honadosh.uz/uylar/tatu" class="filter-chip <?= $slug === 'tatu' ? 'active' : '' ?>">TATU</a>
-            <a href="https://honadosh.uz/uylar/ozmu" class="filter-chip <?= $slug === 'ozmu' ? 'active' : '' ?>">O‘zMU</a>
-            <a href="https://honadosh.uz/uylar/tdtu" class="filter-chip <?= $slug === 'tdtu' ? 'active' : '' ?>">TDTU</a>
-            <a href="https://honadosh.uz/uylar/tdiu" class="filter-chip <?= $slug === 'tdiu' ? 'active' : '' ?>">TDIU (Narxoz)</a>
-            <a href="https://honadosh.uz/uylar/chilonzor" class="filter-chip <?= $slug === 'chilonzor' ? 'active' : '' ?>">Chilonzor tumani</a>
-            <a href="https://honadosh.uz/uylar/yunusobod" class="filter-chip <?= $slug === 'yunusobod' ? 'active' : '' ?>">Yunusobod tumani</a>
+            <a href="https://xonadoshim.uz/uylar" class="filter-chip <?= empty($slug) ? 'active' : '' ?>">Barchasi</a>
+            <a href="https://xonadoshim.uz/uylar/tatu" class="filter-chip <?= $slug === 'tatu' ? 'active' : '' ?>">TATU</a>
+            <a href="https://xonadoshim.uz/uylar/ozmu" class="filter-chip <?= $slug === 'ozmu' ? 'active' : '' ?>">O‘zMU</a>
+            <a href="https://xonadoshim.uz/uylar/tdtu" class="filter-chip <?= $slug === 'tdtu' ? 'active' : '' ?>">TDTU</a>
+            <a href="https://xonadoshim.uz/uylar/tdiu" class="filter-chip <?= $slug === 'tdiu' ? 'active' : '' ?>">TDIU (Narxoz)</a>
+            <a href="https://xonadoshim.uz/uylar/chilonzor" class="filter-chip <?= $slug === 'chilonzor' ? 'active' : '' ?>">Chilonzor tumani</a>
+            <a href="https://xonadoshim.uz/uylar/yunusobod" class="filter-chip <?= $slug === 'yunusobod' ? 'active' : '' ?>">Yunusobod tumani</a>
         </div>
     </div>
 
@@ -175,7 +175,7 @@ $allUnis = $pdo->query("SELECT short_name, name_uz FROM `xonadosh_universities` 
             <div style="grid-column: 1/-1; text-align: center; padding: 60px 20px; background: #fff; border-radius: 16px;">
                 <h3>Ushbu so‘rov bo‘yicha hozircha e‘lonlar topilmadi.</h3>
                 <p style="margin-top: 8px; color: var(--text-muted);">Boshqa tumanlar yoki OTMlarni tanlang yoki o‘zingiz birinchi bo‘lib e‘lon bering!</p>
-                <a href="https://honadosh.uz/app/" class="app-btn" style="display: inline-block; margin-top: 16px;">E‘lon berish</a>
+                <a href="https://xonadoshim.uz/app/" class="app-btn" style="display: inline-block; margin-top: 16px;">E‘lon berish</a>
             </div>
         <?php else: ?>
             <?php foreach ($listings as $l): 
@@ -213,7 +213,7 @@ $allUnis = $pdo->query("SELECT short_name, name_uz FROM `xonadosh_universities` 
                     </div>
                     <div class="card-footer">
                         <a href="tel:<?= htmlspecialchars($l['phone_number']) ?>" class="btn-call">📞 <?= htmlspecialchars($l['phone_number']) ?></a>
-                        <a href="https://honadosh.uz/app/" class="btn-detail">Ilovada ko‘rish &rarr;</a>
+                        <a href="https://xonadoshim.uz/app/" class="btn-detail">Ilovada ko‘rish &rarr;</a>
                     </div>
                 </div>
             <?php endforeach; ?>
@@ -226,7 +226,7 @@ $allUnis = $pdo->query("SELECT short_name, name_uz FROM `xonadosh_universities` 
         <h3>OTMlar bo‘yicha ijara uylar:</h3>
         <div class="footer-links">
             <?php foreach ($allUnis as $u): ?>
-                <a href="https://honadosh.uz/uylar/<?= strtolower(urlencode($u['short_name'])) ?>">
+                <a href="https://xonadoshim.uz/uylar/<?= strtolower(urlencode($u['short_name'])) ?>">
                     <?= htmlspecialchars($u['short_name']) ?>
                 </a>
             <?php endforeach; ?>

@@ -17,6 +17,10 @@ FileETag MTime Size
   RewriteEngine On
   RewriteRule .* - [E=HTTP_AUTHORIZATION:%{HTTP:Authorization}]
 
+  # API v1 versioning aliases
+  RewriteRule ^api/v1/([^/]+)\.php$ api/$1.php [L,QSA]
+  RewriteRule ^api/v1/([^/]+)$ api/$1.php [L,QSA]
+
   RewriteRule ^join/([^/]+)/?$ join.php?code=$1 [L,QSA]
   RewriteRule ^uylar/([^/]+)/?$ uylar/index.php?slug=$1 [L,QSA]
   RewriteRule ^uylar/?$ uylar/index.php [L,QSA]

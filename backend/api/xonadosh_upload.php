@@ -158,7 +158,7 @@ if (!$optimized) {
 
 @chmod($destMain, 0644);
 
-$base = rtrim((string)($cfg['base_url'] ?? 'https://honadosh.uz'), '/');
+$base = rtrim((string)($cfg['base_url'] ?? 'https://xonadoshim.uz'), '/');
 $url = $base . '/uploads/listings/' . $mainName;
 $thumbUrl = $hasThumb ? ($base . '/uploads/listings/' . $thumbName) : $url;
 

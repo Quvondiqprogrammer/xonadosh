@@ -4186,7 +4186,7 @@ class _XonadoshColivingTabState extends ConsumerState<XonadoshColivingTab> {
     }
     buffer.writeln('');
     buffer.writeln('📲 XonaDosh orqali kuzatib boring:');
-    buffer.writeln('https://honadosh.uz/join/$groupCode');
+    buffer.writeln('https://xonadoshim.uz/join/$groupCode');
 
     ContactActions.shareText(context, buffer.toString());
   }
@@ -4800,7 +4800,7 @@ class _XonadoshColivingTabState extends ConsumerState<XonadoshColivingTab> {
           builder: (context, ref, _) {
             final groupCode = ref.watch(colivingGroupCodeProvider);
             final isDefault = groupCode == 'home_default';
-            final shareUrl = 'https://honadosh.uz/join/$groupCode';
+            final shareUrl = 'https://xonadoshim.uz/join/$groupCode';
 
             return Padding(
               padding: EdgeInsets.only(

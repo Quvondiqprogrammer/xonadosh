@@ -1090,7 +1090,7 @@ class _XonadoshProfileEditScreenState
                             ? Image.network(
                                 _avatarUrl!.startsWith('http')
                                     ? _avatarUrl!
-                                    : 'https://honadosh.uz/$_avatarUrl',
+                                    : 'https://xonadoshim.uz/$_avatarUrl',
                                 fit: BoxFit.cover,
                                 errorBuilder: (context, error, stackTrace) =>
                                     buildStudentPhotoPlaceholder(

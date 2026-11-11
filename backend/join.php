@@ -9,7 +9,7 @@ if ($code === '') {
 }
 
 $safeCode = htmlspecialchars($code, ENT_QUOTES, 'UTF-8');
-$webUrl = "https://honadosh.uz/app/?join=" . urlencode($code);
+$webUrl = "https://xonadoshim.uz/app/?join=" . urlencode($code);
 $appDeepLink = "xonadosh://join?code=" . urlencode($code);
 $playStoreUrl = "https://play.google.com/store/apps/details?id=uz.zargo.xonadosh";
 ?>

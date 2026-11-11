@@ -1,4 +1,4 @@
-# xonadosh.uz robots.txt - Optimized for Googlebot, YandexBot, and AI Crawlers
+# xonadoshim.uz robots.txt - Optimized for Googlebot, YandexBot, and AI Crawlers
 User-agent: *
 Allow: /
 Disallow: /admin/
@@ -25,4 +25,4 @@ Allow: /
 User-agent: Applebot
 Allow: /
 
-Sitemap: https://xonadosh.uz/sitemap.xml
+Sitemap: https://xonadoshim.uz/sitemap.xml

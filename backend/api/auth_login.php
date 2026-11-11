@@ -28,6 +28,9 @@ if ($login === '' && isset($data['phone'])) {
 if ($login === '' && isset($data['phone_number'])) {
     $login = trim((string) $data['phone_number']);
 }
+if ($login === '' && isset($data['login'])) {
+    $login = trim((string) $data['login']);
+}
 $password = isset($data['password']) ? (string) $data['password'] : '';
 
 if ($login === '' || $password === '') {

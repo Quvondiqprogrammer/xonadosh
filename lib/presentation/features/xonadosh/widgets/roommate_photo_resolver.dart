@@ -10,7 +10,7 @@ String resolveProfilePhoto(XonadoshProfile item) {
     if (raw.startsWith('http://') || raw.startsWith('https://')) {
       return raw;
     }
-    return 'https://honadosh.uz/${raw.startsWith('/') ? raw.substring(1) : raw}';
+    return 'https://xonadoshim.uz/${raw.startsWith('/') ? raw.substring(1) : raw}';
   }
 
   final isFemale =

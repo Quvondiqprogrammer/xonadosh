@@ -18,6 +18,20 @@ class SettingsScreen extends ConsumerWidget {
     await launchUrl(uri, mode: LaunchMode.externalApplication);
   }
 
+  Future<void> _openAppOrWeb(String scheme, String webUrl) async {
+    try {
+      final appUri = Uri.parse(scheme);
+      if (await canLaunchUrl(appUri)) {
+        await launchUrl(appUri);
+        return;
+      }
+    } catch (_) {}
+    try {
+      final webUri = Uri.parse(webUrl);
+      await launchUrl(webUri, mode: LaunchMode.externalApplication);
+    } catch (_) {}
+  }
+
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final l10n = context.l10n;
@@ -312,6 +326,92 @@ class SettingsScreen extends ConsumerWidget {
 
             const SizedBox(height: 20),
 
+            // Group 2.5: Hamyon AI Ekotizim Hamkor Loyihalari
+            _buildSectionHeader('HAMYON AI EKOTIZIMI (ZARGO ECOSYSTEM)'),
+            const SizedBox(height: 8),
+            Container(
+              decoration: BoxDecoration(
+                color: isDark ? const Color(0xFF1E293B) : Colors.white,
+                borderRadius: BorderRadius.circular(20),
+                border: Border.all(
+                  color: isDark
+                      ? const Color(0xFF334155)
+                      : const Color(0xFFE8EEF3),
+                ),
+              ),
+              child: Material(
+                color: Colors.transparent,
+                child: Column(
+                  children: [
+                    _buildEcosystemItem(
+                      icon: Icons.account_balance_wallet_rounded,
+                      color: const Color(0xFF10B981),
+                      title: 'Hamyon AI',
+                      subtitle: 'Yagona hamyon, AI moliya va barcha ilovalar markazi',
+                      onTap: () => _openAppOrWeb('hamyonai://', 'https://hamyon-ai.uz'),
+                    ),
+                    const Divider(height: 1, indent: 56),
+                    _buildEcosystemItem(
+                      icon: Icons.local_taxi_rounded,
+                      color: const Color(0xFFF59E0B),
+                      title: 'ZarGO Taxi & Yetkazish',
+                      subtitle: 'Shahar bo\'ylab tezkor va qulay transport',
+                      onTap: () => _openAppOrWeb('zargo://', 'https://zargo.uz'),
+                    ),
+                    const Divider(height: 1, indent: 56),
+                    _buildEcosystemItem(
+                      icon: Icons.storefront_rounded,
+                      color: const Color(0xFF3B82F6),
+                      title: 'MyDokon',
+                      subtitle: 'Savdo, omborxona va POS tizimi',
+                      onTap: () => _openAppOrWeb('mydokon://', 'https://mydokon.uz'),
+                    ),
+                    const Divider(height: 1, indent: 56),
+                    _buildEcosystemItem(
+                      icon: Icons.mail_outline_rounded,
+                      color: const Color(0xFF8B5CF6),
+                      title: 'taklf.uz',
+                      subtitle: 'Aqlli to\'y va marosim taklifnomalari',
+                      onTap: () => _openAppOrWeb('taklf://', 'https://taklf.uz'),
+                    ),
+                    const Divider(height: 1, indent: 56),
+                    _buildEcosystemItem(
+                      icon: Icons.handyman_rounded,
+                      color: const Color(0xFFEC4899),
+                      title: 'Helpme',
+                      subtitle: 'Usta xizmatlari va texnik yordam',
+                      onTap: () => _openAppOrWeb('helpme://', 'https://helpme.uz'),
+                    ),
+                    const Divider(height: 1, indent: 56),
+                    _buildEcosystemItem(
+                      icon: Icons.repeat_rounded,
+                      color: const Color(0xFF06B6D4),
+                      title: 'ikkinchi',
+                      subtitle: 'Ishonchli va kafolatlangan ikkilamchi bozor',
+                      onTap: () => _openAppOrWeb('ikkinchi://', 'https://ikkinchi.uz'),
+                    ),
+                    const Divider(height: 1, indent: 56),
+                    _buildEcosystemItem(
+                      icon: Icons.shopping_bag_outlined,
+                      color: const Color(0xFF14B8A6),
+                      title: 'inBaraka',
+                      subtitle: 'E\'lonlar bozori va avtosavdo',
+                      onTap: () => _openAppOrWeb('inbaraka://', 'https://inbaraka.uz'),
+                    ),
+                    const Divider(height: 1, indent: 56),
+                    _buildEcosystemItem(
+                      icon: Icons.movie_outlined,
+                      color: const Color(0xFFE11D48),
+                      title: 'kinochiaka.uz',
+                      subtitle: 'Kinolar, seriallar va sifatli film portali',
+                      onTap: () => _openAppOrWeb('kinochiaka://', 'https://kinochiaka.uz'),
+                    ),
+                  ],
+                ),
+              ),
+            ),
+            const SizedBox(height: 20),
+
             // Group 3: Account Actions
             _buildSectionHeader(l10n.settingsSectionAccount),
             const SizedBox(height: 8),
@@ -485,6 +585,40 @@ class SettingsScreen extends ConsumerWidget {
           letterSpacing: 0.5,
         ),
       ),
+    );
+  }
+
+  Widget _buildEcosystemItem({
+    required IconData icon,
+    required Color color,
+    required String title,
+    required String subtitle,
+    required VoidCallback onTap,
+  }) {
+    return ListTile(
+      leading: Container(
+        width: 36,
+        height: 36,
+        decoration: BoxDecoration(
+          color: color.withValues(alpha: 0.12),
+          borderRadius: BorderRadius.circular(10),
+        ),
+        child: Icon(icon, color: color, size: 20),
+      ),
+      title: Text(
+        title,
+        style: const TextStyle(fontWeight: FontWeight.w700, fontSize: 14),
+      ),
+      subtitle: Text(
+        subtitle,
+        style: const TextStyle(fontSize: 12, color: Color(0xFF64748B)),
+      ),
+      trailing: const Icon(
+        Icons.arrow_forward_ios_rounded,
+        size: 14,
+        color: Color(0xFF94A3B8),
+      ),
+      onTap: onTap,
     );
   }
 }

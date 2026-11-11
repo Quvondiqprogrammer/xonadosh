@@ -42,5 +42,5 @@ cat > backend/app/.htaccess <<'EOF'
 </IfModule>
 EOF
 
-echo "✓ Tayyor: backend/app (https://honadosh.uz/app/)"
+echo "✓ Tayyor: backend/app (https://xonadoshim.uz/app/)"
 echo "  Lokal: flutter run -d chrome"

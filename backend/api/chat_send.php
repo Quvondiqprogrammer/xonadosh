@@ -20,7 +20,7 @@ $username = (string)$user['username'];
 
 $payload = request_payload();
 $convId = isset($payload['conversation_id']) ? (int)$payload['conversation_id'] : (isset($_POST['conversation_id']) ? (int)$_POST['conversation_id'] : 0);
-$body = trim((string)($payload['body'] ?? ($_POST['body'] ?? '')));
+$body = trim((string)($payload['body'] ?? ($payload['message'] ?? ($payload['text'] ?? ($_POST['body'] ?? '')))));
 $messageType = trim((string)($payload['message_type'] ?? ($_POST['message_type'] ?? 'text')));
 $metadata = isset($payload['metadata']) && is_array($payload['metadata']) ? $payload['metadata'] : null;
 

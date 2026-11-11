@@ -18,7 +18,7 @@ LOCAL_BACKEND_DIR = ROOT / "backend"
 
 FTP_HOST = os.environ.get("FTP_HOST", "142.132.250.229")
 FTP_PORT = int(os.environ.get("FTP_PORT", "21"))
-FTP_USER = os.environ.get("FTP_USER", "69561c631190f_honadosh.uz")
+FTP_USER = os.environ.get("FTP_USER", "69561c631190f_xonadoshim")
 FTP_PASS = os.environ.get("FTP_PASS", "Asad03@18")
 
 def ensure_remote_dir(ftp: ftplib.FTP, remote_dir: str) -> None:
@@ -129,6 +129,14 @@ def main() -> int:
     if target in ("all", "quick", "uylar"):
         print("→ Uploading backend/uylar/...")
         total_uploaded += upload_tree(ftp, LOCAL_BACKEND_DIR / "uylar", "uylar")
+
+    # 4d. Static legal & pitch pages
+    if target in ("all", "quick", "legal"):
+        for folder in ("privacy", "terms", "pitch"):
+            lf = LOCAL_BACKEND_DIR / folder
+            if lf.exists():
+                print(f"→ Uploading backend/{folder}/...")
+                total_uploaded += upload_tree(ftp, lf, folder)
 
     # 5. Assets
     if target in ("all", "assets"):
