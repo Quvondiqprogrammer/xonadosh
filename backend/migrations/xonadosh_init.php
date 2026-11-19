@@ -463,12 +463,22 @@ $unis = [
     ["Vestminster Xalqaro Universiteti (WIUT)","WIUT","Toshkent","Mirobod","Istiqlol ko'chasi, 12",41.310500,69.280500,"Amir Temur Xiyoboni",300],
     ["Webster Universiteti Toshkentda","Webster","Toshkent","Shayxontohur","Navoiy shoh ko'chasi, 13",41.318200,69.255400,"Alisher Navoiy",350],
     ["Amity Universiteti Toshkentda","Amity","Toshkent","Shayxontohur","Labzak ko'chasi, 70",41.332100,69.261200,"Minor",900],
+    ["Toshkent Davlat Yuridik Universiteti (TDYuU)","TDYuU","Toshkent","Yunusobod","Sayilgoh ko'chasi, 35",41.312100,69.278500,"Amir Temur Xiyoboni",200],
+    ["Toshkentdagi Singapur Menejmentni Rivojlantirish Instituti (MDIST)","MDIST","Toshkent","Chilonzor","Bunyodkor shoh ko'chasi, 28",41.272100,69.214500,"Chilonzor",600],
+    ["Jahon Iqtisodiyoti va Diplomatiya Universiteti (JIDU)","JIDU (UWED)","Toshkent","Mirzo Ulug'bek","Mustaqillik shoh ko'chasi, 54",41.328700,69.324600,"Buyuk Ipak Yo'li",800],
+    ["\"Yangi O'zbekiston\" Universiteti","Yangi O'zbekiston","Toshkent","Mirzo Ulug'bek","Movarounnahr ko'chasi, 1",41.316000,69.288000,"Hamid Olimjon",650],
+    ["Toshkent shahridagi Turin Politexnika Universiteti (TTPU)","Turin (TTPU)","Toshkent","Olmazor","Kichik halqa yo'li, 17",41.352400,69.191200,"Beruniy",950],
+    ["Toshkent Kimyo-Texnologiya Instituti (TKTI)","TKTI","Toshkent","Shayxontohur","Navoiy shoh ko'chasi, 32",41.321800,69.252000,"Alisher Navoiy",400],
+    ["Toshkent To'qimachilik va Yengil Sanoat Instituti (TTESI)","TTESI","Toshkent","Yakkasaroy","Shohjahon ko'chasi, 5",41.288200,69.262500,"Kosmonavtlar",1100],
+    ["Toshkent Davlat Agrar Universiteti (TDAU)","TDAU","Toshkent","Qibray","Universitet ko'chasi, 2",41.365000,69.342000,"Buyuk Ipak Yo'li",2800],
+    ["Toshkent Arxitektura-Qurilish Universiteti (TAQU)","TAQU","Toshkent","Yunusobod","Yangi shahar ko'chasi, 9",41.368500,69.289000,"Turkiston",500],
+    ["O'zbekiston Davlat Konservatoriyasi (O'zDK)","Konservatoriya","Toshkent","Shayxontohur","Olmazor ko'chasi, 1",41.314200,69.245800,"Xalqlar Do'stligi",350],
     ["Samarqand Davlat Universiteti (SamDU)","SamDU","Samarqand","Universitet xiyoboni","Universitet xiyoboni, 15",39.645000,66.960000,null,null],
     ["Farg'ona Davlat Universiteti (FarDU)","FarDU","Farg'ona","Markaz","Murabbiylar ko'chasi, 19",40.386000,71.785000,null,null],
     ["Andijon Davlat Universiteti (ADU)","ADU","Andijon","Markaz","Universitet ko'chasi, 129",40.782000,72.344000,null,null],
     ["Buxoro Davlat Universiteti (BuxDU)","BuxDU","Buxoro","Markaz","M.Iqbol ko'chasi, 11",39.768000,64.421000,null,null]
 ];
-$s = $pdo->prepare("INSERT INTO `xonadosh_universities` (`name_uz`,`short_name`,`city`,`district`,`address`,`latitude`,`longitude`,`nearest_metro`,`metro_distance_m`) VALUES (?,?,?,?,?,?,?,?,?) ON DUPLICATE KEY UPDATE `short_name`=VALUES(`short_name`)");
+$s = $pdo->prepare("INSERT INTO `xonadosh_universities` (`name_uz`,`short_name`,`city`,`district`,`address`,`latitude`,`longitude`,`nearest_metro`,`metro_distance_m`) VALUES (?,?,?,?,?,?,?,?,?) ON DUPLICATE KEY UPDATE `short_name`=VALUES(`short_name`),`city`=VALUES(`city`),`district`=VALUES(`district`),`address`=VALUES(`address`),`latitude`=VALUES(`latitude`),`longitude`=VALUES(`longitude`),`nearest_metro`=VALUES(`nearest_metro`),`metro_distance_m`=VALUES(`metro_distance_m`)");
 foreach ($unis as $u) { $s->execute($u); }
 
 // ==========================================

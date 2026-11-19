@@ -77,23 +77,25 @@ if ($action === 'format_daily_digest') {
     $unpaidBills = [];
 
     if ($pdo) {
-        // Today's chore
-        $cStmt = $pdo->prepare("SELECT * FROM `xonadosh_chores` WHERE `group_code` = ? AND `day_of_week` = ? LIMIT 1");
-        $cStmt->execute([$groupCode, $dayOfWeek]);
-        $chore = $cStmt->fetch();
+        try {
+            // Today's chore
+            $cStmt = $pdo->prepare("SELECT * FROM `xonadosh_chores` WHERE `group_code` = ? AND `day_of_week` = ? LIMIT 1");
+            $cStmt->execute([$groupCode, $dayOfWeek]);
+            $chore = $cStmt->fetch();
 
-        // Today's meal
-        $mStmt = $pdo->prepare("SELECT m.*, r.title, r.estimated_cost_per_person 
-            FROM `xonadosh_meal_plans` m 
-            JOIN `xonadosh_recipes` r ON r.id = m.recipe_id 
-            WHERE m.group_code = ? AND m.day_of_week = ? LIMIT 1");
-        $mStmt->execute([$groupCode, $dayOfWeek]);
-        $meal = $mStmt->fetch();
+            // Today's meal
+            $mStmt = $pdo->prepare("SELECT m.*, r.name_uz AS title, r.cost_level 
+                FROM `xonadosh_meal_plans` m 
+                JOIN `xonadosh_recipes` r ON r.id = m.recipe_id 
+                WHERE m.group_code = ? AND m.day_of_week = ? LIMIT 1");
+            $mStmt->execute([$groupCode, $dayOfWeek]);
+            $meal = $mStmt->fetch();
 
-        // Pending bills
-        $bStmt = $pdo->prepare("SELECT * FROM `xonadosh_finances` WHERE `group_code` = ? AND `status` != 'settled' LIMIT 3");
-        $bStmt->execute([$groupCode]);
-        $unpaidBills = $bStmt->fetchAll();
+            // Pending bills
+            $bStmt = $pdo->prepare("SELECT * FROM `xonadosh_finances` WHERE `group_code` = ? AND `status` != 'settled' LIMIT 3");
+            $bStmt->execute([$groupCode]);
+            $unpaidBills = $bStmt->fetchAll();
+        } catch (Throwable $e) {}
     }
 
     $msg = "☀️ *XAYRLI TONG, XONADOSHLAR!*\n" .
@@ -108,8 +110,9 @@ if ($action === 'format_daily_digest') {
     }
 
     if ($meal) {
-        $msg .= "🍲 *Kechki taom:* *" . $meal['title'] . "*\n" .
-                "💰 Taxminiy xarajat (1 kishiga): " . number_format((int)$meal['estimated_cost_per_person'], 0, '', ' ') . " so'm\n\n";
+        $cost = isset($meal['estimated_cost_per_person']) ? (int)$meal['estimated_cost_per_person'] : 16000;
+        $msg .= "🍲 *Kechki taom:* *" . ($meal['title'] ?? 'Lazzatli taom') . "*\n" .
+                "💰 Taxminiy xarajat (1 kishiga): " . number_format($cost, 0, '', ' ') . " so'm\n\n";
     }
 
     if (!empty($unpaidBills)) {

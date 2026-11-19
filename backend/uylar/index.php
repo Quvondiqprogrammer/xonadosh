@@ -36,6 +36,10 @@ $districtMap = [
 $matchedUni = null;
 $matchedDistrict = null;
 
+$canonicalUrl = (!empty($slug) && $slug !== 'indexphp') 
+    ? "https://xonadoshim.uz/uylar/" . htmlspecialchars($slug) 
+    : "https://xonadoshim.uz/uylar/";
+
 if (!empty($slug)) {
     // Check if matching university short_name or slug
     $uniStmt = $pdo->prepare("SELECT * FROM `xonadosh_universities` WHERE LOWER(short_name) = ? OR LOWER(short_name) LIKE ? LIMIT 1");
@@ -88,13 +92,13 @@ $allUnis = $pdo->query("SELECT short_name, name_uz FROM `xonadosh_universities` 
     <title><?= $pageTitle ?></title>
     <meta name="description" content="<?= $pageDesc ?>">
     <meta name="keywords" content="ijara uy, talabalar ijarasi, xonadosh, toshkent ijara, bez makler, subsidiya, tatu, ozmu">
-    <link rel="canonical" href="https://xonadoshim.uz/uylar/<?= htmlspecialchars($slug) ?>">
+    <link rel="canonical" href="<?= $canonicalUrl ?>">
     
     <!-- Open Graph -->
     <meta property="og:title" content="<?= $pageTitle ?>">
     <meta property="og:description" content="<?= $pageDesc ?>">
     <meta property="og:type" content="website">
-    <meta property="og:url" content="https://xonadoshim.uz/uylar/<?= htmlspecialchars($slug) ?>">
+    <meta property="og:url" content="<?= $canonicalUrl ?>">
     <meta property="og:image" content="https://xonadoshim.uz/assets/img/og_image.png">
 
     <style>

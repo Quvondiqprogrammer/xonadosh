@@ -586,7 +586,7 @@ class XonadoshMatchingTab extends ConsumerWidget {
                 if (isSwipeMode) {
                   return SliverToBoxAdapter(
                     child: Padding(
-                      padding: const EdgeInsets.fromLTRB(16, 4, 16, 90),
+                      padding: const EdgeInsets.fromLTRB(16, 4, 16, 120),
                       child: TinderRoommateDeck(
                         candidates: candidates,
                         myProfile: myProfileAsync.valueOrNull,
@@ -619,7 +619,7 @@ class XonadoshMatchingTab extends ConsumerWidget {
                 }
 
                 return SliverPadding(
-                  padding: const EdgeInsets.fromLTRB(16, 4, 16, 90),
+                  padding: const EdgeInsets.fromLTRB(16, 4, 16, 120),
                   sliver: SliverList(
                     delegate: SliverChildBuilderDelegate((context, index) {
                       final item = candidates[index];

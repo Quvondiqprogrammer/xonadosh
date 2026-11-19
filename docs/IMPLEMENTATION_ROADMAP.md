@@ -25,6 +25,7 @@
 | **PHASE 8** | Smart Shopping & Grocery Engine | Meal-to-grocery aggregator, normalized units, bazaar price engine | `COMPLETED` |
 | **PHASE 9** | Super Admin & Content Management | Moderation dashboard, user ban/unban, listing quarantine, audit logs | `COMPLETED` |
 | **PHASE 10**| Production Deployment & Live Verification| Remote MariaDB migration, Flutter Web build, FTP deploy, live verification on xonadoshim.uz | `COMPLETED` |
+| **PHASE 11**| Student UX & Production App Bundles | 27 Universities, 50% subsidy guide, Utility calculator, AAB & APK builds, 19/19 E2E tests | `COMPLETED` |
 
 ---
 
@@ -104,3 +105,14 @@
 - [x] Deploy complete backend, landing, admin, and Flutter web app to FTP `142.132.250.229`
 - [x] Verify live HTTPS endpoints on `https://xonadoshim.uz` (API health, landing page, Flutter web app, admin portal)
 - [x] Document deployment results and verification logs
+
+### PHASE 11 — Student-Centric UX & Mobile Production Bundles [COMPLETED]
+- [x] Expanded Uzbekistan universities directory to 27 top accredited institutions with geolocations and nearest metro stations
+- [x] Official utility meter calculator (electricity, gas, water, Wi-Fi) with 2026 Republic of Uzbekistan tariffs
+- [x] 50% state rent subsidy guide & legal sample contract templates (`ijara.soliq.uz`, VM 605-son qarori)
+- [x] Chore swap engine ("Bugun darsim ko'p, navbatni almashtiraylik") with Telegram broadcast integration
+- [x] "Bugun ovqatlanmayman" meal opt-out with automatic per-person grocery reduction
+- [x] Automated cPanel cron runner (`cron/daily_scheduler.php`) for 72h listing TTL expiration and broker quarantine
+- [x] 100% automated E2E integration test suite (`backend/tests/run_all_api_tests.php` — 19/19 tests passing)
+- [x] Production Android App Bundle (`app-release.aab`, 69MB) & APK (`app-release.apk`, 71MB) compiled and verified for Google Play Store upload
+

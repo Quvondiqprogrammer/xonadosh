@@ -550,7 +550,7 @@ class _XonadoshColivingTabState extends ConsumerState<XonadoshColivingTab> {
           color: XonaDoshColors.emerald,
           onRefresh: () async => ref.refresh(xonadoshChoresProvider),
           child: ListView(
-            padding: const EdgeInsets.fromLTRB(16, 8, 16, 80),
+            padding: const EdgeInsets.fromLTRB(16, 8, 16, 120),
             children: [
               // Today Duty Hero Card
               Container(
@@ -1464,7 +1464,7 @@ class _XonadoshColivingTabState extends ConsumerState<XonadoshColivingTab> {
           onRefresh: () async =>
               ref.refresh(xonadoshRecipesAndMealPlanProvider),
           child: ListView(
-            padding: const EdgeInsets.fromLTRB(16, 8, 16, 80),
+            padding: const EdgeInsets.fromLTRB(16, 8, 16, 120),
             children: [
               // Meal Plan Header
               Padding(
@@ -1718,7 +1718,7 @@ class _XonadoshColivingTabState extends ConsumerState<XonadoshColivingTab> {
             physics: const AlwaysScrollableScrollPhysics(
               parent: BouncingScrollPhysics(),
             ),
-            padding: const EdgeInsets.fromLTRB(16, 8, 16, 80),
+            padding: const EdgeInsets.fromLTRB(16, 8, 16, 120),
             children: [
               // 1. Roommates Count Stepper
               Container(
@@ -3448,7 +3448,7 @@ class _XonadoshColivingTabState extends ConsumerState<XonadoshColivingTab> {
           color: XonaDoshColors.emerald,
           onRefresh: () async => ref.refresh(xonadoshPollsProvider),
           child: ListView(
-            padding: const EdgeInsets.fromLTRB(16, 8, 16, 80),
+            padding: const EdgeInsets.fromLTRB(16, 8, 16, 120),
             children: [
               // Header
               Padding(
@@ -3844,7 +3844,7 @@ class _XonadoshColivingTabState extends ConsumerState<XonadoshColivingTab> {
           color: XonaDoshColors.emerald,
           onRefresh: () async => ref.refresh(xonadoshKarmaProvider),
           child: ListView(
-            padding: const EdgeInsets.fromLTRB(16, 8, 16, 80),
+            padding: const EdgeInsets.fromLTRB(16, 8, 16, 120),
             children: [
               // Header
               Padding(

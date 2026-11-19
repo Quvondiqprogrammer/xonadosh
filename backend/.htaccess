@@ -4,7 +4,7 @@ DirectoryIndex index.html index.php
 Options -Indexes -MultiViews
 FileETag MTime Size
 
-<FilesMatch "^(config\.local\.php|config\.example\.php)$">
+<FilesMatch "^(config\.local\.php|config\.example\.php|\.env.*|\.git.*|.*\.sql|.*\.log)$">
   <IfModule mod_authz_core.c>
     Require all denied
   </IfModule>
